@@ -59,10 +59,12 @@ router.get('/', (req, res) => { //(_, res) => res.render('index.html'));
 	if (req.session.key) {
 		res.redirect('/home')
 	} else {
-		res.redirect('/index')
+		res.redirect('/landingpage')
+		// res.redirect('/index')
 	}
 })
 
+router.get('/landingpage', (_req, res) => res.render('landingpage.html'));
 router.get('/index', (_req, res) => res.render('index.html'));
 
 router.get('/home', (req, res) => {
