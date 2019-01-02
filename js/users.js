@@ -70,6 +70,7 @@ function login(req, res) {
 	
 	// do login stuff here
 	req.session.key = { username: req.body.username };
+
 	res.json({ success: true, cause: 'todo'})
 }
 
