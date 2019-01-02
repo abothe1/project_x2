@@ -3,6 +3,13 @@
 // $("#sign_in_button").addEventListener('click',signInHit);
 // var searchField=$('#searchText');
 
+(function($) {
+	$(function() {
+		$('#login_button').click(loginHit);
+		$('#sign_in_button').click(signInHit);
+	});
+})(jQuery);
+
 //classes
 class User{
 	constructor(){
@@ -153,6 +160,3 @@ function searchHit(type){
 		break;
 	}
 };*/
-
-
-
