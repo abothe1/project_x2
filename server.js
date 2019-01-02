@@ -6,7 +6,8 @@ const PRODUCTION = false; // this /must/ be set to true so things become secure
 // `mongodb` is used to store more heavy-duty objects
 
 const EXPRESS_APP_PORT = 80,
-      WEBPAGES_ROOT_DIR = '../public',
+      PUBLIC_DIR = 'public',
+      STATIC_DIR = 'static',
       REDIS_APP_HOST = 'localhost',
       REDIS_APP_PORT = 6379;
 
@@ -16,23 +17,17 @@ const express = require('express'),
       redis_store = require('connect-redis')(session),
       body_parser = require('body-parser'),
       cookie_parser = require('cookie-parser'),
-      users = require('./users'),
-      multer = require('multer');
+      multer = require('multer'),
+      users = require('./users');
 
-var upload = multer({ dest: '../static/' });
+var upload = multer({ dest: STATIC_DIR });
 var client = redis.createClient();
 var app = express();
 var router = express.Router();
 
-app.use(express.static(WEBPAGES_ROOT_DIR, {
-	extensions: ['html']
-}))
-
-app.set('views', WEBPAGES_ROOT_DIR);
+app.set('views', PUBLIC_DIR);
+app.use('/static', express.static(STATIC_DIR));
 app.engine('html', require('ejs').renderFile);
-
-// app.use(express.static('../static'));
-app.use('/static', express.static('static'));
 
 
 // this is how sessions are handled
