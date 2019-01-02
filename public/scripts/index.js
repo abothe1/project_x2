@@ -68,10 +68,10 @@ class Drop {
 		this.id = 0;
 		this.theDiv = document.createElement("div");
 		this.theDiv.className = "rainDrop";
-		this.width = 80;
-		this.height = 80;
+		this.width = 120;
+		this.height = 120;
 		this.x = Math.random()*(window.innerWidth);
-		this.y = -80;
+		this.y = -120;
 		this.UpdateDiv();
 
 		// var r = RandColor();
