@@ -59,17 +59,16 @@ router.get('/', (req, res) => { //(_, res) => res.render('index.html'));
 	if (req.session.key) {
 		res.redirect('/home')
 	} else {
-		res.redirect('/landingpage')
-		// res.redirect('/index')
+		res.redirect('/index')
 	}
 })
 
-router.get('/landingpage', (_req, res) => res.render('landingpage.html'));
 router.get('/index', (_req, res) => res.render('index.html'));
 
 router.get('/home', (req, res) => {
 	if (req.session.key) { // if logged in, display home
-		res.render('home.html', { username : req.session.key['username']});
+		res.render('home.html', { username : req.session.key['username'] });
+		res.render('home.html', { session: req.session.key });
 	} else {
 		res.redirect('/'); // otherwise, show base page
 	}
@@ -100,6 +99,20 @@ router.get('/logout', (req, res) => {
     	res.redirect('/');
     }
 })
+
+router.get('/search', (req, res) => {
+
+})
+router.get('/search', (req, res) => {
+	var query = req.query.query;
+	if (!query) {
+		return res.json({ success: false, cause: "No query provided" });
+	}
+
+	res.json({ success: true, result: "hi '" + query + "'" });
+
+});
+
 
 router.get('/__get_statuses', (req, res) => {
 	if (!req.session.key) {
