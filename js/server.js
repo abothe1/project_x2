@@ -16,8 +16,10 @@ const express = require('express'),
       redis_store = require('connect-redis')(session),
       body_parser = require('body-parser'),
       cookie_parser = require('cookie-parser'),
-      users = require('./users');
+      users = require('./users'),
+      multer = require('multer');
 
+var upload = multer({ dest: '../static/' });
 var client = redis.createClient();
 var app = express();
 var router = express.Router();
@@ -28,6 +30,10 @@ app.use(express.static(WEBPAGES_ROOT_DIR, {
 
 app.set('views', WEBPAGES_ROOT_DIR);
 app.engine('html', require('ejs').renderFile);
+
+// app.use(express.static('../static'));
+app.use('/static', express.static('static'));
+
 
 // this is how sessions are handled
 app.use(session({
@@ -52,6 +58,45 @@ app.use(body_parser.urlencoded({ extended: false }));
 app.use(body_parser.json());
 
 /** These are the different paths **/
+
+/**
+
+router.use('/user/:id', function (req, res, next) {
+  console.log('Request URL:', req.originalUrl)
+  next()
+});
+
+router.route('/foo')
+	.get((req, res) = { ... })
+	.post((req, res) = { ... })
+	.put((req, res) = { ... })
+
+app.post('/profile', upload.single('avatar'), function (req, res, next) {
+  // req.file is the `avatar` file
+  // req.body will hold the text fields, if there were any
+})
+ 
+app.post('/photos/upload', upload.array('photos', 12), function (req, res, next) {
+  // req.files is array of `photos` files
+  // req.body will contain the text fields, if there were any
+})
+ 
+
+*/
+// function(req, res) {
+//     res.statusMessage = "Current password does not match";
+//     res.status(400).end();
+// }
+router.route('/_post_image')
+	.get((_, res) => res.render('_post_image.html'))
+	.post(upload.single('image-file'), (req, res) => {
+		res.json({ id: req.file.filename })
+		res.status(200).end()
+	});
+
+// router.get('/_post_image/:id', (req, res) => {
+// 
+// });
 
 // redirect `/` to `/index`, unless we're logged in
 router.get('/', (req, res) => { //(_, res) => res.render('index.html'));
@@ -87,7 +132,7 @@ router.get('/login', (req, res) => {
 	if (req.session.key) { // if logged in, redirect to home
 		res.redirect('/home')
 	} else {
-		res.render('login.html')
+		res.render('_login.html')
 	}
 });
 
