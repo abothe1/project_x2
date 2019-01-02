@@ -1,7 +1,7 @@
-document.getElementById("searchButton").addEventListener('click',searchHit);
-document.getElementById("loginButton").addEventListener('click',loginHit);
-document.getElementById("signInButton").addEventListener('click',signInHit);
-var searchField=document.getElementById('searchText');
+// $("#search_button").addEventListener('click', searchHit);
+// $("#login_button").addEventListener('click',loginHit);
+// $("#sign_in_button").addEventListener('click',signInHit);
+// var searchField=$('#searchText');
 
 //classes
 class User{
@@ -83,14 +83,55 @@ for (var s in samples){
 	musicBlocks.push(musicBlock);
 }
 
+
+function search_musicians() {
+	$.get("/search", { type: "musicians", query: $("#search_input").val() }, result => {
+		alert(`result is ${result}`);
+	});
+}
+
+function search_gigs() {
+	$.get("/search", { type: "gigs", query: $("#search_input").val() }, result => {
+		alert(`result is ${result}`);
+	});
+}
+
+function post_gig() {
+	$.post("/post_gig", { query: $("#search_input").val() }, result => {
+		alert(`result is ${result}`);
+	});
+}
+
+/*
 //this is the function to handle the search bar
-function searchHit(){
+function searchHit(type){
+	var content = { type: type, query: $("#search_input").val() };
+	var method;
+	switch(type) {
+		case "find_musicians": case "find_gigs":
+			method = $.get;
+			break;
+		case "post_gig":
+			method = $.post;
+			break
+	}
+
+	(method)("/search", content, result => {
+		if (result.success) {
+			alert(`success! result: ${result.result}.`)
+		} else {
+			alert(`failure! cause: ${result.cause}.`)
+		}
+	});
+
+	/*
+	alert("search was hit!");
 	var bands=[];
 	var gigs=[];
 	searchText=searchField.value;
 	switch(searchMode){
 		case "bands":
-		$.get('/bands', {query:searchText}function(data){
+		$.get('/bands', {query:searchText}, function(data){
 			$.each(data, function(key,val){
 				var band = new Band(val);
 				bands.push(band);
@@ -99,7 +140,7 @@ function searchHit(){
 		//Now we gotta take this the bands a pass them to the next page, and display them
 		break;
 		case "gigs":
-		$.get('/gigs', {query:searchText}function(data){
+		$.get('/gigs', {query:searchText}, function(data){
 			$.each(data, function(key,val){
 				var gig = new Gig(val);
 				gigs.push(gig);
@@ -111,7 +152,7 @@ function searchHit(){
 		$.post('/gigs', {query:searchText});
 		break;
 	}
-};
+};*/
 
 
 
