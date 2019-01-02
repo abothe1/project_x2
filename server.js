@@ -1,6 +1,3 @@
-// note we should probably tell clients we use cookies
-const PRODUCTION = false; // this /must/ be set to true so things become secure
-
 // `express` is used to serve up webpages
 // `redis` is used to store user sessions
 // `mongodb` is used to store more heavy-duty objects
@@ -17,7 +14,9 @@ const express = require('express'),
       redis_store = require('connect-redis')(session),
       body_parser = require('body-parser'),
       cookie_parser = require('cookie-parser'),
-      multer = require('multer'),
+      multer = require('multer');
+      
+const database = require('./database'),
       users = require('./users');
 
 var upload = multer({ dest: STATIC_DIR });
@@ -28,7 +27,6 @@ var router = express.Router();
 app.set('views', PUBLIC_DIR);
 app.use('/static', express.static(STATIC_DIR));
 app.engine('html', require('ejs').renderFile);
-
 
 // this is how sessions are handled
 app.use(session({
@@ -42,7 +40,7 @@ app.use(session({
 		saveUninitialized: false,
 		resave: false,
 		cookie: {
-			secure: PRODUCTION, 
+			secure: true, 
 			axAge: 86400000
 		}
 }));
@@ -54,7 +52,7 @@ app.use(body_parser.json());
 
 /** These are the different paths **/
 
-/**
+/*
 
 router.use('/user/:id', function (req, res, next) {
   console.log('Request URL:', req.originalUrl)
@@ -75,13 +73,21 @@ app.post('/photos/upload', upload.array('photos', 12), function (req, res, next)
   // req.files is array of `photos` files
   // req.body will contain the text fields, if there were any
 })
- 
 
 */
+
+
+router.post('/upload/avatar', upload.single('avatar'), (req, res) => {
+	res.json({ id: req.file.username });
+	res.status(201).end()
+});
+	// .get( (req, res) => res.render('a') )
+
 // function(req, res) {
 //     res.statusMessage = "Current password does not match";
 //     res.status(400).end();
 // }
+
 router.route('/_post_image')
 	.get((_, res) => res.render('_post_image.html'))
 	.post(upload.single('image-file'), (req, res) => {
