@@ -153,14 +153,15 @@
 			}
 
 			.options{
-				position: absolute;
+				position: relative;
 				z-index: 4;
-				top: 55%;
-				left: 50%;
+				top: 160%;
+				left: 55%;
 				margin-top: -55px;
 				margin-left: -300px;
 				width: 600px;
 				height: 100px;
+				float: right;
 			}
 
 			#barImg{
@@ -212,7 +213,7 @@
 				rainTimer = setInterval(addDrop, 1000);
 				setInterval(animate, 30);
 
-				alert(window.location.href);
+				//alert(window.location.href);
 			}
 
 			function animate() {
@@ -356,13 +357,14 @@
 					<div class="search">
 						<img id="barImg" alt="searchbar" src="./assets/searchbar.png" />
 						<input id='search_input'>
+						<div class="options">
+							<button onclick="search_musicians()">Find Musicians</button>
+							<button onclick="search_gigs()">Find Gigs</button>
+							<button onclick="post_gig()">Post a Gig</button>
+						</div>
 					</div>
 
-					<div class="options">
-						<button onclick="search_musicians()">Find Musicians</button>
-						<button onclick="search_gigs()">Find Gigs</button>
-						<button onclick="post_gig()">Post a Gig</button>
-					</div>
+
 
 				</div>
 			</div>
