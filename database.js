@@ -8,6 +8,13 @@ const PORT = 27017,
 
 var MongoClient = require('mongodb').MongoClient;
 
+
+// function create_mongodb() {
+// 	connect(db => {
+// 		db.collection.createIndex(
+// 	}, console.error)
+// }
+
 function connect (cb_ok, cb_err) {
 	MongoClient.connect(MONGO_URL, { useNewUrlParser : true}, (err, db) => {
 		if (err) {

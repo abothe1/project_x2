@@ -1,6 +1,7 @@
 <!DOCTYPE html>
 <html>
 <head>
+	<script src="/scripts/"
 	<script src="https://code.jquery.com/jquery-1.11.3.min.js"></script>
 	<script type ="text/javascript">
 
@@ -12,13 +13,28 @@
 			password: $("#password").val()
 		};
 
-		$.post("/register", content, data => {
-			if(data.success) {
-				window.location.href = "/login";
-			} else {
-				alert(`error: ${data.cause}`);
+		$.ajax({
+			url: '/register',
+			type: 'POST',
+			success: data => {
+				// do success stuff
+				alert(JSON.stringify(data))
+			},
+			data: content,
+			error: (jgxhr, exception) => {
+				alert(JSON.stringify(jgxhr));
+				alert(JSON.stringify(exception));
 			}
-		});
+		})
+
+		// $.post("/register", content, data => {
+		// 	console.log(JSON.stringify(data));
+		// 	if(data.success) {
+		// 		window.location.href = "/_login";
+		// 	} else {
+		// 		alert(`error: ${data.cause}`);
+		// 	}
+		// }, 'text');
 	}
 
 	</script>
@@ -26,7 +42,7 @@
 </head>
 <body>
 	<h2>Register</h2>
-	(to login click <a href="/login">here</a>)<br>
+	(to login click <a href="/_login">here</a>)<br>
 	username: <input type=username id="username"/><br>
 	email: <input type=email id="email"/><br>
 	password: <input type=password id="password"/><br>
