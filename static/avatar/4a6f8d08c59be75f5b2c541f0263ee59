@@ -1,0 +1,96 @@
+class Array
+	def sum
+		reduce 0, &:+
+	end
+end
+
+x = DATA.each_line
+	.map(&:strip)
+	.select{|x| !x.empty?}
+	.map{|x| x.split '|' }
+	
+puts x
+__END__
+
+1D Pre Lecture FlipIt - one dimensional kinematics | - | 10
+2D Pre Lecture FlipIt - two dimensional kinematics | - | 10
+1W - Written |16 | 20
+ 
+Fall 1W 28.|33 | 30
+ 
+3D Pre Lecture FlipIt - Relative and Circular Motion | - | 10
+4D Pre Lecture FlipIt - Newton's Law | - | 10
+2W - Written |19 | 20
+ 
+Fall 2W 22.|5 | 30
+ 
+5D Pre Lecture FlipIt - Forces and FBD | - | 10
+6D Pre Lecture FlipIt - Friction | - | 10
+3W - Written |20 | 20
+ 
+Fall 3W 22.|5 | 30
+ 
+7D Pre Lecture FlipIt - Work and KE | - | 10
+4W - Written |20 | 20
+ 
+Fall 4W |25 | 30
+ 
+8D Pre Lecture FlipIt - Potential Energy | - | 10
+9D Pre Lecture FlipIt - Work and PE | - | 10
+5W - Written |20 | 20
+ 
+Fall 5W 27.|5 | 30
+ 
+Exam 1 |96 | 100
+ 
+10D Pre Lecture FlipIt - COM | - | 10
+6W - Written |20 | 20
+ 
+Fall 6W |25 | 30
+ 
+11D&12D Pre Lecture FlipIt - Conservation of Momentum | - | 10
+13D Pre Lecture FlipIt - Rotational Kinematics | - | 10
+7W - Written |20 | 20
+ 
+Fall 7W |30 | 30
+ 
+14D Pre Lecture FlipIt - Torque | - | 10
+8W - Written |20 | 20
+ 
+Fall 8W |30 | 30
+ 
+15D Pre Lecture FlipIt - Rotational Dynamics | - | 10
+16D&17D Pre Lecture FlipIt - Rotational Dynamics | - | 10
+9W - Written | - | 20
+Fall 9W 28.|75 | 30
+ 
+18D&19D Pre Lecture FlipIt - Angular Momentum | - | 10
+Exam 2 |73 | 100
+ 
+20D Pre Lecture FlipIt - SHM | - | 10
+10W - Written | - | 20
+21D Pre Lecture FlipIt - Pendulum
+FlipIt | - | 10
+11W - Written |20 | 20
+ 
+Fall 11W |30 | 30
+ 
+22D Pre Lecture FlipIt - Harmonic Motion | - | 10
+23D Pre Lecture FlipIt - Waves | - | 10
+12W - Written | - | 20
+Fall 12W |25 | 30
+ 
+24D Pre Lecture FlipIt - Galilean Transformation | - | 10
+13W - Written |19 | 20
+ 
+Fall 13W |30 | 30
+ 
+25D Pre Lecture FlipIt | - | 10
+26D Pre Lecture FlipIt- Lorentz Transformation | - | 10
+14W - Written |19 | 20
+ 
+Fall 14W |25 | 30
+ 
+27D Pre Lecture FlipIt - General Relativity | - | 10
+15W - Written | - | 20
+Exam 3 | - | 100

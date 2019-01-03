@@ -1,5 +1,6 @@
 module.exports = {
 	connect: connect,
+	id_from_username: id_from_username
 }
 
 const PORT = 27017,
@@ -16,6 +17,24 @@ function connect (cb_ok, cb_err) {
 		else
 			cb_ok(db);
 	})
+}
+
+function id_from_username (username, cb_ok, cb_err, db=undefined) {
+	function exec(db) {
+		db.db('users').collection('users').findOne({username: username}, (err, res) => {
+			if (err) {
+				cb_err(err)
+			} else {
+				cb_ok(res._id)
+			}
+		});
+	}
+
+	if (db) {
+		exec(db)
+	} else {
+		connect(exec)
+	}
 }
 
 // function connect (database, collection, cb_ok, cb_err) {
