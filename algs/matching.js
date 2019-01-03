@@ -56,7 +56,7 @@ var genreBank=["blues","classic rock","country","dance","disco","funk","grunge",
  "upbeat","vibrant","vocal","high-volume","low-volume","loud","soft","hard","hardcore","west-coast","east-coast","chopper","vibes",
  "angry","melancholy","blue","new","old","young","difuse","nasty","raunchy","ridiculous","real","dumb"
  ,"evil","godly","zealous","functional","stupid","purple","green","gnarly","fun","forceful","fucking","fuck","fucked up","crazy","sloppy","disgusting"];
-
+//this is so i can commit;
  var genreMult=1;
  var ratingMult=1;
  var instMult=1;
@@ -74,6 +74,9 @@ var genreBank=["blues","classic rock","country","dance","disco","funk","grunge",
  var gigsToScore=[];
  var bandsToScore=[];
 
+//call this for a band searching for a gig, myBand is a json band and
+// gigs is an array of gig jsons and 
+//query String is the string they typed in search bar (i handled parsing)
 function findGigsForBand(myBand, gigs, queryStr){
     parseQueryString(queryStr);
     var queryStrScore=0;
