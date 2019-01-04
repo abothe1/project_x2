@@ -1,6 +1,7 @@
 .DS_Store
 dump.rdb
 database/database/
+static/uploads/
 
 # Logs
 logs
