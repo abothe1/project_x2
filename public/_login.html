@@ -1,8 +1,8 @@
 <!DOCTYPE html>
 <html>
 <head>
-	<script src="/socket.io/socket.io.js"></script>
 	<script src="https://code.jquery.com/jquery-1.11.3.min.js"></script>
+	<script src="/scripts/ajax.js"></script>
 	<script type ="text/javascript">
 
 	function login() {
@@ -11,27 +11,25 @@
 			password: $("#password").val(),
 		}
 
-		$.post('/login', content, data => {
-			if(data.success) {
-				window.location.href = "/home";
-			} else {
-				alert(`error: ${data.cause}`);
-			}
-		})
+		post_request('/login', content,
+			_ => redirect_to('/index'),
+			err => alert(`${err.code} error: ${err.cause}`)
+		);
 	}
 	</script>
 	<title>Register</title>
 </head>
 <body>
-	<img src="/uploads/avatars/6cef703ace7cec1bb37ac50e47cb56ed" />
-	<audio controls audoplay>
-		<source src="/uploads/soundbytes/acd5f8076d610e1c2ed85cfe9c542155" type="audio/mp3">
-	</audio>
 	<h2>Login</h2>
 	(to register click <a href="/register.html">here</a>)<br>
 	username: <input type=username id="username"/><br>
 	password: <input type=password id="password"/><br>
 	<button onclick="login()">login</button>
+
+	<audio controls audoplay>
+		<source src="/uploads/soundbytes/acd5f8076d610e1c2ed85cfe9c542155" type="audio/mp3">
+	</audio>
+	<img src="/uploads/avatars/6cef703ace7cec1bb37ac50e47cb56ed" />
 </body>
 </html>
 
