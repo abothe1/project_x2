@@ -29,14 +29,25 @@
 		// });
 
 		</script>
-		<title>Post Image</title>
+		<title>Upload stuff</title>
 	</head>
 	<body>
-		Hello, <%= username %>. upload an avatar.
+		Hello, <%= username %>. Stuff.
+		<h3>Avatar</h3>
 		<form enctype="multipart/form-data" action="/upload/avatar" method="post">
-		<!-- <form method="post" id='upload_image'> -->
 			<input name="avatar" type="file" />
-			<input type="submit" id="submit">submit</form>
+			<input type="submit" id="submit">Submit</input>
+		</form>
+
+		<h3>Soundbyte</h3>
+		<form enctype="multipart/form-data" action="/upload/soundbyte" method="post">
+			<input name="soundbyte" type="file" />
+			<input type="submit" id="submit">Submit</input>
 		</form>
 	</body>
 </html>
+
+
+
+
+
