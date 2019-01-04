@@ -5,33 +5,18 @@
 const EXPRESS_APP_PORT = 80,
       PUBLIC_DIR = 'public',
       STATIC_DIR = 'static',
-      UPLOADS_VIRTUAL_BASE_DIR = '/uploads',
-      UPLOADS_BASE_DIR = STATIC_DIR + UPLOADS_VIRTUAL_BASE_DIR,
       REDIS_HOST = 'localhost'
       REDIS_PORT = 6379;
+
+// and if so, should i put them in another file? since the `UPLOADS` things are only used in `auth/upload.js`, but needs `STATIC_DIR`. I don’t wanna pass every constant to every 
 
 const express = require('express'),
       redis = require("redis"),
       session = require('express-session'),
       redis_store = require('connect-redis')(session),
       body_parser = require('body-parser'),
-      cookie_parser = require('cookie-parser'),
-      multer = require('multer');
-      
-const database = require('./database'),
-      users = require('./users');
+      cookie_parser = require('cookie-parser');
 
-// TODO: look into `res.cookie` (https://expressjs.com/en/4x/api.html#res.cookie)
-
-// var upload = multer({
-// 	storage: multer.diskStorage({
-// 		destination: (req, file, cb) => {
-// 			cb(null, 'static/' + file.fieldname)
-// 			// console.log(file);
-// 			// throw;
-// 		}
-// 	})
-// });
 var client = redis.createClient();
 var app = express();
 
@@ -51,6 +36,7 @@ app.use(session({
 	resave: false,
 	// cookie: { secure: true, maxAge: 86400000 }
 }));
+
 console.info("figure out why cookies aren't working");
 
 // not sure what these do
@@ -66,233 +52,16 @@ app.use(express.static(STATIC_DIR));
 // create the router
 var router = express.Router();
 
-// temporary routes for testing
-router.get('/_register', (_, res) => res.render('_register.html'));
-router.get('/_login', (_, res) => res.render('_login.html'));
-router.get('/_logout', (_, res) => res.render('_logout.html'));
-router.get('/_upload_avatar', (req, res) => {
-	var id = req.session.key;
-	if (!id) {
-		res.status(403).send('Not logged in').end();
-	} else {
-		database.username_from_id(id, username => {
-			res.render('_upload_avatar.html', {username: username})
-		}, err => {
-			console.error(`Username find request from ${req.ip} (for ${id}) returned error: ${err}`)
-			res.status(500).end();
-		}, () => {
-			console.error(`Username find request from ${req.ip} (for ${id}) couldn't find a username`);
-			res.status(500).end();			
-		})
-	}
-})
-
-
 // display index
 router.get('/', (_, res) => res.redirect('/index'));
-router.get('/index', (req, res) => { console.log(req.session); res.render('index.html', {__id: req.session.key})});
+router.get('/index', (_, res) => { res.render('index.html'); });
 
-
-/** login and validation stuff **/
-
-router.post('/register', (req, res) => {
-	if (req.session.key) {
-		console.info(`User ${req.session.key} from ${req.ip} attempted to register whilst logged in`);
-		return res.status(403).send('Already logged in').end();
-	}
-
-	var {username, email, password} = req.body;
-
-	if (!username) {
-		return res.status(400).send('No username supplied')
-	} else if (!password) {
-		return res.status(400).send('No password supplied')
-	} else if (!email) {
-		return res.status(400).send('No email supplied')
-	}
-
-	password = /* hash password */ password;
-	console.warn('TODO: HASH PASSWORDS [register]!');
-
-	database.connect(db => {
-		var users = db.db('users').collection('users');
-		users.findOne({ $or: [{email: email}, {username: username}]}, (err, obj) => {
-			if (err) {
-				console.error(`User find request from ${req.ip} (for ${username}) returned error: ${err}`)
-				res.status(500).end()
-			} else if (obj) {
-				res.status(400).send('Username or email already exists').end()
-			} else {
-				users.insertOne({ email: email, username: username, password: password }, (err, obj) => {
-					if (err) {
-						console.error(`Register request from ${req.ip} (for ${username}, ${email}, ${password}) returned error: ${err}`);
-						res.status(500).end();
-					} else {
-						res.status(200).end();
-					}
-				});
-			}
-		})
-	});
-})
-
-
-router.post('/login', (req, res) => { 
-	if (req.session.key) {
-		console.info(`User ${req.session.key} from ${req.ip} attempted to login whilst logged in`);
-		return res.status(402).send('Already logged in').end();
-	}
-
-	var {username, password} = req.body;
-
-	if (!username) {
-		return res.status(400).send('No username supplied')
-	} else if (!password) {
-		return res.status(400).send('No password supplied')
-	} 
-
-	console.warn('TODO: HASH PASSWORDS [login]!');
-
-	password = /* hashed password */ password;
-
-	database.connect(db => {
-		db.db('users').collection('users').findOne({ username: username, password: password }, (err, obj) => {
-			if (err) {
-				console.error(`Login request from ${req.ip} (for ${username}) returned error: ${err}`)
-				res.status(500).end()
-			} else if (!obj) {
-				res.status(400).send('Invalid Credentials').end()
-			} else {
-				req.session.key = obj._id;
-				res.status(200).end()
-			}
-		})
-	});
-});
-
-router.get('/logout', (req, res) => {
-	if(req.session.key) {
-		req.session.destroy(() => res.status(200).end())
-	} else {
-		res.status(402).send('Not logged in').end()
-    }
-});
-
-
-// this is used for uploading to specific static places, e.g. `avatars` or `soundbytes`
-function upload(ending) {
-	return multer({ dest: UPLOADS_BASE_DIR + '/' + ending + '/' });
-}
-
-// require the user to be logged in, or return an error message
-function login_needed(error_message) {
-	return (req, res, next) => {
-		// if we aren't logged in, send 'Unauthorized' back to client
-		if (!req.session.key) {
-			console.info(`User from ${req.ip} `+ error_message);
-			res.status(401).send('Not logged in').end();
-		} else {
-			// otherwise, continue
-			next();
-		}
-	}
-}
-
-/** AVATAR UPLOADING **/
-
-// get the avatar for a specific user--this can also be done thru `/static/avatar/<avatar filename>`
-router.get('/users/:username/:which', (req, res) => {
-	var which = req.params.which;
-	var which_basedir = UPLOADS_VIRTUAL_BASE_DIR + '/';
-	switch(which) {
-		case 'avatar':
-			which_basedir += 'avatars'; break;
-		case 'soundbyte':
-			which_basedir += 'soundbytes'; break;
-		default:
-			return res.status(404).end();
-	}
-
-	which_basedir += '/';
-
-	database.connect(db => {
-		database.id_from_username(req.params.username, id => {
-			var which_collection = db.db('users').collection(which);
-			which_collection.findOne({ owner: id }, (err, obj) => {
-				if (err) {
-					console.error(`${which} request ${req.url} (from ${req.ip}) caused an error: ${err}`);
-					res.status(500).end()
-				} else if (obj === null) {
-					console.log('null')
-					res.status(404).end()
-				} else {
-					res.redirect(which_basedir + obj.filename)
-				}
-			})
-			}, err => {
-				console.error(`${which} request ${req.url} (from ${req.ip}) caused an error: ${err}`);
-				res.status(500).end()
-			}, () => {
-				res.status(404).end()
-			}, db
-		)
-	})
-});
-
-// upload an avatar, you need to be logged in to do it.
-router.post('/upload/avatar',
-	// being logged in is required to upload an avatar
-	login_needed('tried to upload an avatar whilst not logged in'),
-	// allow the user to upload a single avatar
-	upload('avatars').single('avatar'),
-	// actual login script
-	(req, res) => {
-		console.log(`[${req.ip}] File uploaded: ` + req.file.path);
-
-		var id = req.session.key;
-		var filename = req.file.filename;
-
-		if (!id) {
-			console.error("User wasn't logged in, but got past `login_needed`");
-			return res.status(500).end();
-		}
-
-		database.connect(db => {
-			var avatars = db.db('users').collection('avatars');
-
-			avatars.deleteMany({ owner: id }, (err, _obj) => {
-				if (err) {
-					console.error(`Couldn't delete avatar with user id ${id}: ${err}`);
-					res.status(500).end()
-					db.close()
-				} else {
-					avatars.insertOne({ filename: filename, owner: database.object_id(id) }, (err, _result) => {
-						if (err) {
-							console.error(`Couldn't insert avatar with owner '${id}', filename '${filename}': ${err}`)
-							res.status(500).end()
-						} else {
-							res.status(200).end()
-						}
-						db.close()
-					})
-				}
-			})
-		}, err => {
-			console.error(`Error with connecting to databse: ${err}`);
-			res.status(500).end();
-		})
-	}
-);
-
-
-
+require('./routes/auth.js')(router, app); // login, register, logout
+require('./routes/upload.js')(router, app);
 
 // startup the server
 app.use('/', router);
 app.listen(80, () => console.info('Express started on port 80'));
-
-
-
 
 
 
