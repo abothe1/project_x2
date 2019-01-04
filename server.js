@@ -5,6 +5,7 @@
 const EXPRESS_APP_PORT = 80,
       PUBLIC_DIR = 'public',
       STATIC_DIR = 'static',
+      UPLOADS_BASE_DIR = STATIC_DIR + '/uploads',
       REDIS_HOST = 'localhost'
       REDIS_PORT = 6379;
 
@@ -57,8 +58,8 @@ app.use(body_parser.json());
 
 /** ROUTES **/
 
-// Make statics readable. e.g. `/static/avatar/...` 
-app.use('/static', express.static(STATIC_DIR));
+// Make statics readable
+app.use(express.static(STATIC_DIR));
 
 // create the router
 var router = express.Router();
@@ -102,7 +103,7 @@ router.post('/register', (req, res) => {
 
 	database.connect(db => {
 		var users = db.db('users').collection('users');
-		users.findOne({ email: email, username: username }, (err, obj) => {
+		users.findOne({ $or: [{email: email}, {username: username}]}, (err, obj) => {
 			if (err) {
 				console.error(`User find request from ${req.ip} (for ${username}) returned error: ${err}`)
 				res.status(500).end()
@@ -172,7 +173,7 @@ router.get('/logout', (req, res) => {
 
 // this is used for uploading to specific static places, e.g. `avatars` or `soundbytes`
 function upload(ending) {
-	return multer({ dest: STATIC_DIR + '/' + ending });
+	return multer({ dest: UPLOADS_BASE_DIR + ending });
 }
 
 // require the user to be logged in, or return an error message
@@ -202,7 +203,7 @@ router.get('/users/:id/avatar', (req, res) => {
 			} else if (obj === null) {
 				res.status(404).end()
 			} else {
-				res.redirect('/static/avatar/' + obj.filename)
+				res.redirect(UPLOADS_BASE_DIR + '/avatar/' + obj.filename)
 			}
 		})
 	})
