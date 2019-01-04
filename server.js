@@ -5,7 +5,8 @@
 const EXPRESS_APP_PORT = 80,
       PUBLIC_DIR = 'public',
       STATIC_DIR = 'static',
-      UPLOADS_BASE_DIR = STATIC_DIR + '/uploads',
+      UPLOADS_VIRTUAL_BASE_DIR = '/uploads',
+      UPLOADS_BASE_DIR = STATIC_DIR + UPLOADS_VIRTUAL_BASE_DIR,
       REDIS_HOST = 'localhost'
       REDIS_PORT = 6379;
 
@@ -48,8 +49,9 @@ app.use(session({
 	}),
 	saveUninitialized: false,
 	resave: false,
-	cookie: { secure: true, maxAge: 86400000 }
+	// cookie: { secure: true, maxAge: 86400000 }
 }));
+console.info("figure out why cookies aren't working");
 
 // not sure what these do
 app.use(cookie_parser("lol my secret $c5%ookie parser 0nu@mber thingy 12038!@"));
@@ -68,24 +70,35 @@ var router = express.Router();
 router.get('/_register', (_, res) => res.render('_register.html'));
 router.get('/_login', (_, res) => res.render('_login.html'));
 router.get('/_logout', (_, res) => res.render('_logout.html'));
+router.get('/_upload_avatar', (req, res) => {
+	var id = req.session.key;
+	if (!id) {
+		res.status(403).send('Not logged in').end();
+	} else {
+		database.username_from_id(id, username => {
+			res.render('_upload_avatar.html', {username: username})
+		}, err => {
+			console.error(`Username find request from ${req.ip} (for ${id}) returned error: ${err}`)
+			res.status(500).end();
+		}, () => {
+			console.error(`Username find request from ${req.ip} (for ${id}) couldn't find a username`);
+			res.status(500).end();			
+		})
+	}
+})
 
 
 // display index
-router.get('/', (_req, res) => res.render('index.html'));
-router.get('/index', (_req, res) => res.render('index.html'));
+router.get('/', (_, res) => res.redirect('/index'));
+router.get('/index', (req, res) => { console.log(req.session); res.render('index.html', {__id: req.session.key})});
 
 
 /** login and validation stuff **/
 
 router.post('/register', (req, res) => {
 	if (req.session.key) {
-		if (!req.sesion.key.id) {
-			console.warn(`User from ${req.ip} has a session, but has no id; deleting their session`);
-			delete req.session.key;
-		} else {
-			console.info(`User ${req.session.key.id} from ${req.ip} attempted to register, whilst logged in`);
-			return res.status(403).send('Already logged in').end();
-		}
+		console.info(`User ${req.session.key} from ${req.ip} attempted to register whilst logged in`);
+		return res.status(403).send('Already logged in').end();
 	}
 
 	var {username, email, password} = req.body;
@@ -126,13 +139,8 @@ router.post('/register', (req, res) => {
 
 router.post('/login', (req, res) => { 
 	if (req.session.key) {
-		if (!req.sesion.key.id) {
-			console.warn(`User from ${req.ip} has a session, but has no id; deleting their session`);
-			delete req.session.key;
-		} else {
-			console.info(`User ${req.session.key.id} from ${req.ip} attempted to login, whilst logged in`);
-			return res.status(403).send('Already logged in').end();
-		}
+		console.info(`User ${req.session.key} from ${req.ip} attempted to login whilst logged in`);
+		return res.status(402).send('Already logged in').end();
 	}
 
 	var {username, password} = req.body;
@@ -155,7 +163,7 @@ router.post('/login', (req, res) => {
 			} else if (!obj) {
 				res.status(400).send('Invalid Credentials').end()
 			} else {
-				req.session.key = { id: obj._id };
+				req.session.key = obj._id;
 				res.status(200).end()
 			}
 		})
@@ -164,23 +172,23 @@ router.post('/login', (req, res) => {
 
 router.get('/logout', (req, res) => {
 	if(req.session.key) {
-		req.session.destroy(() => res.status(204).end())
+		req.session.destroy(() => res.status(200).end())
 	} else {
-		res.status(403).send('Not logged in').end()
+		res.status(402).send('Not logged in').end()
     }
 });
 
 
 // this is used for uploading to specific static places, e.g. `avatars` or `soundbytes`
 function upload(ending) {
-	return multer({ dest: UPLOADS_BASE_DIR + ending });
+	return multer({ dest: UPLOADS_BASE_DIR + '/' + ending + '/' });
 }
 
 // require the user to be logged in, or return an error message
 function login_needed(error_message) {
 	return (req, res, next) => {
 		// if we aren't logged in, send 'Unauthorized' back to client
-		if (!req.session.key || !req.session.key.id) {
+		if (!req.session.key) {
 			console.info(`User from ${req.ip} `+ error_message);
 			res.status(401).send('Not logged in').end();
 		} else {
@@ -193,19 +201,41 @@ function login_needed(error_message) {
 /** AVATAR UPLOADING **/
 
 // get the avatar for a specific user--this can also be done thru `/static/avatar/<avatar filename>`
-router.get('/users/:id/avatar', (req, res) => {
+router.get('/users/:username/:which', (req, res) => {
+	var which = req.params.which;
+	var which_basedir = UPLOADS_VIRTUAL_BASE_DIR + '/';
+	switch(which) {
+		case 'avatar':
+			which_basedir += 'avatars'; break;
+		case 'soundbyte':
+			which_basedir += 'soundbytes'; break;
+		default:
+			return res.status(404).end();
+	}
+
+	which_basedir += '/';
+
 	database.connect(db => {
-		var avatars = db.db('users').collection('avatars');
-		avatars.findOne({ owner: req.params.id }, (err, obj) => {
-			if (err) {
-				console.error(`Avatar request ${req.url} (from ${req.ip}) caused an error: ${err}`);
+		database.id_from_username(req.params.username, id => {
+			var which_collection = db.db('users').collection(which);
+			which_collection.findOne({ owner: id }, (err, obj) => {
+				if (err) {
+					console.error(`${which} request ${req.url} (from ${req.ip}) caused an error: ${err}`);
+					res.status(500).end()
+				} else if (obj === null) {
+					console.log('null')
+					res.status(404).end()
+				} else {
+					res.redirect(which_basedir + obj.filename)
+				}
+			})
+			}, err => {
+				console.error(`${which} request ${req.url} (from ${req.ip}) caused an error: ${err}`);
 				res.status(500).end()
-			} else if (obj === null) {
+			}, () => {
 				res.status(404).end()
-			} else {
-				res.redirect(UPLOADS_BASE_DIR + '/avatar/' + obj.filename)
-			}
-		})
+			}, db
+		)
 	})
 });
 
@@ -219,7 +249,7 @@ router.post('/upload/avatar',
 	(req, res) => {
 		console.log(`[${req.ip}] File uploaded: ` + req.file.path);
 
-		var id = req.session.key && req.session.key.id;
+		var id = req.session.key;
 		var filename = req.file.filename;
 
 		if (!id) {
@@ -236,13 +266,12 @@ router.post('/upload/avatar',
 					res.status(500).end()
 					db.close()
 				} else {
-					avatars.insertOne({ filename: filename, owner: id }, (err, _result) => {
+					avatars.insertOne({ filename: filename, owner: database.object_id(id) }, (err, _result) => {
 						if (err) {
 							console.error(`Couldn't insert avatar with owner '${id}', filename '${filename}': ${err}`)
 							res.status(500).end()
 						} else {
-							console.log(JSON.stringify(_result));
-							res.status(201).json({ username: username }).end()
+							res.status(200).end()
 						}
 						db.close()
 					})

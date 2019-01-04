@@ -32,9 +32,10 @@
 		<title>Post Image</title>
 	</head>
 	<body>
-		<form enctype="multipart/form-data" action="/_post_image" method="post">
+		Hello, <%= username %>. upload an avatar.
+		<form enctype="multipart/form-data" action="/upload/avatar" method="post">
 		<!-- <form method="post" id='upload_image'> -->
-			<input name="image-file" type="file" />
+			<input name="avatar" type="file" />
 			<input type="submit" id="submit">submit</form>
 		</form>
 	</body>

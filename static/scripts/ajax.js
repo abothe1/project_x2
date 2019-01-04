@@ -7,7 +7,7 @@ function ajax_request(url, type, data, success, error) {
 		success: success,
 		error: (jgXHR, exception) => {
 			switch(jgXHR.status) {
-				case 401: case 403:
+				case 401: case 403: case 500:
 					error({ code: jgXHR.status, cause: jgXHR.responseText })
 					break;
 				default:

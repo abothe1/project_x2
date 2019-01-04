@@ -1,12 +1,15 @@
 module.exports = {
 	connect: connect,
-	id_from_username: id_from_username
+	object_id: object_id,
+	username_from_id: username_from_id,
+	id_from_username: id_from_username,
 }
 
 const PORT = 27017,
       MONGO_URL = `mongodb://localhost:${PORT}/banda`;
 
-var MongoClient = require('mongodb').MongoClient;
+const mongodb = require('mongodb');
+var MongoClient = mongodb.MongoClient;
 
 
 // function create_mongodb() {
@@ -14,6 +17,11 @@ var MongoClient = require('mongodb').MongoClient;
 // 		db.collection.createIndex(
 // 	}, console.error)
 // }
+
+
+function object_id(id) {
+	return mongodb.ObjectID(id);
+}
 
 function connect (cb_ok, cb_err) {
 	MongoClient.connect(MONGO_URL, { useNewUrlParser : true}, (err, db) => {
@@ -26,11 +34,33 @@ function connect (cb_ok, cb_err) {
 	})
 }
 
-function id_from_username (username, cb_ok, cb_err, db=undefined) {
+function username_from_id (id, cb_ok, cb_err, cb_not_found, db=undefined) {
+	function exec(db) {
+		db.db('users').collection('users').findOne({_id: object_id(id)}, (err, res) => {
+			if (err) {
+				cb_err(err)
+			} else if (!res) {
+				cb_not_found()
+			} else {
+				cb_ok(res.username)
+			}
+		});
+	}
+
+	if (db) {
+		exec(db)
+	} else {
+		connect(exec)
+	}
+}
+
+function id_from_username (username, cb_ok, cb_err, cb_not_found, db=undefined) {
 	function exec(db) {
 		db.db('users').collection('users').findOne({username: username}, (err, res) => {
 			if (err) {
 				cb_err(err)
+			} else if (!res) {
+				cb_not_found()
 			} else {
 				cb_ok(res._id)
 			}
@@ -43,6 +73,7 @@ function id_from_username (username, cb_ok, cb_err, db=undefined) {
 		connect(exec)
 	}
 }
+
 
 // function connect (database, collection, cb_ok, cb_err) {
 // 	connect_to_database(db => {
