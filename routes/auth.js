@@ -8,6 +8,16 @@ router.get('/_logout', (_, res) => res.render('_logout.html'));
 
 /** login and validation stuff **/
 
+function validate_password(password) {
+	console.log("TODO: validate password");
+	return true;
+}
+
+function hash_password(password) {
+	console.log('TODO: hash password');
+	return password;
+}
+
 router.post('/register', (req, res) => {
 	if (req.session.key) {
 		console.info(`User ${req.session.key} from ${req.ip} attempted to register whilst logged in`);
@@ -24,8 +34,11 @@ router.post('/register', (req, res) => {
 		return res.status(400).send('No email supplied')
 	}
 
-	password = /* hash password */ password;
-	console.warn('TODO: HASH PASSWORDS [register]!');
+	if (!validate_password(password)) {
+		return res.status(200).json({ success: false, cause: 'Too weak of a password supplied'})
+	}
+
+	password = hash_password(password);
 
 	database.connect(db => {
 		var users = db.db('users').collection('users');
@@ -41,7 +54,7 @@ router.post('/register', (req, res) => {
 						console.error(`Register request from ${req.ip} (for ${username}, ${email}, ${password}) returned error: ${err}`);
 						res.status(500).end();
 					} else {
-						res.status(200).end();
+						res.status(200).json({ success: true }).end();
 					}
 				});
 			}
@@ -61,11 +74,9 @@ router.post('/login', (req, res) => {
 		return res.status(400).send('No username supplied')
 	} else if (!password) {
 		return res.status(400).send('No password supplied')
-	} 
+	}
 
-	console.warn('TODO: HASH PASSWORDS [login]!');
-
-	password = /* hashed password */ password;
+	password = hash_password(password);
 
 	database.connect(db => {
 		db.db('users').collection('users').findOne({ username: username, password: password }, (err, obj) => {
@@ -76,7 +87,7 @@ router.post('/login', (req, res) => {
 				res.status(400).send('Invalid Credentials').end()
 			} else {
 				req.session.key = obj._id;
-				res.status(200).end()
+				res.status(200).json({ success: true }).end()
 			}
 		})
 	});
@@ -84,7 +95,7 @@ router.post('/login', (req, res) => {
 
 router.get('/logout', (req, res) => {
 	if(req.session.key) {
-		req.session.destroy(() => res.status(200).end())
+		req.session.destroy(() => res.status(200).json({ success: true }).end())
 	} else {
 		res.status(402).send('Not logged in').end()
     }
