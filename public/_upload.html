@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<script src="https://code.jquery.com/jquery-1.11.3.min.js"></script>
+		<script type ="text/javascript">
+		// function login() {
+		// 	var content = {
+		// 		username: $("#username").val(),
+		// 		password: $("#password").val(),
+		// 	}
+		// 	$.post('/login', content, data => {
+		// 		if(data.success) {
+		// 			window.location.href = "/home";
+		// 		} else {
+		// 			alert(`error: ${data.cause}`);
+		// 		}
+		// 	})
+		// }
+
+		// $('#upload_image').on('submit', e => {
+		// 	e.preventDefault();
+		// 	$.ajax({
+		// 		type: "POST",
+		// 		url: "/_post_image",
+		// 		data: $(this).serialize(),
+		// 		success: () => { alert('success'); }
+		// 	});
+		// });
+
+		</script>
+		<title>Upload stuff</title>
+	</head>
+	<body>
+		Hello, <%= username %>. Stuff.
+		<h3>Avatar</h3>
+		currently: <img src="/users/<%= username %>/avatar" />
+		<form enctype="multipart/form-data" action="/settings/avatar" method="post">
+			<input name="avatar" type="file" />
+			<input type="submit">Submit</input>
+		</form>
+		<br>
+		<button text="foo" onclick="$.ajax({url:'/settings/avatar', type:'DELETE'})">Delete</button>
+
+		<h3>Soundbyte</h3>
+		currently: 
+		<audio controls audoplay>
+			<source src="/users/<%= username %>/avatar" type="audio/mp3">
+		</audio>
+		<form enctype="multipart/form-data" action="/settings/soundbyte" method="post">
+			<input name="soundbyte" type="file" />
+			<input type="submit">Submit</input>
+		</form>
+		<br>
+		<button text="foo" onclick="$.ajax({url:'/settings/soundbyte', type:'DELETE'})">Delete</button>
+	</body>
+</html>
+
+
+
+
+

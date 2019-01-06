@@ -1,8 +1,13 @@
 <!DOCTYPE html>
 <html>
 <head>
+<!--  	<script
+	  src="https://code.jquery.com/jquery-3.3.1.slim.min.js"
+	  integrity="sha256-3edrmyuQ0w65f8gfBsqowzjJe2iM6n0nKciPUp8y+7E="
+	  crossorigin="anonymous"></script> -->
 	<script src="https://code.jquery.com/jquery-1.11.3.min.js"></script>
-	<script type ="text/javascript">
+	<script src="/scripts/ajax.js"></script>
+	<script type="text/javascript">
 
 	function register() {
 
@@ -12,13 +17,11 @@
 			password: $("#password").val()
 		};
 
-		$.post("/register", content, data => {
-			if(data.success) {
-				window.location.href = "/login";
-			} else {
-				alert(`error: ${data.cause}`);
-			}
-		});
+		console.log(content);
+		post_request('/register', content,
+			_ => redirect_to('/_login'),
+			err => alert(`${err.code} error: ${err.cause}`)
+		);
 	}
 
 	</script>
@@ -26,7 +29,7 @@
 </head>
 <body>
 	<h2>Register</h2>
-	(to login click <a href="/login">here</a>)<br>
+	(to login click <a href="/_login">here</a>)<br>
 	username: <input type=username id="username"/><br>
 	email: <input type=email id="email"/><br>
 	password: <input type=password id="password"/><br>
