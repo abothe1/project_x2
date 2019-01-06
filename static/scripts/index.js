@@ -82,7 +82,8 @@ class Drop {
 		this.theDiv.style.backgroundColor = colorString;
 		this.theDiv.paused = false;
 		this.theDiv.dropRef = this;
-		this.audio = new Audio('./assets/transvertion.mp3');
+		this.audio = new Audio();
+		this.audio.src = "../static/assets/transvertion.mp3";
 		this.audio.type='audio/mp3';
 		this.theButton = document.createElement("p");
 		this.theButton.innerHTML = "text";
