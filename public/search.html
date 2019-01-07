@@ -26,14 +26,61 @@
 				height: 100%;
 				position: absolute;
 				background: black;
-        background-image: url('./assets/dkback.png');
+        background-image: url('../static/assets/dkback.png');
         background-size: 100%;
 				overflow: hidden;
 			}
+
+      .grid-container {
+        width: 60%;
+        height: 100%;
+        margin: 0 auto;
+        display: grid;
+        grid-template-columns: auto auto auto auto;
+        grid-gap: 10px;
+        background-color: #2196F3;
+        padding: 10px;
+        overflow: scroll;
+      }
+
+      .grid-container > div {
+        background-color: rgba(255, 255, 255, 0.8);
+        text-align: center;
+        padding: 20px 0;
+        font-size: 30px;
+        height: 200px;
+        width: 200px;
+      }
     </style>
   </head>
   <body>
     <div id="container">
+      <div class="grid-container">
+        <div>1</div>
+        <div>2</div>
+        <div>3</div>
+        <div>4</div>
+        <div>5</div>
+        <div>6</div>
+        <div>7</div>
+        <div>8</div>
+        <div>9</div>
+        <div>10</div>
+        <div>11</div>
+        <div>12</div>
+        <div>13</div>
+        <div>14</div>
+        <div>15</div>
+        <div>16</div>
+        <div>17</div>
+        <div>18</div>
+        <div>19</div>
+        <div>20</div>
+        <div>21</div>
+        <div>22</div>
+        <div>23</div>
+        <div>24</div>
+      </div>
     </div>
 
   </body>
