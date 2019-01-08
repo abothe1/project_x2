@@ -154,7 +154,7 @@
 				position: absolute;
 				z-index: 4;
 				top: 41%;
-				left: 50%;
+				left: 48%;
 				margin-top: -40px;
 				margin-left: -300px;
 				width: 600px;
@@ -355,7 +355,16 @@
           transform: rotateX(180deg);
       }
 
-			
+			#menuBacking{
+				z-index: 3;
+				position: absolute;
+				left: -48px;
+				top: -48px;
+				height: 288px;
+				width: 288px;
+			}
+
+
 
 		</style>
 		<script type="text/javascript" src="../static/scripts/index.js"></script>
@@ -371,17 +380,20 @@
 				<div id="rain">
 
 					<div id="container">
-					<div id="corner"><a href="#"><i id="mainbtn"><img src="../static/assets/Home/logo.png" /></i></a>
-						<svg height="200" width="200">
-					</svg>
+						<img id="menuBacking" src="../static/assets/Home/menubacking.png" />
+						<div id="corner"><a href="#"><i id="mainbtn"><img src="../static/assets/Home/logo.png" /></i></a>
+							<svg height="200" width="200">
+							</svg>
 						</div>
 					</div>
 
+
+
 					<div class='circle-container'>
-					<a href='#' class='deg0' onclick="document.getElementById('modal-wrapper').style.display='block'" id="login_button"><p class="radialText">Login</p></a>
-					<a href='./_register.html' class='deg30' id="sign_in_button"><p class="radialText">Register</p></a>
-					<a href='./' class='deg60'><p class="radialText">Home</p></a>
-					<a href='#' class='deg90'><p class="radialText">About</p></a>
+						<a href='#' class='deg0' onclick="document.getElementById('modal-wrapper').style.display='block'" id="login_button"><p class="radialText">Login</p></a>
+						<a href='./_register.html' class='deg30' id="sign_in_button"><p class="radialText">Register</p></a>
+						<a href='./' class='deg60'><p class="radialText">Home</p></a>
+						<a href='#' class='deg90'><p class="radialText">About</p></a>
 					</div>
 
 					<div class="search">
