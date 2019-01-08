@@ -21,19 +21,19 @@ var genreBank=["blues","classic rock","country","dance","disco","funk","grunge",
  "folklore","ballad","power ballad","Rrythmic soul","freestyle",
  "duet","punk rock","drum solo","acapella","euro-house","dance hall","edm","grime","dubstep","drum and bass","drum&bass","cover","covers"];
 
- var instBank=["accordion","bagpipes","banjo","bass guitar","bass","bassoon","berimbau","dj","d.j.","singer","rapper","mc","bongo","freestyler","cello",
+var instBank=["accordion","bagpipes","banjo","bass guitar","bass","bassoon","berimbau","dj","d.j.","singer","rapper","mc","bongo","freestyler","cello",
  "clarinet","cornet","cymbal","didgeridoo","double bass","upright","drum kit","drums","percussion","flute","french horn","glass harmonica","gong",
  "guitar","acoustic","electronic","harmonica","harp","harpsichord","hammered dulcimer","synth","tambourine","hurdy gurdy","jew’s harp",
  "lute","lyre","mandolin","marimba","melodica","oboe","ocarina","octobass","organ","sound system","pan pipes","piano","piccolo","recorder","saxophone",
  "sitar","synthesizer","timpani","triangle","trombone","trumpet","theremin","tuba","poet","vocals","viola","violin","whamola","xylophone","zither"];
 
- var gigTypeBank=["birthday","party","fraternity","frat","bar","concert","corporate","kids","adult","adults","highschool","college","retirement","sorority",
+var gigTypeBank=["birthday","party","fraternity","frat","bar","concert","corporate","kids","adult","adults","highschool","college","retirement","sorority",
  "gay","pride","festival","radio","hall","dance","bachelor","bachelorette","show","talent","chill","kickback","hangout","mobile","car","house","home","parade",
  "street","theater","exhibition","show","event","wedding","funeral","burial","eccentric","church","synagouge","mosque","temple","circle","meditation","studio session",
  "performance","rally","march","protest","ceremony","holiday","christmas","new years","halloween","valentines","bash","mosh","orgy","date","night out","night in",
  "night-in","service","store","opening","closing","buisness","booth","meeting","introduction","orientation","graduation"];
 
- var vibeBank=["anthem","aria","ariose","arioso","assonance","atmospheric","background","banging","banger","bangers","baroque","beat","bell-like","bombastic",
+var vibeBank=["anthem","aria","ariose","arioso","assonance","atmospheric","background","banging","banger","bangers","baroque","beat","bell-like","bombastic",
  "booming","boomy","bop","breath","breathy","bright","bass","cadence",
  "call","canorous","canticle","cappella","carol","catchy","chamber","chant","cheerful","chime",
  "choral","chorale","classical","clear","consonant","contemporary","danceable","deep","descant","ditty",
@@ -57,22 +57,22 @@ var genreBank=["blues","classic rock","country","dance","disco","funk","grunge",
  "angry","melancholy","blue","new","old","young","difuse","nasty","raunchy","ridiculous","real","dumb"
  ,"evil","godly","zealous","functional","stupid","purple","green","gnarly","fun","forceful","fucking","fuck","fucked up","crazy","sloppy","disgusting"];
 //this is so i can commit;
- var genreMult=1;
- var ratingMult=1;
- var instMult=1;
- var distMult=1;
- var typeMult=1;
- var priceMult=1;
- var vibeMult=1;
- var timeMult=1;
- var timeEqualizer=1000;
- var priceEQ=10;
- var genresFromStr=[];
- var instsFromStr=[];
- var gigTypesFromStr=[];
- var vibesFromStr=[];
- var gigsToScore=[];
- var bandsToScore=[];
+var genreMult=1;
+var ratingMult=1;
+var instMult=1;
+var distMult=1;
+var typeMult=1;
+var priceMult=1;
+var vibeMult=1;
+var timeMult=1;
+var timeEqualizer=1000;
+var priceEQ=10;
+var genresFromStr=[];
+var instsFromStr=[];
+var gigTypesFromStr=[];
+var vibesFromStr=[];
+var gigsToScore=[];
+var bandsToScore=[];
 
 //call this for a band searching for a gig, myBand is a json band and
 // gigs is an array of gig jsons and 
@@ -116,12 +116,12 @@ function findGigsForBand(myBand, gigs, queryStr){
         }
         var minDiff = dateDiffs[0];
         for (diff in dateDiffs){
-          if diff<minDiff{
-            minDiff=diff;
+          if (diff < minDiff) {
+            minDiff = diff;
           }
         }
 
-        var timeDiff = (minDiff)/timeEqualizer;
+        var timeDiff = minDiff / timeEqualizer;
         var timeScore= -timeDiff*timeMult;
         var score = timeScore+distScore+priceScore+queryStrScore;
         gigsToScore.push([theGig,score]);
@@ -172,7 +172,7 @@ function findBandsForGig(myGig, bands, queryStr){
     }
     var minDiff = dateDiffs[0];
     for (diff in dateDiffs){
-      if diff<minDiff{
+      if (diff<minDiff){
         minDiff=diff;
       }
     }

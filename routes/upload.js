@@ -16,10 +16,10 @@ router.get('/_upload', (req, res) => {
 		database.username_from_id(id, username => {
 			res.render('_upload.html', {username: username})
 		}, err => {
-			console.error(`Username find request from ${req.ip} (for ${id}) returned error: ${err}`)
+			console.warn(`Username find request from ${req.ip} (for ${id}) returned error: ${err}`)
 			res.status(500).end();
 		}, () => {
-			console.error(`Username find request from ${req.ip} (for ${id}) couldn't find a username`);
+			console.warn(`Username find request from ${req.ip} (for ${id}) couldn't find a username`);
 			res.status(500).end();			
 		})
 	}
@@ -31,7 +31,7 @@ function get_user_file(basedir, collection) {
 			database.id_from_username(req.params.username, id => {
 				db.db('users').collection(collection).findOne({ owner: id }, (err, obj) => {
 					if (err) {
-						console.error(`${collection} request ${req.url} (from ${req.ip}) caused an error when finding: ${err}`);
+						console.warn(`${collection} request ${req.url} (from ${req.ip}) caused an error when finding: ${err}`);
 						res.status(500).end()
 					} else if (obj === null) {
 						res.status(404).end()
@@ -40,7 +40,7 @@ function get_user_file(basedir, collection) {
 					}
 				})
 				}, err => {
-					console.error(`${collection} request ${req.url} (from ${req.ip}) caused an error when getting id: ${err}`);
+					console.warn(`${collection} request ${req.url} (from ${req.ip}) caused an error when getting id: ${err}`);
 					res.status(500).end()
 				}, () => {
 					res.status(404).end()
@@ -75,7 +75,7 @@ function upload_user_file(basedir, collection, which) {
 			var filename = req.file.filename;
 
 			if (!id) {
-				console.error("User wasn't logged in, but got past `login_required`");
+				console.warn("User wasn't logged in, but got past `login_required`");
 				return res.status(500).end();
 			}
 
@@ -84,14 +84,14 @@ function upload_user_file(basedir, collection, which) {
 
 				coll.deleteMany({ owner: database.object_id(id) }, (err, _obj) => {
 					if (err) {
-						console.error(`Couldn't delete ${which} with user id ${id}: ${err}`);
+						console.warn(`Couldn't delete ${which} with user id ${id}: ${err}`);
 						res.status(500).end()
 						db.close()
 					} else {
-						// note that since it deletes any previous ones, the old avatars are removed
+						// note that since it deletes any previous ones, the old files are removed
 						coll.insertOne({ filename: filename, owner: database.object_id(id) }, (err, _result) => {
 							if (err) {
-								console.error(`Couldn't insert ${which} with owner '${id}', filename '${filename}': ${err}`)
+								console.warn(`Couldn't insert ${which} with owner '${id}', filename '${filename}': ${err}`)
 								res.status(500).end()
 							} else {
 								res.status(200).json({ success: true }).end()
@@ -101,7 +101,7 @@ function upload_user_file(basedir, collection, which) {
 					}
 				})
 			}, err => {
-				console.error(`Error with connecting to databse: ${err}`);
+				console.warn(`Error with connecting to databse: ${err}`);
 				res.status(500).end();
 			})
 		}
@@ -115,7 +115,7 @@ function delete_user_file(basedir, collection, which) {
 			var id = req.session.key;
 
 			if (!id) {
-				console.error("User wasn't logged in, but got past `login_required`");
+				console.warn("User wasn't logged in, but got past `login_required`");
 				return res.status(500).end();
 			}
 
@@ -128,14 +128,13 @@ function delete_user_file(basedir, collection, which) {
 					} else {
 						var file = UPLOADS_BASE_DIR + basedir + '/' + obj.filename;
 						coll.deleteMany({ owner: database.object_id(id) }, (err, _obj) => {
+							db.close();
 							if (err) {
 								console.warn(`Couldn't delete ${which} with user id ${id}: ${err}`);
 								res.status(500).end()
-							db.close();
 							} else if (!obj) {
 								console.warn(`Couldn't delete ${which} corresponding to user ${id}`);
 								res.status(500).end()
-							db.close();
 							} else {
 								console.log(JSON.stringify(obj));
 								fs.unlink(file, err => {
@@ -144,7 +143,6 @@ function delete_user_file(basedir, collection, which) {
 									} else {
 										console.log(`Deleted file ${which} file ${file} for user ${id}`);
 									}
-							db.close();
 									res.status(200).json({ success: true }).end(); // users doesn't need to know there was an error
 								})
 							}
@@ -152,7 +150,7 @@ function delete_user_file(basedir, collection, which) {
 					}
 				})
 			}, err => {
-				console.error(`Error with connecting to databse: ${err}`);
+				console.warn(`Error with connecting to databse: ${err}`);
 				res.status(500).end();
 			})
 		}
