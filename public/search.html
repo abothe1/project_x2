@@ -59,16 +59,20 @@
         right: 50px;
         position: fixed;
         z-index: 4;
+        text-align: center;
       }
 
       #filters > a{
-        height: 50px;
-        width: 50px;
+        height: 100px;
+        width: 100px;
         padding: 20px;
       }
 
 
+
+
     </style>
+    <script type="text/javascript" src="../static/scripts/search.js"></script>
   </head>
   <body>
 
@@ -76,9 +80,9 @@
 
       <div id="header-container">
         <div id="filters">
-          <a href="#about"><img src="../static/assets/Search/m_filter.png"/></a>
-          <a href="#services"><img src="../static/assets/Search/mv_filter.png"/></a>
-          <a href="#portfolio"><img src="../static/assets/Search/v_filter.png"/></a>
+          <a href="javascript:changeState(0)"><img id="m" src="../static/assets/Search/m_filter_selected.png"/></a>
+          <a href="javascript:changeState(1)"><img id="mv" src="../static/assets/Search/mv_filter.png"/></a>
+          <a href="javascript:changeState(2)"><img id="v" src="../static/assets/Search/v_filter.png"/></a>
         </div>
       </div>
 
