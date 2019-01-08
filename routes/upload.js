@@ -13,7 +13,7 @@ router.get('/_upload', (req, res) => {
 	if (!id) {
 		res.status(403).send('Not logged in').end();
 	} else {
-		database.username_from_id(id, username => {
+		database.usernameFromId(id, username => {
 			res.render('_upload.html', {username: username})
 		}, err => {
 			console.warn(`Username find request from ${req.ip} (for ${id}) returned error: ${err}`)
@@ -25,10 +25,10 @@ router.get('/_upload', (req, res) => {
 	}
 })
 
-function get_user_file(basedir, collection) {
+function getUserFile(basedir, collection) {
 	return (req, res) => {
 		database.connect(db => {
-			database.id_from_username(req.params.username, id => {
+			database.idFromUseranme(req.params.username, id => {
 				db.db('users').collection(collection).findOne({ owner: id }, (err, obj) => {
 					if (err) {
 						console.warn(`${collection} request ${req.url} (from ${req.ip}) caused an error when finding: ${err}`);
@@ -50,10 +50,10 @@ function get_user_file(basedir, collection) {
 	}
 }
 
-router.get('/users/:username/avatar', get_user_file('/avatars', 'avatars'));
-router.get('/users/:username/soundbyte', get_user_file('/soundbytes', 'soundbytes'));
+router.get('/users/:username/avatar', getUserFile('/avatars', 'avatars'));
+router.get('/users/:username/soundbyte', getUserFile('/soundbytes', 'soundbytes'));
 
-function require_logged_in(which) {
+function requireLoggedIn(which) {
 	return (req, res, next) => {
 		if (!req.session.key) {
 			console.info(`User from ${req.ip} tried to upload a(n) ${which} whilst not logged in`);
@@ -64,9 +64,9 @@ function require_logged_in(which) {
 	};
 }
 
-function upload_user_file(basedir, collection, which) {
+function uploadUserFile(basedir, collection, which) {
 	return [
-		require_logged_in(which),
+		requireLoggedIn(which),
 		multer({ dest: UPLOADS_BASE_DIR + basedir }).single(which),
 		(req, res) => {
 			console.log(`[${req.ip}] File uploaded: ` + req.file.path);
@@ -75,21 +75,21 @@ function upload_user_file(basedir, collection, which) {
 			var filename = req.file.filename;
 
 			if (!id) {
-				console.warn("User wasn't logged in, but got past `login_required`");
+				console.warn("User wasn't logged in, but got past `requireLoggedIn`");
 				return res.status(500).end();
 			}
 
 			database.connect(db => {
 				var coll = db.db('users').collection(collection);
 
-				coll.deleteMany({ owner: database.object_id(id) }, (err, _obj) => {
+				coll.deleteMany({ owner: database.objectId(id) }, (err, _obj) => {
 					if (err) {
 						console.warn(`Couldn't delete ${which} with user id ${id}: ${err}`);
 						res.status(500).end()
 						db.close()
 					} else {
 						// note that since it deletes any previous ones, the old files are removed
-						coll.insertOne({ filename: filename, owner: database.object_id(id) }, (err, _result) => {
+						coll.insertOne({ filename: filename, owner: database.objectId(id) }, (err, _result) => {
 							if (err) {
 								console.warn(`Couldn't insert ${which} with owner '${id}', filename '${filename}': ${err}`)
 								res.status(500).end()
@@ -108,26 +108,26 @@ function upload_user_file(basedir, collection, which) {
 	];
 }
 
-function delete_user_file(basedir, collection, which) {
+function deleteUserFile(basedir, collection, which) {
 	return [
-		require_logged_in(which),
+		requireLoggedIn(which),
 		(req, res) => {
 			var id = req.session.key;
 
 			if (!id) {
-				console.warn("User wasn't logged in, but got past `login_required`");
+				console.warn("User wasn't logged in, but got past `requireLoggedIn`");
 				return res.status(500).end();
 			}
 
 			database.connect(db => {
 				var coll = db.db('users').collection(collection);
-				coll.findOne({ owner: database.object_id(id) }, (err, obj) => {
+				coll.findOne({ owner: database.objectId(id) }, (err, obj) => {
 					if (err) {
 						console.warn(`Couldn't find ${which} for user ${id}: ${err}`);
 						res.status(500).end()
 					} else {
 						var file = UPLOADS_BASE_DIR + basedir + '/' + obj.filename;
-						coll.deleteMany({ owner: database.object_id(id) }, (err, _obj) => {
+						coll.deleteMany({ owner: database.objectId(id) }, (err, _obj) => {
 							db.close();
 							if (err) {
 								console.warn(`Couldn't delete ${which} with user id ${id}: ${err}`);
@@ -158,12 +158,12 @@ function delete_user_file(basedir, collection, which) {
 }
 
 router.route('/settings/avatar')
-	.post(upload_user_file('/avatars', 'avatars', 'avatar'))
-	.delete(delete_user_file('/avatars', 'avatars', 'avatar'));
+	.post(uploadUserFile('/avatars', 'avatars', 'avatar'))
+	.delete(deleteUserFile('/avatars', 'avatars', 'avatar'));
 
 router.route('/settings/soundbyte')
-	.post(upload_user_file('/soundbytes', 'soundbytes', 'soundbyte'))
-	.delete(delete_user_file('/soundbytes', 'soundbytes', 'soundbyte'));
+	.post(uploadUserFile('/soundbytes', 'soundbytes', 'soundbyte'))
+	.delete(deleteUserFile('/soundbytes', 'soundbytes', 'soundbyte'));
 
 } /* end module.exports */
 

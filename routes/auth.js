@@ -8,12 +8,12 @@ router.get('/_logout', (_, res) => res.render('_logout.html'));
 
 /** login and validation stuff **/
 
-function validate_password(password) {
+function validatePassword(password) {
 	console.log("TODO: validate password");
 	return true;
 }
 
-function hash_password(password) {
+function hashPassword(password) {
 	console.log('TODO: hash password');
 	return password;
 }
@@ -34,11 +34,11 @@ router.post('/register', (req, res) => {
 		return res.status(400).send('No email supplied')
 	}
 
-	if (!validate_password(password)) {
+	if (!validatePassword(password)) {
 		return res.status(200).json({ success: false, cause: 'Too weak of a password supplied'})
 	}
 
-	password = hash_password(password);
+	password = hashPassword(password);
 
 	database.connect(db => {
 		var users = db.db('users').collection('users');
@@ -76,7 +76,7 @@ router.post('/login', (req, res) => {
 		return res.status(400).send('No password supplied')
 	}
 
-	password = hash_password(password);
+	password = hashPassword(password);
 
 	database.connect(db => {
 		db.db('users').collection('users').findOne({ username: username, password: password }, (err, obj) => {
