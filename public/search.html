@@ -14,64 +14,9 @@
 		<script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.3/umd/popper.min.js"></script>
 		<!-- Latest compiled JavaScript -->
 		<script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.1.3/js/bootstrap.min.js"></script>
-
-    <style>
-
-      html{
-        background: black;
-      }
-
-      #body-container {
-				width: 100%;
-				height: 100%;
-				position: absolute;
-				background: black;
-        background-image: url('../static/assets/Home/dkback.png');
-        background-size: 100%;
-        background-attachment: fixed;
-				overflow: hidden;
-			}
-
-      .grid-container {
-        width: 60%;
-        height: 85%;
-        margin: 120px auto;
-        display: grid;
-        grid-template-columns: auto auto auto auto;
-        grid-gap: 10px;
-        background-color: #2196F3;
-        padding: 10px;
-        overflow: scroll;
-      }
-
-      .grid-container > div {
-        position: relative;
-        background-color: rgba(255, 255, 255, 0.8);
-        text-align: center;
-        padding: 20px 0;
-        font-size: 30px;
-        height: 200px;
-        width: 200px;
-      }
-
-      #filters{
-        top: 10px;
-        right: 50px;
-        position: fixed;
-        z-index: 4;
-        text-align: center;
-      }
-
-      #filters > a{
-        height: 100px;
-        width: 100px;
-        padding: 20px;
-      }
-
-
-
-
-    </style>
+    <!-- External CSS -->
+    <link rel="stylesheet" type="text/css" href="../static/css/search.css">
+    <!-- External JS -->
     <script type="text/javascript" src="../static/scripts/search.js"></script>
   </head>
   <body>
@@ -79,6 +24,9 @@
     <div id="body-container">
 
       <div id="header-container">
+        <div id="searchbar-cntainer">
+          <img id="searchbar" src="../static/assets/Search/searchbar.png" />
+        </div>
         <div id="filters">
           <a href="javascript:changeState(0)"><img id="m" src="../static/assets/Search/m_filter_selected.png"/></a>
           <a href="javascript:changeState(1)"><img id="mv" src="../static/assets/Search/mv_filter.png"/></a>
