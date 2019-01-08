@@ -1,3 +1,24 @@
+/*************************************************************************
+ *
+ * BANDA CONFIDENTIAL
+ * __________________
+ *
+ *  Copyright (C) 2019
+ *  Banda Incorporated
+ *  All Rights Reserved.
+ *
+ * NOTICE:  All information contained herein is, and remains
+ * the property of Banda Incorporated and its suppliers,
+ * if any.  The intellectual and technical concepts contained
+ * herein are proprietary to Banda Incorporated
+ * and its suppliers and may be covered by U.S. and Foreign Patents,
+ * patents in process, and are protected by trade secret or copyright law.
+ * Dissemination of this information or reproduction of this material
+ * is strictly forbidden unless prior written permission is obtained
+ * from Banda Incorporated.
+ *
+*************************************************************************/
+
 module.exports = {
 	connect: connect,
 	object_id: object_id,
@@ -167,11 +188,3 @@ function id_from_username (username, cb_ok, cb_err, cb_not_found, db=undefined) 
 // // 	login_user: login_user,
 // // 	register_user: register_user
 // // }
-
-
-
-
-
-
-
-
