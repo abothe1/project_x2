@@ -14,6 +14,8 @@
 		<script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.3/umd/popper.min.js"></script>
 		<!-- Latest compiled JavaScript -->
 		<script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.1.3/js/bootstrap.min.js"></script>
+		<!-- Flips the ticker -->
+		<script src="https://cdn.rawgit.com/nnattawat/flip/master/dist/jquery.flip.min.js"></script>
 
 		<script type="text/javascript">
 			(function($) {
@@ -27,7 +29,7 @@
 
 		<style>
 			.radialText{
-				color: white;
+				color: black;
 			}
 
 			#mainbtn {
@@ -97,7 +99,7 @@
 				font-family:'Squada One';
 				top: calc(50% + 50px);
 				left: calc(50% - 225px);
-				color:black;
+
 				font-size:40px;
 				text-decoration:none;
 				display: block;
@@ -116,7 +118,7 @@
 			}
 
 			html{
-				background-color: black;
+				background-color: white;
 			}
 
 			body{
@@ -128,7 +130,7 @@
 				width: 100%;
 				height: 100%;
 				position: absolute;
-				background: black;
+				background: white;
 			}
 
 			#rain{
@@ -136,7 +138,7 @@
 				height: 100%;
 				position: absolute;
 				background-color: rgba(0,0,0,0.9);
-				background-image: url('../static/assets/Home/dkback.png');
+				background-image: url('../static/assets/Home/litebg.png');
 				background-size: cover;
 				overflow: hidden;
 			}
@@ -151,7 +153,7 @@
 			.search{
 				position: absolute;
 				z-index: 4;
-				top: 40%;
+				top: 41%;
 				left: 50%;
 				margin-top: -40px;
 				margin-left: -300px;
@@ -163,8 +165,8 @@
 			.options{
 				position: relative;
 				z-index: 4;
-				top: 160%;
-				left: 50%;
+				top: 190%;
+				left: 70%;
 				margin-top: -55px;
 				margin-left: -300px;
 				width: 600px;
@@ -191,23 +193,23 @@
 				position: absolute;
 				margin: 0;
 				padding: 0;
-				width: 600px;
-				height: 100px;
+				width: 740px;
+				height: 134px;
 			}
 
 			#search_input{
 				position: absolute;
 				margin: auto;
-				top: 50%;
+				top: 52%;
 				left: 50%;
 				padding: 0;
 				margin-top: -45px;
 				margin-left: -250px;
-				width: 500px;
-				height: 90px;
+				width: 600px;
+				height: 120px;
 				background-color: rgba(0,0,0,0.0);
 				border: 0;
-				font-size: 36px;
+				font-size: 48px;
 			}
 
 			/*style for the pop up goes here*/
@@ -225,7 +227,7 @@
 			/* Set a style for all buttons */
 			.popUpButtons {
 			    background-color: #4CAF50;
-			    color: white;
+			    color: black;
 			    padding: 14px 20px;
 			    margin: 8px 26px;
 			    border: none;
@@ -297,6 +299,64 @@
 			    from {transform: scale(0)}
 			    to {transform: scale(1)}
 			}
+
+			.flip-box {
+					z-index: 5;
+          background-color: transparent;
+          position: absolute;
+          margin: auto;
+          width: 100%;
+          height: 100px;
+          top:85%;
+          border-color: transparent;
+          overflow-y: visible;
+          perspective: 1000px; /* Remove this if you don’t want the 3D effect */
+      }
+
+      /* This container is needed to position the front and back side */
+      .flip-box-inner {
+          position: absolute;
+          top:85%;
+          width: 100%;
+          margin: auto;
+          height: 100%;
+          text-align: center;
+          overflow-y: visible;
+          transition: transform 0.8s;
+          transform-style: preserve-3d;
+      }
+
+      /* Do an horizontal flip when you move the mouse over the
+      flip box containe;;;; got rid of it cuz im using flipp */
+
+
+      /* Position the front and back side */
+      .front, .back {
+          position: absolute;
+          margin: auto;
+          width: 100%;
+          height: 100%;
+          overflow-y: visible;
+          backface-visibility: hidden;
+					background-size: contain;
+					background-image: url('../static/assets/Home/tickerImg.png');
+
+      }
+
+      /* Style the front side */
+      .front {
+          color: black;
+      }
+
+      /* Style the back side */
+      .back {
+          background-color: dodgerblue;
+          color: black;
+          transform: rotateX(180deg);
+      }
+
+			
+
 		</style>
 		<script type="text/javascript" src="../static/scripts/index.js"></script>
 
@@ -313,7 +373,6 @@
 					<div id="container">
 					<div id="corner"><a href="#"><i id="mainbtn"><img src="../static/assets/Home/logo.png" /></i></a>
 						<svg height="200" width="200">
-					<circle cx="0" cy="0" r="75" fill="black" />
 					</svg>
 						</div>
 					</div>
@@ -326,7 +385,7 @@
 					</div>
 
 					<div class="search">
-						<img id="barImg" alt="searchbar" src="../static/assets/Home/searchbar.png" />
+						<img id="barImg" alt="searchbar" src="../static/assets/Home/searchbarlite.png" />
 						<input id='search_input'>
 						<div class="options">
 							<button class="btn btn-sm" id="b1" onclick="search_musicians()">Find Musicians</button>
@@ -355,6 +414,17 @@
 
 					  </form>
 
+					</div>
+
+					<div class="flip-box" alt = "ticker" id="flip-box0">
+					  <div class="flip-box-inner" id="flip-box-inner0">
+					    <div class="front">
+					      <h4>A.B. just booked a hiphop artist, Music Reign, for a birthday party</h4>
+					    </div>
+					    <div class="back">
+					      <h4>M.S. just booked a punk artist, Down By The Beach, for a bar</h4>
+					    </div>
+					  </div>
 					</div>
 
 

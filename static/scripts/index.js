@@ -298,6 +298,31 @@ function post_gig() {
 	});
 }
 
+function flipTicker(){
+	console.log("got into flip ticker func");
+	$("#flip-box-inner0").flip({
+		 trigger: 'manual',
+		 axis:'x'
+	});
+	$('#flip-box-inner0').flip('toggle');
+}
+
+function getLocation() {
+  if (navigator.geolocation) {
+    navigator.geolocation.getCurrentPosition(showPosition);
+  } else {
+    console.log("browser doesnt support geolocator api");
+  }
+}
+
+function showPosition(position) {
+	console.log(position);
+	currLat=position["coords"]["latitude"];
+	currLng=position["coords"]["longitude"];
+	console.log("curr Lat is: " + currLat);
+	console.log("curr lng is: " + currLng);
+}
+
 /*
 //this is the function to handle the search bar
 function searchHit(type){
