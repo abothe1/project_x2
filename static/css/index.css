@@ -1,0 +1,334 @@
+.radialText{
+  color: black;
+}
+
+#mainbtn {
+  position:absolute;
+  top:15px;
+  left:15px;
+  z-index:3;
+}
+
+#mainbtn img{
+  position: absolute;
+  top:0px;
+  left:0px;
+  width: 44px;
+  height: 44px;
+}
+
+.circle-container {
+  position: absolute;
+  top:-50px;
+  left:-47px;
+  width: 100px;
+  height: 100px;
+  z-index:2;
+}
+.circle-container a {
+  display: block;
+  overflow: hidden;
+  position: absolute;
+  width: 32px; height: 32px;
+  margin:50px;
+  z-index: 2;
+}
+
+.circle-container i { display: block; width: 100px; }
+.deg0 { transform: rotate(-25deg) translate(5.75em) rotate(-0deg);   -webkit-transition: all 0.5s ease-out;
+  -moz-transition: all 0.5s ease-out;
+  transition: all 0.5s ease-out; 		z-index: 2;}
+.deg30 { transform: rotate(-25deg) translate(5.75em) rotate(-30deg);  -webkit-transition: all 0.5s ease-out;
+  -moz-transition: all 0.5s ease-out;
+  transition: all 0.5s ease-out; 		z-index: 2;}
+.deg60 { transform: rotate(-25deg) translate(5.75em) rotate(-60deg);  -webkit-transition: all 0.5s ease-out;
+  -moz-transition: all 0.5s ease-out;
+  transition: all 0.5s ease-out; 		z-index: 2;}
+.deg90 { transform: rotate(-25deg) translate(6em) rotate(-90deg);  -webkit-transition: all 0.5s ease-out;
+  -moz-transition: all 0.5s ease-out;
+  transition: all 0.5s ease-out; 		z-index: 2;
+}
+
+a {
+  text-decoration:none;
+  color:black;
+}
+
+.fa-home:hover {color:tan;}
+.fa-cog:hover {color:gray;}
+.fa-comments:hover {color:teal;}
+.fa-heart:hover {color:red;}
+
+.open.deg0 { transform: rotate(0deg) translate(5.75em) rotate(-0deg); }
+.open.deg30 { transform: rotate(30deg) translate(5.75em) rotate(-30deg); }
+.open.deg60 { transform: rotate(60deg) translate(5.75em) rotate(-60deg); }
+.open.deg90 { transform: rotate(90deg) translate(6em) rotate(-90deg);
+}
+
+#author {
+  font-family:'Squada One';
+  top: calc(50% + 50px);
+  left: calc(50% - 225px);
+
+  font-size:40px;
+  text-decoration:none;
+  display: block;
+  position: absolute;
+  text-align:center;
+}
+
+article, aside, figure, footer, header, hgroup,
+menu, nav, section { display: block; }
+
+input:focus,
+select:focus,
+textarea:focus,
+button:focus {
+    outline: none;
+}
+
+html{
+  background-color: white;
+}
+
+body{
+  margin: 0;
+  padding: 0;
+}
+
+#container2 {
+  width: 100%;
+  height: 100%;
+  position: absolute;
+  background: white;
+}
+
+#rain{
+  width: 100%;
+  height: 100%;
+  position: absolute;
+  background-color: rgba(0,0,0,0.9);
+  background-image: url('../assets/Home/litebg.png');
+  background-size: cover;
+  overflow: hidden;
+}
+
+.rainDrop{
+  position: absolute;
+  margin: 0;
+  padding: 0;
+  z-index: 0;
+}
+
+.search{
+  position: absolute;
+  z-index: 4;
+  top: 41%;
+  left: 48%;
+  margin-top: -40px;
+  margin-left: -300px;
+  width: 600px;
+  height: 100px;
+  /* background-color: red; */
+}
+
+.options{
+  position: relative;
+  z-index: 4;
+  top: 190%;
+  left: 70%;
+  margin-top: -55px;
+  margin-left: -300px;
+  width: 600px;
+  height: 20px;
+  float: right;
+}
+
+#b1{
+  background-color: rgba(70,0,232,1.0);
+  color: white;
+}
+
+#b2{
+  background-color: rgba(145,0,255,1.0);
+  color: white;
+}
+
+#b3{
+  background-color: rgba(193,0,232,1.0);
+  color: white;
+}
+
+#barImg{
+  position: absolute;
+  margin: 0;
+  padding: 0;
+  width: 740px;
+  height: 134px;
+}
+
+#search_input{
+  position: absolute;
+  margin: auto;
+  top: 52%;
+  left: 50%;
+  padding: 0;
+  margin-top: -45px;
+  margin-left: -250px;
+  width: 600px;
+  height: 120px;
+  background-color: rgba(0,0,0,0.0);
+  border: 0;
+  font-size: 48px;
+}
+
+/*style for the pop up goes here*/
+/* Full-width input fields */
+input[type=text], input[type=password] {
+    width: 90%;
+    padding: 12px 20px;
+    margin: 8px 26px;
+    display: inline-block;
+    border: 1px solid #ccc;
+    box-sizing: border-box;
+  font-size:16px;
+}
+
+/* Set a style for all buttons */
+.popUpButtons {
+    background-color: #4CAF50;
+    color: black;
+    padding: 14px 20px;
+    margin: 8px 26px;
+    border: none;
+    cursor: pointer;
+    width: 90%;
+  font-size:20px;
+}
+.popUpButtons:hover {
+    opacity: 0.8;
+}
+
+/* Center the image and position the close button */
+.imgcontainer {
+    text-align: center;
+    margin: 24px 0 12px 0;
+    position: relative;
+}
+.avatar {
+    width: 200px;
+  height:200px;
+    border-radius: 50%;
+}
+
+#modal-wrapper{
+  z-index: 5;
+}
+
+/* The Modal (background) */
+.modal {
+  display:none;
+    position: fixed;
+    z-index: 1;
+    left: 0;
+    top: 0;
+    width: 100%;
+    height: 100%;
+    overflow: auto;
+    background-color: rgba(0,0,0,0.4);
+}
+
+/* Modal Content Box */
+.modal-content {
+    background-color: #fefefe;
+    margin: 4% auto 15% auto;
+    border: 1px solid #888;
+    width: 40%;
+    padding-bottom: 30px;
+}
+
+/* The Close Button (x) */
+.close {
+    position: absolute;
+    right: 25px;
+    top: 0;
+    color: #000;
+    font-size: 35px;
+    font-weight: bold;
+}
+.close:hover,.close:focus {
+    color: red;
+    cursor: pointer;
+}
+
+/* Add Zoom Animation */
+.animate {
+    animation: zoom 0.6s
+}
+@keyframes zoom {
+    from {transform: scale(0)}
+    to {transform: scale(1)}
+}
+
+.flip-box {
+    z-index: 5;
+    background-color: transparent;
+    position: absolute;
+    margin: auto;
+    width: 100%;
+    height: 100px;
+    top:85%;
+    border-color: transparent;
+    overflow-y: visible;
+    perspective: 1000px; /* Remove this if you don’t want the 3D effect */
+}
+
+/* This container is needed to position the front and back side */
+.flip-box-inner {
+    position: absolute;
+    top:85%;
+    width: 100%;
+    margin: auto;
+    height: 100%;
+    text-align: center;
+    overflow-y: visible;
+    transition: transform 0.8s;
+    transform-style: preserve-3d;
+}
+
+/* Do an horizontal flip when you move the mouse over the
+flip box containe;;;; got rid of it cuz im using flipp */
+
+
+/* Position the front and back side */
+.front, .back {
+    position: absolute;
+    margin: auto;
+    width: 100%;
+    height: 100%;
+    overflow-y: visible;
+    backface-visibility: hidden;
+    background-size: contain;
+    background-image: url('../assets/Home/tickerImg.png');
+}
+
+/* Style the front side */
+.front {
+    color: black;
+}
+
+/* Style the back side */
+.back {
+    background-color: dodgerblue;
+    color: black;
+    transform: rotateX(180deg);
+}
+
+#menuBacking{
+  z-index: 2;
+  position: absolute;
+  left: -48px;
+  top: -48px;
+  height: 288px;
+  width: 288px;
+}
