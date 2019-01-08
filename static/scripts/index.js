@@ -59,7 +59,7 @@ function addDrop(){
 }
 
 var pausedDrop = null;
-
+var lastX = 99999;
 
 class Drop {
 
@@ -70,7 +70,7 @@ class Drop {
 		this.theDiv.className = "rainDrop";
 		this.width = 120;
 		this.height = 120;
-		this.x = Math.random()*(window.innerWidth);
+		this.x = checkProximity();
 		this.y = -120;
 		this.UpdateDiv();
 
@@ -83,7 +83,7 @@ class Drop {
 		this.theDiv.paused = false;
 		this.theDiv.dropRef = this;
 		this.audio = new Audio();
-		this.audio.src = "../static/assets/transvertion.mp3";
+		this.audio.src = "../static/assets/Home/transvertion.mp3";
 		this.audio.type='audio/mp3';
 		this.theButton = document.createElement("p");
 		this.theButton.innerHTML = "text";
@@ -91,6 +91,7 @@ class Drop {
 		rain.appendChild(this.theDiv);
 		this.AddClickToDiv();
 	}
+
 	playAudio() {
 		 var playPromise = this.audio.play();
 
@@ -139,6 +140,16 @@ class Drop {
 		this.UpdateDiv();
 	}
 
+}
+
+function checkProximity(){
+	var x = Math.random()*(window.innerWidth-120);
+	while(x <= lastX+120 && x >= lastX-120){
+		console.log("recalculating");
+		x = Math.random()*(window.innerWidth-120);
+	}
+	lastX = x;
+	return x;
 }
 
 function RandColor(){
