@@ -6,6 +6,10 @@ html{
   background: black;
 }
 
+textarea:focus, input:focus{
+    outline: none;
+}
+
 /*
 search bar
 */
@@ -15,6 +19,28 @@ search bar
   width: 706px;
 }
 
+#searchbar-container{
+  top: 24px;
+  left: 25%;
+  position: fixed;
+  z-index: 4;
+  text-align: left;
+}
+
+#search_input{
+  position: absolute;
+  margin: auto;
+  top: 70%;
+  left: 40%;
+  padding: 0;
+  margin-top: -45px;
+  margin-left: -250px;
+  width: 600px;
+  height: 60px;
+  background-color: rgba(0,0,0,0.0);
+  border: 0;
+  font-size: 36px;
+}
 
 /*
 search filters
@@ -31,7 +57,7 @@ search filters
 #filters > a{
   height: 100px;
   width: 100px;
-  padding: 30px;
+  padding: 20px;
 }
 
 #m{
