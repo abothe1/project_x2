@@ -34,9 +34,9 @@ const EXPRESS_APP_PORT = 80,
 const express = require('express'),
       redis = require("redis"),
       session = require('express-session'),
-      redis_store = require('connect-redis')(session),
-      body_parser = require('body-parser'),
-      cookie_parser = require('cookie-parser');
+      redisStore = require('connect-redis')(session),
+      bodyParser = require('body-parser'),
+      cookieParser = require('cookie-parser');
 
 var client = redis.createClient();
 var app = express();
@@ -47,7 +47,7 @@ app.engine('html', require('ejs').renderFile);
 // this is how sessions are handled
 app.use(session({
 	secret: 'secret password here ;p',
-	store: new redis_store({ // store sessions with redis
+	store: new redisStore({ // store sessions with redis
 		host: REDIS_HOST,
 		port: REDIS_PORT,
 		client: client,
@@ -61,9 +61,9 @@ app.use(session({
 console.info("figure out why cookies aren't working");
 
 // not sure what these do
-app.use(cookie_parser("lol my secret $c5%ookie parser 0nu@mber thingy 12038!@"));
-app.use(body_parser.urlencoded({ extended: false }));
-app.use(body_parser.json());
+app.use(cookieParser("lol my secret $c5%ookie parser 0nu@mber thingy 12038!@"));
+app.use(bodyParser.urlencoded({ extended: false }));
+app.use(bodyParser.json());
 
 /** ROUTES **/
 
