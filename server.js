@@ -29,8 +29,6 @@ const EXPRESS_APP_PORT = 80,
       REDIS_HOST = 'localhost'
       REDIS_PORT = 6379;
 
-// and if so, should i put them in another file? since the `UPLOADS` things are only used in `auth/upload.js`, but needs `STATIC_DIR`. I don’t wanna pass every constant to every
-
 const express = require('express'),
       redis = require("redis"),
       session = require('express-session'),
