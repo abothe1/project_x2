@@ -25,6 +25,14 @@ var rain = null,
 drops = [],
 rainTimer = null,
 maxDrops = 15;
+getLocation();
+
+$.getScript('assets/banks.js', function(data, status)
+{
+  console.log("dtata from loading banks is : " + data);
+    // script is now loaded and executed.
+    // put your dependent JS here.
+});
 
 function init(){
 
@@ -104,7 +112,7 @@ class Drop {
 		this.theDiv.paused = false;
 		this.theDiv.dropRef = this;
 		this.audio = new Audio();
-		this.audio.src = "../static/assets/Home/transvertion.mp3";
+		this.audio.src = "/assets/Home/transvertion.mp3";
 		this.audio.type='audio/mp3';
 		this.theButton = document.createElement("p");
 		this.theButton.innerHTML = "text";
@@ -314,6 +322,7 @@ function search_gigs() {
 }
 
 function post_gig() {
+  var contents = parseQueryString($("#search_input").val());
 	$.post("/post_gig", { query: $("#search_input").val() }, result => {
 		alert(`result is ${result}`);
 	});
@@ -343,6 +352,12 @@ function showPosition(position) {
 	console.log("curr Lat is: " + currLat);
 	console.log("curr lng is: " + currLng);
 }
+
+function parseQueryString(str){
+  var lowerCased = str.lowerCased();
+
+}
+
 
 /*
 //this is the function to handle the search bar

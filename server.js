@@ -23,7 +23,7 @@
 // `redis` is used to store user sessions
 // `mongodb` is used to store more heavy-duty objects
 
-const EXPRESS_APP_PORT = 80,
+const EXPRESS_APP_PORT = 1600,
       PUBLIC_DIR = 'public',
       STATIC_DIR = 'static',
       REDIS_HOST = 'localhost'
@@ -83,3 +83,7 @@ require('./routes/upload.js')(router, app);
 // startup the server
 app.use('/', router);
 app.listen(EXPRESS_APP_PORT, () => console.info('Express started on port ' + EXPRESS_APP_PORT));
+
+//Bothe added this, got it from express documention. Its built in middle ware to serve local files
+app.use(express.static('public'));
+app.use(express.static('static'));

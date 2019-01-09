@@ -150,7 +150,7 @@ Body elements
   height: 100%;
   position: absolute;
   background-color: rgba(0,0,0,0.9);
-  background-image: url('../assets/Home/litebg.png');
+  background-image: url('/assets/Home/litebg.png');
   background-size: cover;
   overflow: hidden;
 }
@@ -364,7 +364,7 @@ flip box containe;;;; got rid of it cuz im using flipp */
     overflow-y: visible;
     backface-visibility: hidden;
     background-size: contain;
-    background-image: url('../assets/Home/tickerImg.png');
+    background-image: url('/assets/Home/tickerImg.png');
 }
 
 /* Style the front side */
