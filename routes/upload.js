@@ -9,7 +9,7 @@ const UPLOADS_VIRTUAL_BASE_DIR = '/uploads',
 
 
 router.get('/_upload', (req, res) => {
-	var id = req.session.key;
+	var id = req.session && req.session.key;
 	if (!id) {
 		res.status(403).send('Not logged in').end();
 	} else {
@@ -58,7 +58,7 @@ router.get('/users/:username/soundbyte', getUserFile('/soundbytes', 'soundbytes'
 
 function requireLoggedIn(which) {
 	return (req, res, next) => {
-		if (!req.session.key) {
+		if (!(req.session && req.session.key)) {
 			console.info(`User from ${req.ip} tried to upload a(n) ${which} whilst not logged in`);
 			res.status(401).send('Not logged in').end();
 		} else {
@@ -115,7 +115,7 @@ function deleteUserFile(basedir, collection, which) {
 	return [
 		requireLoggedIn(which),
 		(req, res) => {
-			var id = req.session.key;
+			var id = req.session && req.session.key;
 
 			if (!id) {
 				console.warn("User wasn't logged in, but got past `requireLoggedIn`");

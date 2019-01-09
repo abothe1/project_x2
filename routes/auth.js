@@ -19,7 +19,7 @@ function hashPassword(password) {
 }
 
 router.post('/register', (req, res) => {
-	if (req.session.key) {
+	if (req.session && req.session.key) {
 		console.info(`User ${req.session.key} from ${req.ip} attempted to register whilst logged in`);
 		return res.status(403).send('Already logged in').end();
 	}
@@ -66,7 +66,7 @@ router.post('/register', (req, res) => {
 })
 
 router.post('/login', (req, res) => { 
-	if (req.session.key) {
+	if (req.session && req.session.key) {
 		console.info(`User ${req.session.key} from ${req.ip} attempted to login whilst logged in`);
 		return res.status(402).send('Already logged in').end();
 	}
@@ -100,7 +100,7 @@ router.post('/login', (req, res) => {
 });
 
 router.get('/logout', (req, res) => {
-	if(req.session.key) {
+	if(req.session && req.session.key) {
 		req.session.destroy(() => res.status(200).json({ success: true }).end())
 	} else {
 		res.status(402).send('Not logged in').end()
