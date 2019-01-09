@@ -339,7 +339,8 @@ Ticker elements
     margin: auto;
     width: 100%;
     height: 100px;
-    top:85%;
+    top:75%;
+    bottom: 0;
     border-color: transparent;
     overflow-y: visible;
     perspective: 1000px; /* Remove this if you don’t want the 3D effect */
@@ -385,3 +386,17 @@ flip box containe;;;; got rid of it cuz im using flipp */
     color: black;
     transform: rotateX(180deg);
 }
+
+#frontText{
+  margin-top: 20px;
+  background: -webkit-linear-gradient(left, #5969ff 0%,#ff0061 100%); /* Chrome10-25,Safari5.1-6 */
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+}
+
+/* Permalink - use to edit and share this gradient: http://colorzilla.com/gradient-editor/#5969ff+0,ff0061+100 */
+/* background: #5969ff; /* Old browsers */
+/* background: -moz-linear-gradient(left, #5969ff 0%, #ff0061 100%); /* FF3.6-15 */
+/* background: -webkit-linear-gradient(left, #5969ff 0%,#ff0061 100%); /* Chrome10-25,Safari5.1-6 */
+/* background: linear-gradient(to right, #5969ff 0%,#ff0061 100%); /* W3C, IE10+, FF16+, Chrome26+, Opera12+, Safari7+ */
+/* filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#5969ff', endColorstr='#ff0061',GradientType=1 ); /* IE6-9 */
