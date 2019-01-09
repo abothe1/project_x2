@@ -28,7 +28,6 @@ router.get('/_upload', (req, res) => {
 function getUserFile(basedir, collection) {
 	return (req, res) => {
 		database.connect(db => {
-req.session
 			database.idFromUsername(req.params.username, id => {
 				db.db('users').collection(collection).findOne({ owner: id }, (err, obj) => {
 					if (err) {
