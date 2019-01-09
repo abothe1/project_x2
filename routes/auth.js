@@ -1,5 +1,9 @@
 module.exports = router => {
-database = require('../database.js');
+
+const database = require('../database.js'),
+      winston = require('winston');
+
+	winston.log('info', `User attempted to register whilst logged in`, {id: 'hi there', ip: req.ip });
 
 // temporary routes for testing
 router.get('/_register', (_, res) => res.render('_register.html'));
@@ -20,9 +24,11 @@ function hashPassword(password) {
 
 router.post('/register', (req, res) => {
 	if (req.session.key) {
-		console.info(`User ${req.session.key} from ${req.ip} attempted to register whilst logged in`);
+		winston.log('info', `User attempted to register whilst logged in`, {id: req.session.key, ip: req.ip });
 		return res.status(403).send('Already logged in').end();
 	}
+
+	winston.log('info', `User attempted to register whilst logged in`, {id: 'hi there', ip: req.ip });
 
 	var {username, email, password} = req.body;
 
@@ -35,6 +41,7 @@ router.post('/register', (req, res) => {
 	}
 
 	if (!validatePassword(password)) {
+		console.log()
 		return res.status(200).json({ success: false, cause: 'Too weak of a password supplied'})
 	}
 
