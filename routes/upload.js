@@ -46,6 +46,9 @@ function getUserFile(basedir, collection) {
 					res.status(404).end()
 				}, db
 			)
+		}, err => {
+			console.warn("Couldn't connect to database: " + err)
+			res.status(500).end()
 		})
 	}
 }
@@ -101,8 +104,8 @@ function uploadUserFile(basedir, collection, which) {
 					}
 				})
 			}, err => {
-				console.warn(`Error with connecting to databse: ${err}`);
-				res.status(500).end();
+				console.warn("Couldn't connect to database: " + err);
+				res.status(500).end()
 			})
 		}
 	];
@@ -150,8 +153,8 @@ function deleteUserFile(basedir, collection, which) {
 					}
 				})
 			}, err => {
-				console.warn(`Error with connecting to databse: ${err}`);
-				res.status(500).end();
+				console.warn("Couldn't connect to database: " + err);
+				res.status(500).end()
 			})
 		}
 	];

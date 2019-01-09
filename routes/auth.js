@@ -59,6 +59,9 @@ router.post('/register', (req, res) => {
 				});
 			}
 		})
+	}, err => {
+		console.warn("Couldn't connect to database: " + err)
+		res.status(500).end()
 	});
 })
 
@@ -90,6 +93,9 @@ router.post('/login', (req, res) => {
 				res.status(200).json({ success: true }).end()
 			}
 		})
+	}, err => {
+		console.warn("Couldn't connect to database: " + err)
+		res.status(500).end()
 	});
 });
 

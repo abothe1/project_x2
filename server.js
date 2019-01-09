@@ -61,7 +61,7 @@ require('./routes/upload.js')(router, app);
 
 // startup the server
 app.use('/', router);
-app.listen(80, () => console.info('Express started on port 80'));
+app.listen(EXPRESS_APP_PORT, () => console.info('Express started on port ' + EXPRESS_APP_PORT));
 
 
 
