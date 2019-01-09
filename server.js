@@ -23,13 +23,11 @@
 // `redis` is used to store user sessions
 // `mongodb` is used to store more heavy-duty objects
 
-const EXPRESS_APP_PORT = 1600,
+const EXPRESS_APP_PORT = 80,
       PUBLIC_DIR = 'public',
       STATIC_DIR = 'static',
       REDIS_HOST = 'localhost'
       REDIS_PORT = 6379;
-
-// and if so, should i put them in another file? since the `UPLOADS` things are only used in `auth/upload.js`, but needs `STATIC_DIR`. I don’t wanna pass every constant to every
 
 const express = require('express'),
       redis = require("redis"),
@@ -83,7 +81,3 @@ require('./routes/upload.js')(router, app);
 // startup the server
 app.use('/', router);
 app.listen(EXPRESS_APP_PORT, () => console.info('Express started on port ' + EXPRESS_APP_PORT));
-
-//Bothe added this, got it from express documention. Its built in middle ware to serve local files
-app.use(express.static('public'));
-app.use(express.static('static'));
