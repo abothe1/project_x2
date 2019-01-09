@@ -1,3 +1,23 @@
+/*************************************************************************
+ *
+ * BANDA CONFIDENTIAL
+ * __________________
+ *
+ *  Copyright (C) 2019
+ *  Banda Incorporated
+ *  All Rights Reserved.
+ *
+ * NOTICE:  All information contained herein is, and remains
+ * the property of Banda Incorporated and its suppliers,
+ * if any.  The intellectual and technical concepts contained
+ * herein are proprietary to Banda Incorporated
+ * and its suppliers and may be covered by U.S. and Foreign Patents,
+ * patents in process, and are protected by trade secret or copyright law.
+ * Dissemination of this information or reproduction of this material
+ * is strictly forbidden unless prior written permission is obtained
+ * from Banda Incorporated.
+ *
+*************************************************************************/
 
 function ajax_request(url, type, data, success, error) {
 	$.ajax({
@@ -14,7 +34,7 @@ function ajax_request(url, type, data, success, error) {
 					console.error(`Failed to load resource: the server responded with a status of ${jgXHR.status} (${jgXHR.statusText}): ${jgXHR.responseText}`)
 			}
 		}
-	})	
+	})
 	// Failed to load resource: the server responded with a status of 400 (Bad Request)
 }
 

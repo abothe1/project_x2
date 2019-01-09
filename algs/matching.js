@@ -1,3 +1,24 @@
+/*************************************************************************
+ *
+ * BANDA CONFIDENTIAL
+ * __________________
+ *
+ *  Copyright (C) 2019
+ *  Banda Incorporated
+ *  All Rights Reserved.
+ *
+ * NOTICE:  All information contained herein is, and remains
+ * the property of Banda Incorporated and its suppliers,
+ * if any.  The intellectual and technical concepts contained
+ * herein are proprietary to Banda Incorporated
+ * and its suppliers and may be covered by U.S. and Foreign Patents,
+ * patents in process, and are protected by trade secret or copyright law.
+ * Dissemination of this information or reproduction of this material
+ * is strictly forbidden unless prior written permission is obtained
+ * from Banda Incorporated.
+ *
+*************************************************************************/
+
 var genreBank=["blues","classic rock","country","dance","disco","funk","grunge",
  "hip-hop","hiphop","hip hop","rap","jazz","metal","new age","oldies","other","pop","r&b","r and b","randb",
  "rap","reggae","rock","techno","industrial","alternative","ska",
@@ -75,7 +96,7 @@ var gigsToScore=[];
 var bandsToScore=[];
 
 //call this for a band searching for a gig, myBand is a json band and
-// gigs is an array of gig jsons and 
+// gigs is an array of gig jsons and
 //query String is the string they typed in search bar (i handled parsing)
 function findGigsForBand(myBand, gigs, queryStr){
     parseQueryString(queryStr);
