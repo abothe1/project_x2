@@ -1,3 +1,24 @@
+/*************************************************************************
+ *
+ * BANDA CONFIDENTIAL
+ * __________________
+ *
+ *  Copyright (C) 2019
+ *  Banda Incorporated
+ *  All Rights Reserved.
+ *
+ * NOTICE:  All information contained herein is, and remains
+ * the property of Banda Incorporated and its suppliers,
+ * if any.  The intellectual and technical concepts contained
+ * herein are proprietary to Banda Incorporated
+ * and its suppliers and may be covered by U.S. and Foreign Patents,
+ * patents in process, and are protected by trade secret or copyright law.
+ * Dissemination of this information or reproduction of this material
+ * is strictly forbidden unless prior written permission is obtained
+ * from Banda Incorporated.
+ *
+*************************************************************************/
+
 // `express` is used to serve up webpages
 // `redis` is used to store user sessions
 // `mongodb` is used to store more heavy-duty objects
@@ -8,7 +29,7 @@ const EXPRESS_APP_PORT = 80,
       REDIS_HOST = 'localhost'
       REDIS_PORT = 6379;
 
-// and if so, should i put them in another file? since the `UPLOADS` things are only used in `auth/upload.js`, but needs `STATIC_DIR`. I don’t wanna pass every constant to every 
+// and if so, should i put them in another file? since the `UPLOADS` things are only used in `auth/upload.js`, but needs `STATIC_DIR`. I don’t wanna pass every constant to every
 
 const express = require('express'),
       redis = require("redis"),
@@ -61,6 +82,7 @@ require('./routes/upload.js')(router, app);
 
 // startup the server
 app.use('/', router);
+<<<<<<< HEAD
 app.listen(EXPRESS_APP_PORT, () => console.info('Express started on port ' + EXPRESS_APP_PORT));
 
 
@@ -73,3 +95,6 @@ app.listen(EXPRESS_APP_PORT, () => console.info('Express started on port ' + EXP
 
 
 
+=======
+app.listen(80, () => console.info('Express started on port 80'));
+>>>>>>> 1da50057c9d0d0d84da14edc754c46fbdc46a56c
