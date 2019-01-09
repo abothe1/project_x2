@@ -1,9 +1,7 @@
 module.exports = router => {
 
 const database = require('../database.js'),
-      winston = require('winston');
-
-	winston.log('info', `User attempted to register whilst logged in`, {id: 'hi there', ip: req.ip });
+      logger = require('../logger.js');
 
 // temporary routes for testing
 router.get('/_register', (_, res) => res.render('_register.html'));
@@ -24,24 +22,30 @@ function hashPassword(password) {
 
 router.post('/register', (req, res) => {
 	if (req.session.key) {
-		winston.log('info', `User attempted to register whilst logged in`, {id: req.session.key, ip: req.ip });
+		logger.info('User attempted to register whilst logged in', {id: req.session.key, ip: req.ip });
 		return res.status(403).send('Already logged in').end();
 	}
 
-	winston.log('info', `User attempted to register whilst logged in`, {id: 'hi there', ip: req.ip });
-
 	var {username, email, password} = req.body;
+	var loggabke
 
 	if (!username) {
+		if (req.body.password)
+			req.body.password = '<password>';
+		logger.info('No username supplied in request body', {body: req.body, ip: req.ip});
 		return res.status(400).send('No username supplied')
 	} else if (!password) {
+		logger.info('No password supplied in request body', {body: req.body, ip: req.ip});
 		return res.status(400).send('No password supplied')
 	} else if (!email) {
+		if (req.body.password)
+			req.body.password = '<password>';
+		logger.info('No email supplied in request body', {body: req.body, ip: req.ip});
 		return res.status(400).send('No email supplied')
 	}
 
 	if (!validatePassword(password)) {
-		console.log()
+		logger.debug('Too weak of a password was supplied', body: req.body)
 		return res.status(200).json({ success: false, cause: 'Too weak of a password supplied'})
 	}
 

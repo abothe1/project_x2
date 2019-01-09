@@ -9,7 +9,7 @@ var logger = createLogger({
 		new (transports.DailyRotateFile)({
 			filename: 'logs/absinthe-%DATE%.log',
 			datePattern: 'YYYY-MM-DD-HH',
-			// zippedArchive: true,
+			zippedArchive: true,
 			maxSize: '20m',
 			maxFiles: '14d'
 		}),
@@ -20,7 +20,7 @@ var logger = createLogger({
 		new (transports.DailyRotateFile)({
 			filename: 'logs/absinthe-%DATE%.exceptions.log',
 			datePattern: 'YYYY-MM-DD-HH',
-			// zippedArchive: true,
+			zippedArchive: true,
 			maxSize: '20m',
 			maxFiles: '14d'
 		}),
