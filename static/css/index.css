@@ -286,6 +286,84 @@ input[type=text], input[type=password], input[type=number], input[type=date], te
   z-index: 5;
 }
 
+#modal-wrapper-register{
+  z-index: 5;
+}
+
+#reg_form{
+  background-color: transparent;
+}
+
+#reg_form input, #reg_form button{
+  margin: 10px;
+}
+
+#reg_username{
+  height: 83px;
+  width: 348px;
+  border: 0px;
+  background: url('../assets/Home/reg_username.png');
+  background-size: contain;
+  padding-left: 10px;
+  font-size: 32px;
+  color: white;
+}
+
+#reg_password{
+  height: 83px;
+  width: 668px;
+  border: 0px;
+  background: url('../assets/Home/reg_password.png');
+  background-size: contain;
+  padding-left: 10px;
+  font-size: 32px;
+  color: white;
+}
+
+#reg_email{
+  height: 83px;
+  width: 853px;
+  border: 0px;
+  background: url('../assets/Home/reg_email.png');
+  background-size: contain;
+  padding-left: 10px;
+  font-size: 32px;
+  color: white;
+}
+
+#reg_mailing{
+  height: 83px;
+  width: 445px;
+  border: 0px;
+  background: url('../assets/Home/reg_mailing.png');
+  background-size: contain;
+  padding-left: 10px;
+  font-size: 32px;
+  color: white;
+}
+
+#reg_confirm{
+  height: 83px;
+  width: 668px;
+  border: 0px;
+  background: url('../assets/Home/reg_confirm.png');
+  background-size: contain;
+  padding-left: 10px;
+  font-size: 32px;
+  color: white;
+}
+
+#reg_submit{
+  height: 83px;
+  width: 174px;
+  border: 0px;
+  background: url('../assets/Home/reg_submit.png');
+  background-size: contain;
+  margin-left: 10px;
+  font-size: 32px;
+  color: white;
+}
+
 /* The Modal (background) */
 .modal {
   display:none;

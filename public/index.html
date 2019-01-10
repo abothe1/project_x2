@@ -95,7 +95,7 @@
 
 					<div class='circle-container'>
 						<a href='#' class='deg0' onclick="document.getElementById('modal-wrapper').style.display='block'" id="login_button"><p class="radialText">Login</p></a>
-						<a href='./_register' class='deg30' id="sign_in_button"><p class="radialText">Register</p></a>
+						<a href='#' class='deg30' id="sign_in_button" onclick="document.getElementById('modal-wrapper-register').style.display='block'"><p class="radialText">Register</p></a>
 						<a href='./' class='deg60'><p class="radialText">Home</p></a>
 						<a href='#' class='deg90'><p class="radialText">About</p></a>
 					</div>
@@ -159,7 +159,22 @@
 					  </form>
 					</div>
 
+					<div id="modal-wrapper-register" class="modal">
 
+
+						<span onclick="document.getElementById('modal-wrapper-register').style.display='none'" class="close" title="Close PopUp">&times;</span>
+
+						<form id="reg_form" class="modal-content animate" action="/action_page.php">
+							<div class="container">
+								<input id="reg_username" placeholder="username">
+								<input id="reg_password" type="password" placeholder="password">
+								<input id="reg_email" placeholder="email address">
+								<input id="reg_mailing" placeholder="mailing (yes or no)">
+								<input id="reg_confirm" type="password" placeholder="confirm password">
+								<button id="reg_submit">Register</button>
+							</div>
+						</form>
+					</div>
 
 					<div class="flip-box" alt = "ticker" id="flip-box0">
 					  <div class="flip-box-inner" id="flip-box-inner0">
