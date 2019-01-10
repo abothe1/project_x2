@@ -100,7 +100,7 @@ body elements
   height: 100%;
   position: absolute;
   background: black;
-  background-image: url('../assets/Home/dkback.png');
+  background-image: url('https://assets/Home/dkback.png');
   background-size: 100%;
   background-attachment: fixed;
   overflow: hidden;

@@ -47,6 +47,8 @@ router.post('/post_gig', (req, res) => {
   console.log("got into the post gig thing on search.js")
 
     var gig = req.body;
+    gig['isFilled']=false;
+    gig['bandFor']='none';
     database.connect(db => {
        db.db('gigs').collection('gigs').insertOne(gig, function(err,result){
          if (err){
@@ -62,6 +64,29 @@ router.post('/post_gig', (req, res) => {
   	}, err => {
   		console.warn("Couldn't connect to database: " + err)
   		res.status(500).end()
+  	});
+});
+
+router.get('/get_current_events', (req, res) => {
+  console.log("got into the get gig get_current_events on search.js")
+  var query_curr_events = {isFilled: true};
+    database.connect(db => {
+       db.db('gigs').collection('gigs').find(query_curr_events).toArray(function(err,result){
+         if (err){
+           //res.err=err;
+           console.log(err);
+           db.close();
+         }
+         else{
+           console.log("result is:" + result);
+           res.status(200).json({'events':result});
+           db.close();
+         }
+       });
+
+  	}, err => {
+  		console.warn("Couldn't connect to database: " + err);
+  		res.status(500).end();
   	});
 });
 

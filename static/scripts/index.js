@@ -26,6 +26,7 @@ drops = [],
 rainTimer = null,
 maxDrops = 15;
 getLocation();
+getCurrentEvents();
 
 $.getScript('assets/banks.js', function(data, status)
 {
@@ -341,7 +342,7 @@ function post_gig() {
 	});
 }
 
-function flipTicker(){
+function flipTicker(event){
 	console.log("got into flip ticker func");
 	$("#flip-box-inner0").flip({
 		 trigger: 'manual',
@@ -383,7 +384,61 @@ function parseQueryString(str){
   return categoriesFromStr;
 }
 
+// current events stuff//
+function getCurrentEvents(){
+  $.get('/get_current_events', {}, result => {
+    var events = result.events;
+    console.log("events from db are: " + events);
+		alert(`result is ${result}`);
+    handleEventsWithTicker(events);
+	});
+}
+function handleEventsWithTicker(events){
+  var sortedEventsAndDates = sortEventsByDate(events);
+  var sortedEvents=[];
+  for (e in sortedEventsAndDates){
+    sortedEvents.push(e[0]);
+  }
+  var i = 0;
+  setInterval(function(){
+    if (i<sortedEvents.length){
+      var evt = sortedEvents[i];
+      var genre = evt.genres[0];
+      var type = evt.gigTypes[0];
+      $("#frontText").innerHTML="A(n) " + genre + " artist was just booked for a(n)" + type;
+      $("#backText").innerHTML="A(n) " + genre + " artist was just booked for a(n)" + type;
+      flipTicker();
+      i+=1;
+    }
+    else{
+      i=0;
+    }
+  }, 5000);
 
+}
+function sortEventsByDate(events){
+  var today = new Date();
+  var eventsToDateDiff = [];
+  for (e in events){
+    var dateDiff = diff_minutes(today, e.startDate);
+    eventsToDateDiff.push([e,dateDiff]);
+  }
+  var sortedEvents = sortDict(eventsToDateDiff);
+  return sortedEvents;
+}
+
+function diff_minutes(dt2, dt1) {
+	var diff =(dt2.getTime() - dt1.getTime()) / 1000;
+	diff /= 60;
+	return Math.abs(Math.round(diff));
+ }
+
+ function sortDict(dict){
+ 	 dict.sort(function(first, second) {
+ 		 return first[1]-second[1];
+ 	 });
+ 	 return dict;
+  }
 /*
 //this is the function to handle the search bar
 function searchHit(type){
