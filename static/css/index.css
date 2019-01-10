@@ -25,7 +25,7 @@ Radial Menu Stuff
 
 @font-face { font-family: Industry; src: url('../assets/Industry.otf'); }
 
-h4, p, button, input{
+h1, h4, h6, p, button, input{
   font-family: Industry, sans-serif;
 }
 
@@ -241,7 +241,7 @@ Login Popup Elements
 
 /*style for the pop up goes here*/
 /* Full-width input fields */
-input[type=text], input[type=password] {
+input[type=text], input[type=password], input[type=number], input[type=date], textarea {
     width: 90%;
     padding: 12px 20px;
     margin: 8px 26px;
@@ -279,6 +279,10 @@ input[type=text], input[type=password] {
 }
 
 #modal-wrapper{
+  z-index: 5;
+}
+
+#modal-wrapper-gig{
   z-index: 5;
 }
 
@@ -333,7 +337,7 @@ Ticker elements
 */
 
 .flip-box {
-    z-index: 5;
+    z-index: 4;
     background-color: transparent;
     position: absolute;
     margin: auto;
