@@ -32,7 +32,7 @@ var genreBank=["blues","classic rock","country","dance","disco","funk","grunge",
  "top 40","christian rap","pop/funk","jungle","native american",
  "cabaret","new wave","psychadelic","rave","showtunes","trailer",
  "lo-fi","tribal","acid punk","acid jazz","polka","retro",
- "musical","rock & roll","rock and roll"."hard rock","folk","folk-rock","folk rock",
+ "musical","rock & roll","rock and roll","hard rock","folk","folk-rock","folk rock",
  "national folk","swing","fast fusion","bebop","latin","revival",
  "celtic","bluegrass","avantgarde","gothic rock","progressive rock",
  "psychedelic rock","symphonic rock","slow rock","big band",
@@ -108,7 +108,7 @@ function findGigsForBand(myBand, queryStr, db){
 			var vibesFromStr=[];
 			var gigsToScore=[];
 			var bandsToScore=[];
-			var categories={"genres":[genreBank,genresFromStr,genreMult], "insts":[instsBank,instsFromStr,instMult],"vibes":[vibesBank,vibesFromStr,vibeMult],"gigTypes":gigTypeBank,gigTypesFromStr,typeMult]};
+			var categories={"genres":[genreBank,genresFromStr,genreMult], "insts":[instsBank,instsFromStr,instMult],"vibes":[vibesBank,vibesFromStr,vibeMult],"gigTypes":[gigTypeBank,gigTypesFromStr,typeMult]};
 
 			var categories = parseQueryString(queryStr, categories);
 			var queryStrScore = 0;
@@ -116,7 +116,7 @@ function findGigsForBand(myBand, queryStr, db){
 
 			for (theGig in gigs){
 				for (key in categories){
-					if categories.hasOwnProperty(key){
+					if (categories.hasOwnProperty(key)){
 						if (theGig.hasOwnProperty(key)){
 							var contents = categories[key];
 							var fromStr=contents[1];
@@ -172,8 +172,8 @@ function findBandsForGig(myGig, categories, db){
 			var categories = parseQueryString(queryStr,categories);
 			for (theBand in bands){
 				for (key in categories){
-					if categories.hasOwnProperty(key){
-						if theGig.hasOwnProperty(key){
+					if (categories.hasOwnProperty(key)){
+						if (theGig.hasOwnProperty(key)){
 							var contents = categories[key];
 							var fromStr=contents[1];
 							var mult=contents[2];

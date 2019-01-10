@@ -43,4 +43,27 @@ router.get('/search', (req, res) => {
 	// }
 });
 
+router.post('/post_gig', (req, res) => {
+  console.log("got into the post gig thing on search.js")
+
+    var gig = req.body;
+    database.connect(db => {
+       db.db('gigs').collection('gigs').insertOne(gig, function(err,result){
+         if (err){
+           res.err=err;
+           db.close();
+         }
+         else{
+           console.log("gig inserted");
+           db.close();
+         }
+       });
+
+  	}, err => {
+  		console.warn("Couldn't connect to database: " + err)
+  		res.status(500).end()
+  	});
+});
+
+
 }
