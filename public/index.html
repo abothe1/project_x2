@@ -68,17 +68,33 @@
 		}
 		</script>
 
+		<script type="text/javascript">
+			var isMusic = false;
 
-		<script type="text/javascript" src="“/scripts/index.js”"></script>
+			function toggle_musician_reg(){
+				console.log("TOGGLIN");
+				var musician_div = document.getElementById("reg_2");
+				if(isMusic){
+					musician_div.style.display = "none"
+				}else{
+					musician_div.style.display = "block"
+				}
+				isMusic = !isMusic;
+			}
+		</script>
+
+
+		<script type="text/javascript" src="../static/scripts/index.js"></script>
 
 		<link rel="stylesheet" type="text/css" href="../static/css/index.css">
 
-		<script>
+		<script type="text/javascript">
 			$.getJSON('/bands',function(data){
 			console.log(data);
 			});
 		</script>
 		</head>
+
 		<body onload="init(); document.search_form.search_text.focus();">
 			<div id="container2">
 				<div id="rain">
@@ -165,17 +181,27 @@
 
 
 						<span onclick="document.getElementById('modal-wrapper-register').style.display='none'" class="close" title="Close PopUp">&times;</span>
+						<button id="reg_music" onclick="toggle_musician_reg()">Musicians</button>
 
 						<form id="reg_form" class="modal-content animate" action="/action_page.php">
-							<div class="container">
+							<div id="reg_1" class="container">
 								<input id="reg_username" placeholder="username">
 								<input id="reg_password" type="password" placeholder="password">
 								<input id="reg_email" placeholder="email address">
 								<input id="reg_mailing" placeholder="mailing (yes or no)">
 								<input id="reg_confirm" type="password" placeholder="confirm password">
+								<div id="reg_2" class="container" style="display: none;">
+									<h6>Location</h6>
+									<input type="text" placeholder="City, State" name="reg_location" id="reg_location_input">
+									<h6>Asking Price</h6>
+									<input type="number" min="1" step="any" id="reg_price_input">
+								</div>
 								<button id="reg_submit">Register</button>
 							</div>
+
+
 						</form>
+
 					</div>
 
 					<div class="flip-box" alt = "ticker" id="flip-box0">
