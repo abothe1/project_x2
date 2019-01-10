@@ -50,6 +50,25 @@
 			})(jQuery);
 		</script>
 
+		<script async defer src="https://maps.googleapis.com/maps/api/js?key=AIzaSyBdtwRfJmaP2JYKpQyzKwjVcuTdKch7AwU&callback=initMap" type="text/javascript"></script>
+		<script type="text/javascript">
+
+		function convertAddress(){
+			var geocoder = new google.maps.Geocoder();
+			var address = jQuery('#gig_address_input').val();
+
+			geocoder.geocode( { 'address': address}, function(results, status) {
+
+			if (status == google.maps.GeocoderStatus.OK) {
+			    var latitude = results[0].geometry.location.lat();
+			    var longitude = results[0].geometry.location.lng();
+			    console.log(latitude+', '+longitude);
+			    }
+			});
+		}
+		</script>
+
+
 		<script type="text/javascript" src="../static/scripts/index.js"></script>
 
 		<link rel="stylesheet" type="text/css" href="../static/css/index.css">
@@ -76,7 +95,7 @@
 
 					<div class='circle-container'>
 						<a href='#' class='deg0' onclick="document.getElementById('modal-wrapper').style.display='block'" id="login_button"><p class="radialText">Login</p></a>
-						<a href='./_register.html' class='deg30' id="sign_in_button"><p class="radialText">Register</p></a>
+						<a href='./_register' class='deg30' id="sign_in_button"><p class="radialText">Register</p></a>
 						<a href='./' class='deg60'><p class="radialText">Home</p></a>
 						<a href='#' class='deg90'><p class="radialText">About</p></a>
 					</div>
@@ -134,7 +153,7 @@
 								<input type="number" min="1" step="any" id="gig_price_input">
 								<h6>Description</h6>
 								<textarea name="Text1" cols="40" rows="5" id="gig_desc_input"></textarea>
-					      <button class="popUpButtons" type="submit">Post Gig</button>
+					      <button class="popUpButtons" type="submit" onclick="convertAddress()">Post Gig</button>
 					    </div>
 
 					  </form>
