@@ -60,7 +60,7 @@
 			});
 		</script>
 		</head>
-		<body onload="init()">
+		<body onload="init(); document.search_form.search_text.focus();">
 			<div id="container2">
 				<div id="rain">
 
@@ -83,7 +83,9 @@
 
 					<div class="search">
 						<img id="barImg" alt="searchbar" src="../static/assets/Home/searchbarlite.png" />
-						<input id='search_input'>
+						<form name="search_form">
+						<input id='search_input' name="search_text" >
+						</form>
 						<div class="options">
 							<button class="btn btn-sm" id="b1" onclick="search_musicians()">Find Musicians</button>
 							<button class="btn btn-sm" id="b2" onclick="search_gigs()">Find Gigs</button>
