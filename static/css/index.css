@@ -25,7 +25,7 @@ Radial Menu Stuff
 
 @font-face { font-family: Industry; src: url('../assets/Industry.otf'); }
 
-h1, h4, h6, p, button, input{
+h1, h4, h6, p, button, input, textarea{
   font-family: Industry, sans-serif;
 }
 
