@@ -304,7 +304,7 @@ input[type=text], input[type=password], input[type=number], input[type=datetime-
   border: 0px;
   background: url('../assets/Home/reg_username.png');
   background-size: contain;
-  padding-left: 10px;
+  padding-left: 15px;
   font-size: 32px;
   color: white;
 }
@@ -315,7 +315,7 @@ input[type=text], input[type=password], input[type=number], input[type=datetime-
   border: 0px;
   background: url('../assets/Home/reg_password.png');
   background-size: contain;
-  padding-left: 10px;
+  padding-left: 15px;
   font-size: 32px;
   color: white;
 }
@@ -326,7 +326,7 @@ input[type=text], input[type=password], input[type=number], input[type=datetime-
   border: 0px;
   background: url('../assets/Home/reg_email.png');
   background-size: contain;
-  padding-left: 10px;
+  padding-left: 15px;
   font-size: 32px;
   color: white;
 }
@@ -337,7 +337,7 @@ input[type=text], input[type=password], input[type=number], input[type=datetime-
   border: 0px;
   background: url('../assets/Home/reg_mailing.png');
   background-size: contain;
-  padding-left: 10px;
+  padding-left: 15px;
   font-size: 32px;
   color: white;
 }
@@ -348,7 +348,7 @@ input[type=text], input[type=password], input[type=number], input[type=datetime-
   border: 0px;
   background: url('../assets/Home/reg_confirm.png');
   background-size: contain;
-  padding-left: 10px;
+  padding-left: 15px;
   font-size: 32px;
   color: white;
 }
