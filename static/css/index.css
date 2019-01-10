@@ -241,7 +241,7 @@ Login Popup Elements
 
 /*style for the pop up goes here*/
 /* Full-width input fields */
-input[type=text], input[type=password], input[type=number], input[type=date], textarea {
+input[type=text], input[type=password], input[type=number], input[type=datetime-local], textarea {
     width: 90%;
     padding: 12px 20px;
     margin: 8px 26px;

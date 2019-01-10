@@ -147,12 +147,14 @@
 					      <input type="text" placeholder="Enter Gig Name" name="gig_name" id="gig_name_input">
 								<h6>Address</h6>
 								<input type="text" placeholder="Enter Address" name="gig_address" id="gig_address_input">
-								<h6>Date</h6>
-								<input type="date" name="gig_date" id="gig_date_input">
+								<h6>Start Date/Time</h6>
+								<input type="datetime-local" name="gig_start" id="gig_start_input">
+								<h6>End Date/Time</h6>
+								<input type="datetime-local" name="gig_start" id="gig_end_input">
 								<h6>Price</h6>
 								<input type="number" min="1" step="any" id="gig_price_input">
 								<h6>Description</h6>
-								<textarea name="Text1" cols="40" rows="5" id="gig_desc_input"></textarea>
+								<textarea name="Text1" cols="40" rows="5" id="gig_desc_input" placeholder="What type of artist are you looking for? What type of event is this? What vibe are you looking for? Etc…)"></textarea>
 					      <button class="popUpButtons" type="submit" onclick="convertAddress()">Post Gig</button>
 					    </div>
 
