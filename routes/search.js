@@ -123,3 +123,4 @@ router.post('/band', (req, res) => {
 		res.status(500).end();
 	});
 });
+}
