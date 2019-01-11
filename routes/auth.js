@@ -12,7 +12,6 @@ passwordValidator
 	.is().not().oneOf([/.*p[a4][5s][5s]sw[o0][2r]d.*/i]);
 
 var usernameValidator = new usernamePasswordValidator();
-
 usernameValidator
 	.is().min(4)
 	.is().max(15)
@@ -44,8 +43,7 @@ router.post('/register', (req, res) => {
 	var {ip, url} = req;
 
 	if (req.session.key) {
-		logger.verbose('[auth] User attempted to register whilst logged in', { id: req.session.key, ip: req.ip, url: req.url });
-		return res.status(403).send('Already logged in').end();
+		return res.status(200).json({ success: false, cause: 'Already logged in' }).end();
 	}
 
 	var {username, email, password} = req.body;
@@ -101,8 +99,7 @@ router.post('/register', (req, res) => {
 
 router.post('/login', (req, res) => { 
 	if (req.session.key) {
-		logger.verbose('[auth] User attempted to login whilst already logged in', { id: req.session.key, ip: req.ip, url: req.url });
-		return res.status(402).send('Already logged in').end();
+		return res.status(200).json({ success: false, cause: 'Already logged in' }).end();
 	}
 
 	var {username, password} = req.body;
@@ -140,7 +137,6 @@ router.get('/logout', (req, res) => {
 		logger.silly('[auth] User logged out', { id: req.session.key });
 		req.session.destroy(() => res.status(200).json({ success: true }).end())
 	} else {
-		logger.verbose('[auth] Attempted to logout whilst not logged in', { ip: req.ip, url: req.url });
 		res.status(402).send('Not logged in').end()
     }
 });
