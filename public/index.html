@@ -50,6 +50,25 @@
 			})(jQuery);
 		</script>
 
+		<script async defer src="https://maps.googleapis.com/maps/api/js?key=AIzaSyBdtwRfJmaP2JYKpQyzKwjVcuTdKch7AwU&callback=initMap" type="text/javascript"></script>
+		<script type="text/javascript">
+
+		function convertAddress(){
+			var geocoder = new google.maps.Geocoder();
+			var address = jQuery('#gig_address_input').val();
+
+			geocoder.geocode( { 'address': address}, function(results, status) {
+
+			if (status == google.maps.GeocoderStatus.OK) {
+			    var latitude = results[0].geometry.location.lat();
+			    var longitude = results[0].geometry.location.lng();
+			    console.log(latitude+', '+longitude);
+			    }
+			});
+		}
+		</script>
+
+
 		<script type="text/javascript" src="/scripts/index.js"></script>
 
 		<link rel="stylesheet" type="text/css" href="/css/index.css">
@@ -60,7 +79,7 @@
 			});
 		</script>
 		</head>
-		<body onload="init()">
+		<body onload="init(); document.search_form.search_text.focus();">
 			<div id="container2">
 				<div id="rain">
 
@@ -76,18 +95,20 @@
 
 					<div class='circle-container'>
 						<a href='#' class='deg0' onclick="document.getElementById('modal-wrapper').style.display='block'" id="login_button"><p class="radialText">Login</p></a>
-						<a href='./_register.html' class='deg30' id="sign_in_button"><p class="radialText">Register</p></a>
+						<a href='/_register' class='deg30' id="sign_in_button"><p class="radialText">Register</p></a>
 						<a href='./' class='deg60'><p class="radialText">Home</p></a>
 						<a href='#' class='deg90'><p class="radialText">About</p></a>
 					</div>
 
 					<div class="search">
 						<img id="barImg" alt="searchbar" src="/assets/Home/searchbarlite.png" />
-						<input id='search_input'>
+						<form name="search_form">
+							<input id='search_input' name="search_text">
+						</form>
 						<div class="options">
 							<button class="btn btn-sm" id="b1" onclick="search_musicians()">Find Musicians</button>
 							<button class="btn btn-sm" id="b2" onclick="search_gigs()">Find Gigs</button>
-							<button class="btn btn-sm" id="b3" onclick="post_gig()">Post a Gig</button>
+							<button class="btn btn-sm" id="b3" onclick="document.getElementById('modal-wrapper-gig').style.display='block'">Post a Gig</button>
 						</div>
 					</div>
 
@@ -98,7 +119,7 @@
 					    <div class="imgcontainer">
 					      <span onclick="document.getElementById('modal-wrapper').style.display='none'" class="close" title="Close PopUp">&times;</span>
 					      <img src="1.png" alt="Avatar" class="avatar">
-					      <h1 style="text-align:center">Modal Popup Box</h1>
+					      <h1 style="text-align:center">Account Login</h1>
 					    </div>
 
 					    <div class="container">
@@ -113,10 +134,37 @@
 
 					</div>
 
+					<div id="modal-wrapper-gig" class="modal">
+						<form class="modal-content animate" action="/action_page.php">
+
+					    <div class="imgcontainer">
+					      <span onclick="document.getElementById('modal-wrapper-gig').style.display='none'" class="close" title="Close PopUp">&times;</span>
+					      <h1 style="text-align:center">Post a Gig Listing</h1>
+					    </div>
+
+					    <div class="container">
+								<h6>Name</h6>
+					      <input type="text" placeholder="Enter Gig Name" name="gig_name" id="gig_name_input">
+								<h6>Address</h6>
+								<input type="text" placeholder="Enter Address" name="gig_address" id="gig_address_input">
+								<h6>Date</h6>
+								<input type="date" name="gig_date" id="gig_date_input">
+								<h6>Price</h6>
+								<input type="number" min="1" step="any" id="gig_price_input">
+								<h6>Description</h6>
+								<textarea name="Text1" cols="40" rows="5" id="gig_desc_input"></textarea>
+					      <button class="popUpButtons" type="submit" onclick="convertAddress()">Post Gig</button>
+					    </div>
+
+					  </form>
+					</div>
+
+
+
 					<div class="flip-box" alt = "ticker" id="flip-box0">
 					  <div class="flip-box-inner" id="flip-box-inner0">
 					    <div class="front">
-					      <h4>A.B. just booked a hiphop artist, Music Reign, for a birthday party</h4>
+					      <h4 id="frontText">A.B. just booked a hiphop artist, Music Reign, for a birthday party</h4>
 					    </div>
 					    <div class="back">
 					      <h4>M.S. just booked a punk artist, Down By The Beach, for a bar</h4>

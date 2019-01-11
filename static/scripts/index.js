@@ -18,7 +18,7 @@
  * from Banda Incorporated.
  *
 *************************************************************************/
-
+var categories = {};
 // AB Brooks Zone
 
 var rain = null,
@@ -30,6 +30,19 @@ getLocation();
 $.getScript('assets/banks.js', function(data, status)
 {
   console.log("dtata from loading banks is : " + data);
+  //banks = data.BANKS;
+  if (data.BANKS){
+    for (key in data.BANKS){
+      if (categories.hasOwnProperity(key)){
+        console.log("banks are " + data.BANKS[key]);
+        categories[key]={'wordBank' : data.BANKS[key]};
+      }
+    }
+  }
+  else{
+    console.log("banks from the script was null");
+  }
+
     // script is now loaded and executed.
     // put your dependent JS here.
 });
@@ -322,8 +335,8 @@ function search_gigs() {
 }
 
 function post_gig() {
-  var contents = parseQueryString($("#search_input").val());
-	$.post("/post_gig", { query: $("#search_input").val() }, result => {
+  var categoriesFromStr = parseQueryString($("#search_input").val());
+	$.post('/post_gig', { body: categoriesFromStr }, result => {
 		alert(`result is ${result}`);
 	});
 }
@@ -354,8 +367,20 @@ function showPosition(position) {
 }
 
 function parseQueryString(str){
-  var lowerCased = str.lowerCased();
-
+  var categoriesFromStr={};
+  var lowerCased = str.toLowerCase();
+  for (key in categories){
+    if (categories.hasOwnProperity(key)){
+      console.log("banks are " + categories[key]);
+      for (word in categories[key]['wordBank']){
+        if (lowerCased.includes(word)){
+          categoriesFromStr[key]['fromQueryStr'].push(word);
+        }
+      }
+    }
+  }
+  console.log("in parse from str, the categories from str are now" + categoriesFromStr);
+  return categoriesFromStr;
 }
 
 
@@ -380,8 +405,6 @@ function searchHit(type){
 			alert(`failure! cause: ${result.cause}.`)
 		}
 	});
-
-	/*
 	alert("search was hit!");
 	var bands=[];
 	var gigs=[];
@@ -409,4 +432,6 @@ function searchHit(type){
 		$.post('/gigs', {query:searchText});
 		break;
 	}
-};*/
+};
+
+*/

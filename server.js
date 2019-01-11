@@ -23,7 +23,7 @@
 // `redis` is used to store user sessions
 // `mongodb` is used to store more heavy-duty objects
 
-const EXPRESS_APP_PORT = 80,
+const EXPRESS_APP_PORT = 1600,
       PUBLIC_DIR = 'public',
       STATIC_DIR = 'static',
       REDIS_HOST = 'localhost'
@@ -77,6 +77,7 @@ router.get('/index', (_, res) => { res.render('index.html'); });
 
 require('./routes/auth.js')(router, app); // login, register, logout
 require('./routes/upload.js')(router, app);
+require('./routes/search.js')(router, app); //searches and posting
 
 // startup the server
 app.use('/', router);
