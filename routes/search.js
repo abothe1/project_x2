@@ -12,10 +12,8 @@ router.get('/search', (req, res) => {
 	// gig
 
 	if (!query || !mode) {
-		/* error */
+		res.status(400).send('No query or mode sent'.end();
 	}
-
-
 
 	if (mode == 'band to gig') {
 		matching.findGigsForBand(bandName, query, err => {
@@ -24,6 +22,13 @@ router.get('/search', (req, res) => {
 			// ...
 		});
 	}
+  else if (mode == 'gig to band'){
+    matching.findBandsForGig(bandName, query, err => {
+			// ...
+		}, ok => {
+			
+		});
+  }
 	// // ignore from here down
 	// 	database.connect(db => {
 	// 		var bands = db.db('bands').collection('bands');
@@ -43,52 +48,81 @@ router.get('/search', (req, res) => {
 	// }
 });
 
-router.post('/post_gig', (req, res) => {
-  console.log("got into the post gig thing on search.js")
+router.post('/gig', (req, res) => {
+	var gig = req.body;
+	if (!gig) {
+		return res.status(400).send('No body sent').end();
+	}
+  gig['isFilled']=false;
+  gig['banndFor']='none';
+	console.log("Received body for gig: " + gig);
 
-    var gig = req.body;
-    gig['isFilled']=false;
-    gig['bandFor']='none';
-    database.connect(db => {
-       db.db('gigs').collection('gigs').insertOne(gig, function(err,result){
-         if (err){
-           res.err=err;
-           db.close();
-         }
-         else{
-           console.log("gig inserted");
-           db.close();
-         }
-       });
-
-  	}, err => {
-  		console.warn("Couldn't connect to database: " + err)
-  		res.status(500).end()
-  	});
+	database.connect(db => {
+		let gigs = db.db('gigs').collection('gigs');
+		gigs.insertOne(gig, (err, result) => {
+			if (err){
+				console.warn("Couldnt get insert gig into database: " + err);
+				res.status(500).end();
+				db.close();
+			} else {
+				console.log("gig inserted");
+				res.status(200).end();
+				db.close();
+			}
+		})
+	}, err => {
+		console.warn("Couldn't connect to database: " + err)
+		res.status(500).end()
+	});
 });
 
-router.get('/get_current_events', (req, res) => {
-  console.log("got into the get gig get_current_events on search.js")
-  var query_curr_events = {isFilled: true};
-    database.connect(db => {
-       db.db('gigs').collection('gigs').find(query_curr_events).toArray(function(err,result){
-         if (err){
-           //res.err=err;
-           console.log(err);
-           db.close();
-         }
-         else{
-           console.log("result is:" + result);
-           res.status(200).json({'events':result});
-           db.close();
-         }
-       });
-
-  	}, err => {
-  		console.warn("Couldn't connect to database: " + err);
-  		res.status(500).end();
-  	});
+router.get('/current_events'(req, res) => {
+  database.connect(db => {
+    let gigDB = db.db('gigs').collection('gigs');
+    gigDB.findOne(query:{'isFilled':{$eq: true}}).toArraytoArray(function(err, result) {
+      if (err){
+        console.warn("Couldnt get insert gig into database: " + err);
+        res.status(500).end();
+        db.close();
+      }
+      else{
+        console.log(result);
+        res.status(200).send(result);
+        db.close();
+      }
+    });
+  }, err => {
+    console.warn("Couldn't connect to database: " + err)
+		res.status(500).end()
+  });
 });
 
+router.post('/band', (req, res) => {
+	var band = req.body;
 
-}
+	if (!band) {
+		return res.status(400).send('No body sent').end();
+	}
+  band['applliedGigs']=[];
+  band['acceptedGigs']=[];
+
+	console.log("Received body for band: " + band);
+
+	database.connect(db => {
+		let bands = db.db('bands').collection('bands');
+		bands.insertOne(band, (err, result) => {
+			if (err){
+				console.warn("Couldnt get insert band into database: " + err);
+				res.status(500).end();
+				db.close();
+			} else {
+				console.log("band inserted");
+				res.status(200).end();
+				db.close();
+			}
+		})
+	}, err => {
+		console.warn("Couldn't connect to database: " + err)
+		res.status(500).end()
+	});
+});

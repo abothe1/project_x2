@@ -27,7 +27,7 @@ rainTimer = null,
 maxDrops = 15;
 getLocation();
 getCurrentEvents();
-
+setInterval(getCurrentEvents,60000*5);
 $.getScript('assets/banks.js', function(data, status)
 {
   console.log("dtata from loading banks is : " + data);
@@ -414,7 +414,6 @@ function handleEventsWithTicker(events){
       i=0;
     }
   }, 5000);
-
 }
 function sortEventsByDate(events){
   var today = new Date();
