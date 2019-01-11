@@ -18,8 +18,8 @@ router.get('/search', (req, res) => {
 				matching.findGigsForBand(bandName, query, db, err => {
 					console.error("Error when finding gigs for " + bandName + ": " + err);
 					res.status(500).end();
-				}, ok => {
-					res.status(200).json({ success: true });
+				}, data => {
+					res.status(200).json({ success: true, data: data });
 				});
 			}, err => {
 				console.error('[auth][database] Database connection whilst logging in failed');
@@ -31,8 +31,8 @@ router.get('/search', (req, res) => {
 				matching.findBandsForGig(gigName, query, db, err => {
 					console.error("Error when finding bands for " + gigName + ": " + err);
 					res.status(500).end();
-				}, ok => {
-					res.status(200).json({ success: true });
+				}, data => {
+					res.status(200).json({ success: true, data: data });
 				});
 			}, err => {
 				console.error('[auth][database] Database connection whilst logging in failed');
@@ -42,22 +42,6 @@ router.get('/search', (req, res) => {
 		default:
 			res.status(400).send("Invalid mode: " + mode).end()
 	}
-
-	// // ignore from here down
-	// 	database.connect(db => {
-	// 		var bands = db.db('bands').collection('bands');
-
-	// 		bands.findOne({ name: bandName }, (err, band) => {
-	// 			if (err) {
-	// 				console.error(`User find request from ${req.ip} (for ${username}) returned error: ${err}`)
-	// 				res.status(500).end()
-	// 			} else if (!band) {
-	// 				res.status(400).send('Username or email already exists').end()
-	// 			} else {
-	// 				var gigs = /* ... */;
-	// 				res.json(matching.find_gigs_for_band(band, gigs, query)).end();
-	// 			}
-	// 		})
-	// 	});
-	// }
 });
+
+}
