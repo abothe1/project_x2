@@ -93,7 +93,7 @@ var priceEQ=10;
 //call this for a band searching for a gig, myBand is a json band and
 // gigs is an array of gig jsons and
 //query String is the string they typed in search bar (i handled parsing)
-function findGigsForBand(myBand, queryStr, db, cb_ok, cb_err){
+function findGigsForBand(myBand, queryStr, db, cb_err, cb_ok){
 //  var sortedGigs=[];
 	return db.db('gigs').collection('gigs').find({}).toArray(function(err,result){
 		if (err){
@@ -161,7 +161,7 @@ function findGigsForBand(myBand, queryStr, db, cb_ok, cb_err){
 	});
 }
 
-function findBandsForGig(myGig, categories, db, cb_ok, cb_err){
+function findBandsForGig(myGig, categories, db, cb_err, cb_ok){
 	return db.db('bands').collection('bands').find({}).toArray(function(err,result){
 		if (err){
 			console.log("There was error getting gigs from db:" + err);
