@@ -14,6 +14,9 @@ router.get('/search', (req, res) => {
 
 	switch (mode) {
 		case 'findGigs':
+			if (!bandName) {
+				return res.status(400).send('No bandName supplied').end();
+			}
 			database.connect(db => {
 				matching.findGigsForBand(bandName, query, db, err => {
 					console.error("Error when finding gigs for " + bandName + ": " + err);
@@ -27,6 +30,10 @@ router.get('/search', (req, res) => {
 			})
 			break;
 		case 'findBands':
+			if (!gigName) {
+				return res.status(400).send('No gigName supplied').end();
+			}
+
 			database.connect(db => {
 				matching.findBandsForGig(gigName, query, db, err => {
 					console.error("Error when finding bands for " + gigName + ": " + err);
