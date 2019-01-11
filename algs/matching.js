@@ -93,14 +93,23 @@ var priceEQ=10;
 //call this for a band searching for a gig, myBand is a json band and
 // gigs is an array of gig jsons and
 //query String is the string they typed in search bar (i handled parsing)
-function findGigsForBand(myBand, queryStr, db){
+function findGigsForBand(myBandName, queryStr, db, errCb, okCb){
 //  var sortedGigs=[];
-	return db.db('gigs').collection('gigs').find({}).toArray(function(err,result){
+
+  var myBand = db.db('bands').collection('bands').findOne({name:myBandname});
+  if (!myBand){
+    errCb("couldn't find band for name: " + myGigname);
+  }
+  console.log("The my badn find one method in algs returned: " + myBand);
+
+
+	 db.db('gigs').collection('gigs').find({}).toArray(function(err,result){
 		if (err){
 			console.log("There was error getting gigs from db:" + err);
-			return [];
+			errCb(err);
 		}
 		else{
+      console.log("result in find gigs for band connecting ot db and geting the gigs was: " + result)
 			var gigs=result;
 			var genresFromStr=[];
 			var instsFromStr=[];
@@ -156,16 +165,24 @@ function findGigsForBand(myBand, queryStr, db){
 				}
 				var sortedGigs=sortDict(gigsToScore);
 				db.close();
-				return sortedGigs;
+				cbOk(sortedGigs);
 		}
 	});
 }
 
-function findBandsForGig(myGig, categories, db){
-	return db.db('bands').collection('bands').find({}).toArray(function(err,result){
+function findBandsForGig(myGigName, categories, db, errCb, okCb) {
+
+
+  var myGig = db.db('gig').collection('gig').findOne({name:myGigName});
+  if(!myGig){
+    errCb("couldn't find gig for name: " + myGigname);
+  }
+  console.log("The my badn find one method in algs returned: " + myBand);
+
+	 db.db('bands').collection('bands').find({}).toArray(function(err,result){
 		if (err){
 			console.log("There was error getting gigs from db:" + err);
-			return [];
+			errCb(err);
 		}
 		else{
 			var bands = result;
@@ -205,7 +222,8 @@ function findBandsForGig(myGig, categories, db){
 				bandsToScore.push([theBand,score]);
 			}
 			var sortedBands=sortDict(bandsToScore);
-			return sortedBands;
+      db.close();
+			okCb(sortedBands);
 		}
 	});
 }
