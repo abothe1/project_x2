@@ -91,6 +91,7 @@ router.get('/index', (_, res) => { res.render('index.html'); });
 require('./routes/auth.js')(router, app); // login, register, logout
 require('./routes/upload.js')(router, app);
 require('./routes/search.js')(router, app); //searches and posting
+require('./routes/gig.js')(router, app); //searches and posting
 
 // startup the server
 app.use('/', router);

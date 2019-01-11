@@ -79,7 +79,7 @@ router.post('/register', (req, res) => {
 				logger.verbose('[auth] Registration failed because the username or email already exists', { username: username, email: email });
 				res.status(200).json({ success: false, cause: 'Username or email already exists' }).end()
 			} else {
-				var user = { email: email, username: username, password: password };
+				var user = { email: email, username: username, password: password, creation: new Date() };
 				users.insertOne(user, (err, obj) => {
 					if (err) {
 						logger.error('[auth][database] Creation of a new user failed', { username: username, email: email, err: err });
@@ -113,16 +113,17 @@ router.post('/login', (req, res) => {
 	password = hashPassword(password);
 
 	database.connect(db => {
-		db.db('users').collection('users').findOne({ username: username, password: password }, (err, obj) => {
+		db.db('users').collection('users').findOne({ username: username, password: password }, (err, user) => {
 			if (err) {
 				logger.error('[auth][database] Database connection for login faild', { username: username, err: err });
 				res.status(500).end()
-			} else if (!obj) {
+			} else if (!user) {
 				logger.silly('[auth] Login failed because of invalid credentials', { username: username });
 				res.status(400).send('Invalid Credentials').end()
 			} else {
+				// console.log(JSON.stringify(user));
 				logger.silly('[auth] User logged in successfully', { username: username });
-				req.session.key = obj._id;
+				req.session.key = user._id;
 				res.status(200).json({ success: true }).end()
 			}
 		})
