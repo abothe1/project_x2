@@ -65,17 +65,17 @@ router.post('/gig', (req, res) => {
 				res.status(200).end();
 				db.close();
 			}
-		})
+		});
 	}, err => {
-		console.warn("Couldn't connect to database: " + err)
-		res.status(500).end()
+		console.warn("Couldn't connect to database: " + err);
+		res.status(500).end();
 	});
 });
 
-router.get('/current_events'(req, res) => {
+router.get('/current_events', (req, res) => {
   database.connect(db => {
     let gigDB = db.db('gigs').collection('gigs');
-    gigDB.findOne(query:{'isFilled':{$eq: true}}).toArraytoArray(function(err, result) {
+    gigDB.find({'isFilled':{$eq: true}}).toArraytoArray(function(err, result) {
       if (err){
         console.warn("Couldnt get insert gig into database: " + err);
         res.status(500).end();
@@ -111,14 +111,15 @@ router.post('/band', (req, res) => {
 				console.warn("Couldnt get insert band into database: " + err);
 				res.status(500).end();
 				db.close();
-			} else {
+			}
+      else{
 				console.log("band inserted");
 				res.status(200).end();
 				db.close();
 			}
-		})
+		});
 	}, err => {
-		console.warn("Couldn't connect to database: " + err)
-		res.status(500).end()
+		console.warn("Couldn't connect to database: " + err);
+		res.status(500).end();
 	});
 });
