@@ -292,6 +292,7 @@ input[type=text], input[type=password], input[type=number], input[type=datetime-
 
 #reg_form{
   background-color: transparent;
+  border: none;
 }
 
 #reg_form input, #reg_form button{
