@@ -19,11 +19,24 @@
  *
 *************************************************************************/
 
+// used to emit warnings about things to change if in production
+switch (process.env.NODE_ENV) {
+	case undefined:
+		process.env.NODE_ENV = 'development';
+	case 'development': 
+	case 'production':
+		break;
+	default:
+		console.error("NODE_ENV must be one of 'development' or 'production', not '" + process.env.NODE_ENV + "'");
+		return;
+}
+
+
 // `express` is used to serve up webpages
 // `redis` is used to store user sessions
 // `mongodb` is used to store more heavy-duty objects
 
-const EXPRESS_APP_PORT = 1600,
+const EXPRESS_APP_PORT = 80,
       PUBLIC_DIR = 'public',
       STATIC_DIR = 'static',
       REDIS_HOST = 'localhost'
@@ -81,4 +94,6 @@ require('./routes/search.js')(router, app); //searches and posting
 
 // startup the server
 app.use('/', router);
-app.listen(EXPRESS_APP_PORT, () => console.info('Express started on port ' + EXPRESS_APP_PORT));
+app.listen(EXPRESS_APP_PORT, () => {
+	require('./logging').info('[init] Express started on port ' + EXPRESS_APP_PORT)
+});
