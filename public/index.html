@@ -43,11 +43,13 @@
 		<script type="text/javascript">
 			(function($) {
 				$(function() {
-					$('#mainbtn').click(function(){
+					$('#mainbtn').mouseover(function(){
 						$('.deg0, .deg30, .deg60, .deg90').toggleClass('open')
 					});
 				});
 			})(jQuery);
+
+
 		</script>
 
 		<script async defer src="https://maps.googleapis.com/maps/api/js?key=AIzaSyBdtwRfJmaP2JYKpQyzKwjVcuTdKch7AwU&callback=initMap" type="text/javascript"></script>
@@ -100,10 +102,11 @@
 				<div id="rain">
 
 					<div id="container">
+						<svg id="menu_circle_svg" height="288" width="288">
+							<circle id="menu_circle"cx="144" cy="144" r="138" stroke="black" stroke-width="3" fill="white" fill-opacity="0.8"/>
+						</svg>
 						<img id="menuBacking" src="../static/assets/Home/menubacking.png" />
 						<div id="corner"><a href="#"><i id="mainbtn"><img src="../static/assets/Home/logo.png" /></i></a>
-							<svg height="200" width="200">
-							</svg>
 						</div>
 					</div>
 

@@ -42,10 +42,18 @@ h1, h4, h6, p, button, input, textarea{
   width: 288px;
 }
 
+#menu_circle_svg{
+  z-index: 1;
+  position: absolute;
+  left: -48px;
+  top: -48px;
+  color: rgba(0,0,0,0.0);
+}
+
 #mainbtn {
   position:absolute;
-  top:15px;
-  left:15px;
+  top:70px;
+  left:70px;
   z-index:3;
 }
 
