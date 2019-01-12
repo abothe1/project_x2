@@ -52,8 +52,8 @@ h1, h4, h6, p, button, input, textarea{
 
 #mainbtn {
   position:absolute;
-  top:70px;
-  left:70px;
+  top:30px;
+  left:80px;
   z-index:3;
 }
 
@@ -61,8 +61,8 @@ h1, h4, h6, p, button, input, textarea{
   position: absolute;
   top:0px;
   left:0px;
-  width: 44px;
-  height: 44px;
+  width: 57px;
+  height: 147px;
 }
 
 .circle-container {
@@ -286,7 +286,7 @@ input[type=text], input[type=password], input[type=number], input[type=datetime-
     border-radius: 50%;
 }
 
-#modal-wrapper{
+#modal-wrapper-login{
   z-index: 5;
 }
 
