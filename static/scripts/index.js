@@ -106,9 +106,18 @@ class Drop {
 		this.audio = new Audio();
 		this.audio.src = "../static/assets/Home/transvertion.mp3";
 		this.audio.type='audio/mp3';
-		this.theButton = document.createElement("p");
-		this.theButton.innerHTML = "text";
-		this.theDiv.appendChild(this.theButton);
+		// this.theButton = document.createElement("p");
+		// this.theButton.innerHTML = "text";
+		// this.theDiv.appendChild(this.theButton);
+    this.theImg = document.createElement("img");
+    this.theImg.style.width = "110px"
+    this.theImg.style.height = "110px"
+    this.theImg.style.margin = "5px"
+    this.theImg.style.borderRadius = "6px"
+    this.theImg.style.backgroundColor = "white";
+    var img = RandImg();
+    this.theImg.src = "../static/assets/Home/Art/" + img;
+    this.theDiv.appendChild(this.theImg);
 		rain.appendChild(this.theDiv);
 		this.AddClickToDiv();
 	}
@@ -204,6 +213,41 @@ function RandColorRange(){
 			return "rgba(0,"+green+",255,1.0)";
 			break;
 	}
+}
+
+
+var imgIndex = 0;
+var images = ["1.jpg","2.jpeg","3.jpeg","4.jpeg","5.jpeg","6.jpeg","7.jpeg","8.jpeg","9.jpeg","10.jpeg","11.jpeg","12.jpeg","13.jpeg","14.jpeg","15.jpeg","16.jpeg","17.jpeg","18.jpeg","19.jpeg","20.jpeg"];
+
+function RandImg(){
+  if(imgIndex == 0){
+    console.log("Shuffling!");
+    var array = images;
+    // Shuffle the array
+    var currentIndex = array.length, temporaryValue, randomIndex;
+
+    // While there remain elements to shuffle...
+    while (0 !== currentIndex) {
+
+      // Pick a remaining element...
+      randomIndex = Math.floor(Math.random() * currentIndex);
+      currentIndex -= 1;
+
+      // And swap it with the current element.
+      temporaryValue = array[currentIndex];
+      array[currentIndex] = array[randomIndex];
+      array[randomIndex] = temporaryValue;
+    }
+    images = array;
+  }
+  var img = images[imgIndex];
+  if(imgIndex < 19){
+    imgIndex++;
+  }else{
+    imgIndex = 0;
+  }
+  console.log(img);
+  return img;
 }
 
 // Sam Westerhack Zone
