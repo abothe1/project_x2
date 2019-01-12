@@ -45,13 +45,15 @@ router.get('/search', (req, res) => {
 });
 
 router.post('/gig', (req, res) => {
+  console.log(req.body);
+  console.log("got into post gigs on router")
 	var gig = req.body;
 	if (!gig) {
-		return res.status(400).send('No body sent').end();
+		 res.status(400).send('No body sent').end();
 	}
   gig['isFilled']=false;
   gig['banndFor']='none';
-	console.log("Received body for gig: " + gig);
+	console.log("Received body for gig: " + req.body['name']);
 
 	database.connect(db => {
 		let gigs = db.db('gigs').collection('gigs');
@@ -75,7 +77,7 @@ router.post('/gig', (req, res) => {
 router.get('/current_events', (req, res) => {
   database.connect(db => {
     let gigDB = db.db('gigs').collection('gigs');
-    gigDB.find({'isFilled':{$eq: true}}).toArraytoArray(function(err, result) {
+    gigDB.find({'isFilled':{$eq: true}}).toArray(function(err, result) {
       if (err){
         console.warn("Couldnt get insert gig into database: " + err);
         res.status(500).end();

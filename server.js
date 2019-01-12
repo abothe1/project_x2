@@ -62,6 +62,8 @@ console.info("figure out why cookies aren't working");
 app.use(cookieParser("lol my secret $c5%ookie parser 0nu@mber thingy 12038!@"));
 app.use(bodyParser.urlencoded({ extended: false }));
 app.use(bodyParser.json());
+app.use(express.json());       // to support JSON-encoded bodies
+app.use(express.urlencoded({ extended: false }));
 
 /** ROUTES **/
 

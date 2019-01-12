@@ -27,25 +27,24 @@ rainTimer = null,
 maxDrops = 15;
 getLocation();
 getCurrentEvents();
+var categories = {};
 setInterval(getCurrentEvents,60000*5);
 $.getScript('assets/banks.js', function(data, status)
 {
   console.log("dtata from loading banks is : " + data);
   //banks = data.BANKS;
-  if (data.BANKS){
-    for (key in data.BANKS){
-      if (categories.hasOwnProperity(key)){
-        console.log("banks are " + data.BANKS[key]);
-        categories[key]={'wordBank' : data.BANKS[key]};
-      }
+  if (BANKS){
+    console.log(BANKS);
+    for (var key in BANKS){
+      console.log(key);
+        console.log("banks are " + BANKS[key]);
+        categories[key]={'wordBank' : BANKS[key]}
     }
   }
   else{
     console.log("banks from the script was null");
   }
 
-    // script is now loaded and executed.
-    // put your dependent JS here.
 });
 
 function init(){
@@ -336,8 +335,23 @@ function search_gigs() {
 }
 
 function post_gig() {
-  var categoriesFromStr = parseQueryString($("#search_input").val());
-	$.post('/post_gig', { body: categoriesFromStr }, result => {
+  console.log("got into post gig");
+  var name = $('#gig_name_input').val();
+  console.log("name from gig form is: " + name);
+  var address = $('#gig_address_input').val();
+  var price = $('#gig_price_input').val();
+  var description = $('#gig_desc_input').val();
+  var startDate = $('#gig_date_input').val();
+  var gig = {'name':name,
+            'address':address,
+            'price':price,
+            'startDate':startDate
+            };
+  var categoriesFromStr = parseQueryString(description);
+  gig['categories'] = categoriesFromStr;
+  console.log(gig);
+	$.post('/gig', {'body': gig}, result => {
+    console.log("got cb from post /gig");
 		alert(`result is ${result}`);
 	});
 }
@@ -371,12 +385,10 @@ function parseQueryString(str){
   var categoriesFromStr={};
   var lowerCased = str.toLowerCase();
   for (key in categories){
-    if (categories.hasOwnProperity(key)){
-      console.log("banks are " + categories[key]);
-      for (word in categories[key]['wordBank']){
-        if (lowerCased.includes(word)){
-          categoriesFromStr[key]['fromQueryStr'].push(word);
-        }
+    console.log("banks are " + categories[key]);
+    for (word in categories[key]['wordBank']){
+      if (lowerCased.includes(word)){
+        categoriesFromStr[key]['fromQueryStr'].push(word);
       }
     }
   }
@@ -386,7 +398,7 @@ function parseQueryString(str){
 
 // current events stuff//
 function getCurrentEvents(){
-  $.get('/get_current_events', {}, result => {
+  $.get('/current_events', {}, result => {
     var events = result.events;
     console.log("events from db are: " + events);
 		alert(`result is ${result}`);
@@ -405,8 +417,9 @@ function handleEventsWithTicker(events){
       var evt = sortedEvents[i];
       var genre = evt.genres[0];
       var type = evt.gigTypes[0];
-      $("#frontText").innerHTML="A(n) " + genre + " artist was just booked for a(n)" + type;
-      $("#backText").innerHTML="A(n) " + genre + " artist was just booked for a(n)" + type;
+      var price = evt["price"];
+      $("#frontText").innerHTML="A(n) " + genre + " artist was just booked for a(n) " + type + ", for $" + price;
+      $("#backText").innerHTML="A(n) " + genre + " artist was just booked for a(n) " + type + ", for $" + price;
       flipTicker();
       i+=1;
     }
@@ -437,6 +450,21 @@ function diff_minutes(dt2, dt1) {
  		 return first[1]-second[1];
  	 });
  	 return dict;
+  }
+
+  function convertAddress(){
+    /*var geocoder = new google.maps.Geocoder();
+    var address = jQuery('#gig_address_input').val();
+
+    geocoder.geocode( { 'address': address}, function(results, status) {
+
+    if (status == google.maps.GeocoderStatus.OK) {
+        var latitude = results[0].geometry.location.lat();
+        var longitude = results[0].geometry.location.lng();
+        console.log(latitude+', '+longitude);
+        }
+    });
+    */
   }
 /*
 //this is the function to handle the search bar

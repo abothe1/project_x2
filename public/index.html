@@ -53,19 +53,7 @@
 		<script async defer src="https://maps.googleapis.com/maps/api/js?key=AIzaSyBdtwRfJmaP2JYKpQyzKwjVcuTdKch7AwU&callback=initMap" type="text/javascript"></script>
 		<script type="text/javascript">
 
-		function convertAddress(){
-			var geocoder = new google.maps.Geocoder();
-			var address = jQuery('#gig_address_input').val();
 
-			geocoder.geocode( { 'address': address}, function(results, status) {
-
-			if (status == google.maps.GeocoderStatus.OK) {
-			    var latitude = results[0].geometry.location.lat();
-			    var longitude = results[0].geometry.location.lng();
-			    console.log(latitude+', '+longitude);
-			    }
-			});
-		}
 		</script>
 
 
@@ -135,7 +123,7 @@
 					</div>
 
 					<div id="modal-wrapper-gig" class="modal">
-						<form class="modal-content animate" action="/action_page.php">
+						<form class="modal-content animate">
 
 					    <div class="imgcontainer">
 					      <span onclick="document.getElementById('modal-wrapper-gig').style.display='none'" class="close" title="Close PopUp">&times;</span>
@@ -153,7 +141,7 @@
 								<input type="number" min="1" step="any" id="gig_price_input">
 								<h6>Description</h6>
 								<textarea name="Text1" cols="40" rows="5" id="gig_desc_input"></textarea>
-					      <button class="popUpButtons" type="submit" onclick="convertAddress()">Post Gig</button>
+					      <button class="popUpButtons" type="button" onclick="post_gig()">Post Gig</button>
 					    </div>
 
 					  </form>
