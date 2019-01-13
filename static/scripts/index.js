@@ -85,7 +85,7 @@ var lastX = 99999;
 class Drop {
 
 	constructor(){
-		console.log("creating drop")
+		//console.log("creating drop")
 		this.id = 0;
 		this.theDiv = document.createElement("div");
 		this.theDiv.className = "rainDrop";
@@ -134,8 +134,6 @@ class Drop {
 		}
 	}
 
-
-
 	TogglePaused(){
 		this.paused = !this.paused;
 		 if(this.paused){
@@ -175,7 +173,7 @@ class Drop {
 function checkProximity(){
 	var x = Math.random()*(window.innerWidth-120);
 	while(x <= lastX+120 && x >= lastX-120){
-		console.log("recalculating");
+		//console.log("recalculating");
 		x = Math.random()*(window.innerWidth-120);
 	}
 	lastX = x;
@@ -215,15 +213,13 @@ function RandColorRange(){
 	}
 }
 
-
 var imgIndex = 0;
 var images = ["1.jpg","2.jpeg","3.jpeg","4.jpeg","5.jpeg","6.jpeg","7.jpeg","8.jpeg","9.jpeg","10.jpeg","11.jpeg","12.jpeg","13.jpeg","14.jpeg","15.jpeg","16.jpeg","17.jpeg","18.jpeg","19.jpeg","20.jpeg"];
 
 function RandImg(){
   if(imgIndex == 0){
-    console.log("Shuffling!");
     var array = images;
-    // Shuffle the array
+    // Shuffle the array via Fisher–Yates Shuffle
     var currentIndex = array.length, temporaryValue, randomIndex;
 
     // While there remain elements to shuffle...
@@ -246,7 +242,6 @@ function RandImg(){
   }else{
     imgIndex = 0;
   }
-  console.log(img);
   return img;
 }
 
