@@ -1,9 +1,10 @@
 module.exports = router => {
 
-const database = require('../database.js'),
-      logger = require('../logging.js'),
+const database = require('../libs/database.js'),
+      logger = require('../libs/logging.js'),
       emailValidator = require('email-validator'),
-      usernamePasswordValidator = require('password-validator');
+      usernamePasswordValidator = require('password-validator'),
+      { requireLoggedIn, requireNotLoggedIn, extractRequiredFields } = require('./util.js');
 
 var passwordValidator = new usernamePasswordValidator();
 passwordValidator
@@ -17,8 +18,7 @@ usernameValidator
 	.is().max(15)
 	.has().not().symbols()
 	.has().not().spaces()
-	is().not().oneOf([/(admin|staff)|.*/i]);
-
+	.is().not().oneOf([/(admin|staff)|.*/i]);
 
 // temporary routes for testing
 router.get('/register', (_, res) => res.redirect('_register'));
@@ -28,33 +28,20 @@ router.get('/_register', (_, res) => res.render('_register.html'));
 router.get('/_login', (_, res) => res.render('_login.html'));
 router.get('/_logout', (_, res) => res.render('_logout.html'));
 
-function validatePassword(password) {
-	console.log("TODO: validate password");
-	return true;
-}
-
 function hashPassword(password) {
 	console.log('TODO: hash password');
 	return '<HASH:' + password + '>';
 }
 
-
 router.post('/register', (req, res) => {
-	var {ip, url} = req;
+	if (!requireNotLoggedIn(req, res))
+		return;
 
-	if (req.session.key) {
-		return res.status(200).json({ success: false, cause: 'Already logged in' }).end();
-	}
+	var user = extractRequiredFields(req.body, res, ['username', 'password', 'email']);
+	if (!user)
+		return;
 
-	var {username, email, password} = req.body;
-
-	if (!username){
-		return res.status(400).send('No username supplied')
-	} else if (!password){
-		return res.status(400).send('No password supplied')
-	} else if (!email){
-		return res.status(400).send('No email supplied')
-	}
+	var {username, email, password} = user;
 
 	if (process.env.NODE_ENV === 'production') {
 		if (!usernameValidator.validate(username)){
@@ -64,6 +51,8 @@ router.post('/register', (req, res) => {
 		} else if (!passwordValidator.validate(password)) {
 			return res.status(200).json({ success: false, cause: 'Too weak of a password'});
 		}
+	} else {
+		logger.info('Not running in production, so not validating username/email/password');
 	}
 
 	password = hashPassword(password);
@@ -98,17 +87,14 @@ router.post('/register', (req, res) => {
 })
 
 router.post('/login', (req, res) => { 
-	if (req.session.key) {
-		return res.status(200).json({ success: false, cause: 'Already logged in' }).end();
-	}
+	if (!requireNotLoggedIn(req, res))
+		return;
+
+	var user = extractRequiredFields(req.body, res, ['username', 'password']);
+	if (!user)
+		return;
 
 	var {username, password} = req.body;
-
-	if (!username){
-		return res.status(400).send('No username supplied')
-	} else if (!password) {
-		return res.status(400).send('No password supplied')
-	}
 
 	password = hashPassword(password);
 
@@ -134,12 +120,11 @@ router.post('/login', (req, res) => {
 });
 
 router.get('/logout', (req, res) => {
-	if(req.session.key) {
-		logger.silly('[auth] User logged out', { id: req.session.key });
-		req.session.destroy(() => res.status(200).json({ success: true }).end())
-	} else {
-		res.status(402).send('Not logged in').end()
-    }
+	if (!requireLoggedIn(req, res))
+		return;
+
+	logger.silly('[auth] User logged out', { id: req.session.key });
+	req.session.destroy(() => res.status(200).json({ success: true }).end())
 });
 
 } /* end module.exports */

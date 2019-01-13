@@ -1,6 +1,6 @@
 module.exports = router => {
 
-const database = require('../database.js'),
+const database = require('../libs/database.js'),
       matching = require('../algs/matching.js');
 
 router.get('/search', (req, res) => {
@@ -51,4 +51,4 @@ router.get('/search', (req, res) => {
 	}
 });
 
-}
+} /* end module.exports */

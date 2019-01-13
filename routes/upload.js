@@ -1,8 +1,8 @@
 module.exports = router => {
 
-const database = require('../database.js'),
+const database = require('../libs/database.js'),
+      logger = require('../libs/logging.js'),
       multer = require('multer'),
-      logger = require('../logger.js'),
       fs = require('fs');
 
 const UPLOADS_VIRTUAL_BASE_DIR = '/uploads',
@@ -170,8 +170,3 @@ router.route('/settings/soundbyte')
 	.delete(deleteUserFile('/soundbytes', 'soundbytes', 'soundbyte'));
 
 } /* end module.exports */
-
-
-
-
-

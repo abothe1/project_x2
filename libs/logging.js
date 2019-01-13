@@ -36,7 +36,7 @@ var logger = createLogger({
 	format: format.simple(),
 	transports: [
 		new (transports.DailyRotateFile)({
-			filename: 'logs/absinthe-%DATE%.log',
+			filename: '../logs/absinthe-%DATE%.log',
 			datePattern: 'YYYY-MM-DD-HH',
 			zippedArchive: true,
 			maxSize: '20m',
@@ -46,7 +46,7 @@ var logger = createLogger({
 
 	exceptionHandlers: [
 		new (transports.DailyRotateFile)({
-			filename: 'logs/absinthe-%DATE%.exceptions.log',
+			filename: '../logs/absinthe-%DATE%.exceptions.log',
 			datePattern: 'YYYY-MM-DD-HH',
 			zippedArchive: true,
 			maxSize: '20m',
