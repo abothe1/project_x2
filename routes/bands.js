@@ -1,126 +1,105 @@
 'use strict'
-/*module.exports = router => {
 
-const database = require('../database.js'),
-      matching = require('../algs/matching.js');
+module.exports = router => {
 
-router.get('/search', (req, res) => {
-	var { query, mode, bandName, gigName } = req.query;
+const database = require('../libs/database.js'),
+      logging = require('../libs/logging.js'),
+      { requireLoggedIn, extractRequiredFields } = require('./util.js');
 
-	if (!query) {
-		return res.status(400).send('No query supplied').end();
-	} else if (!mode) {
-		return res.status(400).send('No mode supplied').end();
-	}
+function extractRequiredBandFields(req, res, err=true) {
+	const requiredFields = ['name', 'genres', 'vibes', 'instruments', 'gigTypes'];
+	if (!requireLoggedIn(req, res))
+		return false;
+	return extractRequiredFields(req.body, res, requiredFields, err);
+}
 
-	switch (mode) {
-		case 'findGigs':
-			database.connect(db => {
-				matching.findGigsForBand(bandName, query, db, err => {
-					console.error("Error when finding gigs for " + bandName + ": " + err);
-					res.status(500).end();
-				}, data => {
-					res.status(200).json({ success: true, data: data });
-				});
-			}, err => {
-				console.error('[auth][database] Database connection whilst logging in failed');
-				res.status(500).end()
-			})
-			break;
-		case 'findBands':
-			database.connect(db => {
-				matching.findBandsForGig(gigName, query, db, err => {
-					console.error("Error when finding bands for " + gigName + ": " + err);
-					res.status(500).end();
-				}, data => {
-					res.status(200).json({ success: true, data: data });
-				});
-			}, err => {
-				console.error('[auth][database] Database connection whilst logging in failed');
-				res.status(500).end()
-			});
-			break;
-		default:
-			res.status(400).send("Invalid mode: " + mode).end()
-	}
-});
-
-router.post('/gig', (req, res) => {
-	var gig = req.body;
-	if (!gig) {
-		return res.status(400).send('No body sent').end();
-	}
-  gig['isFilled']=false;
-  gig['banndFor']='none';
-	console.log("Received body for gig: " + gig);
-
-	database.connect(db => {
-		let gigs = db.db('gigs').collection('gigs');
-		gigs.insertOne(gig, (err, result) => {
-			if (err){
-				console.warn("Couldnt get insert gig into database: " + err);
-				res.status(500).end();
-				db.close();
-			} else {
-				console.log("gig inserted");
-				res.status(200).end();
-				db.close();
-			}
-		})
-	}, err => {
-		console.warn("Couldn't connect to database: " + err)
-		res.status(500).end()
-	});
-});
-
-router.get('/current_events'(req, res) => {
-  database.connect(db => {
-    let gigDB = db.db('gigs').collection('gigs');
-    gigDB.findOne(query:{'isFilled':{$eq: true}}).toArraytoArray(function(err, result) {
-      if (err){
-        console.warn("Couldnt get insert gig into database: " + err);
-        res.status(500).end();
-        db.close();
-      }
-      else{
-        console.log(result);
-        res.status(200).send(result);
-        db.close();
-      }
-    });
-  }, err => {
-    console.warn("Couldn't connect to database: " + err)
-		res.status(500).end()
-  });
-});
-
-router.post('/band', (req, res) => {
-	var band = req.body;
-
-	if (!band) {
-		return res.status(400).send('No body sent').end();
-	}
-  band['applliedGigs']=[];
-  band['acceptedGigs']=[];
-
-	console.log("Received body for band: " + band);
+router.post('/bands', (req, res) => {
+	var band = extractRequiredBandFields(req, res);
+	if (!band)
+		return; // error was already handled within the function
 
 	database.connect(db => {
 		let bands = db.db('bands').collection('bands');
-		bands.insertOne(band, (err, result) => {
-			if (err){
-				console.warn("Couldnt get insert band into database: " + err);
-				res.status(500).end();
-				db.close();
+		bands.insertOne(band, (err, res) => {
+			if (err) {
+				logger.error('[bands][database] Database connection for band creation failed', { band: band, err: err });
+				res.status(500).end()
 			} else {
-				console.log("band inserted");
-				res.status(200).end();
-				db.close();
+				logger.verbose('[bands] Created band', { id: band._id, name: band.name })
+				res.status(200).json({ success: true }).end()
 			}
 		})
 	}, err => {
-		console.warn("Couldn't connect to database: " + err)
+		logger.error('[bands][database] Database connection whilst adding a band failed');
 		res.status(500).end()
 	});
 });
-*/
+
+router.route('/bands/:id')
+	.get((req, res) => {
+		database.connect(db => {
+			db.db('bands').collection('bands').findOne({ _id: database.objectId(req.params.id) }, (err, band) => {
+				if (err) {
+					logger.error('[bands][database] Database connection for band lookup failed', { id: req.params.id, err: err });
+					res.status(500).end()
+				} else if (!band) {
+					res.status(404).end()
+				} else {
+					res.status(200).json(band).end()
+				}
+			})
+		}, err => {
+			logger.error('[bands][database] Database connection whilst adding a band failed');
+			res.status(500).end()
+		})
+	})
+	.put((req, res) => {
+		database.connect(db => {
+			var query = { _id: database.objectId(req.params.id), owner: req.sesion.key };
+			var newBand = extractRequiredBandFields(req, res, false);
+			if (!newBand)
+				return; // error was already handled within the function
+
+
+			db.db('bands').collection('bands').findOne(query, {$set: newBand}, (err, band) => {
+				if (err) {
+					logger.error('[bands][database] Database connection for band update lookup failed', { query: query, err: err });
+					res.status(500).end()
+				} else if (!band) {
+					res.status(404).send("Either band wasn't found or non-owned requested it").end()
+				} else {
+					res.status(200).json({ success: true }).end()
+				}
+			})
+		}, err => {
+			logger.error('[bands][database] Database connection whilst updating a band failed');
+			res.status(500).end()
+		});
+	})
+	.delete((req, res) => {
+		if (!requireLoggedIn(req, res))
+			return;
+		database.connect(db => {
+			var query = { _id: database.objectId(req.params.id), owner: req.sesion.key };
+
+			db.db('bands').collection('bands').deleteOne(query, (err, result) => {
+				if (err) {
+					logger.error('[bands][database] Database connection for band deletion failed', {query: query, err: err})
+					res.status(500).end()
+				} else if (!band) {
+					res.status(404).send("Either band wasn't found or non-owned requested it").end();
+				} else {
+					res.status(200).json({ success: true }).end();
+				}
+			})
+		}, err => {
+			logger.error('[bands][database] Database connection whilst updating a band failed');
+			res.status(500).end()
+		});
+	});
+
+
+
+
+
+} /* end module.exports */
