@@ -1,3 +1,4 @@
+'use strict'
 /*module.exports = router => {
 
 const database = require('../database.js'),

@@ -1,32 +1,39 @@
+'use strict'
+
 module.exports = router => {
 
 const database = require('../libs/database.js'),
       logger = require('../libs/logging.js'),
+      version = require('../libs/version.js'),
       emailValidator = require('email-validator'),
-      usernamePasswordValidator = require('password-validator'),
-      { requireLoggedIn, requireNotLoggedIn, extractRequiredFields } = require('./util.js');
+      UsernamePasswordValidator = require('password-validator'),
+      util = require('./util.js');
 
-var passwordValidator = new usernamePasswordValidator();
-passwordValidator
+// Used to check if passwords are secure enough
+const passwordValidator = new UsernamePasswordValidator()
 	.is().min(8)
 	.is().max(100)
 	.is().not().oneOf([/.*p[a4][5s][5s]sw[o0][2r]d.*/i]);
 
-var usernameValidator = new usernamePasswordValidator();
-usernameValidator
+// Used to check if usernames are allowed (ie are alphanumeric) 
+const usernameValidator = new UsernamePasswordValidator()
 	.is().min(4)
 	.is().max(15)
 	.has().not().symbols()
 	.has().not().spaces()
 	.is().not().oneOf([/(admin|staff)|.*/i]);
 
-// temporary routes for testing
-router.get('/register', (_, res) => res.redirect('_register'));
-router.get('/login', (_, res) => res.redirect('_login'));
-router.get('/logout', (_, res) => res.redirect('_logout'));
-router.get('/_register', (_, res) => res.render('_register.html'));
-router.get('/_login', (_, res) => res.render('_login.html'));
-router.get('/_logout', (_, res) => res.render('_logout.html'));
+if (version.isDevelopment()) {
+	/* These routes are temporary, and are only here whilst testing */
+	router.get('/register', (_, res) => res.redirect('_register'));
+	router.get('/login', (_, res) => res.redirect('_login'));
+	router.get('/logout', (_, res) => res.redirect('_logout'));
+	router.get('/_register', (_, res) => res.render('_register.html'));
+	router.get('/_login', (_, res) => res.render('_login.html'));
+	router.get('/_logout', (_, res) => res.render('_logout.html'));
+
+	logger.info('[init] In development mode, so testing login routes added');
+}
 
 function hashPassword(password) {
 	console.log('TODO: hash password');
@@ -34,16 +41,16 @@ function hashPassword(password) {
 }
 
 router.post('/register', (req, res) => {
-	if (!requireNotLoggedIn(req, res))
+	if (!util.requireNotLoggedIn(req, res))
 		return;
 
-	var user = extractRequiredFields(req.body, res, ['username', 'password', 'email']);
+	var user = util.extractRequiredFields(req.body, res, ['username', 'password', 'email']);
 	if (!user)
 		return;
 
 	var {username, email, password} = user;
 
-	if (process.env.NODE_ENV === 'production') {
+	if (version.isProduction()) {
 		if (!usernameValidator.validate(username)){
 			return res.status(200).json({ success: false, cause: 'Invalid email' });
 		} if (!emailValidator.validate(email)){
@@ -52,7 +59,7 @@ router.post('/register', (req, res) => {
 			return res.status(200).json({ success: false, cause: 'Too weak of a password'});
 		}
 	} else {
-		logger.info('Not running in production, so not validating username/email/password');
+		logger.info('[auth] Not running in production, so not validating username/email/password');
 	}
 
 	password = hashPassword(password);
@@ -87,10 +94,10 @@ router.post('/register', (req, res) => {
 })
 
 router.post('/login', (req, res) => { 
-	if (!requireNotLoggedIn(req, res))
+	if (!util.requireNotLoggedIn(req, res))
 		return;
 
-	var user = extractRequiredFields(req.body, res, ['username', 'password']);
+	var user = util.extractRequiredFields(req.body, res, ['username', 'password']);
 	if (!user)
 		return;
 
@@ -120,7 +127,7 @@ router.post('/login', (req, res) => {
 });
 
 router.get('/logout', (req, res) => {
-	if (!requireLoggedIn(req, res))
+	if (!util.requireLoggedIn(req, res))
 		return;
 
 	logger.silly('[auth] User logged out', { id: req.session.key });

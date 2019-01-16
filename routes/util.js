@@ -1,3 +1,5 @@
+'use strict'
+
 module.exports = {
 	requireLoggedIn: requireLoggedIn,
 	requireNotLoggedIn: requireNotLoggedIn,

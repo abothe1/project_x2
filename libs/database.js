@@ -18,32 +18,22 @@
  * from Banda Incorporated.
  *
 *************************************************************************/
+'use strict'
 
 module.exports = {
 	connect: connect,
-	objectId: objectId,
+	objectId: foo => ObjectID(foo),
 	usernameFromId: usernameFromId,
 	idFromUsername: idFromUsername,
 }
 
-const PORT = 27017,
-      MONGO_URL = `mongodb://localhost:${PORT}/banda`;
+// The port that mongodb runs on. This should be the same as in `db/mongod.conf`
+const MONGO_PORT = 27017;
+// The protocol and url to connect to. When we go to production, we might want to change this.
+const MONGO_URL = `mongodb://localhost:${MONGO_PORT}/banda`;
+const { MongoClient, ObjectID } = require('mongodb');
 
-const mongodb = require('mongodb');
-var MongoClient = mongodb.MongoClient;
-
-
-// function create_mongodb() {
-// 	connect(db => {
-// 		db.collection.createIndex(
-// 	}, console.error)
-// }
-
-
-function objectId(id) {
-	return mongodb.ObjectID(id);
-}
-
+// connect to mongodb
 function connect (cbOk, cbErr) {
 	MongoClient.connect(MONGO_URL, { useNewUrlParser : true}, (err, db) => {
 		if (err) {

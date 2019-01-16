@@ -18,18 +18,8 @@
  * from Banda Incorporated.
  *
 *************************************************************************/
-
-// used to emit warnings about things to change if in production
-switch (process.env.NODE_ENV) {
-	case undefined:
-		process.env.NODE_ENV = 'development';
-	case 'development': 
-	case 'production':
-		break;
-	default:
-		console.error("NODE_ENV must be one of 'development' or 'production', not '" + process.env.NODE_ENV + "'");
-		return;
-}
+'use strict'
+require('./libs/version.js'); // used to validate
 
 
 // `express` is used to serve up webpages
@@ -39,7 +29,7 @@ switch (process.env.NODE_ENV) {
 const EXPRESS_APP_PORT = 80,
       PUBLIC_DIR = 'public',
       STATIC_DIR = 'static',
-      REDIS_HOST = 'localhost'
+      REDIS_HOST = 'localhost',
       REDIS_PORT = 6379;
 
 const express = require('express'),

@@ -26,13 +26,15 @@ silly: log EVERYTHING!
 	- Omitting a field in a form
 
 */
+'use strict'
 
-const { createLogger, format, transports } = require('winston');
-require('winston-daily-rotate-file');
+const version = require('./version.js'),
+      { createLogger, format, transports } = require('winston');
 
+void require('winston-daily-rotate-file');
 
-var logger = createLogger({
-	level: (process.env.NODE_ENV === 'production') ? 'info' : 'silly',
+const logger = createLogger({
+	level: version.isProduction ? 'info' : 'silly',
 	format: format.simple(),
 	transports: [
 		new (transports.DailyRotateFile)({
@@ -58,8 +60,8 @@ var logger = createLogger({
 
 module.exports = logger;
 
-if (process.env.NODE_ENV !== 'production') {
+if (version.isDevelopment()) {
 	logger.add(new transports.Console({ stderrLevels: ['error', 'warn', 'info']}));
 }
-
-logger.info('[init] Started up logger with level=' + logger.level)
+if (typeof logger !== 'undefined')
+	logger.info('[init] Started up logger with level=' + logger.level);
