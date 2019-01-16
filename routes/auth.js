@@ -32,7 +32,7 @@ if (version.isDevelopment()) {
 	router.get('/_login', (_, res) => res.render('_login.html'));
 	router.get('/_logout', (_, res) => res.render('_logout.html'));
 
-	logger.info('[init] In development mode, so testing login routes added');
+	logger.debug('[init] In development mode, so testing login routes added');
 }
 
 function hashPassword(password) {

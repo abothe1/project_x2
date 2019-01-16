@@ -19,7 +19,7 @@
  *
 *************************************************************************/
 'use strict'
-require('./libs/version.js'); // used to validate
+require('./libs/version.js')._init(); // used to validate
 
 
 // `express` is used to serve up webpages
@@ -59,7 +59,7 @@ app.use(session({
 	// cookie: { secure: true, maxAge: 86400000 }
 }));
 
-console.info("figure out why cookies aren't working");
+// logger.info("figure out why cookies aren't working");
 
 // not sure what these do
 app.use(cookieParser("lol my secret $c5%ookie parser 0nu@mber thingy 12038!@"));

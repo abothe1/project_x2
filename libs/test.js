@@ -1,2 +1,2 @@
-require('./version.js');
 require('./logging.js');
+require('./version.js');
