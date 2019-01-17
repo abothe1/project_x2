@@ -34,7 +34,7 @@ const version = require('./version.js'),
 void require('winston-daily-rotate-file');
 
 const logger = createLogger({
-	level: version.isProduction ? 'info' : 'silly',
+	level: version.isProduction() ? 'info' : 'silly',
 	format: format.simple(),
 	transports: [
 		new (transports.DailyRotateFile)({
@@ -63,5 +63,7 @@ module.exports = logger;
 if (version.isDevelopment()) {
 	logger.add(new transports.Console({ stderrLevels: ['error', 'warn', 'info']}));
 }
-if (typeof logger !== 'undefined')
+
+if (typeof logger !== 'undefined') {
 	logger.info('[init] Started up logger with level=' + logger.level);
+}

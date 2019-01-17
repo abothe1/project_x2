@@ -94,8 +94,13 @@
 
 
 					<div class='circle-container'>
-						<a href='#' class='deg0' onclick="document.getElementById('modal-wrapper').style.display='block'" id="login_button"><p class="radialText">Login</p></a>
-						<a href='/_register' class='deg30' id="sign_in_button"><p class="radialText">Register</p></a>
+						<% if (username) { %>
+							<a href='#' class='deg0' onclick="$('#modal-wrapper').style.display='block'" id="account"><p class="radialText"><%= username %></p></a>
+							<a href='/logout' class='deg30' id="signout_butotn"><p class="radialText">Logout</p></a>
+						<% } else { %>
+							<a href='#' class='deg0' onclick="document.getElementById('modal-wrapper').style.display='block'" id="login_button"><p class="radialText">Login</p></a>
+							<a href='/register' class='deg30' id="sign_in_button"><p class="radialText">Register</p></a>
+						<% } %>
 						<a href='./' class='deg60'><p class="radialText">Home</p></a>
 						<a href='#' class='deg90'><p class="radialText">About</p></a>
 					</div>
@@ -114,7 +119,7 @@
 
 					<div id="modal-wrapper" class="modal">
 
-					  <form class="modal-content animate" action="/action_page.php">
+					  <form class="modal-content animate" action="/login" method="post">
 
 					    <div class="imgcontainer">
 					      <span onclick="document.getElementById('modal-wrapper').style.display='none'" class="close" title="Close PopUp">&times;</span>
@@ -123,8 +128,8 @@
 					    </div>
 
 					    <div class="container">
-					      <input type="text" placeholder="Enter Username" name="uname">
-					      <input type="password" placeholder="Enter Password" name="psw">
+					      <input type="text" placeholder="Enter Username" name="uname" id="username">
+					      <input type="password" placeholder="Enter Password" name="psw" id="password">
 					      <button class="popUpButtons" type="submit">Login</button>
 					      <input type="checkbox" style="margin:26px 30px;"> Remember me
 					      <a href="#" style="text-decoration:none; float:right; margin-right:34px; margin-top:26px;">Forgot Password ?</a>
@@ -135,7 +140,7 @@
 					</div>
 
 					<div id="modal-wrapper-gig" class="modal">
-						<form class="modal-content animate" action="/action_page.php">
+						<form class="modal-content animate" action="/gigs" method="post">
 
 					    <div class="imgcontainer">
 					      <span onclick="document.getElementById('modal-wrapper-gig').style.display='none'" class="close" title="Close PopUp">&times;</span>

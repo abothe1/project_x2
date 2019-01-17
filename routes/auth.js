@@ -27,7 +27,7 @@ if (version.isDevelopment()) {
 	/* These routes are temporary, and are only here whilst testing */
 	router.get('/register', (_, res) => res.redirect('_register'));
 	router.get('/login', (_, res) => res.redirect('_login'));
-	router.get('/logout', (_, res) => res.redirect('_logout'));
+	// router.get('/logout', (_, res) => res.redirect('_logout'));
 	router.get('/_register', (_, res) => res.render('_register.html'));
 	router.get('/_login', (_, res) => res.render('_login.html'));
 	router.get('/_logout', (_, res) => res.render('_logout.html'));
@@ -37,7 +37,8 @@ if (version.isDevelopment()) {
 
 function hashPassword(password) {
 	console.log('TODO: hash password');
-	return '<HASH:' + password + '>';
+	// return '<HASH:' + password + '>';
+	return password;
 }
 
 router.post('/register', (req, res) => {

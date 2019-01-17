@@ -46,7 +46,8 @@ function connect (cbOk, cbErr) {
 
 function usernameFromId (id, cbOk, cbErr, cbNotFound, db=null) {
 	function exec(db) {
-		db.db('users').collection('users').findOne({_id: objectId(id)}, (err, res) => {
+		db.db('users').collection('users').findOne({_id: ObjectID(id)}, (err, res) => {
+			console.log('a');
 			if (err)
 				cbErr(err)
 			else if (!res)

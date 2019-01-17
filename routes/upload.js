@@ -19,11 +19,10 @@ router.get('/_upload', (req, res) => {
 	database.usernameFromId(id, username => {
 		res.render('_upload.html', {username: username})
 	}, err => {
-		logger.warn("[")
 		console.warn(`Username find request from ${req.ip} (for ${id}) returned error: ${err}`)
 		res.status(500).end();
 	}, () => {
-		console.warn(`Username find request from ${req.ip} (for ${id}) couldn't find a username`);
+		logger.debug(`Username find request from ${req.ip} (for ${id}) couldn't find a username`);
 		res.status(500).end();			
 	})
 })

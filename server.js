@@ -1,3 +1,5 @@
+#!/usr/local/bin/node
+
 /*************************************************************************
  *
  * BANDA CONFIDENTIAL
@@ -20,7 +22,6 @@
 *************************************************************************/
 'use strict'
 require('./libs/version.js')._init(); // used to validate
-
 
 // `express` is used to serve up webpages
 // `redis` is used to store user sessions
@@ -74,19 +75,14 @@ app.use(express.static(STATIC_DIR));
 // create the router
 var router = express.Router();
 
-// display index
-router.get('/', (_, res) => res.redirect('/index'));
-router.get('/index', (_, res) => { res.render('index.html'); });
-
+require('./routes/index.js')(router, app);
 require('./routes/auth.js')(router, app); // login, register, logout
 require('./routes/upload.js')(router, app);
 
 require('./routes/search.js')(router, app); // searches and posting
 require('./routes/gigs.js')(router, app);
-// require('./routes/bands.js')(router, app);
+require('./routes/bands.js')(router, app);
 
 // startup the server
 app.use('/', router);
-app.listen(EXPRESS_APP_PORT, () => {
-	require('./libs/logging.js').info('[init] Express started on port ' + EXPRESS_APP_PORT)
-});
+app.listen(EXPRESS_APP_PORT, () => require('./libs/logging.js').info('[init] Express started on port ' + EXPRESS_APP_PORT));
