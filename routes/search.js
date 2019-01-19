@@ -51,7 +51,7 @@ router.post('/gig', (req, res) => {
 	if (!gig) {
 		 res.status(400).send('No body sent').end();
 	}
-  gig['isFilled']=false;
+  gig['isFilled']=true;
   gig['banndFor']='none';
 	console.log("Received body for gig: " + req.body['name']);
 
@@ -79,7 +79,7 @@ router.get('/current_events', (req, res) => {
     let gigDB = db.db('gigs').collection('gigs');
     gigDB.find({'isFilled':{$eq: true}}).toArray(function(err, result) {
       if (err){
-        console.warn("Couldnt get insert gig into database: " + err);
+        console.warn("Couldnt get gigs: " + err);
         res.status(500).end();
         db.close();
       }

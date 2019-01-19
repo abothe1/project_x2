@@ -28,7 +28,7 @@ maxDrops = 15;
 getLocation();
 getCurrentEvents();
 var categories = {};
-setInterval(getCurrentEvents,60000*5);
+setInterval(getCurrentEvents,60000);
 $.getScript('assets/banks.js', function(data, status)
 {
   console.log("dtata from loading banks is : " + data);
@@ -341,11 +341,13 @@ function post_gig() {
   var address = $('#gig_address_input').val();
   var price = $('#gig_price_input').val();
   var description = $('#gig_desc_input').val();
-  var startDate = $('#gig_date_input').val();
+  var startDate = $('#gig_start_input').val();
+  var endDate = $('#gig_end_input').val();
   var gig = {'name':name,
             'address':address,
             'price':price,
-            'startDate':startDate
+            'startDate':startDate,
+            'endDate':endDate
             };
   var categoriesFromStr = parseQueryString(description);
   gig['categories'] = categoriesFromStr;
@@ -356,7 +358,7 @@ function post_gig() {
 	});
 }
 
-function flipTicker(event){
+function flipTicker(){
 	console.log("got into flip ticker func");
 	$("#flip-box-inner0").flip({
 		 trigger: 'manual',
@@ -385,7 +387,8 @@ function parseQueryString(str){
   var categoriesFromStr={};
   var lowerCased = str.toLowerCase();
   for (key in categories){
-    console.log("banks are " + categories[key]);
+    console.log("banks are " + categories[key]['wordBank']);
+    categoriesFromStr[key]['fromQueryStr']=[];
     for (word in categories[key]['wordBank']){
       if (lowerCased.includes(word)){
         categoriesFromStr[key]['fromQueryStr'].push(word);
@@ -402,10 +405,12 @@ function getCurrentEvents(){
     var events = result.events;
     console.log("events from db are: " + events);
 		alert(`result is ${result}`);
-    handleEventsWithTicker(events);
+    handleEventsWithTicker(result.events);
 	});
 }
 function handleEventsWithTicker(events){
+  $("#frontText").html("");
+  $("#backText").html("");
   var sortedEventsAndDates = sortEventsByDate(events);
   var sortedEvents=[];
   for (e in sortedEventsAndDates){
@@ -418,8 +423,8 @@ function handleEventsWithTicker(events){
       var genre = evt.genres[0];
       var type = evt.gigTypes[0];
       var price = evt["price"];
-      $("#frontText").innerHTML="A(n) " + genre + " artist was just booked for a(n) " + type + ", for $" + price;
-      $("#backText").innerHTML="A(n) " + genre + " artist was just booked for a(n) " + type + ", for $" + price;
+      $("#frontText").html("A(n) " + genre + " artist was just booked for a(n) " + type + ", for $" + price);
+      $("#backText").html("A(n) " + genre + " artist was just booked for a(n) " + type + ", for $" + price);
       flipTicker();
       i+=1;
     }
@@ -432,7 +437,7 @@ function sortEventsByDate(events){
   var today = new Date();
   var eventsToDateDiff = [];
   for (e in events){
-    var dateDiff = diff_minutes(today, e.startDate);
+    var dateDiff = diff_minutes(e.startDate, today);
     eventsToDateDiff.push([e,dateDiff]);
   }
   var sortedEvents = sortDict(eventsToDateDiff);
@@ -450,6 +455,35 @@ function diff_minutes(dt2, dt1) {
  		 return first[1]-second[1];
  	 });
  	 return dict;
+  }
+
+//login and register stuff//
+
+	function login() {
+		var content = {
+			username: $("#loginUsername").val(),
+			password: $("#loginPassword").val(),
+		}
+
+		post_request('/login', content,
+			_ => redirect_to('/index'),
+			err => alert(`${err.code} error: ${err.cause}`)
+		);
+	}
+
+  function register() {
+
+    var content = {
+      username: $("#reg_username").val(),
+      email: $("#reg_email").val(),
+      password: $("#reg_password").val()
+    };
+
+    console.log(content);
+    post_request('/register', content,
+      _ => redirect_to('/_login'),
+      err => alert(`${err.code} error: ${err.cause}`)
+    );
   }
 
   function convertAddress(){

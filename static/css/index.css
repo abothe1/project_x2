@@ -23,9 +23,9 @@
 Radial Menu Stuff
 */
 
-@font-face { font-family: Industry; src: url('../assets/Industry.otf'); }
+@font-face { font-family: Industry; src: url('/assets/Industry.otf'); }
 
-h1, h4, h6, p, button, input{
+h1, h4, h6, p, button, input, textarea{
   font-family: Industry, sans-serif;
 }
 
@@ -42,10 +42,18 @@ h1, h4, h6, p, button, input{
   width: 288px;
 }
 
+#menu_circle_svg{
+  z-index: 1;
+  position: absolute;
+  left: -48px;
+  top: -48px;
+  color: rgba(0,0,0,0.0);
+}
+
 #mainbtn {
   position:absolute;
-  top:15px;
-  left:15px;
+  top:30px;
+  left:80px;
   z-index:3;
 }
 
@@ -53,8 +61,8 @@ h1, h4, h6, p, button, input{
   position: absolute;
   top:0px;
   left:0px;
-  width: 44px;
-  height: 44px;
+  width: 57px;
+  height: 147px;
 }
 
 .circle-container {
@@ -77,16 +85,16 @@ h1, h4, h6, p, button, input{
 .circle-container i { display: block; width: 100px; }
 .deg0 { transform: rotate(-25deg) translate(7.67em) rotate(-0deg);   -webkit-transition: all 0.5s ease-out;
   -moz-transition: all 0.5s ease-out;
-  transition: all 0.5s ease-out; 		z-index: 2;}
+  transition: all 0.5s ease-out;        z-index: 2;}
 .deg30 { transform: rotate(-25deg) translate(12em) rotate(-30deg);  -webkit-transition: all 0.5s ease-out;
   -moz-transition: all 0.5s ease-out;
-  transition: all 0.5s ease-out; 		z-index: 2;}
+  transition: all 0.5s ease-out;        z-index: 2;}
 .deg60 { transform: rotate(-25deg) translate(14em) rotate(-60deg);  -webkit-transition: all 0.5s ease-out;
   -moz-transition: all 0.5s ease-out;
-  transition: all 0.5s ease-out; 		z-index: 2;}
+  transition: all 0.5s ease-out;        z-index: 2;}
 .deg90 { transform: rotate(-25deg) translate(10em) rotate(-90deg);  -webkit-transition: all 0.5s ease-out;
   -moz-transition: all 0.5s ease-out;
-  transition: all 0.5s ease-out; 		z-index: 2;
+  transition: all 0.5s ease-out;        z-index: 2;
 }
 
 .fa-home:hover {color:tan;}
@@ -241,7 +249,7 @@ Login Popup Elements
 
 /*style for the pop up goes here*/
 /* Full-width input fields */
-input[type=text], input[type=password], input[type=number], input[type=date], textarea {
+input[type=text], input[type=password], input[type=number], input[type=datetime-local], textarea {
     width: 90%;
     padding: 12px 20px;
     margin: 8px 26px;
@@ -278,12 +286,102 @@ input[type=text], input[type=password], input[type=number], input[type=date], te
     border-radius: 50%;
 }
 
-#modal-wrapper{
+#modal-wrapper-login{
   z-index: 5;
 }
 
 #modal-wrapper-gig{
   z-index: 5;
+}
+
+#modal-wrapper-register{
+  z-index: 5;
+}
+
+#reg_form{
+  background-color: transparent;
+  border: none;
+}
+
+#reg_form input, #reg_form button{
+  margin: 10px;
+}
+
+#reg_username{
+  height: 83px;
+  width: 348px;
+  border: 0px;
+  background: url('/assets/Home/reg_username.png');
+  background-size: contain;
+  padding-left: 15px;
+  font-size: 32px;
+  color: white;
+}
+
+#reg_password{
+  height: 83px;
+  width: 668px;
+  border: 0px;
+  background: url('/assets/Home/reg_password.png');
+  background-size: contain;
+  padding-left: 15px;
+  font-size: 32px;
+  color: white;
+}
+
+#reg_email{
+  height: 83px;
+  width: 853px;
+  border: 0px;
+  background: url('/assets/Home/reg_email.png');
+  background-size: contain;
+  padding-left: 15px;
+  font-size: 32px;
+  color: white;
+}
+
+#reg_mailing{
+  height: 83px;
+  width: 445px;
+  border: 0px;
+  background: url('/assets/Home/reg_mailing.png');
+  background-size: contain;
+  padding-left: 15px;
+  font-size: 32px;
+  color: white;
+}
+
+#reg_confirm{
+  height: 83px;
+  width: 668px;
+  border: 0px;
+  background: url('/assets/Home/reg_confirm.png');
+  background-size: contain;
+  padding-left: 15px;
+  font-size: 32px;
+  color: white;
+}
+
+#reg_submit{
+  height: 83px;
+  width: 174px;
+  border: 0px;
+  background: url('/assets/Home/reg_submit.png');
+  background-size: contain;
+  margin-left: 10px;
+  font-size: 32px;
+  color: white;
+}
+
+#reg_music{
+  height: 83px;
+  width: 174px;
+  border: 0px;
+  background: url('/assets/Home/reg_submit.png');
+  background-size: contain;
+  margin-left: 10px;
+  font-size: 32px;
+  color: white;
 }
 
 /* The Modal (background) */
@@ -386,12 +484,16 @@ flip box containe;;;; got rid of it cuz im using flipp */
 
 /* Style the back side */
 .back {
-    background-color: dodgerblue;
     color: black;
-    transform: rotateX(180deg);
 }
 
 #frontText{
+  margin-top: 20px;
+  background: -webkit-linear-gradient(left, #5969ff 0%,#ff0061 100%); /* Chrome10-25,Safari5.1-6 */
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+}
+#backText{
   margin-top: 20px;
   background: -webkit-linear-gradient(left, #5969ff 0%,#ff0061 100%); /* Chrome10-25,Safari5.1-6 */
   -webkit-background-clip: text;
