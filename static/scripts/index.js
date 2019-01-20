@@ -28,7 +28,7 @@ maxDrops = 15;
 getLocation();
 getCurrentEvents();
 var categories = {};
-setInterval(getCurrentEvents,60000);
+setInterval(getCurrentEvents, 60000);
 $.getScript('assets/banks.js', function(data, status)
 {
   console.log("dtata from loading banks is : " + data);
@@ -38,7 +38,8 @@ $.getScript('assets/banks.js', function(data, status)
     for (var key in BANKS){
       console.log(key);
         console.log("banks are " + BANKS[key]);
-        categories[key]={'wordBank' : BANKS[key]}
+        categories[key]={'wordBank' : BANKS[key]};
+      //  categoires[key]={'fromQueryStr' : []};
     }
   }
   else{
@@ -344,15 +345,18 @@ function post_gig() {
   var startDate = $('#gig_start_input').val();
   var endDate = $('#gig_end_input').val();
   var gig = {'name':name,
-            'address':address,
-            'price':price,
-            'startDate':startDate,
-            'endDate':endDate
+            'address': address,
+            'price': price,
+            'startDate': startDate,
+            'endDate': endDate,
+            'applications': [],
+            'lat': 0.0,
+            'lng': 0.0
             };
   var categoriesFromStr = parseQueryString(description);
   gig['categories'] = categoriesFromStr;
   console.log(gig);
-	$.post('/gig', {'body': gig}, result => {
+	$.post('/gig', {'name':name, 'address':address, 'price': price, 'startDate': startDate, 'endDate': endDate, 'applications': [], 'lat': 0.0, 'lng':0.0, 'categories':categoriesFromStr, 'isFilled':true, 'bandFor':'none'}, result => {
     console.log("got cb from post /gig");
 		alert(`result is ${result}`);
 	});
@@ -386,12 +390,17 @@ function showPosition(position) {
 function parseQueryString(str){
   var categoriesFromStr={};
   var lowerCased = str.toLowerCase();
+  console.log("in parse q str the lower cased str is "+str);
   for (key in categories){
+    categoriesFromStr[key]=[];
+    console.log("key is " + key);
     console.log("banks are " + categories[key]['wordBank']);
-    categoriesFromStr[key]['fromQueryStr']=[];
+    //categoriesFromStr[key]['fromQueryStr']=[];
     for (word in categories[key]['wordBank']){
-      if (lowerCased.includes(word)){
-        categoriesFromStr[key]['fromQueryStr'].push(word);
+      console.log("word is : " + categories[key]['wordBank'][word]);
+      if (lowerCased.includes(categories[key]['wordBank'][word])){
+        console.log("word is in if : " + categories[key]['wordBank'][word]);
+        categoriesFromStr[key].push(categories[key]['wordBank'][word]);
       }
     }
   }
@@ -402,27 +411,46 @@ function parseQueryString(str){
 // current events stuff//
 function getCurrentEvents(){
   $.get('/current_events', {}, result => {
-    var events = result.events;
-    console.log("events from db are: " + events);
+    //var events = result._doc;
+    console.log("events from db are: " + JSON.stringify(result));
 		alert(`result is ${result}`);
-    handleEventsWithTicker(result.events);
+    handleEventsWithTicker(result);
 	});
 }
-function handleEventsWithTicker(events){
+function handleEventsWithTicker(result){
+  console.log("Events in handle events wth ticker are " + events);
+  var events = JSON.parse(JSON.stringify(result));
   $("#frontText").html("");
   $("#backText").html("");
   var sortedEventsAndDates = sortEventsByDate(events);
   var sortedEvents=[];
   for (e in sortedEventsAndDates){
-    sortedEvents.push(e[0]);
+    var evnt = sortedEventsAndDates[e];
+    sortedEvents.push(evnt[0]);
   }
-  var i = 0;
-  setInterval(function(){
+  console.log("in handleEventsWithTicker and sorted events is : " + JSON.stringify(sortedEvents));
+  var i = -1;
+  var internalTicker = setInterval(function(){
+    ++i;
+    if (i >= sortedEvents.length) {
+       i = 0;
+    }
+    var evt = sortedEvents[i];
+    console.log(" for x in sorted evetns evt is : " + JSON.stringify(evt));
+    var genre = evt.categories.genres[0];
+    var type = evt.categories.gigTypes[0];
+    var price = evt["price"];
+    $("#frontText").html("A(n) " + genre + " artist was just booked for a(n) " + type + ", for $" + price);
+    $("#backText").html("A(n) " + genre + " artist was just booked for a(n) " + type + ", for $" + price);
+    flipTicker();
+  }, 5000);
+  /*setInterval(function(){
     if (i<sortedEvents.length){
       var evt = sortedEvents[i];
       var genre = evt.genres[0];
       var type = evt.gigTypes[0];
       var price = evt["price"];
+      console.log("in set interval function and the string evnt is : " + JSON.stringify(evt));
       $("#frontText").html("A(n) " + genre + " artist was just booked for a(n) " + type + ", for $" + price);
       $("#backText").html("A(n) " + genre + " artist was just booked for a(n) " + type + ", for $" + price);
       flipTicker();
@@ -431,26 +459,32 @@ function handleEventsWithTicker(events){
     else{
       i=0;
     }
-  }, 5000);
+  }, 5000);*/
 }
 function sortEventsByDate(events){
   var today = new Date();
   var eventsToDateDiff = [];
   for (e in events){
-    var dateDiff = diff_minutes(e.startDate, today);
-    eventsToDateDiff.push([e,dateDiff]);
+    var evnt = events[e];
+    console.log("e is in sort events by date" + JSON.stringify(evnt));
+    var dateDiff = diff_minutes(stringToDate(evnt.startDate), today);
+    eventsToDateDiff.push([evnt,dateDiff]);
   }
   var sortedEvents = sortDict(eventsToDateDiff);
+  console.log("sorted events in sort events by date is : " + JSON.stringify(sortedEvents));
   return sortedEvents;
 }
 
 function diff_minutes(dt2, dt1) {
+
 	var diff =(dt2.getTime() - dt1.getTime()) / 1000;
 	diff /= 60;
+  console.log("in diff minutes and the diff in minutes is : " + diff);
 	return Math.abs(Math.round(diff));
  }
 
  function sortDict(dict){
+   console.log('dict in sort dict is : ' + JSON.stringify(dict));
  	 dict.sort(function(first, second) {
  		 return first[1]-second[1];
  	 });
@@ -485,7 +519,11 @@ function diff_minutes(dt2, dt1) {
       err => alert(`${err.code} error: ${err.cause}`)
     );
   }
-
+  function stringToDate(str){
+    var date = new Date(str);
+    console.log("in string to date and adate is " + date);
+    return date;
+  }
   function convertAddress(){
     /*var geocoder = new google.maps.Geocoder();
     var address = jQuery('#gig_address_input').val();
