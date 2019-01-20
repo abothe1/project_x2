@@ -109,6 +109,11 @@ class Drop {
 		// this.theButton = document.createElement("p");
 		// this.theButton.innerHTML = "text";
 		// this.theDiv.appendChild(this.theButton);
+
+    // this.theBg = document.createElement("img");
+    // this.theBg.style.width = "120px"
+    // this.theBg.style.height = "120px"
+
     this.theImg = document.createElement("img");
     this.theImg.style.width = "110px"
     this.theImg.style.height = "110px"
