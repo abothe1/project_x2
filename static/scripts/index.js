@@ -28,6 +28,8 @@ maxDrops = 15;
 getLocation();
 getCurrentEvents();
 var categories = {};
+
+
 //setInterval(getCurrentEvents, 60000);
 $.getScript('assets/banks.js', function(data, status)
 {
@@ -491,6 +493,21 @@ function diff_minutes(dt2, dt1) {
 	}
 
   function register() {
+    console.log("got into register func");
+    var actionCodeSettings = {
+  // URL you want to redirect back to. The domain (www.example.com) for this
+  // URL must be whitelisted in the Firebase Console.
+    url: 'https://www.example.com/finishSignUp?cartId=1234',
+  // This must be true.
+    handleCodeInApp: true,
+    dynamicLinkDomain: 'example.page.link'
+    };
+    firebase.auth().createUserWithEmailAndPassword($("#reg_email").val(),$("#reg_password")).catchError(function(error){
+      var errorCode = error.code;
+      var errorMessage = error.message;
+      console.log("Got an error in firebase accounr creation " + errorCode + " ," + errorMessage);
+    });
+    /*
     var content = {
       username: $("#reg_username").val(),
       email: $("#reg_email").val(),
@@ -501,8 +518,17 @@ function diff_minutes(dt2, dt1) {
       _ => redirect_to('/_login'),
       err => alert(`${err.code} error: ${err.cause}`)
     );
+    */
   }
 
+  function sendVerification(){
+    var user = firebase.auth.currentUser;
+    user.sendEmailVerification().then(function(){
+
+    }).catchError(function(err){
+      console.log("error from sendign email verifaaction link to user " + err.message);
+    });
+  }
   function stringToDate(str){
     var date = new Date(str);
     console.log("in string to date and adate is " + date);

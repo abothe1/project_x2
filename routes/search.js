@@ -3,6 +3,7 @@ module.exports = router => {
 const database = require('../database.js'),
       matching = require('../algs/matching.js');
 console.log(matching);
+
 router.get('/search', (req, res) => {
   console.log("req is search is : " + req);
   console.log("req.query is search is : " + req.query);
