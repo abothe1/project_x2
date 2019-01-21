@@ -91,7 +91,7 @@
           width: 200px;
           height: 200px;
           float: left;
-          border: 1px solid #fff;
+          border: 10px solid #fff;
           -moz-box-sizing: border-box;
           -webkit-box-sizing: border-box;
           box-sizing: border-box;
@@ -221,21 +221,41 @@
                           return '<a href="#' + page + '">' + page + '</a>';
                       }
                   });
+
+              $('.carousel-img').hover(
+                //Handler In
+                function(){
+                  console.log("enter-img");
+                },
+                //Handler Out
+                function(){
+                  console.log("exit-img");
+                }
+              );
+
+              $('.carousel-li').hover(
+                //Handler In
+                function(){
+                  console.log("enter-li");
+                },
+                //Handler Out
+                function(){
+                  console.log("exit-li");
+                }
+              );
+
           });
       })(jQuery);
     </script>
     <body>
         <div class="wrapper">
-            <h1>Responsive Carousel</h1>
-
-
-            <p>This example shows how to implement a responsive carousel. Resize the browser window to see the effect.</p>
+            <h1>AB's Epic Carousel</h1>
 
             <div class="jcarousel-wrapper">
                 <div class="jcarousel">
                     <ul>
-                        <li><img src="../static/assets/Home/Art/1.jpg" alt="Image 1"></li>
-                        <li><img src="../static/assets/Home/Art/2.jpeg" alt="Image 2"></li>
+                        <li><img class="carousel-img"src="../static/assets/Home/Art/1.jpg" alt="Image 1"></li>
+                        <li class="carousel-li"><img src="../static/assets/Home/Art/2.jpeg" alt="Image 2"></li>
                         <li><img src="../static/assets/Home/Art/3.jpeg" alt="Image 3"></li>
                         <li><img src="../static/assets/Home/Art/4.jpeg" alt="Image 4"></li>
                         <li><img src="../static/assets/Home/Art/5.jpeg" alt="Image 5"></li>

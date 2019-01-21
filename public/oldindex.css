@@ -40,6 +40,7 @@ h1, h4, h6, p, button, input, textarea{
   top: -48px;
   height: 288px;
   width: 288px;
+  display: none;
 }
 
 #menu_circle_svg{
@@ -135,7 +136,7 @@ button:focus {
 }
 
 html{
-  background-color: black;
+  background-color: white;
 }
 
 body{
@@ -179,7 +180,7 @@ Body elements
 
 .search{
   position: absolute;
-  z-index: 4;
+  z-index: 5;
   top: 41%;
   left: 48%;
   margin-top: -40px;
@@ -263,7 +264,7 @@ input[type=text], input[type=password], input[type=number], input[type=datetime-
 /* Set a style for all buttons */
 .popUpButtons {
     background-color: #4CAF50;
-    color: black;
+    color: white;
     padding: 14px 20px;
     margin: 8px 26px;
     border: none;
@@ -437,16 +438,23 @@ Ticker elements
 
 .flip-box {
     z-index: 4;
-    background-color: transparent;
     position: absolute;
     margin: auto;
     width: 100%;
     height: 100px;
     top:75%;
     bottom: 0;
-    border-color: transparent;
     overflow-y: visible;
     perspective: 1000px; /* Remove this if you don’t want the 3D effect */
+}
+
+#ticker-bg{
+  z-index: 2;
+  position: absolute;
+  margin: 0;
+  padding: 0;
+  bottom: 0;
+  left: 0;
 }
 
 /* This container is needed to position the front and back side */
@@ -460,8 +468,7 @@ Ticker elements
     overflow-y: visible;
     transition: transform 0.8s;
     transform-style: preserve-3d;
-    background-color: rgba(0,0,0,0.6);
-  }
+}
 
 /* Do an horizontal flip when you move the mouse over the
 flip box containe;;;; got rid of it cuz im using flipp */
@@ -475,12 +482,11 @@ flip box containe;;;; got rid of it cuz im using flipp */
     height: 100%;
     overflow-y: visible;
     backface-visibility: hidden;
-    background-size: contain;
-    background: url('../assets/Home/ticker.png');
 }
 
 /* Style the front side */
 .front {
+    z-index: 4;
     color: black;
 }
 
@@ -492,20 +498,11 @@ flip box containe;;;; got rid of it cuz im using flipp */
 }
 
 #frontText{
+  z-index: 4;
   margin-top: 20px;
   background: -webkit-linear-gradient(left, #5969ff 0%,#ff0061 100%); /* Chrome10-25,Safari5.1-6 */
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
-}
-
-#ticker-bg{
-  position: absolute;
-  margin: 0 auto;
-  padding: 0;
-  width: 100%;
-  height: 200px;
-  background-color: transparent;
-  left: 0;
 }
 
 /* Permalink - use to edit and share this gradient: http://colorzilla.com/gradient-editor/#5969ff+0,ff0061+100 */
