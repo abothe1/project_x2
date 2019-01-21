@@ -2,10 +2,14 @@ module.exports = router => {
 
 const database = require('../database.js'),
       matching = require('../algs/matching.js');
-
+console.log(matching);
 router.get('/search', (req, res) => {
-	var { query, mode, bandName, gigName } = req.query;
-
+  console.log("req is search is : " + req);
+  console.log("req.query is search is : " + req.query);
+	var {query, mode, bandName, gigName} = req.query;
+  console.log("IN SEARCH AND query IS " + query);
+  console.log("IN SEARCH AND MODE IS " + mode);
+  console.log("IN SEARCH AND bandName IS " + bandName);
 	if (!query) {
 		return res.status(400).send('No query supplied').end();
 	} else if (!mode) {

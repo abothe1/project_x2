@@ -28,7 +28,7 @@ maxDrops = 15;
 getLocation();
 getCurrentEvents();
 var categories = {};
-setInterval(getCurrentEvents, 60000);
+//setInterval(getCurrentEvents, 60000);
 $.getScript('assets/banks.js', function(data, status)
 {
   console.log("dtata from loading banks is : " + data);
@@ -324,18 +324,18 @@ for (var s in samples){
 
 
 function search_musicians() {
-	$.get("/search", { type: "musicians", query: $("#search_input").val() }, result => {
+	$.get("/search", { 'mode': "findBands", 'query': $("#search_input").val(), 'bandName': "band1"}, result => {
 		alert(`result is ${result}`);
 	});
 }
 
 function search_gigs() {
-	$.get("/search", { type: "gigs", query: $("#search_input").val() }, result => {
+	$.get("/search", { 'mode': "findGigs", 'query': $("#search_input").val(), 'gigName':"gig1" }, result => {
 		alert(`result is ${result}`);
 	});
 }
 
-function post_gig() {
+function post_gig(lat,lng) {
   console.log("got into post gig");
   var name = $('#gig_name_input').val();
   console.log("name from gig form is: " + name);
@@ -344,19 +344,22 @@ function post_gig() {
   var description = $('#gig_desc_input').val();
   var startDate = $('#gig_start_input').val();
   var endDate = $('#gig_end_input').val();
+  var zipcode = $('#gig_zip_input').val();
   var gig = {'name':name,
             'address': address,
             'price': price,
             'startDate': startDate,
             'endDate': endDate,
             'applications': [],
-            'lat': 0.0,
-            'lng': 0.0
+            'lat': lat,
+            'lng': lng,
+            'zipcode' : zipcode,
+            'createdBy' : "a user"
             };
   var categoriesFromStr = parseQueryString(description);
   gig['categories'] = categoriesFromStr;
   console.log(gig);
-	$.post('/gig', {'name':name, 'address':address, 'price': price, 'startDate': startDate, 'endDate': endDate, 'applications': [], 'lat': 0.0, 'lng':0.0, 'categories':categoriesFromStr, 'isFilled':true, 'bandFor':'none'}, result => {
+	$.post('/gig', {'name':name, 'address':address, 'zipcode': zipcode, 'price': price, 'startDate': startDate, 'endDate': endDate, 'applications': [], 'lat': lat, 'lng': lng, 'categories':categoriesFromStr, 'isFilled':true, 'bandFor':'none'}, result => {
     console.log("got cb from post /gig");
 		alert(`result is ${result}`);
 	});
@@ -395,7 +398,6 @@ function parseQueryString(str){
     categoriesFromStr[key]=[];
     console.log("key is " + key);
     console.log("banks are " + categories[key]['wordBank']);
-    //categoriesFromStr[key]['fromQueryStr']=[];
     for (word in categories[key]['wordBank']){
       console.log("word is : " + categories[key]['wordBank'][word]);
       if (lowerCased.includes(categories[key]['wordBank'][word])){
@@ -411,16 +413,15 @@ function parseQueryString(str){
 // current events stuff//
 function getCurrentEvents(){
   $.get('/current_events', {}, result => {
-    //var events = result._doc;
     console.log("events from db are: " + JSON.stringify(result));
-		alert(`result is ${result}`);
     handleEventsWithTicker(result);
 	});
 }
+
 function handleEventsWithTicker(result){
   console.log("Events in handle events wth ticker are " + events);
   var events = JSON.parse(JSON.stringify(result));
-  $("#frontText").html("");
+  $("#frontText").html("Live Booking Feed");
   $("#backText").html("");
   var sortedEventsAndDates = sortEventsByDate(events);
   var sortedEvents=[];
@@ -444,23 +445,8 @@ function handleEventsWithTicker(result){
     $("#backText").html("A(n) " + genre + " artist was just booked for a(n) " + type + ", for $" + price);
     flipTicker();
   }, 5000);
-  /*setInterval(function(){
-    if (i<sortedEvents.length){
-      var evt = sortedEvents[i];
-      var genre = evt.genres[0];
-      var type = evt.gigTypes[0];
-      var price = evt["price"];
-      console.log("in set interval function and the string evnt is : " + JSON.stringify(evt));
-      $("#frontText").html("A(n) " + genre + " artist was just booked for a(n) " + type + ", for $" + price);
-      $("#backText").html("A(n) " + genre + " artist was just booked for a(n) " + type + ", for $" + price);
-      flipTicker();
-      i+=1;
-    }
-    else{
-      i=0;
-    }
-  }, 5000);*/
 }
+
 function sortEventsByDate(events){
   var today = new Date();
   var eventsToDateDiff = [];
@@ -476,7 +462,6 @@ function sortEventsByDate(events){
 }
 
 function diff_minutes(dt2, dt1) {
-
 	var diff =(dt2.getTime() - dt1.getTime()) / 1000;
 	diff /= 60;
   console.log("in diff minutes and the diff in minutes is : " + diff);
@@ -489,7 +474,8 @@ function diff_minutes(dt2, dt1) {
  		 return first[1]-second[1];
  	 });
  	 return dict;
-  }
+ }
+
 
 //login and register stuff//
 
@@ -498,7 +484,6 @@ function diff_minutes(dt2, dt1) {
 			username: $("#loginUsername").val(),
 			password: $("#loginPassword").val(),
 		}
-
 		post_request('/login', content,
 			_ => redirect_to('/index'),
 			err => alert(`${err.code} error: ${err.cause}`)
@@ -506,86 +491,66 @@ function diff_minutes(dt2, dt1) {
 	}
 
   function register() {
-
     var content = {
       username: $("#reg_username").val(),
       email: $("#reg_email").val(),
       password: $("#reg_password").val()
     };
-
     console.log(content);
     post_request('/register', content,
       _ => redirect_to('/_login'),
       err => alert(`${err.code} error: ${err.cause}`)
     );
   }
+
   function stringToDate(str){
     var date = new Date(str);
     console.log("in string to date and adate is " + date);
     return date;
   }
-  function convertAddress(){
-    /*var geocoder = new google.maps.Geocoder();
-    var address = jQuery('#gig_address_input').val();
-
-    geocoder.geocode( { 'address': address}, function(results, status) {
-
-    if (status == google.maps.GeocoderStatus.OK) {
-        var latitude = results[0].geometry.location.lat();
-        var longitude = results[0].geometry.location.lng();
-        console.log(latitude+', '+longitude);
-        }
-    });
-    */
+  function cleanGigInput(){
+    console.log("got into post gig");
+    var name = $('#gig_name_input').val();
+    console.log("name from gig form is: " + name);
+    var address = $('#gig_address_input').val();
+    var price = $('#gig_price_input').val();
+    var description = $('#gig_desc_input').val();
+    var startDate = $('#gig_start_input').val();
+    var endDate = $('#gig_end_input').val();
+    var zipcode = $('#gig_zip_input').val();
+    if (zipcode==null || zipcode == "" || zipcode == " " || zipcode == "Enter Zipcode"){
+    $('#errorMessages').html("Please enter a valid zipcode");
+    }
+    if (price==null || price == "" || price == " " || price == "Enter Price"){
+    $('#errorMessages').html("Please enter a valid price (no dollar sign");
+    }
+    if (address==null || address == "" || address == " " || address == "Enter Address"){
+    $('#errorMessages').html("Please enter a valid address");
+    }
+    if (startDate==null || startDate == "" || startDate == " " || startDate == "Enter Date"){
+    $('#errorMessages').html("Please enter a valid start date<");
+    }
+    if (endDate==null || endDate == "" || endDate == " " || endDate == "Enter Date"){
+    $('#errorMessages').html("Please enter a valid end date");
+    }
+    if (description==null || description == "" || description == " " || description.includes("description")){
+      $('#errorMessages').html("Please enter a description, with genres, vibes, and your gig's type (i.e. birthday party, bar, etc.) and instruments if you would like");
+    }
+    if (name==null || name == "" || name == " " || name == "Enter Gig Name"){
+      $('#errorMessages').html("Please Enter A Unqiue Gig Name");
+    }
+    else{
+      $("#errorMessages").remove();
+      convertZip();
+    }
   }
-/*
-//this is the function to handle the search bar
-function searchHit(type){
-	var content = { type: type, query: $("#search_input").val() };
-	var method;
-	switch(type) {
-		case "find_musicians": case "find_gigs":
-			method = $.get;
-			break;
-		case "post_gig":
-			method = $.post;
-			break
-	}
 
-	(method)("/search", content, result => {
-		if (result.success) {
-			alert(`success! result: ${result.result}.`)
-		} else {
-			alert(`failure! cause: ${result.cause}.`)
-		}
-	});
-	alert("search was hit!");
-	var bands=[];
-	var gigs=[];
-	searchText=searchField.value;
-	switch(searchMode){
-		case "bands":
-		$.get('/bands', {query:searchText}, function(data){
-			$.each(data, function(key,val){
-				var band = new Band(val);
-				bands.push(band);
-			});
-		});
-		//Now we gotta take this the bands a pass them to the next page, and display them
-		break;
-		case "gigs":
-		$.get('/gigs', {query:searchText}, function(data){
-			$.each(data, function(key,val){
-				var gig = new Gig(val);
-				gigs.push(gig);
-			});
-		});
-		//Now we gotta take this the gigs a pass them to the next page, and display them
-		break;
-		case "postEvent":
-		$.post('/gigs', {query:searchText});
-		break;
-	}
-};
-
-*/
+  function convertZip(){
+    var zipcode = $('#gig_zip_input').val();
+    $.getJSON('http://api.openweathermap.org/data/2.5/weather?zip='+zipcode+',us&APPID=f89469b4b424d53ac982adacb8db19f6').done(function(data){
+      console.log(JSON.stringify(data));
+      var lat = data.coord.lat;
+      var lng = data.coord.lon;
+      post_gig(lat,lng);
+    });
+  }

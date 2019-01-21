@@ -52,24 +52,7 @@
 
 		</script>
 
-		<script async defer src="https://maps.googleapis.com/maps/api/js?key=AIzaSyBdtwRfJmaP2JYKpQyzKwjVcuTdKch7AwU&callback=initMap" type="text/javascript"></script>
-
-		<script type="text/javascript">
-
-		function convertAddress(){
-			var geocoder = new google.maps.Geocoder();
-			var address = jQuery('#gig_address_input').val();
-
-			geocoder.geocode( { 'address': address}, function(results, status) {
-
-			if (status == google.maps.GeocoderStatus.OK) {
-			    var latitude = results[0].geometry.location.lat();
-			    var longitude = results[0].geometry.location.lng();
-			    console.log(latitude+', '+longitude);
-			    }
-			});
-		}
-		</script>
+		<script src="http://maps.googleapis.com/maps/api/js?key=AIzaSyB_vegJKeB8xsUsn_yQQ_SSdsM7RsTJuXo" type="text/javascript"></script>
 
 		<script type="text/javascript">
 			var isMusic = false;
@@ -153,18 +136,20 @@
 					</div>
 
 					<div id="modal-wrapper-gig" class="modal">
-						<form class="modal-content animate">
+						<div class="modal-content animate">
 
 					    <div class="imgcontainer">
 					      <span onclick="document.getElementById('modal-wrapper-gig').style.display='none'" class="close" title="Close PopUp">&times;</span>
 					      <h1 style="text-align:center">Post a Gig Listing</h1>
 					    </div>
 
-					    <div class="container">
+					    <div class="container" id="postGigContainer">
 								<h6>Name</h6>
 					      <input type="text" placeholder="Enter Gig Name" name="gig_name" id="gig_name_input">
 								<h6>Address</h6>
 								<input type="text" placeholder="Enter Address" name="gig_address" id="gig_address_input">
+								<h6>Zipcode</h6>
+								<input type="number" placeholder="Enter Zipcode" name="gig_zip" id="gig_zip_input">
 								<h6>Start Date/Time</h6>
 								<input type="datetime-local" name="gig_start" id="gig_start_input">
 								<h6>End Date/Time</h6>
@@ -173,10 +158,11 @@
 								<input type="number" min="1" step="any" id="gig_price_input">
 								<h6>Description</h6>
 								<textarea name="Text1" cols="40" rows="5" id="gig_desc_input" placeholder="What type of artist are you looking for? What type of event is this? What vibe are you looking for? Etc…)"></textarea>
-					      <button class="popUpButtons" type="submit" onclick="post_gig()">Post Gig</button>
+								<h6 id = "errorMessages" align="middle"></h6>
+					      <button class="popUpButtons" onclick="cleanGigInput()">Post Gig</button>
 					    </div>
 
-					  </form>
+					  </div>
 					</div>
 
 					<div id="modal-wrapper-register" class="modal">
