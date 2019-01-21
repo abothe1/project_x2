@@ -33,6 +33,10 @@ h1, h4, h6, p, button, input, textarea{
   color: white;
 }
 
+.radialText:hover{
+  color: rgba(86,223,240,1.0);
+}
+
 #menuBacking{
   z-index: 2;
   position: absolute;
@@ -83,7 +87,7 @@ h1, h4, h6, p, button, input, textarea{
 }
 
 .circle-container i { display: block; width: 100px; }
-.deg0 { transform: rotate(-25deg) translate(7.67em) rotate(-0deg);   -webkit-transition: all 0.5s ease-out;
+.deg0 { transform: rotate(-25deg) translate(11em) rotate(-0deg);   -webkit-transition: all 0.5s ease-out;
   -moz-transition: all 0.5s ease-out;
   transition: all 0.5s ease-out; 		z-index: 2;}
 .deg30 { transform: rotate(-25deg) translate(12em) rotate(-30deg);  -webkit-transition: all 0.5s ease-out;
@@ -92,7 +96,7 @@ h1, h4, h6, p, button, input, textarea{
 .deg60 { transform: rotate(-25deg) translate(13em) rotate(-60deg);  -webkit-transition: all 0.5s ease-out;
   -moz-transition: all 0.5s ease-out;
   transition: all 0.5s ease-out; 		z-index: 2;}
-.deg90 { transform: rotate(-25deg) translate(10em) rotate(-90deg);  -webkit-transition: all 0.5s ease-out;
+.deg90 { transform: rotate(-25deg) translate(13em) rotate(-90deg);  -webkit-transition: all 0.5s ease-out;
   -moz-transition: all 0.5s ease-out;
   transition: all 0.5s ease-out; 		z-index: 2;
 }
@@ -102,10 +106,10 @@ h1, h4, h6, p, button, input, textarea{
 .fa-comments:hover {color:teal;}
 .fa-heart:hover {color:red;}
 
-.open.deg0 { transform: rotate(0deg) translate(7.67em) rotate(-0deg); }
-.open.deg30 { transform: rotate(30deg) translate(12em) rotate(-30deg); }
-.open.deg60 { transform: rotate(60deg) translate(13em) rotate(-60deg); }
-.open.deg90 { transform: rotate(90deg) translate(10em) rotate(-90deg);
+.open.deg0 { transform: rotate(10deg) translate(11em) rotate(-10deg); }
+.open.deg30 { transform: rotate(34deg) translate(12em) rotate(-34deg); }
+.open.deg60 { transform: rotate(54deg) translate(13em) rotate(-54deg); }
+.open.deg90 { transform: rotate(80deg) translate(13em) rotate(-80deg);
 }
 
 #author {
@@ -512,10 +516,10 @@ flip box containe;;;; got rid of it cuz im using flipp */
 }
 
 #frontText{
-  z-index: 6;
+  z-index: 4;
   position: absolute;
   display: block;
-  margin-top: .5%;
+  margin-top: .6%;
   width: 100%;
   text-align: center;
   background: -webkit-linear-gradient(left, #5969ff 0%,#ff0061 80%); /* Chrome10-25,Safari5.1-6 */

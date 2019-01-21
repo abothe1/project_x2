@@ -98,7 +98,7 @@ class Drop {
     console.log("Stepper:",stepper);
 
     this.theImg = document.createElement("img");
-    this.theImg.style.opacity = "0.9";
+    this.theImg.style.opacity = "1.0";
     this.theImg.style.borderRadius = "6px"
     this.theImg.style.backgroundColor = "white";
     var img = RandImg();
