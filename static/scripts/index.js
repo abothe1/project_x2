@@ -43,7 +43,7 @@ function init(){
 	});
 
 	rainTimer = setInterval(addDrop, 1000);
-	setInterval(animate, 30);
+	setInterval(animate, 25);
 	//alert(window.location.href);
 }
 
@@ -69,12 +69,18 @@ function Update(){
 	}
 }
 
+var stepper = 0;
 
 function addDrop(){
 	if (drops.length == maxDrops){
 		// do nothing
 	}else{
-		drops[drops.length] = new Drop();
+		drops[drops.length] = new Drop(stepper);
+    if(stepper < 2){
+      stepper++;
+    }else{
+      stepper = 0;
+    }
 		drops[drops.length-1].id = drops.length;
 	}
 }
@@ -84,15 +90,51 @@ var lastX = 99999;
 
 class Drop {
 
-	constructor(){
+	constructor(stepper){
 		//console.log("creating drop")
 		this.id = 0;
 		this.theDiv = document.createElement("div");
 		this.theDiv.className = "rainDrop";
-		this.width = 120;
-		this.height = 120;
-		this.x = checkProximity();
-		this.y = -120;
+    console.log("Stepper:",stepper);
+
+    this.theImg = document.createElement("img");
+    this.theImg.style.opacity = "0.9";
+    this.theImg.style.borderRadius = "6px"
+    this.theImg.style.backgroundColor = "white";
+    var img = RandImg();
+    this.theImg.src = "../static/assets/Home/Art/" + img;
+
+    switch(stepper){
+      case 0:
+        this.width = 200;
+        this.height = 200;
+        this.x = checkProximity();
+        this.y = -200;
+        this.theImg.style.width = "196px"
+        this.theImg.style.height = "196px"
+        this.theImg.style.margin = "2px"
+
+        break;
+      case 1:
+        this.width = 160;
+        this.height = 160;
+        this.x = checkProximity();
+        this.y = -160;
+        this.theImg.style.width = "156px"
+        this.theImg.style.height = "156px"
+        this.theImg.style.margin = "2px"
+        break;
+      case 2:
+        this.width = 120;
+        this.height = 120;
+        this.x = checkProximity();
+        this.y = -120;
+        this.theImg.style.width = "116px"
+        this.theImg.style.height = "116px"
+        this.theImg.style.margin = "2px"
+        break;
+    }
+
 		this.UpdateDiv();
 
 		// var r = RandColor();
@@ -114,14 +156,6 @@ class Drop {
     // this.theBg.style.width = "120px"
     // this.theBg.style.height = "120px"
 
-    this.theImg = document.createElement("img");
-    this.theImg.style.width = "110px"
-    this.theImg.style.height = "110px"
-    this.theImg.style.margin = "5px"
-    this.theImg.style.borderRadius = "6px"
-    this.theImg.style.backgroundColor = "white";
-    var img = RandImg();
-    this.theImg.src = "../static/assets/Home/Art/" + img;
     this.theDiv.appendChild(this.theImg);
 		rain.appendChild(this.theDiv);
 		this.AddClickToDiv();
@@ -176,10 +210,10 @@ class Drop {
 }
 
 function checkProximity(){
-	var x = Math.random()*(window.innerWidth-120);
-	while(x <= lastX+120 && x >= lastX-120){
+	var x = Math.random()*(window.innerWidth-200);
+	while(x <= lastX+200 && x >= lastX-200){
 		//console.log("recalculating");
-		x = Math.random()*(window.innerWidth-120);
+		x = Math.random()*(window.innerWidth-200);
 	}
 	lastX = x;
 	return x;

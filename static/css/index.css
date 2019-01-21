@@ -53,7 +53,7 @@ h1, h4, h6, p, button, input, textarea{
 #mainbtn {
   position:absolute;
   top:30px;
-  left:80px;
+  left:60px;
   z-index:3;
 }
 
@@ -89,7 +89,7 @@ h1, h4, h6, p, button, input, textarea{
 .deg30 { transform: rotate(-25deg) translate(12em) rotate(-30deg);  -webkit-transition: all 0.5s ease-out;
   -moz-transition: all 0.5s ease-out;
   transition: all 0.5s ease-out; 		z-index: 2;}
-.deg60 { transform: rotate(-25deg) translate(14em) rotate(-60deg);  -webkit-transition: all 0.5s ease-out;
+.deg60 { transform: rotate(-25deg) translate(13em) rotate(-60deg);  -webkit-transition: all 0.5s ease-out;
   -moz-transition: all 0.5s ease-out;
   transition: all 0.5s ease-out; 		z-index: 2;}
 .deg90 { transform: rotate(-25deg) translate(10em) rotate(-90deg);  -webkit-transition: all 0.5s ease-out;
@@ -104,7 +104,7 @@ h1, h4, h6, p, button, input, textarea{
 
 .open.deg0 { transform: rotate(0deg) translate(7.67em) rotate(-0deg); }
 .open.deg30 { transform: rotate(30deg) translate(12em) rotate(-30deg); }
-.open.deg60 { transform: rotate(60deg) translate(14em) rotate(-60deg); }
+.open.deg60 { transform: rotate(60deg) translate(13em) rotate(-60deg); }
 .open.deg90 { transform: rotate(90deg) translate(10em) rotate(-90deg);
 }
 
@@ -164,7 +164,7 @@ Body elements
   height: 100%;
   position: absolute;
   background-color: rgba(0,0,0,0.9);
-  background-image: url('../assets/Home/background.png');
+  background-image: url('../assets/Home/backgroundnew.png');
   background-size: cover;
   overflow: hidden;
 }
@@ -192,8 +192,8 @@ Body elements
 .options{
   position: relative;
   z-index: 4;
-  top: 190%;
-  left: 70%;
+  top: 185%;
+  left: 90%;
   margin-top: -55px;
   margin-left: -300px;
   width: 600px;
@@ -201,24 +201,24 @@ Body elements
   float: right;
 }
 
+.options-buttons{
+  background-color: transparent;
+  border: none;
+  color: white;
+}
+
+.options-buttons:hover{
+  color: rgba(86,223,240,1.0);
+}
+
+#dot{
+  max-height: 1px;
+  max-width: 1px;
+}
+
 /*
 Search Bar elements
 */
-
-#b1{
-  background-color: rgba(70,0,232,1.0);
-  color: white;
-}
-
-#b2{
-  background-color: rgba(145,0,255,1.0);
-  color: white;
-}
-
-#b3{
-  background-color: rgba(193,0,232,1.0);
-  color: white;
-}
 
 #barImg{
   position: absolute;
@@ -449,10 +449,24 @@ Ticker elements
     perspective: 1000px; /* Remove this if you don’t want the 3D effect */
 }
 
+.flip-box-bg{
+  z-index: 3;
+  /* background-color: red; */
+  position: absolute;
+  margin: auto;
+  width: 100%;
+  height: 60px;
+  top:96%;
+  bottom: 0;
+  border-color: transparent;
+  overflow-y: visible;
+  perspective: 1000px; /* Remove this if you don’t want the 3D effect */
+}
+
 /* This container is needed to position the front and back side */
 .flip-box-inner {
     position: absolute;
-    top:85%;
+    top:98%;
     width: 100%;
     margin: auto;
     height: 100%;
@@ -460,7 +474,13 @@ Ticker elements
     overflow-y: visible;
     transition: transform 0.8s;
     transform-style: preserve-3d;
-    background-color: rgba(0,0,0,0.6);
+    /* background-color: rgba(0,0,0,0.9); */
+  }
+
+  #flip-box-img{
+    position: absolute;
+    height: 60px;
+    width: 100%;
   }
 
 /* Do an horizontal flip when you move the mouse over the
@@ -476,7 +496,7 @@ flip box containe;;;; got rid of it cuz im using flipp */
     overflow-y: visible;
     backface-visibility: hidden;
     background-size: contain;
-    background: url('../assets/Home/ticker.png');
+    /* background: url('../assets/Home/ticker.png'); */
 }
 
 /* Style the front side */
@@ -492,10 +512,16 @@ flip box containe;;;; got rid of it cuz im using flipp */
 }
 
 #frontText{
-  margin-top: 20px;
-  background: -webkit-linear-gradient(left, #5969ff 0%,#ff0061 100%); /* Chrome10-25,Safari5.1-6 */
+  z-index: 6;
+  position: absolute;
+  display: block;
+  margin-top: .5%;
+  width: 100%;
+  text-align: center;
+  background: -webkit-linear-gradient(left, #5969ff 0%,#ff0061 80%); /* Chrome10-25,Safari5.1-6 */
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
+  font-size: 16pt;
 }
 
 #ticker-bg{

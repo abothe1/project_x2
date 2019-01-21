@@ -124,9 +124,10 @@
 						<input id='search_input' name="search_text" >
 						</form>
 						<div class="options">
-							<button class="btn btn-sm" id="b1" onclick="search_musicians()">Find Musicians</button>
-							<button class="btn btn-sm" id="b2" onclick="search_gigs()">Find Gigs</button>
-							<button class="btn btn-sm" id="b3" onclick="document.getElementById('modal-wrapper-gig').style.display='block'">Post a Gig</button>
+							<button class="options-buttons" onclick="search_musicians()">Bands</button>
+							<img src="../static/assets/Home/dot.png" class="options-dot" />
+							<button class="options-buttons" onclick="search_gigs()">Events</button>
+							<!-- <button class="btn btn-sm" id="b3" onclick="document.getElementById('modal-wrapper-gig').style.display='block'">Post a Gig</button> -->
 						</div>
 					</div>
 
@@ -211,12 +212,17 @@
 							<div id="true-ticker-bg"></div>
 							<img id="ticker-bg" alt="ticker" src="../static/assets/Home/ticker.png" />
 					    <div class="front">
-					      <h4 id="frontText">A.B. just booked a hiphop artist, Music Reign, for a birthday party</h4>
 					    </div>
 					    <div class="back">
 					      <h4 id="backText">M.S. just booked a punk artist, Down By The Beach, for a bar</h4>
 					    </div>
 					  </div>
+					</div>
+
+					<div class="flip-box-bg">
+						<h4 id="frontText">A.B. just booked a hiphop artist, Music Reign, for a birthday party</h4>
+
+						<img id="flip-box-img" src="../static/assets/Home/croppedTicker.png" />
 					</div>
 
 
