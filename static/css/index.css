@@ -505,13 +505,13 @@ flip box containe;;;; got rid of it cuz im using flipp */
 
 /* Style the front side */
 .front {
-    color: black;
+    color: white;
 }
 
 /* Style the back side */
 .back {
     background-color: dodgerblue;
-    color: black;
+    color: white;
     transform: rotateX(180deg);
 }
 
@@ -522,10 +522,11 @@ flip box containe;;;; got rid of it cuz im using flipp */
   margin-top: .6%;
   width: 100%;
   text-align: center;
-  background: -webkit-linear-gradient(left, #5969ff 0%,#ff0061 80%); /* Chrome10-25,Safari5.1-6 */
-  -webkit-background-clip: text;
-  -webkit-text-fill-color: transparent;
+  /* background: -webkit-linear-gradient(left, #5969ff 0%,#ff0061 80%); /* Chrome10-25,Safari5.1-6 */ */
+  /* -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent; */
   font-size: 16pt;
+  color: white;
 }
 
 #ticker-bg{

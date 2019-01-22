@@ -26,6 +26,8 @@ drops = [],
 rainTimer = null,
 maxDrops = 15;
 
+var debugLayout = true;
+
 function init(){
 
 	container = document.getElementById("container");
@@ -42,9 +44,10 @@ function init(){
 		rain.height  = window.innerHeight;
 	});
 
-	rainTimer = setInterval(addDrop, 1000);
-	setInterval(animate, 25);
-	//alert(window.location.href);
+  if(!debugLayout){
+    rainTimer = setInterval(addDrop, 1000);
+  	setInterval(animate, 25);
+  }
 }
 
 function animate() {
