@@ -26,7 +26,7 @@ drops = [],
 rainTimer = null,
 maxDrops = 15;
 
-var debugLayout = true;
+var debugLayout = false;
 
 function init(){
 
