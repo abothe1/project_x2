@@ -245,3 +245,22 @@ body elements
   width: 200px;
   background-size: cover;
 }
+
+.result-name-div {
+  z-index: 3;
+  position: absolute;
+  bottom: 0;
+  height: 50px;
+  left: 0;
+  width: 100%;
+  background-color: rgba(0,0,0,0.5);
+}
+
+.result-name-div > p{
+  color: white;
+}
+
+.result-name-p{
+  color: white;
+
+}

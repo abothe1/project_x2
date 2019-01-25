@@ -28,6 +28,14 @@ function init(){
     // var newImg = document.createElement("img");
     // newImg.src = "../static/assets/Home/Art/"+images[i];
     // newDiv.appendChild(newImg);
+    var nameDiv = document.createElement("div");
+    nameDiv.className = "result-name-div";
+    var nameP = document.createElement("p");
+    nameP.innerHTML = images[i];
+    // nameDiv.className = "result-name-p";
+    // nameDiv.innerHTML = images[i];
+    nameDiv.appendChild(nameP);
+    newDiv.appendChild(nameDiv);
     theGrid.appendChild(newDiv);
     console.log("appended");
   }
