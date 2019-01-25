@@ -58,7 +58,7 @@ h1, h4, h6, p, button, input, textarea{
 }
 
 .radialText{
-  color: black;
+  color: white;
 }
 
 #menuBacking{
@@ -217,7 +217,7 @@ body elements
   height: 100%;
   position: absolute;
   background: black;
-  background-image: url('../assets/Home/litebg.png');
+  background-image: url('../assets/Home/background.png');
   background-size: 100%;
   background-attachment: fixed;
   overflow: hidden;
@@ -230,17 +230,18 @@ body elements
   display: grid;
   grid-template-columns: auto auto auto auto;
   grid-gap: 10px;
-  background-color: #2196F3;
+  background-color: transparent;
   padding: 10px;
   overflow: scroll;
 }
 
 .grid-container > div {
   position: relative;
-  background-color: rgba(255, 255, 255, 0.8);
+  /* background-color: rgba(255, 255, 255, 0.8); */
   text-align: center;
   padding: 20px 0;
   font-size: 30px;
   height: 200px;
   width: 200px;
+  background-size: cover;
 }

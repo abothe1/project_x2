@@ -19,6 +19,20 @@
  *
 *************************************************************************/
 
+function init(){
+  var theGrid = document.getElementById("grid-container");
+  var images = ["1.jpg","2.jpeg","3.jpeg","4.jpeg","5.jpeg","6.jpeg","7.jpeg","8.jpeg","9.jpeg","10.jpeg","11.jpeg","12.jpeg","13.jpeg","14.jpeg","15.jpeg","16.jpeg","17.jpeg","18.jpeg","19.jpeg","20.jpeg"];
+  for(i in images){
+    var newDiv = document.createElement("div");
+    newDiv.style.backgroundImage = "url(../static/assets/Home/Art/"+images[i]+")";
+    // var newImg = document.createElement("img");
+    // newImg.src = "../static/assets/Home/Art/"+images[i];
+    // newDiv.appendChild(newImg);
+    theGrid.appendChild(newDiv);
+    console.log("appended");
+  }
+}
+
 var state = 0;
 
 function changeState(newState){
