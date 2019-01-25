@@ -45,8 +45,8 @@ function init(){
 	});
 
   if(!debugLayout){
-    rainTimer = setInterval(addDrop, 1000);
-  	setInterval(animate, 25);
+    rainTimer = setInterval(addDrop, 1600);
+  	setInterval(animate, 40);
   }
 }
 
@@ -98,11 +98,13 @@ class Drop {
 		this.id = 0;
 		this.theDiv = document.createElement("div");
 		this.theDiv.className = "rainDrop";
+    this.theDiv.style.backgroundImage = RandFrame();
+    this.theDiv.style.backgroundSize = "contain";
     console.log("Stepper:",stepper);
 
     this.theImg = document.createElement("img");
-    this.theImg.style.opacity = "1.0";
-    this.theImg.style.borderRadius = "6px"
+    this.theImg.style.opacity = "0.6";
+    this.theImg.style.borderRadius = "4px"
     this.theImg.style.backgroundColor = "white";
     var img = RandImg();
     this.theImg.src = "../static/assets/Home/Art/" + img;
@@ -113,19 +115,18 @@ class Drop {
         this.height = 200;
         this.x = checkProximity();
         this.y = -200;
-        this.theImg.style.width = "196px"
-        this.theImg.style.height = "196px"
-        this.theImg.style.margin = "2px"
-
+        this.theImg.style.width = "194px"
+        this.theImg.style.height = "194px"
+        this.theImg.style.margin = "3px"
         break;
       case 1:
         this.width = 160;
         this.height = 160;
         this.x = checkProximity();
         this.y = -160;
-        this.theImg.style.width = "156px"
-        this.theImg.style.height = "156px"
-        this.theImg.style.margin = "2px"
+        this.theImg.style.width = "154px"
+        this.theImg.style.height = "154px"
+        this.theImg.style.margin = "3px"
         break;
       case 2:
         this.width = 120;
@@ -144,8 +145,8 @@ class Drop {
 		// var g = RandColor();
 		// var b = RandColor();
 		// this.theDiv.style.backgroundColor = "rgba("+r+","+g+","+b+",1.0)";
-		var colorString = RandColorRange();
-		this.theDiv.style.backgroundColor = colorString;
+		//var colorString = RandColorRange();
+		//this.theDiv.style.backgroundColor = colorString;
 		this.theDiv.paused = false;
 		this.theDiv.dropRef = this;
 		this.audio = new Audio();
@@ -180,9 +181,13 @@ class Drop {
 		this.paused = !this.paused;
 		 if(this.paused){
 			 this.playAudio();
+       this.theImg.style.opacity = "1.0";
+       this.theDiv.style.zIndex = "1";
 			 }
 		else{
 			this.audio.pause();
+      this.theImg.style.opacity = "0.6";
+      this.theDiv.style.zIndex = "0";
 			}
 	}
 
@@ -224,6 +229,26 @@ function checkProximity(){
 
 function RandColor(){
 	return Math.random() * 255;
+}
+
+function RandFrame(){
+  min = Math.ceil(1);
+	max = Math.floor(4);
+	num = Math.floor(Math.random() * (max - min + 1)) + min;
+  switch(num){
+    case 1:
+      return "url('../static/assets/Home/orangebox.png')";
+      break;
+    case 2:
+      return "url('../static/assets/Home/pinkbox.png')";
+      break;
+    case 3:
+      return "url('../static/assets/Home/purplebox.png')";
+      break;
+    case 4:
+      return "url('../static/assets/Home/redbox.png')";
+      break;
+  }
 }
 
 function RandColorRange(){
