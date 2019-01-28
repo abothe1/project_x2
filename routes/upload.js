@@ -2,6 +2,7 @@ module.exports = router => {
 
 const database = require('../database.js'),
       multer = require('multer'),
+      logger = require('../logger.js'),
       fs = require('fs');
 
 const UPLOADS_VIRTUAL_BASE_DIR = '/uploads',
@@ -11,18 +12,18 @@ const UPLOADS_VIRTUAL_BASE_DIR = '/uploads',
 router.get('/_upload', (req, res) => {
 	var id = req.session.key;
 	if (!id) {
-		res.status(403).send('Not logged in').end();
-	} else {
-		database.usernameFromId(id, username => {
-			res.render('_upload.html', {username: username})
-		}, err => {
-			console.warn(`Username find request from ${req.ip} (for ${id}) returned error: ${err}`)
-			res.status(500).end();
-		}, () => {
-			console.warn(`Username find request from ${req.ip} (for ${id}) couldn't find a username`);
-			res.status(500).end();			
-		})
+		return res.status(403).send('Not logged in').end();
 	}
+	database.usernameFromId(id, username => {
+		res.render('_upload.html', {username: username})
+	}, err => {
+		logger.warn("[")
+		console.warn(`Username find request from ${req.ip} (for ${id}) returned error: ${err}`)
+		res.status(500).end();
+	}, () => {
+		console.warn(`Username find request from ${req.ip} (for ${id}) couldn't find a username`);
+		res.status(500).end();			
+	})
 })
 
 function getUserFile(basedir, collection) {
