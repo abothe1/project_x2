@@ -28,7 +28,7 @@ maxDrops = 15;
 getLocation();
 getCurrentEvents();
 var categories = {};
-
+var debugLayout = false;
 
 //setInterval(getCurrentEvents, 60000);
 $.getScript('assets/banks.js', function(data, status)
@@ -66,9 +66,10 @@ function init(){
 		rain.height  = window.innerHeight;
 	});
 
-	rainTimer = setInterval(addDrop, 1000);
-	setInterval(animate, 30);
-	//alert(window.location.href);
+  if(!debugLayout){
+    rainTimer = setInterval(addDrop, 1600);
+  	setInterval(animate, 40);
+  }
 }
 
 function animate() {
@@ -93,12 +94,18 @@ function Update(){
 	}
 }
 
+var stepper = 0;
 
 function addDrop(){
 	if (drops.length == maxDrops){
 		// do nothing
 	}else{
-		drops[drops.length] = new Drop();
+		drops[drops.length] = new Drop(stepper);
+    if(stepper < 2){
+      stepper++;
+    }else{
+      stepper = 0;
+    }
 		drops[drops.length-1].id = drops.length;
 	}
 }
@@ -108,31 +115,74 @@ var lastX = 99999;
 
 class Drop {
 
-	constructor(){
-		console.log("creating drop")
+	constructor(stepper){
+		//console.log("creating drop")
 		this.id = 0;
 		this.theDiv = document.createElement("div");
 		this.theDiv.className = "rainDrop";
-		this.width = 120;
-		this.height = 120;
-		this.x = checkProximity();
-		this.y = -120;
+    this.theDiv.style.backgroundImage = RandFrame();
+    this.theDiv.style.backgroundSize = "contain";
+    console.log("Stepper:",stepper);
+
+    this.theImg = document.createElement("img");
+    this.theImg.style.opacity = "0.6";
+    this.theImg.style.borderRadius = "4px"
+    this.theImg.style.backgroundColor = "white";
+    var img = RandImg();
+    this.theImg.src = "/assets/Home/Art/" + img;
+
+    switch(stepper){
+      case 0:
+        this.width = 200;
+        this.height = 200;
+        this.x = checkProximity();
+        this.y = -200;
+        this.theImg.style.width = "194px"
+        this.theImg.style.height = "194px"
+        this.theImg.style.margin = "3px"
+        break;
+      case 1:
+        this.width = 160;
+        this.height = 160;
+        this.x = checkProximity();
+        this.y = -160;
+        this.theImg.style.width = "154px"
+        this.theImg.style.height = "154px"
+        this.theImg.style.margin = "3px"
+        break;
+      case 2:
+        this.width = 120;
+        this.height = 120;
+        this.x = checkProximity();
+        this.y = -120;
+        this.theImg.style.width = "116px"
+        this.theImg.style.height = "116px"
+        this.theImg.style.margin = "2px"
+        break;
+    }
+
 		this.UpdateDiv();
 
 		// var r = RandColor();
 		// var g = RandColor();
 		// var b = RandColor();
 		// this.theDiv.style.backgroundColor = "rgba("+r+","+g+","+b+",1.0)";
-		var colorString = RandColorRange();
-		this.theDiv.style.backgroundColor = colorString;
+		//var colorString = RandColorRange();
+		//this.theDiv.style.backgroundColor = colorString;
 		this.theDiv.paused = false;
 		this.theDiv.dropRef = this;
 		this.audio = new Audio();
 		this.audio.src = "/assets/Home/transvertion.mp3";
 		this.audio.type='audio/mp3';
-		this.theButton = document.createElement("p");
-		this.theButton.innerHTML = "text";
-		this.theDiv.appendChild(this.theButton);
+		// this.theButton = document.createElement("p");
+		// this.theButton.innerHTML = "text";
+		// this.theDiv.appendChild(this.theButton);
+
+    // this.theBg = document.createElement("img");
+    // this.theBg.style.width = "120px"
+    // this.theBg.style.height = "120px"
+
+    this.theDiv.appendChild(this.theImg);
 		rain.appendChild(this.theDiv);
 		this.AddClickToDiv();
 	}
@@ -149,15 +199,17 @@ class Drop {
 		}
 	}
 
-
-
 	TogglePaused(){
 		this.paused = !this.paused;
 		 if(this.paused){
 			 this.playAudio();
+       this.theImg.style.opacity = "1.0";
+       this.theDiv.style.zIndex = "1";
 			 }
 		else{
 			this.audio.pause();
+      this.theImg.style.opacity = "0.6";
+      this.theDiv.style.zIndex = "0";
 			}
 	}
 
@@ -188,10 +240,10 @@ class Drop {
 }
 
 function checkProximity(){
-	var x = Math.random()*(window.innerWidth-120);
-	while(x <= lastX+120 && x >= lastX-120){
-		console.log("recalculating");
-		x = Math.random()*(window.innerWidth-120);
+	var x = Math.random()*(window.innerWidth-200);
+	while(x <= lastX+200 && x >= lastX-200){
+		//console.log("recalculating");
+		x = Math.random()*(window.innerWidth-200);
 	}
 	lastX = x;
 	return x;
@@ -199,6 +251,26 @@ function checkProximity(){
 
 function RandColor(){
 	return Math.random() * 255;
+}
+
+function RandFrame(){
+  min = Math.ceil(1);
+	max = Math.floor(4);
+	num = Math.floor(Math.random() * (max - min + 1)) + min;
+  switch(num){
+    case 1:
+      return "url('/assets/Home/orangebox.png')";
+      break;
+    case 2:
+      return "url('/assets/Home/pinkbox.png')";
+      break;
+    case 3:
+      return "url('/assets/Home/purplebox.png')";
+      break;
+    case 4:
+      return "url('/assets/Home/redbox.png')";
+      break;
+  }
 }
 
 function RandColorRange(){
@@ -228,6 +300,38 @@ function RandColorRange(){
 			return "rgba(0,"+green+",255,1.0)";
 			break;
 	}
+}
+
+var imgIndex = 0;
+var images = ["1.jpg","2.jpeg","3.jpeg","4.jpeg","5.jpeg","6.jpeg","7.jpeg","8.jpeg","9.jpeg","10.jpeg","11.jpeg","12.jpeg","13.jpeg","14.jpeg","15.jpeg","16.jpeg","17.jpeg","18.jpeg","19.jpeg","20.jpeg"];
+
+function RandImg(){
+  if(imgIndex == 0){
+    var array = images;
+    // Shuffle the array via Fisher–Yates Shuffle
+    var currentIndex = array.length, temporaryValue, randomIndex;
+
+    // While there remain elements to shuffle...
+    while (0 !== currentIndex) {
+
+      // Pick a remaining element...
+      randomIndex = Math.floor(Math.random() * currentIndex);
+      currentIndex -= 1;
+
+      // And swap it with the current element.
+      temporaryValue = array[currentIndex];
+      array[currentIndex] = array[randomIndex];
+      array[randomIndex] = temporaryValue;
+    }
+    images = array;
+  }
+  var img = images[imgIndex];
+  if(imgIndex < 19){
+    imgIndex++;
+  }else{
+    imgIndex = 0;
+  }
+  return img;
 }
 
 // Sam Westerhack Zone
@@ -326,14 +430,18 @@ for (var s in samples){
 
 
 function search_musicians() {
+//  window.location.href='search';
+
 	$.get("/search", { 'mode': "findBands", 'query': $("#search_input").val(), 'bandName': "band1"}, result => {
-		alert(`result is ${result}`);
+	//	alert(`result is ${result}`);
+
 	});
+
 }
 
 function search_gigs() {
 	$.get("/search", { 'mode': "findGigs", 'query': $("#search_input").val(), 'gigName':"gig1" }, result => {
-		alert(`result is ${result}`);
+	//	alert(`result is ${result}`);
 	});
 }
 

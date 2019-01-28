@@ -174,13 +174,13 @@ module.exports = {
     });
   },
 
- findBandsForGig : function findBandsForGig(myGigName, categories, db, errCb, okCb) {
+ findBandsForGig : function findBandsForGig(myGigName, queryStr, db, errCb, okCb) {
 
     var myGig = db.db('gig').collection('gig').findOne({name:myGigName});
     if(!myGig){
-      errCb("couldn't find gig for name: " + myGigname);
+      errCb("couldn't find gig for name: " + myGigName);
     }
-    console.log("The my badn find one method in algs returned: " + myBand);
+    console.log("The my badn find one method in algs returned: " + myGigName);
 
      db.db('bands').collection('bands').find({}).toArray(function(err,result){
       if (err){
