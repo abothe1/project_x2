@@ -315,6 +315,8 @@ pre {
     -moz-box-sizing: border-box;
     -webkit-box-sizing: border-box;
     box-sizing: border-box;
+    border-radius: 8px;
+    border: 2px solid white;
 }
 
 .jcarousel img {

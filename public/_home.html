@@ -21,7 +21,7 @@
 	<script type ="text/javascript">
 
 	function send_msg(){
-		$.post("/__add_status", { status: $("#status_input").val() }, res => { 
+		$.post("/__add_status", { status: $("#status_input").val() }, res => {
 			if (res.success) {
 				alert("success")
 			} else {
@@ -38,7 +38,7 @@
 			// 	$('#chatlog').append(`<text>${res.status}</text>`);
 			// } else {
 			// 	alert(`recv error: ${res.error}`);
-			// }			
+			// }
 		});
 	}
 </script>

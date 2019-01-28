@@ -14,3 +14,19 @@ contactsButton.addEventListener("click",function(){
   }
   open = !open;
 });
+
+$.post(`users/${username}/bands`, { name: '...', ... }, res => {
+  if (res.success) {
+    // ...
+  } else {
+    alert("Cant post band: " + res.cause)
+    // ...
+  }
+})
+
+$.get(`/users/${username}/bands`, {}, res => {
+  res.bands.forEach(band => {
+    $("#bands").add_ele()
+  })
+  // ...
+});
