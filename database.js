@@ -21,9 +21,9 @@
 
 module.exports = {
 	connect: connect,
-	object_id: object_id,
-	username_from_id: username_from_id,
-	id_from_username: id_from_username,
+	objectId: objectId,
+	usernameFromId: usernameFromId,
+	idFromUsername: idFromUsername,
 }
 
 const PORT = 27017,
@@ -40,30 +40,30 @@ var MongoClient = mongodb.MongoClient;
 // }
 
 
-function object_id(id) {
+function objectId(id) {
 	return mongodb.ObjectID(id);
 }
 
-function connect (cb_ok, cb_err) {
+function connect (cbOk, cbErr) {
 	MongoClient.connect(MONGO_URL, { useNewUrlParser : true}, (err, db) => {
 		if (err) {
 			console.error(`Error occrued: ${err}`);
-			cb_err('An internal error occured');
+			cbErr('An internal error occured');
 		}
 		else
-			cb_ok(db);
+			cbOk(db);
 	})
 }
 
-function username_from_id (id, cb_ok, cb_err, cb_not_found, db=undefined) {
+function usernameFromId (id, cbOk, cbErr, cbNotFound, db=undefined) {
 	function exec(db) {
-		db.db('users').collection('users').findOne({_id: object_id(id)}, (err, res) => {
+		db.db('users').collection('users').findOne({_id: objectId(id)}, (err, res) => {
 			if (err) {
-				cb_err(err)
+				cbErr(err)
 			} else if (!res) {
-				cb_not_found()
+				cbNotFound()
 			} else {
-				cb_ok(res.username)
+				cbOk(res.username)
 			}
 		});
 	}
@@ -75,15 +75,15 @@ function username_from_id (id, cb_ok, cb_err, cb_not_found, db=undefined) {
 	}
 }
 
-function id_from_username (username, cb_ok, cb_err, cb_not_found, db=undefined) {
+function idFromUsername (username, cbOk, cbErr, cbNotFound, db=undefined) {
 	function exec(db) {
 		db.db('users').collection('users').findOne({username: username}, (err, res) => {
 			if (err) {
-				cb_err(err)
+				cbErr(err)
 			} else if (!res) {
-				cb_not_found()
+				cbNotFound()
 			} else {
-				cb_ok(res._id)
+				cbOk(res._id)
 			}
 		});
 	}
@@ -96,11 +96,11 @@ function id_from_username (username, cb_ok, cb_err, cb_not_found, db=undefined) 
 }
 
 
-// function connect (database, collection, cb_ok, cb_err) {
+// function connect (database, collection, cbOk, cbErr) {
 // 	connect_to_database(db => {
-// 		cb_ok(db.db(database).collection(collection))
+// 		cbOk(db.db(database).collection(collection))
 // 		db.close();
-// 	}, cb_err)
+// 	}, cbErr)
 // }
 
 
@@ -115,10 +115,10 @@ function id_from_username (username, cb_ok, cb_err, cb_not_found, db=undefined) 
 // 	return [true, result]
 // }
 
-// function login_user(user, cb_ok, cb_err) {
+// function login_user(user, cbOk, cbErr) {
 //     [ok, filtered] = filter_fields(user, 'user', 'pwd');
 //     if(!ok)
-//     	return cb_err(filtered);
+//     	return cbErr(filtered);
 
 // 	connect_to_database('users', db => {
 // 		db.db('users').collection('users').find(query).toArray((err, user) => {
@@ -129,8 +129,8 @@ function id_from_username (username, cb_ok, cb_err, cb_not_found, db=undefined) 
 // 	});
 
 //     if(!ok)
-//     	return cb_err(filtered);
-//     cb_ok('<logged in but not actually cause i havent done that yet>');
+//     	return cbErr(filtered);
+//     cbOk('<logged in but not actually cause i havent done that yet>');
 
 // // router.post('/login',function(req,res){
 // //     handle_database(req,"login",function(response){
@@ -152,10 +152,10 @@ function id_from_username (username, cb_ok, cb_err, cb_not_found, db=undefined) 
 
 // }
 
-// function register_user(user, cb_ok, cb_err) {
+// function register_user(user, cbOk, cbErr) {
 //     [ok, user] = filter_fields(user, 'username', 'password', 'email');
 //     if(!ok)
-//     	return cb_err(user);
+//     	return cbErr(user);
 
 // function get_user(username, callback) {
 // 	var query = { username: username };

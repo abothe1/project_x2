@@ -10,16 +10,14 @@
 	<script type="text/javascript">
 
 	function register() {
-
 		var content = {
 			username: $("#username").val(),
 			email: $("#email").val(),
 			password: $("#password").val()
 		};
 
-		console.log(content);
 		post_request('/register', content,
-			_ => redirect_to('/_login'),
+			res => res.success ? redirect_to('/_login') : alert(JSON.stringify(res)),
 			err => alert(`${err.code} error: ${err.cause}`)
 		);
 	}
