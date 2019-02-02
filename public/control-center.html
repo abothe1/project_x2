@@ -31,6 +31,9 @@
 				});
 			})(jQuery);
 		</script>
+
+
+
     <!-- Carousel Elements -->
     <script type="text/javascript">
       (function($) {
@@ -106,6 +109,9 @@
           });
       })(jQuery);
     </script>
+
+
+
   </head>
   <body onload="init();">
     <div id="body-container">
@@ -151,114 +157,33 @@
 
       <div id="contacts-sidebar">
       </div>
+      <script type="text/javascript">
+        // Create wrapper divs & the <ul>
+        var $wrapper = $("<div class='wrapper'></div>"),
+        $carouselWrapper = $("<div class='jcarousel-wrapper'></div>"),
+        $carousel = $("<div class='jcarousel'></div>"),
+        $list = $("<ul></ul>");
 
-      <div class="wrapper">
+        $wrapper.append($carouselWrapper);
+        $carouselWrapper.append($carousel);
+        $carousel.append($list);
 
-        <div class="jcarousel-wrapper">
-            <div class="jcarousel">
-                <ul>
-                    <li><img class="carousel-img"src="../static/assets/Home/Art/1.jpg" alt="Image 1"></li>
-                    <li class="carousel-li"><img src="../static/assets/Home/Art/2.jpeg" alt="Image 2"></li>
-                    <li><img src="../static/assets/Home/Art/3.jpeg" alt="Image 3"></li>
-                    <li><img src="../static/assets/Home/Art/4.jpeg" alt="Image 4"></li>
-                    <li><img src="../static/assets/Home/Art/5.jpeg" alt="Image 5"></li>
-                    <li><img src="../static/assets/Home/Art/6.jpeg" alt="Image 6"></li>
-                </ul>
-            </div>
-
-            <a href="#" class="jcarousel-control-prev">&lsaquo;</a>
-            <a href="#" class="jcarousel-control-next">&rsaquo;</a>
-
-            <!-- <p class="jcarousel-pagination"></p> -->
-        </div>
-      </div>
-
-      <div class="wrapper-2">
-
-        <div class="jcarousel-wrapper">
-            <div class="jcarousel">
-                <ul>
-                    <li><img class="carousel-img"src="../static/assets/Home/Art/1.jpg" alt="Image 1"></li>
-                    <li class="carousel-li"><img src="../static/assets/Home/Art/2.jpeg" alt="Image 2"></li>
-                    <li><img src="../static/assets/Home/Art/3.jpeg" alt="Image 3"></li>
-                    <li><img src="../static/assets/Home/Art/4.jpeg" alt="Image 4"></li>
-                    <li><img src="../static/assets/Home/Art/5.jpeg" alt="Image 5"></li>
-                    <li><img src="../static/assets/Home/Art/6.jpeg" alt="Image 6"></li>
-                </ul>
-            </div>
-
-            <a href="#" class="jcarousel-control-prev">&lsaquo;</a>
-            <a href="#" class="jcarousel-control-next">&rsaquo;</a>
-
-            <!-- <p class="jcarousel-pagination"></p> -->
-        </div>
-      </div>
+        // fill the <ul>
+        var i = 6;  // number of things to add
+        while(i > 0){
+          var $newItem = $("<li class='carousel-li'></li>");
+          var $newImg = $("<img class='carousel-img' src='../static/assets/Home/Art/3.jpeg' alt='Image 3'>");
+          $newItem.append($newImg);
+          $list.append($newItem);
+          i--;
+        }
+        var $prev = $("<a href='#' class='jcarousel-control-prev'>&lsaquo;</a>")
+        var $next = $("<a href='#' class='jcarousel-control-next'>&rsaquo;</a>")
+        $carousel.after($prev, $next);
+        $("#contacts-sidebar").after($wrapper);
+      </script>
 
 
-      <div class="wrapper-2">
-
-        <div class="jcarousel-wrapper">
-            <div class="jcarousel">
-                <ul>
-                    <li><img class="carousel-img"src="../static/assets/Home/Art/1.jpg" alt="Image 1"></li>
-                    <li class="carousel-li"><img src="../static/assets/Home/Art/2.jpeg" alt="Image 2"></li>
-                    <li><img src="../static/assets/Home/Art/3.jpeg" alt="Image 3"></li>
-                    <li><img src="../static/assets/Home/Art/4.jpeg" alt="Image 4"></li>
-                    <li><img src="../static/assets/Home/Art/5.jpeg" alt="Image 5"></li>
-                    <li><img src="../static/assets/Home/Art/6.jpeg" alt="Image 6"></li>
-                </ul>
-            </div>
-
-            <a href="#" class="jcarousel-control-prev">&lsaquo;</a>
-            <a href="#" class="jcarousel-control-next">&rsaquo;</a>
-
-            <!-- <p class="jcarousel-pagination"></p> -->
-        </div>
-      </div>
-
-
-      <div class="wrapper-2">
-
-        <div class="jcarousel-wrapper">
-            <div class="jcarousel">
-                <ul>
-                    <li><img class="carousel-img"src="../static/assets/Home/Art/1.jpg" alt="Image 1"></li>
-                    <li class="carousel-li"><img src="../static/assets/Home/Art/2.jpeg" alt="Image 2"></li>
-                    <li><img src="../static/assets/Home/Art/3.jpeg" alt="Image 3"></li>
-                    <li><img src="../static/assets/Home/Art/4.jpeg" alt="Image 4"></li>
-                    <li><img src="../static/assets/Home/Art/5.jpeg" alt="Image 5"></li>
-                    <li><img src="../static/assets/Home/Art/6.jpeg" alt="Image 6"></li>
-                </ul>
-            </div>
-
-            <a href="#" class="jcarousel-control-prev">&lsaquo;</a>
-            <a href="#" class="jcarousel-control-next">&rsaquo;</a>
-
-            <!-- <p class="jcarousel-pagination"></p> -->
-        </div>
-      </div>
-
-
-      <div class="wrapper-2">
-
-        <div class="jcarousel-wrapper">
-            <div class="jcarousel">
-                <ul>
-                    <li><img class="carousel-img"src="../static/assets/Home/Art/1.jpg" alt="Image 1"></li>
-                    <li class="carousel-li"><img src="../static/assets/Home/Art/2.jpeg" alt="Image 2"></li>
-                    <li><img src="../static/assets/Home/Art/3.jpeg" alt="Image 3"></li>
-                    <li><img src="../static/assets/Home/Art/4.jpeg" alt="Image 4"></li>
-                    <li><img src="../static/assets/Home/Art/5.jpeg" alt="Image 5"></li>
-                    <li><img src="../static/assets/Home/Art/6.jpeg" alt="Image 6"></li>
-                </ul>
-            </div>
-
-            <a href="#" class="jcarousel-control-prev">&lsaquo;</a>
-            <a href="#" class="jcarousel-control-next">&rsaquo;</a>
-
-            <!-- <p class="jcarousel-pagination"></p> -->
-        </div>
-      </div>
 
     </div>
   </body>

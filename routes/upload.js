@@ -22,7 +22,7 @@ router.get('/_upload', (req, res) => {
 		res.status(500).end();
 	}, () => {
 		console.warn(`Username find request from ${req.ip} (for ${id}) couldn't find a username`);
-		res.status(500).end();			
+		res.status(500).end();
 	})
 })
 
@@ -165,13 +165,14 @@ router.route('/settings/avatar')
 	.post(uploadUserFile('/avatars', 'avatars', 'avatar'))
 	.delete(deleteUserFile('/avatars', 'avatars', 'avatar'));
 
+router.route('/user/:username/bands')
+  .get(/* return gigs that username has */)
+  .post(/* add a new gig */) // needs logged in
+  .update(/* update a gig */) // ^
+  .delete(/* delete a gig */) // ^
+
 router.route('/settings/soundbyte')
 	.post(uploadUserFile('/soundbytes', 'soundbytes', 'soundbyte'))
 	.delete(deleteUserFile('/soundbytes', 'soundbytes', 'soundbyte'));
 
 } /* end module.exports */
-
-
-
-
-

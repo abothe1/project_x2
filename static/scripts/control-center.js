@@ -1,5 +1,10 @@
 function init(){
+  var e = "data";
+  buildCarouselUpcoming(e);
+}
 
+function buildCarouselUpcoming(data){
+  
 }
 
 var contactsButton = document.getElementById('contacts-button');
@@ -13,20 +18,4 @@ contactsButton.addEventListener("click",function(){
     document.getElementById('contacts-sidebar').style.display = 'block';
   }
   open = !open;
-});
-
-$.post(`users/${username}/bands`, { name: '...', ... }, res => {
-  if (res.success) {
-    // ...
-  } else {
-    alert("Cant post band: " + res.cause)
-    // ...
-  }
-})
-
-$.get(`/users/${username}/bands`, {}, res => {
-  res.bands.forEach(band => {
-    $("#bands").add_ele()
-  })
-  // ...
 });
