@@ -89,179 +89,238 @@
   var priceEQ=10;
   var minQueryMatches=3;
 module.exports = {
-  findGigsForBand : function findGigsForBand(myBandName, queryStr, db, errCb, okCb){
-    var myBand = db.db('bands').collection('bands').findOne({name:myBandname});
-    if (!myBand){
-      errCb("couldn't find band for name: " + myBandName);
-    }
-    console.log("The my badn find one method in algs returned: " + myBand);
-
-
-     db.db('gigs').collection('gigs').find({}).toArray(function(err,result){
+  findGigsForBand : function findGigsForBand(myBandName, queryStr, db, errCb, cbOk){
+    console.log("on algs ppage searching for bands and band naem is : " + myBandName);
+     db.db('bands').collection('bands').findOne({name:myBandName}, function(err, result){
       if (err){
-        console.log("There was error getting gigs from db:" + err);
-        errCb(err);
+        console.log("there was an error getting " + myBandName + " out of the db " + err);
+        errCB(err);
       }
       else{
-        console.log("result in find gigs for band connecting ot db and geting the gigs was: " + result)
-        var gigs=result;
-        var genresFromStr=[];
-        var instsFromStr=[];
-        var gigTypesFromStr=[];
-        var vibesFromStr=[];
-        var gigsToScore=[];
-        var queryGigsToScore=[];
-        var bandsToScore=[];
-        var queryBandsToScore=[];
-        var categories={"genres":[genreBank,genresFromStr,genreMult], "insts":[instsBank,instsFromStr,instMult],"vibes":[vibesBank,vibesFromStr,vibeMult],"gigTypes":[gigTypeBank,gigTypesFromStr,typeMult]};
-
-        var categories = parseQueryString(queryStr, categories);
-        var queryStrScore = 0;
+        var myBand = result;
+        console.log("In algs page and the band for searching for gigs is: " + JSON.stringify(myBand));
+        console.log("The my badn find one method in algs returned: " + myBand);
 
 
-        for (g in gigs){
-          var theGig = gigs[g];
-          var numMatches = 0;
-          for (key in categories){
-            if (categories.hasOwnProperty(key)){
-              if (theGig.hasOwnProperty(key)){
-                var contents = categories[key];
-                var fromStr=contents[1];
-                var mult=contents[2];
-                for (word in fromStr){
-                  if (theGig[key].includes(word)){
-                    queryStrScore+=(1*mult);
-                    numMatches+=1;
+         db.db('gigs').collection('gigs').find({}).toArray(function (err,result){
+          if (err){
+            console.log("There was error getting gigs from db:" + err);
+            errCb(err);
+          }
+          else{
+            console.log("result in find gigs for band connecting ot db and geting the gigs was: " + JSON.stringify(result));
+            var gigs=result;
+            var genresFromStr=[];
+            var instsFromStr=[];
+            var gigTypesFromStr=[];
+            var vibesFromStr=[];
+            var gigsToScore=[];
+            var queryGigsToScore=[];
+            var bandsToScore=[];
+            var queryBandsToScore=[];
+            var categories={"genres":[genreBank,genresFromStr,genreMult], "insts":[instBank,instsFromStr,instMult],"vibes":[vibeBank,vibesFromStr,vibeMult],"gigTypes":[gigTypeBank,gigTypesFromStr,typeMult]};
+            console.log("")
+            var categories = parseQueryString(queryStr, categories);
+
+
+
+            for (g in gigs){
+              var queryStrScore = 0;
+              var theGig = gigs[g];
+              var numMatches = 0;
+              if (theGig.categories==null){
+                console.log(" ");
+                console.log("categories for the gig "+ JSON.stringify(theGig.name) + "is null in that if thing");
+              }
+              else{
+                for (var key in categories){
+                  console.log("in fiding gigs for band and in cat loop and key is : " + key);
+                  if (categories.hasOwnProperty(key)){
+                    if (theGig.categories.hasOwnProperty(key)){
+                      var contents = categories[key];
+                      console.log("in fiding gigs for band and in if if and contents is : " + contents);
+                      var fromStr=contents[1];
+                      var mult=contents[2];
+                      for (var word in fromStr){
+                        console.log("In for word loop and word is : " + fromStr[word]);
+                        if (theGig.categories[key].includes(fromStr[word])){
+                          console.log("got in if");
+                          queryStrScore+=(1*mult);
+                          numMatches+=1;
+                        }
+                      }
+                    }
                   }
                 }
               }
-            }
-          }
+
+                console.log(" ");
+                console.log("query score is : " + queryStrScore);
+                var priceDiff=Math.abs((theGig.price-myBand.price));
+                var priceScore= (-(priceDiff/priceEQ)*priceMult);
+                console.log("pirce score is : " + priceScore);
+                var diffX=Math.pow((theGig.lat-myBand.lat),2);
+                var diffY=Math.pow((theGig.lng-myBand.lng),2);
+                var distance = Math.pow((diffX+diffY),0.5);
+                var distScore = -(distance*distMult);
+                console.log("dist score is : " + distScore);
+                var dateDiffs=[];
+                for (date in myBand.openDates){
+                  var timeDiff=diff_minutes(myBand.openDates[0],theGig.startDate);
+                  dateDiffs.push(timeDiff);
+                }
+                var minDiff = dateDiffs[0];
+                for (diff in dateDiffs){
+                  if (diff < minDiff) {
+                    minDiff = diff;
+                  }
+                }
+
+                var timeDiff = minDiff / timeEqualizer;
+                var timeScore= -timeDiff*timeMult;
+                console.log("time score is : " + timeScore);
 
 
-            var priceDiff=Math.abs((theGig.price-myBand.price));
-            var priceScore= (-(priceDiff/priceEQ)*priceMult);
-            var diffX=Math.pow((theGig.lat-myBand.lat),2);
-            var diffY=Math.pow((theGig.lng-myBand.lng),2);
-            var distance = Math.pow((diffX+diffY),0.5);
-            var distScore = -(distance*distMult);
-            var dateDiffs=[];
-            for (date in myBand.openDates){
-              var timeDiff=diff_minutes(myBand.openDates[0],myGig.startDate);
-              dateDiffs.push(timeDiff);
-            }
-            var minDiff = dateDiffs[0];
-            for (diff in dateDiffs){
-              if (diff < minDiff) {
-                minDiff = diff;
+                var score = timeScore+distScore+priceScore+queryStrScore;
+                console.log(" ");
+                console.log("in gigs for band and score of gig : " + JSON.stringify(theGig) + "is :" + score);
+                if (numMatches>minQueryMatches){
+                  queryGigsToScore.push([theGig, numMatches]);
+                }
+                else{
+                  gigsToScore.push([theGig,score]);
+                }
               }
-            }
-
-            var timeDiff = minDiff / timeEqualizer;
-            var timeScore= -timeDiff*timeMult;
-            var score = timeScore+distScore+priceScore+queryStrScore;
-            if (numMatches>minQueryMatches){
-              queryGigsToScore.push([theGig, numMatches]);
-            }
-            else{
-              gigsToScore.push([theGig,score]);
-            }
+              var sortedGigs = {"overallMatchers":sortDict(gigsToScore), "queryMatchers":sortDict(queryGigsToScore)};
+              console.log("sorted gigs on alg page is : " + JSON.stringify(sortedGigs));
+              db.close();
+              cbOk(sortedGigs);
           }
-          var sortedGigs = {"overallMatchers":sortDict(gigsToScore), "queryMatchers":sortDict(queryGigsToScore)};
-          db.close();
-          cbOk(sortedGigs);
+        });
       }
     });
   },
 
  findBandsForGig : function findBandsForGig(myGigName, queryStr, db, errCb, okCb) {
-
-    var myGig = db.db('gig').collection('gig').findOne({name:myGigName});
-    if(!myGig){
-      errCb("couldn't find gig for name: " + myGigName);
-    }
-    console.log("The my badn find one method in algs returned: " + myGigName);
-
-     db.db('bands').collection('bands').find({}).toArray(function(err,result){
+   console.log("got in find bands fro gig on alg page");
+   console.log("querystr is :" + queryStr);
+   console.log("gig searching for bands name is" + myGigName);
+    var myGig = db.db('gigs').collection('gigs').findOne({'name':myGigName}, function(err, result){
       if (err){
-        console.log("There was error getting gigs from db:" + err);
-        errCb(err);
+        console.log("there was an error finding the gig " + myGigName + "the err was: " + err);
+        errCB(err);
       }
       else{
-        var bands = result;
-        var categories = parseQueryString(queryStr,categories);
+        var myGig = result;
+        console.log("The my gig find one method in algs returned: " + JSON.stringify(myGig));
+         db.db('bands').collection('bands').find({}).toArray(function(err,result){
+          if (err){
+            console.log("There was error getting gigs from db:" + err);
+            errCb(err);
+          }
+          else{
+            console.log("in else for getting all gigs on alg page and the array was " + JSON.stringify(result));
 
-        for (b in bands){
-          var theBand = bands[b];
-          var numMatches=0;
-          for (key in categories){
-            if (categories.hasOwnProperty(key)){
-              if (theGig.hasOwnProperty(key)){
-                var contents = categories[key];
-                var fromStr=contents[1];
-                var mult=contents[2];
-                for (word in fromStr){
-                  if (theBand[key].includes(word)){
-                    queryStrScore+=(1*mult);
-                    numMatches+=1;
+            var bands = result;
+            var categories = parseQueryString(queryStr,categories);
+            var bandsToScore=[];
+            var queryBandsToScore=[];
+            for (b in bands){
+              var queryStrScore=0;
+              var theBand = bands[b];
+              var numMatches=0;
+              for (key in categories){
+                console.log("for key in cat and the key is: " + key);
+                if (categories.hasOwnProperty(key)){
+                  if (theGig.categories.hasOwnProperty(key)){
+                    var contents = categories[key];
+                    var fromStr=contents[1];
+                    var mult=contents[2];
+                    for (var word in fromStr){
+                      if (theBand.categories[key].includes(fromStr[word])){
+                        queryStrScore+=(1*mult);
+                        numMatches+=1;
+                      }
+                    }
                   }
                 }
               }
-            }
-          }
-          var priceDiff = Math.abs( (myGig.price-  theBand.price) );
-          var priceScore = (-(priceDiff/priceEQ) * priceMult);
-          var dateDiffs = [];
-          for (date in theBand.openDates){
-            var timeDiff=diff_minutes(myBand.openDates[0],myGig.startDate);
-            dateDiffs.push(timeDiff);
-          }
-          var minDiff = dateDiffs[0];
-          for (diff in dateDiffs){
-            if (diff < minDiff){
-              minDiff=diff;
-            }
-          }
-          var timeDiff = (minDiff) / timeEqualizer;
-          var timeScore = -timeDiff * timeMult;
-          var ratingScore = theBand.rating*ratingMult;
-          var score = timeScore+priceScore+queryStrScore+ratingScore;
-          if (numMatches>minQueryMatches){
-            queryBandsToScore.push(theBand,numMatches);
-          }
-          else{
-            bandsToScore.push([theBand,score]);
-          }
+              if (myGig['price']==null){
+                continue;
+              }
+              var priceDiff = Math.abs( (myGig.price-  theBand.price));
+              console.log("price diff in find bands for gig is: " + priceDiff);
+              var priceScore = (-(priceDiff/priceEQ) * priceMult);
+              var dateDiffs = [];
+              for (date in theBand.openDates){
+                var timeDiff=diff_minutes(myBand.openDates[0],myGig.startDate);
+                dateDiffs.push(timeDiff);
+              }
+              var minDiff = dateDiffs[0];
+              for (diff in dateDiffs){
+                if (diff < minDiff){
+                  minDiff=diff;
+                }
+              }
+              var timeDiff = (minDiff) / timeEqualizer;
+              var timeScore = -timeDiff * timeMult;
+              var ratingScore = theBand.rating*ratingMult;
+              var score = timeScore+priceScore+queryStrScore+ratingScore;
+              console.log("score in find bands for gig is : " + score);
+              if (numMatches>minQueryMatches){
+                queryBandsToScore.push(theBand,numMatches);
+              }
+              else{
+                bandsToScore.push([theBand,score]);
+              }
 
-        }
-        var sortedBands = {"overallMatchers":sortDict(bandsToScore),"queryMatchers":sortDict(queryBandsToScore)};
-        db.close();
-        okCb(sortedBands);
+            }
+            var sortedBands = {"overallMatchers":sortDict(bandsToScore),"queryMatchers":sortDict(queryBandsToScore)};
+            console.log("sortedBands on alg page is " + JSON.stringify(sortedBands));
+            db.close();
+            okCb(sortedBands);
+          }
+        });
       }
     });
+
   }
+
 }
   function parseQueryString(queryStr, categories){
-    var lowerCased = queryStr.toLowerCased();
+    console.log(" ");
+    console.log("in parse query str on alg page and str is: " + queryStr + "and categoires are " + JSON.stringify(categories));
+    var lowerCased = queryStr.toLowerCase();
+
     //iterates through the categories and pushes tmatchign
     //words from the query string in the appropaite collection of words
     for (var key in categories){
+      console.log("i for key loop and key is :" + key);
         if (categories.hasOwnProperty(key)){
             var contents = categories[key];
+            console.log("i for key loop and contents is :" + JSON.stringify(contents));
             for (word in contents[0]){
-              if (queryStr.includes(word)){
-                contents[1].push(word);
+              console.log("in for word loop and word is : " + contents[0][word]);
+              if (queryStr.includes(contents[0][word])){
+                contents[1].push(contents[0][word]);
               }
             }
             categories[key]=contents;
         }
     }
+    console.log(" ");
+    console.log("the thing parse is about to return is"+JSON.stringify(categories));
     return categories;
   }
 
-  function diff_minutes(dt2, dt1) {
+  function diff_minutes(dt2Str, dt1Str) {
+    var dt1 = new Date(dt1Str);
+    var dt2 = new Date(dt2Str);
+    console.log("in diff mins on alg page and dt2 is : " + dt2 + "and dt1 is : " + dt1);
     var diff =(dt2.getTime() - dt1.getTime()) / 1000;
+    console.log("diff is : " + diff);
     diff /= 60;
+    console.log("diff is : " + diff);
     return Math.abs(Math.round(diff));
    }
 

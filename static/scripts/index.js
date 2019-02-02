@@ -432,16 +432,16 @@ for (var s in samples){
 function search_musicians() {
 //  window.location.href='search';
 
-	$.get("/search", { 'mode': "findBands", 'query': $("#search_input").val(), 'bandName': "band1"}, result => {
-	//	alert(`result is ${result}`);
+	$.get("/search", { 'mode': "findBands", 'query': $("#search_input").val(), 'gigName': "the lads get together"},result => {
+		alert(`result is ${JSON.stringify(result)}`);
 
 	});
 
 }
 
 function search_gigs() {
-	$.get("/search", { 'mode': "findGigs", 'query': $("#search_input").val(), 'gigName':"gig1" }, result => {
-	//	alert(`result is ${result}`);
+	$.get("/search", { 'mode': "findGigs", 'query': $("#search_input").val(), 'bandName': "band4" }, result => {
+		  alert(`result is ${JSON.stringify(result)}`);
 	});
 }
 
@@ -686,5 +686,12 @@ function diff_minutes(dt2, dt1) {
       var lat = data.coord.lat;
       var lng = data.coord.lon;
       post_gig(lat,lng);
+    });
+  }
+  //name, address, zipcode, price, openDates, application, lat, lng, audioSamples, videoSamples, picture, categories
+  function createBand(){
+    $.post('/band', {'name':"band4", 'address':"N27 W5230", 'zipcode': 53012, 'price': 10, 'openDates':["2019-01-26T14:22"], 'application':"We are a good band", 'lat': 100.1, 'lng': 109.2, 'audioSamples':[], 'videoSamples':[], 'picture':"no jpeg yet", 'appliedGigs':[], 'categories':{'genres':[],'vibes':[],'insts':[],'gigTypes':[]}}, result => {
+      console.log("got cb from post /gig");
+      alert(`result is ${result}`);
     });
   }

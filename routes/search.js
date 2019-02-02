@@ -19,6 +19,8 @@ router.get('/search', (req, res) => {
 
 	switch (mode) {
 		case 'findGigs':
+    console.log("got in searchign for gigs on search rotues page");
+    console.log("band namee searching for bands is: " + bandName);
 			database.connect(db => {
 				matching.findGigsForBand(bandName, query, db, err => {
 					console.error("Error when finding gigs for " + bandName + ": " + err);
@@ -32,6 +34,8 @@ router.get('/search', (req, res) => {
 			})
 			break;
 		case 'findBands':
+    console.log("got in searchign for bands");
+    console.log("gig namee searching for bands is: " + gigName);
 			database.connect(db => {
 				matching.findBandsForGig(gigName, query, db, err => {
 					console.error("Error when finding bands for " + gigName + ": " + err);
@@ -103,17 +107,17 @@ router.get('/current_events', (req, res) => {
 router.post('/band', (req, res) => {
   console.log(req);
   console.log("got into post gigs on router");
-	var {name, address, price, openDates, application, lat, lng, audioSamples, videoSamples, picture, categories} = req.body;
+	var {name, address, zipcode, price, openDates, application, lat, lng, audioSamples, videoSamples, picture, categories} = req.body;
 	if (!req.body) {
 		 res.status(400).send('No body sent').end();
 	}
 //  gig['isFilled']=true;
 //  gig['bandFor']='none';
-	console.log("Received body for gig: " + req.body.name);
+	console.log("Received body for band: " + req.body.name);
 
 	database.connect(db => {
 		let bands = db.db('bands').collection('bands');
-		bands.insertOne({'name' : name, 'address': address, 'price': price, 'openDates':openDates, 'application' : application, 'lat' : lat, 'lng':lng, 'categories' : categories, 'appliedGigs':[], 'upcomingGigs':[], 'finishedGigs':[], 'audioSamples':audioSamples, 'videoSamples':videoSamples, 'picture': picture}, (err, result) => {
+		bands.insertOne({'name' : name, 'address': address, 'zipcode':zipcode, 'price': price, 'openDates':openDates, 'applicationText':application, 'lat' : lat, 'lng':lng, 'categories' : categories, 'appliedGigs':[], 'upcomingGigs':[], 'finishedGigs':[], 'audioSamples':audioSamples, 'videoSamples':videoSamples, 'picture': picture}, (err, result) => {
 			if (err){
 				console.warn("Couldnt get insert band into database: " + err);
 				res.status(500).end();
