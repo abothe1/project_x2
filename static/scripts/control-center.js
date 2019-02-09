@@ -27,15 +27,35 @@ function buildCarouselUpcoming(data){
 
   // fill the <ul>
   var i = 6;  // number of things to add
+  var stepper = 0;
   while(i > 0){
     var $newItem = $("<li class='carousel-li'></li>");
     var $newImg = $("<img class='carousel-img' src='../static/assets/Home/Art/3.jpeg' alt='Image 3'>");
     $newItem.append($newImg);
+    switch(stepper){
+      case 0:
+        var $newFrame = $("<img class='carousel-frame' src='../static/assets/Control-Center/redbox.png' alt='frame'>");
+        stepper++;
+        break;
+      case 1:
+        var $newFrame = $("<img class='carousel-frame' src='../static/assets/Control-Center/pinkbox.png' alt='frame'>");
+        stepper++;
+        break;
+      case 2:
+        var $newFrame = $("<img class='carousel-frame' src='../static/assets/Control-Center/orangebox.png' alt='frame'>");
+        stepper++;
+        break;
+      case 3:
+        var $newFrame = $("<img class='carousel-frame' src='../static/assets/Control-Center/purplebox.png' alt='frame'>");
+        stepper=0;
+        break;
+    }
+    $newItem.append($newFrame);
     $list.append($newItem);
     i--;
   }
-  var $prev = $("<a href='#' class='jcarousel-control-prev'>&lsaquo;</a>")
-  var $next = $("<a href='#' class='jcarousel-control-next'>&rsaquo;</a>")
+  var $prev = $("<a href='#' class='jcarousel-control-prev'></a>")
+  var $next = $("<a href='#' class='jcarousel-control-next'></a>")
   $carousel.after($prev, $next);
   //$("#contacts-sidebar").after($wrapper);
   $("#main-content-wrapper").append($wrapper);

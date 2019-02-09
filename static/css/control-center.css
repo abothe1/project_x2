@@ -201,6 +201,7 @@ h1, h4, h6, p, button, input, textarea, li{
 */
 
 .profiles-list{
+  z-index: 3;
   position: fixed;
   margin-top: 250px;
   color: white;
@@ -262,13 +263,13 @@ pre {
 }
 
 .wrapper {
-  max-width: 800px;
+  max-width: 900px;
   padding: 0px 0px 10px 0px;
   margin: auto;
 }
 
 .wrapper-2{
-  max-width: 800px;
+  max-width: 900px;
   padding: 0px 0px 10px 0px;
   margin: auto;
 }
@@ -306,21 +307,36 @@ ul{
 }
 
 .jcarousel li {
-    width: 200px;
-    height: 200px;
+    width: 225px;
+    height: 225px;
     float: left;
-    padding: 10px;
-    -moz-box-sizing: border-box;
+    margin-left: 0px;
+    padding: 5px;
+    /* background-image: url("../assets/Control-Center/redbox.png");
+    background-size: contain; */
+    /* -moz-box-sizing: border-box;
     -webkit-box-sizing: border-box;
     box-sizing: border-box;
     border-radius: 8px;
-    border: 2px solid white;
+    border: 2px solid white; */
 }
 
-.jcarousel img {
-    display: block;
-    width: 100%;
-    height: 100%;
+.carousel-img {
+  z-index: 1;
+  width: 194px;
+  height: 194px;
+  margin-left: 3px;
+  margin-top: 3px;
+  border-radius: 4px;
+  position: absolute;
+}
+
+.carousel-frame{
+  z-index: 4;
+  width: 200px;
+  height: 200px;
+  border-radius: none;
+  position: absolute;
 }
 
 /** Carousel Controls **/
@@ -328,30 +344,20 @@ ul{
 .jcarousel-control-prev,
 .jcarousel-control-next {
     position: absolute;
-    top: 50%;
-    margin-top: -15px;
-    width: 30px;
-    height: 30px;
-    text-align: center;
-    background: #4E443C;
+    top: 25%;
+    width: 33px;
+    height: 99px;
     color: #fff;
-    text-decoration: none;
-    text-shadow: 0 0 1px #000;
-    font: 24px/27px Arial, sans-serif;
-    -webkit-border-radius: 30px;
-    -moz-border-radius: 30px;
-    border-radius: 30px;
-    -webkit-box-shadow: 0 0 4px #F0EFE7;
-    -moz-box-shadow: 0 0 4px #F0EFE7;
-    box-shadow: 0 0 4px #F0EFE7;
 }
 
 .jcarousel-control-prev {
     left: -45px;
+    background: url("../assets/Control-Center/arrow-left.png") left center no-repeat;
 }
 
 .jcarousel-control-next {
-    right: -45px;
+    right: -30px;
+    background: url("../assets/Control-Center/arrow-right.png") left center no-repeat;
 }
 
 /** Carousel Pagination **/
@@ -415,7 +421,6 @@ ticker
 /*
 scrollbar
 */
-/* width */
 /* width */
 ::-webkit-scrollbar {
   width: 20px;
