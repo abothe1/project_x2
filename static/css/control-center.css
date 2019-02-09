@@ -263,7 +263,7 @@ pre {
 
 .wrapper {
   max-width: 800px;
-  padding: 180px 0px 10px 0px;
+  padding: 0px 0px 10px 0px;
   margin: auto;
 }
 
@@ -393,7 +393,16 @@ ul{
     box-shadow: 0 0 2px #F0EFE7;
 }
 
-/**/
+#main-content-wrapper{
+  margin-left: 240px;
+  margin-top: 180px;
+  width: 70%;
+  background-color: transparent;
+}
+
+/*
+ticker
+*/
 
 #ticker-img{
   z-index: 0;
@@ -401,4 +410,32 @@ ul{
   position: absolute;
   height: 60px;
   width: 100%;
+}
+
+/*
+scrollbar
+*/
+/* width */
+/* width */
+::-webkit-scrollbar {
+  width: 20px;
+}
+
+/* Track */
+::-webkit-scrollbar-track {
+  background: transparent;
+  border-radius: 10px;
+}
+
+/* Handle */
+::-webkit-scrollbar-thumb {
+  background: #03101a;
+  border-radius: 10px;
+  border: 1px solid #56dff0;
+  min-height: 20px; !important
+}
+
+/* Handle on hover */
+::-webkit-scrollbar-thumb:hover {
+  background: #56dff0;
 }

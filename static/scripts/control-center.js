@@ -7,7 +7,11 @@
 
 function init(){
   var e = "data";
- buildCarouselUpcoming(e);
+  buildCarouselUpcoming(e);
+  buildCarouselUpcoming(e);
+  buildCarouselUpcoming(e);
+  buildCarouselUpcoming(e);
+
 }
 
 function buildCarouselUpcoming(data){
@@ -33,7 +37,8 @@ function buildCarouselUpcoming(data){
   var $prev = $("<a href='#' class='jcarousel-control-prev'>&lsaquo;</a>")
   var $next = $("<a href='#' class='jcarousel-control-next'>&rsaquo;</a>")
   $carousel.after($prev, $next);
-  $("#contacts-sidebar").after($wrapper);
+  //$("#contacts-sidebar").after($wrapper);
+  $("#main-content-wrapper").append($wrapper);
   setupAction();
 }
 
