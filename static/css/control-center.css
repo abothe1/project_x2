@@ -182,23 +182,18 @@ h1, h4, h6, p, button, input, textarea, li{
 }
 
 #star-1{
-  background-color: red;
 }
 
 #star-2{
-  background-color: red;
 }
 
 #star-3{
-  background-color: red;
 }
 
 #star-4{
-  background-color: red;
 }
 
 #star-5{
-  background-color: red;
 }
 
 /*
@@ -207,8 +202,7 @@ h1, h4, h6, p, button, input, textarea, li{
 
 .profiles-list{
   position: fixed;
-  margin-left: 20px;
-  margin-top: 300px;
+  margin-top: 250px;
   color: white;
 }
 
@@ -230,7 +224,6 @@ h1, h4, h6, p, button, input, textarea, li{
   width: 100%;
   position: fixed;
   height: 6%;
-  background-color: red;
   z-index: 100;
 }
 
@@ -238,10 +231,11 @@ h1, h4, h6, p, button, input, textarea, li{
   width: 300px;
   height: 100%;
   text-align: center;
-  background-color: blue;
+  background-color: transparent;
   position: absolute;
   right: 0px;
   color: white;
+  border: none;
   font-size: 20pt;
 }
 
@@ -297,6 +291,10 @@ pre {
     position: relative;
     overflow: hidden;
     width: 100%;
+}
+
+ul{
+  list-style: none;
 }
 
 .jcarousel ul {
@@ -393,4 +391,14 @@ pre {
     -webkit-box-shadow: 0 0 2px #F0EFE7;
     -moz-box-shadow: 0 0 2px #F0EFE7;
     box-shadow: 0 0 2px #F0EFE7;
+}
+
+/**/
+
+#ticker-img{
+  z-index: 0;
+  background-color: red;
+  position: absolute;
+  height: 60px;
+  width: 100%;
 }
