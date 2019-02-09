@@ -40,6 +40,7 @@ var client = redis.createClient();
 var app = express();
 
 app.set('views', PUBLIC_DIR);
+app.set('view engine', 'html');
 app.engine('html', require('ejs').renderFile);
 
 // this is how sessions are handled

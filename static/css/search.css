@@ -23,12 +23,133 @@
 Globals
 */
 
-html{
-  background: black;
+@font-face { font-family: Industry; src: url('/assets/Industry.otf'); }
+
+article, aside, figure, footer, header, hgroup,
+menu, nav, section { display: block; }
+
+input:focus,
+select:focus,
+textarea:focus,
+button:focus {
+    outline: none;
 }
 
-textarea:focus, input:focus{
-    outline: none;
+html{
+  background-color: white;
+}
+
+body{
+  margin: 0;
+  padding: 0;
+}
+
+a {
+  text-decoration:none;
+  color:black;
+}
+
+/*
+radial menu
+*/
+
+h1, h4, h6, p, button, input, textarea{
+  font-family: Industry, sans-serif;
+}
+
+.radialText{
+  color: white;
+}
+
+.radialText:hover{
+  color: rgba(86,223,240,1.0);
+}
+
+#menuBacking{
+  z-index: 2;
+  position: absolute;
+  left: -48px;
+  top: -48px;
+  height: 288px;
+  width: 288px;
+}
+
+#menu_circle_svg{
+  z-index: 1;
+  position: absolute;
+  left: -48px;
+  top: -48px;
+  color: rgba(0,0,0,0.0);
+}
+
+#mainbtn {
+  position:absolute;
+  top:30px;
+  left:60px;
+  z-index:3;
+}
+
+#mainbtn img{
+  position: absolute;
+  top:0px;
+  left:0px;
+  width: 57px;
+  height: 147px;
+}
+
+.circle-container {
+  position: absolute;
+  top:-50px;
+  left:-47px;
+  width: 100px;
+  height: 100px;
+  z-index:2;
+}
+.circle-container a {
+  display: block;
+  overflow: hidden;
+  position: absolute;
+  width: 64px; height: 32px;
+  margin:50px;
+  z-index: 2;
+}
+
+.circle-container i { display: block; width: 100px; }
+.deg0 { transform: rotate(-25deg) translate(11em) rotate(-0deg);   -webkit-transition: all 0.5s ease-out;
+  -moz-transition: all 0.5s ease-out;
+  transition: all 0.5s ease-out; 		z-index: 2;}
+.deg30 { transform: rotate(-25deg) translate(12em) rotate(-30deg);  -webkit-transition: all 0.5s ease-out;
+  -moz-transition: all 0.5s ease-out;
+  transition: all 0.5s ease-out; 		z-index: 2;}
+.deg60 { transform: rotate(-25deg) translate(13em) rotate(-60deg);  -webkit-transition: all 0.5s ease-out;
+  -moz-transition: all 0.5s ease-out;
+  transition: all 0.5s ease-out; 		z-index: 2;}
+.deg90 { transform: rotate(-25deg) translate(13em) rotate(-90deg);  -webkit-transition: all 0.5s ease-out;
+  -moz-transition: all 0.5s ease-out;
+  transition: all 0.5s ease-out; 		z-index: 2;
+}
+
+.fa-home:hover {color:tan;}
+.fa-cog:hover {color:gray;}
+.fa-comments:hover {color:teal;}
+.fa-heart:hover {color:red;}
+
+.open.deg0 { transform: rotate(10deg) translate(11em) rotate(-10deg); }
+.open.deg30 { transform: rotate(34deg) translate(12em) rotate(-34deg); }
+.open.deg60 { transform: rotate(54deg) translate(13em) rotate(-54deg); }
+.open.deg90 { transform: rotate(80deg) translate(13em) rotate(-80deg);
+}
+
+#author {
+  font-family:'Squada One';
+  top: calc(50% + 50px);
+  left: calc(50% - 225px);
+
+  font-size:40px;
+  text-decoration:none;
+  display: block;
+  position: absolute;
+  text-align:center;
 }
 
 /*
@@ -100,7 +221,7 @@ body elements
   height: 100%;
   position: absolute;
   background: black;
-  background-image: url('/assets/Home/dkback.png');
+  background-image: url('/assets/Home/background.png');
   background-size: 100%;
   background-attachment: fixed;
   overflow: hidden;
@@ -113,17 +234,37 @@ body elements
   display: grid;
   grid-template-columns: auto auto auto auto;
   grid-gap: 10px;
-  background-color: #2196F3;
+  background-color: transparent;
   padding: 10px;
   overflow: scroll;
 }
 
 .grid-container > div {
   position: relative;
-  background-color: rgba(255, 255, 255, 0.8);
+  /* background-color: rgba(255, 255, 255, 0.8); */
   text-align: center;
   padding: 20px 0;
   font-size: 30px;
   height: 200px;
   width: 200px;
+  background-size: cover;
+}
+
+.result-name-div {
+  z-index: 3;
+  position: absolute;
+  bottom: 0;
+  height: 50px;
+  left: 0;
+  width: 100%;
+  background-color: rgba(0,0,0,0.5);
+}
+
+.result-name-div > p{
+  color: white;
+}
+
+.result-name-p{
+  color: white;
+
 }

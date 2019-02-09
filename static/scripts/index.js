@@ -50,6 +50,7 @@ $.getScript('assets/banks.js', function(data, status)
 
 });
 
+// AB document stuff//
 function init(){
 
 	container = document.getElementById("container");
@@ -334,7 +335,6 @@ function RandImg(){
   return img;
 }
 
-// Sam Westerhack Zone
 
 // $("#search_button").addEventListener('click', searchHit);
 // $("#login_button").addEventListener('click',loginHit);
@@ -430,19 +430,24 @@ for (var s in samples){
 
 
 function search_musicians() {
-//  window.location.href='search';
-
-	$.get("/search", { 'mode': "findBands", 'query': $("#search_input").val(), 'gigName': "the lads get together"},result => {
+var query = $("#search_input").val();
+window.location.href='search_page?query='+query+'&mode=findBands&gigName="the lads get together"';
+/*	$.get("/search", { 'mode': "findBands", 'query': $("#search_input").val(), 'gigName': "the lads get together"},result => {
 		alert(`result is ${JSON.stringify(result)}`);
 
 	});
-
+  */
 }
 
 function search_gigs() {
+var query = $("#search_input").val();
+window.location.href='search_page?query="'+query+'&mode=findGigs&bandName="band4"';
+/*
 	$.get("/search", { 'mode': "findGigs", 'query': $("#search_input").val(), 'bandName': "band4" }, result => {
 		  alert(`result is ${JSON.stringify(result)}`);
+      window.location.href='search.html';
 	});
+*/
 }
 
 function post_gig(lat,lng) {
@@ -600,6 +605,7 @@ function diff_minutes(dt2, dt1) {
 		);
 	}
 
+//firebase init stuff//
   function register() {
     console.log("got into register func");
     var actionCodeSettings = {
@@ -642,6 +648,8 @@ function diff_minutes(dt2, dt1) {
     console.log("in string to date and adate is " + date);
     return date;
   }
+
+  //GIG creation stuff//
   function cleanGigInput(){
     console.log("got into post gig");
     var name = $('#gig_name_input').val();
@@ -688,7 +696,10 @@ function diff_minutes(dt2, dt1) {
       post_gig(lat,lng);
     });
   }
+
+  //create band
   //name, address, zipcode, price, openDates, application, lat, lng, audioSamples, videoSamples, picture, categories
+
   function createBand(){
     $.post('/band', {'name':"band4", 'address':"N27 W5230", 'zipcode': 53012, 'price': 10, 'openDates':["2019-01-26T14:22"], 'application':"We are a good band", 'lat': 100.1, 'lng': 109.2, 'audioSamples':[], 'videoSamples':[], 'picture':"no jpeg yet", 'appliedGigs':[], 'categories':{'genres':[],'vibes':[],'insts':[],'gigTypes':[]}}, result => {
       console.log("got cb from post /gig");

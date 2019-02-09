@@ -134,5 +134,8 @@ router.post('/band', (req, res) => {
 	});
 });
 
+router.get('/search_page', (req,res) => {
+  res.render('search.html');
+});
 
 }

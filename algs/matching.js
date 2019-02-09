@@ -253,7 +253,7 @@ module.exports = {
               var priceScore = (-(priceDiff/priceEQ) * priceMult);
               var dateDiffs = [];
               for (date in theBand.openDates){
-                var timeDiff=diff_minutes(myBand.openDates[0],myGig.startDate);
+                var timeDiff=diff_minutes(theBand.openDates[0],myGig.startDate);
                 dateDiffs.push(timeDiff);
               }
               var minDiff = dateDiffs[0];
