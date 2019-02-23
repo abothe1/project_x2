@@ -5,12 +5,234 @@
 //     title: 'now this div has a title!'
 // }).appendTo('#mySelector');
 
+// 1. Loads in all bands and events created by user
+// 2. Loads in upcoming gigs accepted, applications, and past gigs
+// 3. Loads in accepted bands and applications for each event
+// 4. Loads in favorites/old text conversations
+// 5. Uses firebase to allow for messaging.
+// 6. can book/accept/message/favorite a profile
+// 7. Can create new bands/events
+// 8. Can add media and edit any information about existing bands/gigs/media
+
+
+
+
+
 function init(){
-  var e = "data";
-  buildCarouselUpcoming(e);
-  buildCarouselUpcoming(e);
-  buildCarouselUpcoming(e);
-  buildCarouselUpcoming(e);
+  var upcoming1 = {
+    id: "up1"
+  };
+  var upcoming2 = {
+    id: "up2"
+  };
+
+  var application1 = {
+    id: "app1"
+  };
+
+  var application2 = {
+    id: "app2"
+  };
+
+  var past1 = {
+    id: "p1"
+  };
+
+  var past2 = {
+    id: "p2"
+  };
+
+  var band0 = {
+    name: "electric orchestra",
+    id: "band-0",
+    upcoming: [upcoming1, upcoming2, upcoming1, upcoming2, upcoming1],
+    applications: [application1, application2],
+    past: [past1, past2]
+  };
+
+  var user = {
+    band: [band0]
+  };
+  console.log(band0.name);
+  //loadBands(user);
+  buildBandSection(band0);
+}
+
+function loadBands(user){
+  for(var band in user.band){
+    console.log(band.name);
+    buildBandSection(band);
+  }
+}
+
+// Managing Band data
+
+function makeTitle(string){
+  return "<p class='title-text'>"+string+"</p>";
+}
+
+function makeDivWithClassAndId(newClass, id){
+    return "<div class='"+newClass+"' id='"+id+"'></div>";
+}
+
+function makeListWithId(id){
+  return "<ul id='"+id+"'></ul>";
+}
+
+function makeListItemWithId(id){
+  return "<li class='carousel-li' id='carousel-li-"+id+"'></li>";
+}
+
+function makeCarouselWithId(id, band, section){
+  // Create wrapper divs & the <ul>
+  switch(section){
+    //
+    // upcoming section
+    //
+    case "upcoming":
+    var wrapperString = makeDivWithClassAndId("wrapper","wrapper-"+id);
+    var $wrapper = $(wrapperString);
+    var carouselWrapperString = makeDivWithClassAndId("jcarousel-wrapper","jcarousel-wrapper-"+id);
+    var $carouselWrapper = $(carouselWrapperString);
+    var carouselString = makeDivWithClassAndId("jcarousel","jcarousel-"+id);
+    var $carousel = $(carouselString);
+    var listString = makeListWithId("list-"+id);
+    var $list = $(listString);
+
+    for(var gig in band.upcoming){
+      console.log("gig: "+gig);
+      var gigId = gig.id;
+      var newItemString = makeListItemWithId(gigId);
+      console.log("li string: "+newItemString);
+      //<li class='carousel-li' id='carousel-li-undefined'></li>
+      var testNewItem = "<li class='carousel-li' id='carousel-li-"+gig.id+"'></li>";
+      var $newItem = $("<li></li>");
+      // placeholder images, can be generalized via separate functions.
+      var $newImg = $("<img class='carousel-img' src='../static/assets/Home/Art/3.jpeg' alt='Image 3' />");
+      var $newFrame = $("<img class='carousel-frame' src='../static/assets/Control-Center/purplebox.png' alt='frame' />");
+      $newItem.append($newImg);
+      $newItem.append($newFrame);
+      $list.append(($newItem));
+    }
+    $wrapper.append($carouselWrapper);
+    $carouselWrapper.append($carousel);
+    $carousel.append($list);
+    var $prev = $("<a href='#' class='jcarousel-control-prev'></a>")
+    var $next = $("<a href='#' class='jcarousel-control-next'></a>")
+    $carousel.after($prev, $next);
+    //$("#contacts-sidebar").after($wrapper);
+    $("#main-content-wrapper").append($wrapper);
+    break;
+    //
+    // applications section
+    //
+    case "applications":
+    var wrapperString = makeDivWithClassAndId("wrapper","wrapper-"+id);
+    var $wrapper = $(wrapperString);
+    var carouselWrapperString = makeDivWithClassAndId("jcarousel-wrapper","jcarousel-wrapper-"+id);
+    var $carouselWrapper = $(carouselWrapperString);
+    var carouselString = makeDivWithClassAndId("jcarousel","jcarousel-"+id);
+    var $carousel = $(carouselString);
+    var listString = makeListWithId("list-"+id);
+    var $list = $(listString);
+    for(var application in band.applications){
+      var appId = application.id;
+      var newItemString = makeListItemWithId(appId);
+      var $newItem = $(newItemString);
+      // placeholder images, can be generalized via separate functions.
+      var $newImg = $("<img class='carousel-img' src='../static/assets/Home/Art/3.jpeg' alt='Image 3'>");
+      var $newFrame = $("<img class='carousel-frame' src='../static/assets/Control-Center/purplebox.png' alt='frame'>");
+      $newItem.append($newImg);
+      $newItem.append($newFrame);
+      $list.append($newItem);
+    }
+    $wrapper.append($carouselWrapper);
+    $carouselWrapper.append($carousel);
+    $carousel.append($list);
+    var $prev = $("<a href='#' class='jcarousel-control-prev'></a>")
+    var $next = $("<a href='#' class='jcarousel-control-next'></a>")
+    $carousel.after($prev, $next);
+    //$("#contacts-sidebar").after($wrapper);
+    $("#main-content-wrapper").append($wrapper);
+    break;
+    //
+    // past section
+    //
+    case "past":
+    var wrapperString = makeDivWithClassAndId("wrapper","wrapper-"+id);
+    var $wrapper = $(wrapperString);
+    var carouselWrapperString = makeDivWithClassAndId("jcarousel-wrapper","jcarousel-wrapper-"+id);
+    var $carouselWrapper = $(carouselWrapperString);
+    var carouselString = makeDivWithClassAndId("jcarousel","jcarousel-"+id);
+    var $carousel = $(carouselString);
+    var listString = makeListWithId("list-"+id);
+    var $list = $(listString);
+    for(var show in band.past){
+      var showId = show.id;
+      var newItemString = makeListItemWithId(showId);
+      var $newItem = $(newItemString);
+      // placeholder images, can be generalized via separate functions.
+      var $newImg = $("<img class='carousel-img' src='../static/assets/Home/Art/3.jpeg' alt='Image 3'>");
+      var $newFrame = $("<img class='carousel-frame' src='../static/assets/Control-Center/purplebox.png' alt='frame'>");
+      $newItem.append($newImg);
+      $newItem.append($newFrame);
+      $list.append($newItem);
+    }
+    $wrapper.append($carouselWrapper);
+    $carouselWrapper.append($carousel);
+    $carousel.append($list);
+    var $prev = $("<a href='#' class='jcarousel-control-prev'></a>")
+    var $next = $("<a href='#' class='jcarousel-control-next'></a>")
+    $carousel.after($prev, $next);
+    //$("#contacts-sidebar").after($wrapper);
+    $("#main-content-wrapper").append($wrapper);
+    break;
+  }
+  setupAction();
+}
+
+function buildBandSection(band){
+  console.log(band.name);
+  var elementId = "band-"+band.id;
+  var titleString = makeTitle(band.name);
+  var $bandTitle = $(titleString);
+  $("#main-content-wrapper").append($bandTitle);
+  if (band.upcoming.length > 0){
+    var upcomingTitleTag = makeTitle("Upcoming");
+    var $upcomingTitle = $(upcomingTitleTag);
+    $("#main-content-wrapper").append($upcomingTitle);
+    var upcomingId = elementId+"-upcoming";
+    makeCarouselWithId(upcomingId, band, "upcoming");
+  }
+  if (band.applications.length > 0){
+    var applicationsTitleTag = makeTitle("Applications");
+    var $applicationsTitle = $(applicationsTitleTag);
+    $("#main-content-wrapper").append($applicationsTitle);
+    var applicationsId = elementId+"-applications";
+    makeCarouselWithId(applicationsId, band, "applications");
+
+  }
+  if (band.past.length > 0){
+    var pastTitleTag = makeTitle("Previous Shows");
+    var $pastTitle = $(pastTitleTag);
+    $("#main-content-wrapper").append($pastTitle);
+    var pastId = elementId+"-past";
+    makeCarouselWithId(pastId, band, "past");
+  }
+  $("#main-content-wrapper").append($("<br><br><br>"));
+}
+
+// Managing Event Hosting Data
+
+function buildEventHostingSection(event){
+
+}
+
+function buildApplicants(applicants){
+
+}
+
+function buildPastHostedGigs(pastGigs){
 
 }
 

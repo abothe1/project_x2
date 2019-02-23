@@ -169,6 +169,11 @@ h1, h4, h6, p, button, input, textarea, li{
   color: white;
 }
 
+.title-text{
+  font-size: 72pt;
+  color: white;
+}
+
 .star{
   width: 40px;
   height: 40px;
