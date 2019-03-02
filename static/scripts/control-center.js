@@ -50,12 +50,24 @@ function init(){
     past: [past1, past2]
   };
 
-  var user = {
-    band: [band0]
+  var band1 = {
+    name: "by the seaside",
+    id: "band-1",
+    upcoming: [upcoming1, upcoming2],
+    applications: [application1],
+    past: [past1]
   };
-  console.log(band0.name);
-  //loadBands(user);
+
+  var user = {
+    bands: [band0, band1]
+  };
+
   buildBandSection(band0);
+  buildBandSection(band1);
+
+
+
+
 }
 
 function loadBands(user){

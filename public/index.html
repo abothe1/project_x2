@@ -71,21 +71,6 @@
 		}
 		</script>
 
-		<script type="text/javascript">
-			var isMusic = false;
-
-			function toggle_musician_reg(){
-				console.log("TOGGLIN");
-				var musician_div = document.getElementById("reg_2");
-				if(isMusic){
-					musician_div.style.display = "none"
-				}else{
-					musician_div.style.display = "block"
-				}
-				isMusic = !isMusic;
-			}
-		</script>
-
 		<script type="text/javascript" src="/scripts/index.js"></script>
 
 		<link rel="stylesheet" type="text/css" href="../static/css/index.css">
@@ -137,16 +122,15 @@
 
 					    <div class="imgcontainer">
 					      <span onclick="document.getElementById('modal-wrapper-login').style.display='none'" class="close" title="Close PopUp">&times;</span>
-					      <img src="1.png" alt="Avatar" class="avatar">
-					      <h1 style="text-align:center">Account Login</h1>
+					      <h1 style="text-align:left; padding-left: 20px; font-size: 50pt;">login</h1>
 					    </div>
 
 					    <div class="container">
-					      <input type="text" placeholder="Enter Username" name="uname">
-					      <input type="password" placeholder="Enter Password" name="psw">
-					      <button class="popUpButtons" type="submit">Login</button>
-					      <input type="checkbox" style="margin:26px 30px;"> Remember me
-					      <a href="#" style="text-decoration:none; float:right; margin-right:34px; margin-top:26px;">Forgot Password ?</a>
+					      <input class="modal-input" style="margin-top:86px;" type="text" placeholder="Enter Username" name="uname">
+					      <input class="modal-input" type="password" placeholder="Enter Password" name="psw">
+					      <button class="popUpButtons" type="submit">enter</button>
+					      <a href="#" class="modal-button" style="text-decoration:none; float:left; margin-left:25px; margin-top:102px;">forgot password?</a>
+								<a href="#" class="modal-button" style="text-decoration:none; float:right; margin-right:34px; margin-top:102px;">don't have an account? sign up</a>
 					    </div>
 
 					  </form>
@@ -182,24 +166,19 @@
 
 					<div id="modal-wrapper-register" class="modal">
 
-
-						<span onclick="document.getElementById('modal-wrapper-register').style.display='none'" class="close" title="Close PopUp">&times;</span>
-						<button id="reg_music" onclick="toggle_musician_reg()">Musicians</button>
-
 						<form id="reg_form" class="modal-content animate" action="/action_page.php">
-							<div id="reg_1" class="container">
-								<input id="reg_username" placeholder="username">
-								<input id="reg_password" type="password" placeholder="password">
-								<input id="reg_email" placeholder="email address">
-								<input id="reg_mailing" placeholder="mailing (yes or no)">
-								<input id="reg_confirm" type="password" placeholder="confirm password">
-								<div id="reg_2" class="container" style="display: none;">
-									<h6>Location</h6>
-									<input type="text" placeholder="City, State" name="reg_location" id="reg_location_input">
-									<h6>Asking Price</h6>
-									<input type="number" min="1" step="any" id="reg_price_input">
-								</div>
-								<button id="reg_submit">Register</button>
+
+							<div class="imgcontainer">
+					      <span onclick="document.getElementById('modal-wrapper-register').style.display='none'" class="close" title="Close PopUp">&times;</span>
+					      <h1 style="text-align:left; padding-left: 20px; font-size: 50pt;">register</h1>
+					    </div>
+
+							<div class="container">
+								<input class="modal-input" type="text" placeholder="username" style="margin-top:56px;">
+								<input class="modal-input" type="password" placeholder="password">
+								<input class="modal-input" type="text" placeholder="email address">
+								<button class="popUpButtons" id="reg_submit">enter</button>
+								<a href="#" class="modal-button" style="text-decoration:none; float:right; margin-right:34px; margin-top:70px;">already have an account? log in</a>
 							</div>
 
 

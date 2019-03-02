@@ -255,25 +255,25 @@ Login Popup Elements
 /*style for the pop up goes here*/
 /* Full-width input fields */
 input[type=text], input[type=password], input[type=number], input[type=datetime-local], textarea {
-    width: 90%;
-    padding: 12px 20px;
-    margin: 8px 26px;
-    display: inline-block;
-    border: 1px solid #ccc;
-    box-sizing: border-box;
+  width: 90%;
+  padding: 12px 20px;
+  margin: 8px 26px;
+  display: inline-block;
+  border: 1px solid #ccc;
+  box-sizing: border-box;
   font-size:16px;
 }
 
 /* Set a style for all buttons */
 .popUpButtons {
-    background-color: #4CAF50;
-    color: black;
-    padding: 14px 20px;
-    margin: 8px 26px;
-    border: none;
-    cursor: pointer;
-    width: 90%;
-  font-size:20px;
+  background-color: transparent;
+  color: #56dff0;
+  padding: 14px 20px;
+  margin: 8px 26px;
+  border: none;
+  cursor: pointer;
+  width: 90%;
+  font-size: 32px;
 }
 .popUpButtons:hover {
     opacity: 0.8;
@@ -303,112 +303,48 @@ input[type=text], input[type=password], input[type=number], input[type=datetime-
   z-index: 5;
 }
 
-#reg_form{
-  background-color: transparent;
-  border: none;
-}
-
-#reg_form input, #reg_form button{
-  margin: 10px;
-}
-
-#reg_username{
-  height: 83px;
-  width: 348px;
-  border: 0px;
-  background: url('../assets/Home/reg_username.png');
-  background-size: contain;
-  padding-left: 15px;
-  font-size: 32px;
-  color: white;
-}
-
-#reg_password{
-  height: 83px;
-  width: 668px;
-  border: 0px;
-  background: url('../assets/Home/reg_password.png');
-  background-size: contain;
-  padding-left: 15px;
-  font-size: 32px;
-  color: white;
-}
-
-#reg_email{
-  height: 83px;
-  width: 853px;
-  border: 0px;
-  background: url('../assets/Home/reg_email.png');
-  background-size: contain;
-  padding-left: 15px;
-  font-size: 32px;
-  color: white;
-}
-
-#reg_mailing{
-  height: 83px;
-  width: 445px;
-  border: 0px;
-  background: url('../assets/Home/reg_mailing.png');
-  background-size: contain;
-  padding-left: 15px;
-  font-size: 32px;
-  color: white;
-}
-
-#reg_confirm{
-  height: 83px;
-  width: 668px;
-  border: 0px;
-  background: url('../assets/Home/reg_confirm.png');
-  background-size: contain;
-  padding-left: 15px;
-  font-size: 32px;
-  color: white;
-}
-
-#reg_submit{
-  height: 83px;
-  width: 174px;
-  border: 0px;
-  background: url('../assets/Home/reg_submit.png');
-  background-size: contain;
-  margin-left: 10px;
-  font-size: 32px;
-  color: white;
-}
-
-#reg_music{
-  height: 83px;
-  width: 174px;
-  border: 0px;
-  background: url('../assets/Home/reg_submit.png');
-  background-size: contain;
-  margin-left: 10px;
-  font-size: 32px;
-  color: white;
-}
-
 /* The Modal (background) */
 .modal {
   display:none;
-    position: fixed;
-    z-index: 1;
-    left: 0;
-    top: 0;
-    width: 100%;
-    height: 100%;
-    overflow: auto;
-    background-color: rgba(0,0,0,0.4);
+  position: fixed;
+  z-index: 1;
+  left: 0;
+  top: 0;
+  width: 100%;
+  height: 100%;
+  overflow: auto;
+  background-color: rgba(0,0,0,0.4);
 }
 
 /* Modal Content Box */
 .modal-content {
-    background-color: #fefefe;
-    margin: 4% auto 15% auto;
-    border: 1px solid #888;
-    width: 40%;
-    padding-bottom: 30px;
+  background-image: url("../assets/Home/modalbg.png");
+  background-color: transparent;
+  background-size: contain;
+  background-clip: border-box;
+  background-repeat: no-repeat;
+  margin: 4% auto 15% auto;
+  width: 40%;
+  height: 80%;
+  padding-bottom: 80px;
+  color: white;
+}
+
+.modal-input{
+  color: white;
+  background-color: #333d44;
+  border-radius: 8px;
+  border: none !important;
+}
+
+.modal-button{
+  color: white;
+  font-family: Industry, sans-serif;
+  font-size: 14pt;
+}
+
+.modal-button:hover{
+  color: #56dff0;
 }
 
 /* The Close Button (x) */
@@ -416,12 +352,12 @@ input[type=text], input[type=password], input[type=number], input[type=datetime-
     position: absolute;
     right: 25px;
     top: 0;
-    color: #000;
+    color: #fff;
     font-size: 35px;
     font-weight: bold;
 }
 .close:hover,.close:focus {
-    color: red;
+    alpha: 0.6;
     cursor: pointer;
 }
 
