@@ -171,7 +171,7 @@ class Drop {
 		this.theDiv.paused = false;
 		this.theDiv.dropRef = this;
 		this.audio = new Audio();
-		this.audio.src = "/assets/Home/transvertion.mp3";
+		this.audio.src = "../static/assets/Home/transvertion.mp3";
 		this.audio.type='audio/mp3';
 		// this.theButton = document.createElement("p");
 		// this.theButton.innerHTML = "text";
