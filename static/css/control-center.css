@@ -53,7 +53,7 @@ a {
 radial menu
 */
 
-h1, h4, h6, p, button, input, textarea, li{
+h1, h2, h3, h4, h6, p, button, input, textarea, li{
   font-family: Industry, sans-serif;
 }
 
@@ -200,6 +200,82 @@ h1, h4, h6, p, button, input, textarea, li{
 
 #star-5{
 }
+
+/*
+  user gig elements
+*/
+.profile-gigs{
+  color: white;
+  margin-top: 250px;
+  width: 60%;
+  margin-left: 20%;
+}
+
+.a-gig{
+  margin-bottom: 20px;
+}
+
+.profile-content{
+  width: 100%;
+}
+
+.gig-image, .gig-description, .gig-act, .gig-confirm{
+  display: inline-block;
+  vertical-align: top;
+  width: 24%;
+  height: 200px;
+  padding: 4px;
+  margin: 0;
+}
+
+
+.gig-description > p{
+  height: 200px;
+  overflow: scroll;
+}
+
+.gig-description > p::-webkit-scrollbar{
+  width: 4px;
+}
+
+.gig-confirm{
+  text-align: center;
+}
+
+.gig-confirm > input{
+  color: white;
+  background-color: rgba(0,0,0,0.5);
+  border-radius: 4px;
+  border: none;
+  height: 60px;
+  text-align: center;
+}
+
+.gig-confirm > a{
+  color: white;
+  font-family: 'Industry',sans-serif;
+  padding-top: 9px;
+}
+
+.gig-confirm > a:hover{
+  color: rgba(86,223,240,1.0);
+}
+
+
+.act-pic{
+  background-image: url("../assets/Home/Art/15.jpeg");
+  background-size: contain;
+  height: 200px;
+  width: 200px;
+}
+
+.gig-pic{
+  background-image: url("../assets/Home/Art/6.jpeg");
+  background-size: contain;
+  height: 200px;
+  width: 200px;
+}
+
 
 /*
   profiles list elements
@@ -448,4 +524,8 @@ scrollbar
 /* Handle on hover */
 ::-webkit-scrollbar-thumb:hover {
   background: #56dff0;
+}
+
+::-webkit-scrollbar-corner {
+  background: rgba(0,0,0,0);
 }

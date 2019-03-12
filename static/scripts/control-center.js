@@ -13,12 +13,45 @@
 // 6. can book/accept/message/favorite a profile
 // 7. Can create new bands/events
 // 8. Can add media and edit any information about existing bands/gigs/media
+var username = 'boothmane';
 
+//must implement getting the session data;
+//var username = getusernamefromsession;
+function updateBand(){
+  var query = {'upcomingGigs':['testGig1']};
+  var name = 'band4';
+  $.post('/updateBand', {'bandName':name, 'query':query}, result =>{
+    alert(result);
+  });
 
+}
+function updateGig(){
+
+}
+function getUserInfo(){
+  var user={'username':username};
+  $.get('/getBands', {'user':user['username']}, result => {
+    console.log("bands from db are: " + JSON.stringify(result));
+    var bands = JSON.parse(JSON.stringify(result));
+    user['bands']=bands;
+    $.get('/getGigs', {'user':user['username']}, result => {
+      console.log("gigs from db are: " + JSON.stringify(result));
+      var gigs = JSON.parse(JSON.stringify(result));
+      user['gigs']=gigs;
+      createWebPage(user);
+  	});
+	});
+
+}
+function createWebPage(user){
+  loadBands(user);
+  loadGigs(user);
+}
 
 
 
 function init(){
+  console.log("enter init()");
   var upcoming1 = {
     id: "up1"
   };
@@ -45,33 +78,88 @@ function init(){
   var band0 = {
     name: "electric orchestra",
     id: "band-0",
-    upcoming: [upcoming1, upcoming2, upcoming1, upcoming2, upcoming1],
-    applications: [application1, application2],
-    past: [past1, past2]
+    upcomingGigs: [upcoming1, upcoming2, upcoming1, upcoming2, upcoming1],
+    appliedGigs: [application1, application2],
+    finishedGigs: [past1, past2]
   };
 
-  var band1 = {
-    name: "by the seaside",
-    id: "band-1",
-    upcoming: [upcoming1, upcoming2],
-    applications: [application1],
-    past: [past1]
+  var gig0 = {
+    name: "fulfilled gig",
+    time: "2019-01-26T14:22",
+    isFilled: true,
+    isConfirmed: false
   };
+
+  var gig1 = {
+    name: "unfulfilled gig",
+    time: "2019-01-26T14:22",
+    isFilled: false,
+    isConfirmed: false
+  }
+
+  var gig2 = {
+    name: "confirmed gig",
+    time: "2019-01-26T14:22",
+    isFilled: true,
+    isConfirmed: true
+  }
 
   var user = {
-    bands: [band0, band1]
+    bands: [band0],
+    gigs: [gig0,gig1,gig2,gig0,gig1,gig2,gig0,gig1,gig2,gig0,gig1,gig2]
   };
+  console.log(band0.name);
+  // loadGigs(user);
+  loadBands(user);
+  getUserInfo();
+}
 
-  buildBandSection(band0);
-  buildBandSection(band1);
+function loadGigs(user){
+  console.log("got into load gigs");
+  var fulfilledCreated = false;
+  var unfulfilledCreated = false;
+  var confirmedCreated = false;
+  for(var i in user['gigs']){
+    var gig = user.gigs[i];
+    // Fulfilled Gigs
+    if(gig.isFilled && !gig.isConfirmed){
+      if(fulfilledCreated){
 
+      }else{
+        // create the section
 
+        fulfilledCreated = true;
+      }
+    }
+    // Unfulfilled Gigs
+    else if(!gig.isFilled && !gig.isConfirmed){
+      if(unfulfilledCreated){
 
+      }else{
+        // create the section
 
+        unfulfilledCreated = true;
+      }
+    }
+    // Past gigs
+    else if(gig.isFilled && gig.isConfirmed){
+      if(confirmedCreated){
+
+      }else{
+        // create the section
+
+        confirmedCreated = true;
+      }
+    }
+  }
 }
 
 function loadBands(user){
-  for(var band in user.band){
+  console.log("got in load bands");
+  console.log("user is: " + JSON.stringify(user));
+  for (var i in user['bands']){
+    var band = user.bands[i];
+    console.log('band is: ' + JSON.stringify(band));
     console.log(band.name);
     buildBandSection(band);
   }
@@ -111,13 +199,13 @@ function makeCarouselWithId(id, band, section){
     var listString = makeListWithId("list-"+id);
     var $list = $(listString);
 
-    for(var gig in band.upcoming){
+    for(var gig in band.upcomingGigs){
       console.log("gig: "+gig);
-      var gigId = gig.id;
+      var gigId = gig.name;
       var newItemString = makeListItemWithId(gigId);
       console.log("li string: "+newItemString);
       //<li class='carousel-li' id='carousel-li-undefined'></li>
-      var testNewItem = "<li class='carousel-li' id='carousel-li-"+gig.id+"'></li>";
+      var testNewItem = "<li class='carousel-li' id='carousel-li-"+gig.name+"'></li>";
       var $newItem = $("<li></li>");
       // placeholder images, can be generalized via separate functions.
       var $newImg = $("<img class='carousel-img' src='../static/assets/Home/Art/3.jpeg' alt='Image 3' />");
@@ -147,8 +235,8 @@ function makeCarouselWithId(id, band, section){
     var $carousel = $(carouselString);
     var listString = makeListWithId("list-"+id);
     var $list = $(listString);
-    for(var application in band.applications){
-      var appId = application.id;
+    for(var gig in band.appliedGigs){
+      var appId = gig.id;
       var newItemString = makeListItemWithId(appId);
       var $newItem = $(newItemString);
       // placeholder images, can be generalized via separate functions.
@@ -179,8 +267,8 @@ function makeCarouselWithId(id, band, section){
     var $carousel = $(carouselString);
     var listString = makeListWithId("list-"+id);
     var $list = $(listString);
-    for(var show in band.past){
-      var showId = show.id;
+    for(var show in band.finishedGigs){
+      var showId = show.name;
       var newItemString = makeListItemWithId(showId);
       var $newItem = $(newItemString);
       // placeholder images, can be generalized via separate functions.
@@ -205,18 +293,18 @@ function makeCarouselWithId(id, band, section){
 
 function buildBandSection(band){
   console.log(band.name);
-  var elementId = "band-"+band.id;
+  var elementId = "band-"+band.name;
   var titleString = makeTitle(band.name);
   var $bandTitle = $(titleString);
   $("#main-content-wrapper").append($bandTitle);
-  if (band.upcoming.length > 0){
+  if (band.upcomingGigs.length > 0){
     var upcomingTitleTag = makeTitle("Upcoming");
     var $upcomingTitle = $(upcomingTitleTag);
     $("#main-content-wrapper").append($upcomingTitle);
     var upcomingId = elementId+"-upcoming";
     makeCarouselWithId(upcomingId, band, "upcoming");
   }
-  if (band.applications.length > 0){
+  if (band.appliedGigs.length > 0){
     var applicationsTitleTag = makeTitle("Applications");
     var $applicationsTitle = $(applicationsTitleTag);
     $("#main-content-wrapper").append($applicationsTitle);
@@ -224,7 +312,7 @@ function buildBandSection(band){
     makeCarouselWithId(applicationsId, band, "applications");
 
   }
-  if (band.past.length > 0){
+  if (band.finishedGigs.length > 0){
     var pastTitleTag = makeTitle("Previous Shows");
     var $pastTitle = $(pastTitleTag);
     $("#main-content-wrapper").append($pastTitle);
@@ -264,23 +352,23 @@ function buildCarouselUpcoming(data){
   var stepper = 0;
   while(i > 0){
     var $newItem = $("<li class='carousel-li'></li>");
-    var $newImg = $("<img class='carousel-img' src='../static/assets/Home/Art/3.jpeg' alt='Image 3'>");
+    var $newImg = $("<img class='carousel-img' src='/static/assets/Home/Art/3.jpeg' alt='Image 3'>");
     $newItem.append($newImg);
     switch(stepper){
       case 0:
-        var $newFrame = $("<img class='carousel-frame' src='../static/assets/Control-Center/redbox.png' alt='frame'>");
+        var $newFrame = $("<img class='carousel-frame' src='/static/assets/Control-Center/redbox.png' alt='frame'>");
         stepper++;
         break;
       case 1:
-        var $newFrame = $("<img class='carousel-frame' src='../static/assets/Control-Center/pinkbox.png' alt='frame'>");
+        var $newFrame = $("<img class='carousel-frame' src='/static/assets/Control-Center/pinkbox.png' alt='frame'>");
         stepper++;
         break;
       case 2:
-        var $newFrame = $("<img class='carousel-frame' src='../static/assets/Control-Center/orangebox.png' alt='frame'>");
+        var $newFrame = $("<img class='carousel-frame' src='/static/assets/Control-Center/orangebox.png' alt='frame'>");
         stepper++;
         break;
       case 3:
-        var $newFrame = $("<img class='carousel-frame' src='../static/assets/Control-Center/purplebox.png' alt='frame'>");
+        var $newFrame = $("<img class='carousel-frame' src='/static/assets/Control-Center/purplebox.png' alt='frame'>");
         stepper=0;
         break;
     }
