@@ -18,27 +18,35 @@
  * from Banda Incorporated.
  *
 *************************************************************************/
+function parseURL(url){
+  var parser = document.createElement('a'),
+       searchObject = {},
+       queries, split, i;
+   // Let the browser do the work
+   parser.href = url;
+   // Convert query string to object
+   queries = parser.search.replace(/^\?/, '').split('&');
+   for( i = 0; i < queries.length; i++ ) {
+       split = queries[i].split('=');
+       searchObject[split[0]] = split[1];
+   }
+   return {
+       protocol: parser.protocol,
+       host: parser.host,
+       hostname: parser.hostname,
+       port: parser.port,
+       pathname: parser.pathname,
+       search: parser.search,
+       searchObject: searchObject,
+       hash: parser.hash
+   };
 
+}
 function init(){
-  var theGrid = document.getElementById("grid-container");
-  var images = ["1.jpg","2.jpeg","3.jpeg","4.jpeg","5.jpeg","6.jpeg","7.jpeg","8.jpeg","9.jpeg","10.jpeg","11.jpeg","12.jpeg","13.jpeg","14.jpeg","15.jpeg","16.jpeg","17.jpeg","18.jpeg","19.jpeg","20.jpeg"];
-  for(i in images){
-    var newDiv = document.createElement("div");
-    newDiv.style.backgroundImage = "url(../static/assets/Home/Art/"+images[i]+")";
-    // var newImg = document.createElement("img");
-    // newImg.src = "../static/assets/Home/Art/"+images[i];
-    // newDiv.appendChild(newImg);
-    var nameDiv = document.createElement("div");
-    nameDiv.className = "result-name-div";
-    var nameP = document.createElement("p");
-    nameP.innerHTML = images[i];
-    // nameDiv.className = "result-name-p";
-    // nameDiv.innerHTML = images[i];
-    nameDiv.appendChild(nameP);
-    newDiv.appendChild(nameDiv);
-    theGrid.appendChild(newDiv);
-    console.log("appended");
-  }
+  var urlJSON = parseURL(window.location.href);
+  console.log("url: "+JSON.stringify(urlJSON));
+  performSearch(urlJSON);
+  showResults(1,1);
 }
 
 var state = 0;
@@ -53,23 +61,23 @@ function changeState(newState){
 
     switch(newState){
       case 0:
-        m.src = "../static/assets/Search/m_filter_selected.png";
-        mv.src = "../static/assets/Search/mv_filter.png"
-        v.src = "../static/assets/Search/v_filter.png"
+        m.src = "/assets/Search/m_filter_selected.png";
+        mv.src = "/assets/Search/mv_filter.png"
+        v.src = "/assets/Search/v_filter.png"
         state = 0;
         filterResults();
         break;
       case 1:
-        m.src = "../static/assets/Search/m_filter.png";
-        mv.src = "../static/assets/Search/mv_filter_selected.png"
-        v.src = "../static/assets/Search/v_filter.png"
+        m.src = "/assets/Search/m_filter.png";
+        mv.src = "/assets/Search/mv_filter_selected.png"
+        v.src = "/assets/Search/v_filter.png"
         state = 1;
         filterResults();
         break;
       case 2:
-        m.src = "../static/assets/Search/m_filter.png";
-        mv.src = "../static/assets/Search/mv_filter.png"
-        v.src = "../static/assets/Search/v_filter_selected.png"
+        m.src = "/assets/Search/m_filter.png";
+        mv.src = "/assets/Search/mv_filter.png"
+        v.src = "/assets/Search/v_filter_selected.png"
         state = 2;
         filterResults();
         break;
@@ -80,4 +88,398 @@ function changeState(newState){
 
 function filterResults(){
   console.log(state);
+}
+
+function performSearch(json){
+  var mode = json['searchObject']['mode'];
+  var searchTxt = json["searchObject"]['query'];
+  var gigName = json["searchObject"]['gigName'];
+  var bandName = json["searchObject"]['bandName'];
+  if (mode==null){
+    console.log("Error: there was no mod supplied");
+    return;
+  }
+  if (searchTxt==null){
+    console.log("Error: there was no search Text supplied");
+    return;
+  }
+   searchTxt=String(searchTxt);
+   searchTxt=searchTxt.replace(/%20/g, " ");
+   searchTxt=searchTxt.replace(/%22/g, "");
+   var resultBands;
+   var resultGigs;
+  if (gigName==null&&bandName==null){
+    //serach with no name
+  }
+  else if(gigName==null){
+    bandName = String(bandName);
+    bandName=bandName.replace(/%20/g, " ");
+    bandName=bandName.replace(/%22/g, "");
+    console.log("band name is : " + bandName);
+    $.get("/search", { 'mode': "findGigs", 'query': searchTxt, 'bandName': bandName }, result => {
+  		  alert(`result is ${JSON.stringify(result)}`);
+        resultBands = JSON.stringify(result);
+  	});
+  }
+  else{
+    gigName = String(gigName);
+    gigName=gigName.replace(/%20/g, " ");
+    gigName=gigName.replace(/%22/g, "");
+    console.log("gig name is : " + gigName);
+    $.get("/search", { 'mode': "findBands", 'query': searchTxt, 'gigName': gigName}, result => {
+    		alert(`result is ${JSON.stringify(result)}`);
+        resultGigs = JSON.stringify(result);
+    	});
+  }
+  showResults(resultBands,resultGigs);
+}
+
+function showResults(bands,gigs){
+  var testBandsString = '{'+
+    '"success":true,'+
+    '"data":{'+
+      '"overallMatchers":'+
+      '['+
+        '[{'+
+          '"_id":"5c54ea2d24bd4109a7ed846d",'+
+          '"name":"band1",'+
+          '"address":"N27 W5230",'+
+          '"zipcode":"53012",'+
+          '"price":"10",'+
+          '"openDates":null,'+
+          '"applicationText":"We are a good band",'+
+          '"lat":"100.1","lng":"109.2",'+
+          '"categories":null,'+
+          '"appliedGigs":[],'+
+          '"upcomingGigs":[],'+
+          '"finishedGigs":[],'+
+          '"audioSamples":null,'+
+          '"videoSamples":null,'+
+          '"picture":"1.jpg"'+
+        '},null],'+
+        '[{'+
+          '"_id":"5c55036ba417231025d91fd2",'+
+          '"name":"band1",'+
+          '"address":"N27 W5230",'+
+          '"zipcode":"53012",'+
+          '"price":"10",'+
+          '"openDates":["2019-01-26T14:22"],'+
+          '"applicationText":"We are a good band",'+
+          '"lat":"100.1","lng":"109.2",'+
+          '"categories":null,'+
+          '"appliedGigs":[],'+
+          '"upcomingGigs":[],'+
+          '"finishedGigs":[],'+
+          '"audioSamples":null,'+
+          '"videoSamples":null,'+
+          '"picture":"2.jpeg"'+
+        '},null],'+
+        '[{'+
+          '"_id":"5c5504d1b4583f109389e8c7",'+
+          '"name":"band4",'+
+          '"address":"N27 W5230",'+
+          '"zipcode":"53012",'+
+          '"price":"10",'+
+          '"openDates":["2019-01-26T14:22"],'+
+          '"applicationText":"We are a good band",'+
+          '"lat":"100.1",'+
+          '"lng":"109.2",'+
+          '"categories":null,'+
+          '"appliedGigs":[],'+
+          '"upcomingGigs":[],'+
+          '"finishedGigs":[],'+
+          '"audioSamples":null,'+
+          '"videoSamples":null,'+
+          '"picture":"3.jpeg"'+
+        '},null],'+
+        '[{'+
+          '"_id":"5c5504d1b4583f109389e8c7",'+
+          '"name":"band5",'+
+          '"address":"N27 W5230",'+
+          '"zipcode":"53012",'+
+          '"price":"10",'+
+          '"openDates":["2019-01-26T14:22"],'+
+          '"applicationText":"We are a good band",'+
+          '"lat":"100.1",'+
+          '"lng":"109.2",'+
+          '"categories":null,'+
+          '"appliedGigs":[],'+
+          '"upcomingGigs":[],'+
+          '"finishedGigs":[],'+
+          '"audioSamples":null,'+
+          '"videoSamples":null,'+
+          '"picture":"4.jpeg"'+
+        '},null],'+
+        '[{'+
+          '"_id":"5c5504d1b4583f109389e8c7",'+
+          '"name":"band6",'+
+          '"address":"N27 W5230",'+
+          '"zipcode":"53012",'+
+          '"price":"10",'+
+          '"openDates":["2019-01-26T14:22"],'+
+          '"applicationText":"We are a good band",'+
+          '"lat":"100.1",'+
+          '"lng":"109.2",'+
+          '"categories":null,'+
+          '"appliedGigs":[],'+
+          '"upcomingGigs":[],'+
+          '"finishedGigs":[],'+
+          '"audioSamples":null,'+
+          '"videoSamples":null,'+
+          '"picture":"6.jpeg"'+
+        '},null],'+
+        '[{'+
+          '"_id":"5c5504d1b4583f109389e8c7",'+
+          '"name":"band7",'+
+          '"address":"N27 W5230",'+
+          '"zipcode":"53012",'+
+          '"price":"10",'+
+          '"openDates":["2019-01-26T14:22"],'+
+          '"applicationText":"We are a good band",'+
+          '"lat":"100.1",'+
+          '"lng":"109.2",'+
+          '"categories":null,'+
+          '"appliedGigs":[],'+
+          '"upcomingGigs":[],'+
+          '"finishedGigs":[],'+
+          '"audioSamples":null,'+
+          '"videoSamples":null,'+
+          '"picture":"8.jpeg"'+
+        '},null],'+
+        '[{'+
+          '"_id":"5c5504d1b4583f109389e8c7",'+
+          '"name":"band7",'+
+          '"address":"N27 W5230",'+
+          '"zipcode":"53012",'+
+          '"price":"10",'+
+          '"openDates":["2019-01-26T14:22"],'+
+          '"applicationText":"We are a good band",'+
+          '"lat":"100.1",'+
+          '"lng":"109.2",'+
+          '"categories":null,'+
+          '"appliedGigs":[],'+
+          '"upcomingGigs":[],'+
+          '"finishedGigs":[],'+
+          '"audioSamples":null,'+
+          '"videoSamples":null,'+
+          '"picture":"9.jpeg"'+
+        '},null],'+
+        '[{'+
+          '"_id":"5c5504d1b4583f109389e8c7",'+
+          '"name":"band7",'+
+          '"address":"N27 W5230",'+
+          '"zipcode":"53012",'+
+          '"price":"10",'+
+          '"openDates":["2019-01-26T14:22"],'+
+          '"applicationText":"We are a good band",'+
+          '"lat":"100.1",'+
+          '"lng":"109.2",'+
+          '"categories":null,'+
+          '"appliedGigs":[],'+
+          '"upcomingGigs":[],'+
+          '"finishedGigs":[],'+
+          '"audioSamples":null,'+
+          '"videoSamples":null,'+
+          '"picture":"10.jpeg"'+
+        '},null],'+
+        '[{'+
+          '"_id":"5c5504d1b4583f109389e8c7",'+
+          '"name":"band7",'+
+          '"address":"N27 W5230",'+
+          '"zipcode":"53012",'+
+          '"price":"10",'+
+          '"openDates":["2019-01-26T14:22"],'+
+          '"applicationText":"We are a good band",'+
+          '"lat":"100.1",'+
+          '"lng":"109.2",'+
+          '"categories":null,'+
+          '"appliedGigs":[],'+
+          '"upcomingGigs":[],'+
+          '"finishedGigs":[],'+
+          '"audioSamples":null,'+
+          '"videoSamples":null,'+
+          '"picture":"11.jpeg"'+
+        '},null],'+
+        '[{'+
+          '"_id":"5c5504d1b4583f109389e8c7",'+
+          '"name":"band7",'+
+          '"address":"N27 W5230",'+
+          '"zipcode":"53012",'+
+          '"price":"10",'+
+          '"openDates":["2019-01-26T14:22"],'+
+          '"applicationText":"We are a good band",'+
+          '"lat":"100.1",'+
+          '"lng":"109.2",'+
+          '"categories":null,'+
+          '"appliedGigs":[],'+
+          '"upcomingGigs":[],'+
+          '"finishedGigs":[],'+
+          '"audioSamples":null,'+
+          '"videoSamples":null,'+
+          '"picture":"12.jpeg"'+
+        '},null],'+
+        '[{'+
+          '"_id":"5c5504d1b4583f109389e8c7",'+
+          '"name":"band7",'+
+          '"address":"N27 W5230",'+
+          '"zipcode":"53012",'+
+          '"price":"10",'+
+          '"openDates":["2019-01-26T14:22"],'+
+          '"applicationText":"We are a good band",'+
+          '"lat":"100.1",'+
+          '"lng":"109.2",'+
+          '"categories":null,'+
+          '"appliedGigs":[],'+
+          '"upcomingGigs":[],'+
+          '"finishedGigs":[],'+
+          '"audioSamples":null,'+
+          '"videoSamples":null,'+
+          '"picture":"13.jpeg"'+
+        '},null],'+
+        '[{'+
+          '"_id":"5c5504d1b4583f109389e8c7",'+
+          '"name":"band7",'+
+          '"address":"N27 W5230",'+
+          '"zipcode":"53012",'+
+          '"price":"10",'+
+          '"openDates":["2019-01-26T14:22"],'+
+          '"applicationText":"We are a good band",'+
+          '"lat":"100.1",'+
+          '"lng":"109.2",'+
+          '"categories":null,'+
+          '"appliedGigs":[],'+
+          '"upcomingGigs":[],'+
+          '"finishedGigs":[],'+
+          '"audioSamples":null,'+
+          '"videoSamples":null,'+
+          '"picture":"14.jpeg"'+
+        '},null],'+
+        '[{'+
+          '"_id":"5c5504d1b4583f109389e8c7",'+
+          '"name":"band7",'+
+          '"address":"N27 W5230",'+
+          '"zipcode":"53012",'+
+          '"price":"10",'+
+          '"openDates":["2019-01-26T14:22"],'+
+          '"applicationText":"We are a good band",'+
+          '"lat":"100.1",'+
+          '"lng":"109.2",'+
+          '"categories":null,'+
+          '"appliedGigs":[],'+
+          '"upcomingGigs":[],'+
+          '"finishedGigs":[],'+
+          '"audioSamples":null,'+
+          '"videoSamples":null,'+
+          '"picture":"15.jpeg"'+
+        '},null],'+
+        '[{'+
+          '"_id":"5c5504d1b4583f109389e8c7",'+
+          '"name":"band7",'+
+          '"address":"N27 W5230",'+
+          '"zipcode":"53012",'+
+          '"price":"10",'+
+          '"openDates":["2019-01-26T14:22"],'+
+          '"applicationText":"We are a good band",'+
+          '"lat":"100.1",'+
+          '"lng":"109.2",'+
+          '"categories":null,'+
+          '"appliedGigs":[],'+
+          '"upcomingGigs":[],'+
+          '"finishedGigs":[],'+
+          '"audioSamples":null,'+
+          '"videoSamples":null,'+
+          '"picture":"16.jpeg"'+
+        '},null],'+
+        '[{'+
+          '"_id":"5c5504d1b4583f109389e8c7",'+
+          '"name":"band7",'+
+          '"address":"N27 W5230",'+
+          '"zipcode":"53012",'+
+          '"price":"10",'+
+          '"openDates":["2019-01-26T14:22"],'+
+          '"applicationText":"We are a good band",'+
+          '"lat":"100.1",'+
+          '"lng":"109.2",'+
+          '"categories":null,'+
+          '"appliedGigs":[],'+
+          '"upcomingGigs":[],'+
+          '"finishedGigs":[],'+
+          '"audioSamples":null,'+
+          '"videoSamples":null,'+
+          '"picture":"17.jpeg"'+
+        '},null],'+
+        '[{'+
+          '"_id":"5c5504d1b4583f109389e8c7",'+
+          '"name":"band7",'+
+          '"address":"N27 W5230",'+
+          '"zipcode":"53012",'+
+          '"price":"10",'+
+          '"openDates":["2019-01-26T14:22"],'+
+          '"applicationText":"We are a good band",'+
+          '"lat":"100.1",'+
+          '"lng":"109.2",'+
+          '"categories":null,'+
+          '"appliedGigs":[],'+
+          '"upcomingGigs":[],'+
+          '"finishedGigs":[],'+
+          '"audioSamples":null,'+
+          '"videoSamples":null,'+
+          '"picture":"18.jpeg"'+
+        '},null],'+
+        '[{'+
+          '"_id":"5c5504d1b4583f109389e8c7",'+
+          '"name":"band7",'+
+          '"address":"N27 W5230",'+
+          '"zipcode":"53012",'+
+          '"price":"10",'+
+          '"openDates":["2019-01-26T14:22"],'+
+          '"applicationText":"We are a good band",'+
+          '"lat":"100.1",'+
+          '"lng":"109.2",'+
+          '"categories":null,'+
+          '"appliedGigs":[],'+
+          '"upcomingGigs":[],'+
+          '"finishedGigs":[],'+
+          '"audioSamples":null,'+
+          '"videoSamples":null,'+
+          '"picture":"19.jpeg"'+
+        '},null],'+
+        '[{'+
+          '"_id":"5c5504d1b4583f109389e8c7",'+
+          '"name":"band7",'+
+          '"address":"N27 W5230",'+
+          '"zipcode":"53012",'+
+          '"price":"10",'+
+          '"openDates":["2019-01-26T14:22"],'+
+          '"applicationText":"We are a good band",'+
+          '"lat":"100.1",'+
+          '"lng":"109.2",'+
+          '"categories":null,'+
+          '"appliedGigs":[],'+
+          '"upcomingGigs":[],'+
+          '"finishedGigs":[],'+
+          '"audioSamples":null,'+
+          '"videoSamples":null,'+
+          '"picture":"20.jpeg"'+
+        '},null]'+
+      '],'+
+      '"queryMatchers":[]'+
+    '}'+
+  '}';
+
+  var testBands = JSON.parse(testBandsString);
+  var theGrid = document.getElementById("grid-container");
+
+  for(band in testBands["data"]["overallMatchers"]){
+    var newDiv = document.createElement("div");
+    newDiv.style.backgroundImage = "url(../static/assets/Home/Art/"+testBands.data.overallMatchers[band][0].picture+")";
+    var nameDiv = document.createElement("div");
+    nameDiv.className = "result-name-div";
+    var nameP = document.createElement("p");
+    nameP.innerHTML = testBands.data.overallMatchers[band][0].name;
+    nameDiv.appendChild(nameP);
+    newDiv.appendChild(nameDiv);
+    theGrid.appendChild(newDiv);
+    console.log("appended");
+  }
 }
