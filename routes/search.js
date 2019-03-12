@@ -56,7 +56,7 @@ router.get('/search', (req, res) => {
 router.post('/gig', (req, res) => {
   console.log(req);
   console.log("got into post gigs on router");
-	var {name, address, price, startDate, endDate, applications, lat, lng, categories} = req.body;
+	var {name, creator, address, price, startDate, endDate, applications, lat, lng, categories} = req.body;
 	if (!req.body) {
 		 res.status(400).send('No body sent').end();
 	}
@@ -66,7 +66,7 @@ router.post('/gig', (req, res) => {
 
 	database.connect(db => {
 		let gigs = db.db('gigs').collection('gigs');
-		gigs.insertOne({'name' : name, 'address': address, 'price': price, 'startDate' : startDate, 'endDate' : endDate, 'applications' : applications, 'lat' : lat, 'lng':lng, 'categories' : categories, 'isFilled':true, 'bandFor' : 'none' }, (err, result) => {
+		gigs.insertOne({'name' : name, 'creator' : creator, 'address': address, 'price': price, 'startDate' : startDate, 'endDate' : endDate, 'applications' : applications, 'lat' : lat, 'lng':lng, 'categories' : categories, 'isFilled':true, 'bandFor' : 'none' }, (err, result) => {
 			if (err){
 				console.warn("Couldnt get insert gig into database: " + err);
 				res.status(500).end();
@@ -107,7 +107,7 @@ router.get('/current_events', (req, res) => {
 router.post('/band', (req, res) => {
   console.log(req);
   console.log("got into post gigs on router");
-	var {name, address, zipcode, price, openDates, application, lat, lng, audioSamples, videoSamples, picture, categories} = req.body;
+	var {name, creator, address, zipcode, price, openDates, application, lat, lng, audioSamples, videoSamples, picture, categories} = req.body;
 	if (!req.body) {
 		 res.status(400).send('No body sent').end();
 	}
@@ -117,7 +117,7 @@ router.post('/band', (req, res) => {
 
 	database.connect(db => {
 		let bands = db.db('bands').collection('bands');
-		bands.insertOne({'name' : name, 'address': address, 'zipcode':zipcode, 'price': price, 'openDates':openDates, 'applicationText':application, 'lat' : lat, 'lng':lng, 'categories' : categories, 'appliedGigs':[], 'upcomingGigs':[], 'finishedGigs':[], 'audioSamples':audioSamples, 'videoSamples':videoSamples, 'picture': picture}, (err, result) => {
+		bands.insertOne({'name' : name, 'creator':creator, 'address': address, 'zipcode':zipcode, 'price': price, 'openDates':openDates, 'applicationText':application, 'lat' : lat, 'lng':lng, 'categories' : categories, 'appliedGigs':[], 'upcomingGigs':[], 'finishedGigs':[], 'audioSamples':audioSamples, 'videoSamples':videoSamples, 'picture': picture}, (err, result) => {
 			if (err){
 				console.warn("Couldnt get insert band into database: " + err);
 				res.status(500).end();
@@ -136,6 +136,64 @@ router.post('/band', (req, res) => {
 
 router.get('/search_page', (req,res) => {
   res.render('search.html');
+});
+
+router.get('/getBands', (req, res)=>{
+
+
+  if (! req.body){
+    console.log("No req body sent, in get bands And Gigs for user");
+    res.status(200).send('No req body sent');
+  }
+  var {creator} = req.query;
+  console.log('in get bands and creator is: ' + creator);
+  database.connect(db => {
+    let bands = db.db('bands').collection('bands');
+    var bandquery = {'creator':creator};
+    bands.find(bandquery).toArray(function(err, result) {
+     if (err){
+       console.log("Error in get Bands and Gigs For User: " + err);
+       req.status(200).end();
+     }
+     else{
+       res.status(200).send(result);
+     }
+     db.close();
+    });
+  }, err =>{
+    console.warn("Couldn't connect to database: " + err);
+		res.status(500).end();
+  });
+
+
+});
+
+router.get('/getGigs', (req, res)=>{
+  var {creator} = req.query;
+  console.log('in get gigs and creator is: ' + creator);
+  if (! req.body){
+    console.log("No req body sent, in get bands And Gigs for user");
+    res.status(200).send('No req body sent');
+  }
+  database.connect( db => {
+    let gigs = db.db('gigs').collection('gigs');
+    var gigQuery = {'creator':creator};
+    gigs.find(gigQuery).toArray(function(err, result) {
+     if (err){
+       console.log("Error in get Bands and Gigs For User: " + err);
+       req.status(200).end();
+     }
+     else{
+       res.status(200).send(result);
+     }
+     db.close();
+    });
+  }, err =>{
+    console.warn("Couldn't connect to database: " + err);
+		res.status(500).end();
+  });
+
+
 });
 
 }

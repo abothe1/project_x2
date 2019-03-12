@@ -255,29 +255,30 @@ Login Popup Elements
 /*style for the pop up goes here*/
 /* Full-width input fields */
 input[type=text], input[type=password], input[type=number], input[type=datetime-local], textarea {
-    width: 90%;
-    padding: 12px 20px;
-    margin: 8px 26px;
-    display: inline-block;
-    border: 1px solid #ccc;
-    box-sizing: border-box;
+  width: 90%;
+  padding: 12px 20px;
+  margin: 8px 26px;
+  display: inline-block;
+  border: 1px solid #ccc;
+  box-sizing: border-box;
   font-size:16px;
 }
 
 /* Set a style for all buttons */
 .popUpButtons {
-    background-color: #4CAF50;
-    color: black;
-    padding: 14px 20px;
-    margin: 8px 26px;
-    border: none;
-    cursor: pointer;
-    width: 90%;
-  font-size:20px;
+  background-color: transparent;
+  color: #56dff0;
+  padding: 14px 20px;
+  margin: 8px 26px;
+  border: none;
+  cursor: pointer;
+  width: 90%;
+  font-size: 32px;
 }
 .popUpButtons:hover {
     opacity: 0.8;
 }
+
 
 /* Center the image and position the close button */
 .imgcontainer {
@@ -392,23 +393,46 @@ input[type=text], input[type=password], input[type=number], input[type=datetime-
 /* The Modal (background) */
 .modal {
   display:none;
-    position: fixed;
-    z-index: 1;
-    left: 0;
-    top: 0;
-    width: 100%;
-    height: 100%;
-    overflow: auto;
-    background-color: rgba(0,0,0,0.4);
+  position: fixed;
+  z-index: 1;
+  left: 0;
+  top: 0;
+  width: 100%;
+  height: 100%;
+  overflow: auto;
+  background-color: rgba(0,0,0,0.4);
 }
+
+
 
 /* Modal Content Box */
 .modal-content {
-    background-color: #fefefe;
-    margin: 4% auto 15% auto;
-    border: 1px solid #888;
-    width: 40%;
-    padding-bottom: 30px;
+  background-image: url("/assets/Home/modalbg.png");
+  background-color: transparent;
+  background-size: contain;
+  background-clip: border-box;
+  background-repeat: no-repeat;
+  margin: 4% auto 15% auto;
+  width: 40%;
+  height: 80%;
+  padding-bottom: 80px;
+  color: white;
+}
+.modal-input{
+  color: white;
+  background-color: #333d44;
+  border-radius: 8px;
+  border: none !important;
+}
+
+.modal-button{
+  color: white;
+  font-family: Industry, sans-serif;
+  font-size: 14pt;
+}
+
+.modal-button:hover{
+  color: #56dff0;
 }
 
 /* The Close Button (x) */
@@ -416,14 +440,15 @@ input[type=text], input[type=password], input[type=number], input[type=datetime-
     position: absolute;
     right: 25px;
     top: 0;
-    color: #000;
+    color: #fff;
     font-size: 35px;
     font-weight: bold;
 }
 .close:hover,.close:focus {
-    color: red;
+    alpha: 0.6;
     cursor: pointer;
 }
+
 
 /* Add Zoom Animation */
 .animate {
@@ -480,6 +505,12 @@ Ticker elements
     transform-style: preserve-3d;
     /* background-color: rgba(0,0,0,0.9); */
   }
+
+
+
+
+
+
 
   #flip-box-img{
     position: absolute;

@@ -15,11 +15,10 @@
 		<!-- Latest compiled JavaScript -->
 		<script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.1.3/js/bootstrap.min.js"></script>
     <!-- External CSS -->
-    <link rel="stylesheet" type="text/css" href="../static/css/control-center.css">
+    <link rel="stylesheet" type="text/css" href="/css/control-center.css">
 
-
-    <script type="text/javascript" src="../static/jquery/jquery.jcarousel.min.js"></script>
-    <script type="text/javascript" src="jcarousel.responsive.js"></script>
+    <script type="text/javascript" src="/jquery/jquery.jcarousel.min.js"></script>
+  
 
     <!-- Radial Menu -->
     <script type="text/javascript">
@@ -31,88 +30,13 @@
 				});
 			})(jQuery);
 		</script>
-    <!-- Carousel Elements -->
-    <script type="text/javascript">
-      (function($) {
-          $(function() {
-              var jcarousel = $('.jcarousel');
-
-              jcarousel
-                  .on('jcarousel:reload jcarousel:create', function () {
-                      var carousel = $(this),
-                          width = carousel.innerWidth();
-
-                      if (width >= 600) {
-                          width = width / 4;
-                      } else if (width >= 350) {
-                          width = width / 2;
-                      }
-
-                      carousel.jcarousel('items').css('width', Math.ceil(width) + 'px');
-                  })
-                  .jcarousel({
-                      wrap: 'circular'
-                  });
-
-              $('.jcarousel-control-prev')
-                  .jcarouselControl({
-                      target: '-=1'
-                  });
-
-              $('.jcarousel-control-next')
-                  .jcarouselControl({
-                      target: '+=1'
-                  });
-
-              $('.jcarousel-pagination')
-                  .on('jcarouselpagination:active', 'a', function() {
-                      $(this).addClass('active');
-                  })
-                  .on('jcarouselpagination:inactive', 'a', function() {
-                      $(this).removeClass('active');
-                  })
-                  .on('click', function(e) {
-                      e.preventDefault();
-                  })
-                  .jcarouselPagination({
-                      perPage: 1,
-                      item: function(page) {
-                          return '<a href="#' + page + '">' + page + '</a>';
-                      }
-                  });
-
-              $('.carousel-img').hover(
-                //Handler In
-                function(){
-                  console.log("enter-img");
-                },
-                //Handler Out
-                function(){
-                  console.log("exit-img");
-                }
-              );
-
-              $('.carousel-li').hover(
-                //Handler In
-                function(){
-                  console.log("enter-li");
-                },
-                //Handler Out
-                function(){
-                  console.log("exit-li");
-                }
-              );
-
-          });
-      })(jQuery);
-    </script>
   </head>
   <body onload="init();">
     <div id="body-container">
 
       <div id="container">
-        <img id="menuBacking" src="../static/assets/Home/menu.png" />
-        <div id="corner"><a href="#"><i id="mainbtn"><img src="../static/assets/Home/banda_b.png" /></i></a>
+        <img id="menuBacking" src="/assets/Home/menu.png" />
+        <div id="corner"><a href="#"><i id="mainbtn"><img src="/assets/Home/banda_b.png" /></i></a>
         </div>
       </div>
 
@@ -126,11 +50,11 @@
       <div class="profile-header">
         <p class="profile-header-text">lone thunder</p>
         <div id="stars">
-          <img class="star" id="star-1" />
-          <img class="star" id="star-2" />
-          <img class="star" id="star-3" />
-          <img class="star" id="star-4" />
-          <img class="star" id="star-5" />
+          <img class="star" id="star-1" src="/assets/Control-Center/star.png"/>
+          <img class="star" id="star-2" src="/assets/Control-Center/star.png"/>
+          <img class="star" id="star-3" src="/assets/Control-Center/star.png"/>
+          <img class="star" id="star-4" src="/assets/Control-Center/star.png"/>
+          <img class="star" id="star-5" src="/assets/Control-Center/star.png"/>
         </div>
       </div>
 
@@ -146,122 +70,18 @@
       </div>
 
       <div class="bottom-bar">
+        <img id="ticker-img" src="/assets/Control-Center/bottom-bar.png" alt="ticker" />
         <button href="#" id="contacts-button">contacts</button>
       </div>
 
       <div id="contacts-sidebar">
       </div>
 
-      <div class="wrapper">
-
-        <div class="jcarousel-wrapper">
-            <div class="jcarousel">
-                <ul>
-                    <li><img class="carousel-img"src="../static/assets/Home/Art/1.jpg" alt="Image 1"></li>
-                    <li class="carousel-li"><img src="../static/assets/Home/Art/2.jpeg" alt="Image 2"></li>
-                    <li><img src="../static/assets/Home/Art/3.jpeg" alt="Image 3"></li>
-                    <li><img src="../static/assets/Home/Art/4.jpeg" alt="Image 4"></li>
-                    <li><img src="../static/assets/Home/Art/5.jpeg" alt="Image 5"></li>
-                    <li><img src="../static/assets/Home/Art/6.jpeg" alt="Image 6"></li>
-                </ul>
-            </div>
-
-            <a href="#" class="jcarousel-control-prev">&lsaquo;</a>
-            <a href="#" class="jcarousel-control-next">&rsaquo;</a>
-
-            <!-- <p class="jcarousel-pagination"></p> -->
-        </div>
-      </div>
-
-      <div class="wrapper-2">
-
-        <div class="jcarousel-wrapper">
-            <div class="jcarousel">
-                <ul>
-                    <li><img class="carousel-img"src="../static/assets/Home/Art/1.jpg" alt="Image 1"></li>
-                    <li class="carousel-li"><img src="../static/assets/Home/Art/2.jpeg" alt="Image 2"></li>
-                    <li><img src="../static/assets/Home/Art/3.jpeg" alt="Image 3"></li>
-                    <li><img src="../static/assets/Home/Art/4.jpeg" alt="Image 4"></li>
-                    <li><img src="../static/assets/Home/Art/5.jpeg" alt="Image 5"></li>
-                    <li><img src="../static/assets/Home/Art/6.jpeg" alt="Image 6"></li>
-                </ul>
-            </div>
-
-            <a href="#" class="jcarousel-control-prev">&lsaquo;</a>
-            <a href="#" class="jcarousel-control-next">&rsaquo;</a>
-
-            <!-- <p class="jcarousel-pagination"></p> -->
-        </div>
-      </div>
-
-
-      <div class="wrapper-2">
-
-        <div class="jcarousel-wrapper">
-            <div class="jcarousel">
-                <ul>
-                    <li><img class="carousel-img"src="../static/assets/Home/Art/1.jpg" alt="Image 1"></li>
-                    <li class="carousel-li"><img src="../static/assets/Home/Art/2.jpeg" alt="Image 2"></li>
-                    <li><img src="../static/assets/Home/Art/3.jpeg" alt="Image 3"></li>
-                    <li><img src="../static/assets/Home/Art/4.jpeg" alt="Image 4"></li>
-                    <li><img src="../static/assets/Home/Art/5.jpeg" alt="Image 5"></li>
-                    <li><img src="../static/assets/Home/Art/6.jpeg" alt="Image 6"></li>
-                </ul>
-            </div>
-
-            <a href="#" class="jcarousel-control-prev">&lsaquo;</a>
-            <a href="#" class="jcarousel-control-next">&rsaquo;</a>
-
-            <!-- <p class="jcarousel-pagination"></p> -->
-        </div>
-      </div>
-
-
-      <div class="wrapper-2">
-
-        <div class="jcarousel-wrapper">
-            <div class="jcarousel">
-                <ul>
-                    <li><img class="carousel-img"src="../static/assets/Home/Art/1.jpg" alt="Image 1"></li>
-                    <li class="carousel-li"><img src="../static/assets/Home/Art/2.jpeg" alt="Image 2"></li>
-                    <li><img src="../static/assets/Home/Art/3.jpeg" alt="Image 3"></li>
-                    <li><img src="../static/assets/Home/Art/4.jpeg" alt="Image 4"></li>
-                    <li><img src="../static/assets/Home/Art/5.jpeg" alt="Image 5"></li>
-                    <li><img src="../static/assets/Home/Art/6.jpeg" alt="Image 6"></li>
-                </ul>
-            </div>
-
-            <a href="#" class="jcarousel-control-prev">&lsaquo;</a>
-            <a href="#" class="jcarousel-control-next">&rsaquo;</a>
-
-            <!-- <p class="jcarousel-pagination"></p> -->
-        </div>
-      </div>
-
-
-      <div class="wrapper-2">
-
-        <div class="jcarousel-wrapper">
-            <div class="jcarousel">
-                <ul>
-                    <li><img class="carousel-img"src="../static/assets/Home/Art/1.jpg" alt="Image 1"></li>
-                    <li class="carousel-li"><img src="../static/assets/Home/Art/2.jpeg" alt="Image 2"></li>
-                    <li><img src="../static/assets/Home/Art/3.jpeg" alt="Image 3"></li>
-                    <li><img src="../static/assets/Home/Art/4.jpeg" alt="Image 4"></li>
-                    <li><img src="../static/assets/Home/Art/5.jpeg" alt="Image 5"></li>
-                    <li><img src="../static/assets/Home/Art/6.jpeg" alt="Image 6"></li>
-                </ul>
-            </div>
-
-            <a href="#" class="jcarousel-control-prev">&lsaquo;</a>
-            <a href="#" class="jcarousel-control-next">&rsaquo;</a>
-
-            <!-- <p class="jcarousel-pagination"></p> -->
-        </div>
+      <div id="main-content-wrapper">
       </div>
 
     </div>
   </body>
   <!-- External JS -->
-  <script type="text/javascript" src="../static/scripts/control-center.js"></script>
+  <script type="text/javascript" src="/scripts/control-center.js"></script>
 </html>

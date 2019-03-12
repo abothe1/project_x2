@@ -1,39 +1,47 @@
 module.exports = router => {
   const database = require('../database.js');
 
-
-  router.put('/gigs', (req, res) => {
+  router.post('/updateGig', (req, res) => {
     if (!req.body) {
   		 res.status(400).send('No body sent').end();
   	}
-
-    var {query, gigName} = req.body;
-    var newvalues = {$set: query};
-    db.db('gigs').collection("gigs").updateOne('name':gigName, newvalues, function(err, res){
-    if (err){
-      console.log("There was an error: " + err);
-      res.send("Internal server error").end();
-    }
-    console.log("update gig " + gigName);
-    db.close();
+    database.connect(db=>{
+      var {gigName, query} = req.body;
+      var newvalues = {$set: query};
+      db.db('gigs').collection("gigs").updateOne({'name':gigName}, newvalues, res =>{
+        console.log("updated gig " + gigName);
+        db.close();
+      }, error =>{
+        console.log("There was an error: " + error);
+        res.send("Internal server error").end();
+      });
+    }, err=>{
+      console.log("Couldn't connec to mongo with error: "+err);
+      res.status(500).end();
     });
+
   });
 
-  router.put('/bands', (req, res) =>{
+  router.post('/updateBand', (req, res) =>{
     if (!req.body) {
   		 res.status(400).send('No body sent').end();
   	}
 
-    var {query, bandName} = req.body;
+    var {bandName, query} = req.body;
     var newvalues = {$set: query};
-    db.db('bands').collection("bands").updateOne('name':bandName, newvalues, function(err, res){
-    if (err){
-      console.log("There was an error: " + err);
-      res.send("Internal server error").end();
-    }
-    console.log("updated band " + bandName);
-    db.close();
+    database.connect(db=>{
+      db.db('bands').collection("bands").updateOne({'name':bandName}, newvalues, res=>{
+        console.log("updated band " + bandName);
+        db.close();
+      }, error=>{
+        console.log("There was an error: " + err);
+        res.send("Internal server error").end();
+      });
+    }, err=>{
+      console.log("Couldn't connec to mongo with error: "+err);
+      res.status(500).end();
     });
+
   });
 
 }

@@ -81,7 +81,9 @@ router.get('/index', (_, res) => { res.render('index.html'); });
 require('./routes/auth.js')(router, app); // login, register, logout
 require('./routes/upload.js')(router, app); // uploads data
 require('./routes/search.js')(router, app); //searches and posting
-require('./routes/search.js')(router, app); // for updating gigs
+require('./routes/update.js')(router, app); // for updating gigs and bands
+require('./routes/navigation.js')(router, app); // for navigating the website
+require('./routes/sessionInfo.js')(router, app); // for getting info in and out of sessions
 
 // startup the server
 app.use('/', router);

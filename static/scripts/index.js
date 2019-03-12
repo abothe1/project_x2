@@ -336,11 +336,6 @@ function RandImg(){
 }
 
 
-// $("#search_button").addEventListener('click', searchHit);
-// $("#login_button").addEventListener('click',loginHit);
-// $("#sign_in_button").addEventListener('click',signInHit);
-// var searchField=$('#searchText');
-
 (function($) {
 	$(function() {
 		$('#login_button').click(loginHit);
@@ -460,7 +455,10 @@ function post_gig(lat,lng) {
   var startDate = $('#gig_start_input').val();
   var endDate = $('#gig_end_input').val();
   var zipcode = $('#gig_zip_input').val();
+  var creator='test123';
+  //must implment getting user name out of session
   var gig = {'name':name,
+            'creator':creator,
             'address': address,
             'price': price,
             'startDate': startDate,
@@ -474,7 +472,7 @@ function post_gig(lat,lng) {
   var categoriesFromStr = parseQueryString(description);
   gig['categories'] = categoriesFromStr;
   console.log(gig);
-	$.post('/gig', {'name':name, 'address':address, 'zipcode': zipcode, 'price': price, 'startDate': startDate, 'endDate': endDate, 'applications': [], 'lat': lat, 'lng': lng, 'categories':categoriesFromStr, 'isFilled':true, 'bandFor':'none'}, result => {
+	$.post('/gig', {'name':name, 'creator':creator, 'address':address, 'zipcode': zipcode, 'price': price, 'startDate': startDate, 'endDate': endDate, 'applications': [], 'lat': lat, 'lng': lng, 'categories':categoriesFromStr, 'isFilled':true, 'bandFor':'none'}, result => {
     console.log("got cb from post /gig");
 		alert(`result is ${result}`);
 	});
@@ -595,19 +593,37 @@ function diff_minutes(dt2, dt1) {
 //login and register stuff//
 
 	function login() {
+    console.log("got into login function on frontend");
 		var content = {
 			username: $("#loginUsername").val(),
 			password: $("#loginPassword").val(),
 		}
+    $.post('/login', content, res=>{
+      alert("Got res from login herre it is: " + JSON.stringify(res));
+    });
+    /*
 		post_request('/login', content,
 			_ => redirect_to('/index'),
 			err => alert(`${err.code} error: ${err.cause}`)
 		);
+    */
 	}
 
 //firebase init stuff//
   function register() {
     console.log("got into register func");
+    var content = {
+    username: $("#reg_username").val(),
+    email: $("#reg_email").val(),
+    password: $("#reg_password").val()
+    };
+
+    $.post('/register', content, res=>{
+      alert(JSON.stringify(res));
+    });
+  }
+
+    /*
     var actionCodeSettings = {
   // URL you want to redirect back to. The domain (www.example.com) for this
   // URL must be whitelisted in the Firebase Console.
@@ -633,7 +649,8 @@ function diff_minutes(dt2, dt1) {
       err => alert(`${err.code} error: ${err.cause}`)
     );
     */
-  }
+
+
 
   function sendVerification(){
     var user = firebase.auth.currentUser;
@@ -701,8 +718,8 @@ function diff_minutes(dt2, dt1) {
   //name, address, zipcode, price, openDates, application, lat, lng, audioSamples, videoSamples, picture, categories
 
   function createBand(){
-    $.post('/band', {'name':"band4", 'address':"N27 W5230", 'zipcode': 53012, 'price': 10, 'openDates':["2019-01-26T14:22"], 'application':"We are a good band", 'lat': 100.1, 'lng': 109.2, 'audioSamples':[], 'videoSamples':[], 'picture':"no jpeg yet", 'appliedGigs':[], 'categories':{'genres':[],'vibes':[],'insts':[],'gigTypes':[]}}, result => {
-      console.log("got cb from post /gig");
+    $.post('/band', {'name':"Deadalus", 'creator':'xxx', 'address':"N27 W5230", 'zipcode': 53012, 'price': 10, 'openDates':["2019-01-26T14:22"], 'application':"We are a good band", 'lat': 100.1, 'lng': 109.2, 'audioSamples':[], 'videoSamples':[], 'picture':"no jpeg yet", 'appliedGigs':['gigneat'], 'categories':{'genres':[],'vibes':[],'insts':[],'gigTypes':[]}}, result => {
+      console.log("got cb from post /band");
       alert(`result is ${result}`);
     });
   }
