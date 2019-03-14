@@ -48,7 +48,7 @@ function init(){
   // console.log(JSON.stringify(urlJSON));
   // performSearch(urlJSON);
   theGrid = document.getElementById("grid-container");
-  // testFrontend();
+  testFrontend();
 }
 
 function searchForBands(){
@@ -842,9 +842,9 @@ function testFrontend(){
   var theGrid = document.getElementById("grid-container");
 
   var results = [];
-  // for(band in testBands["data"]["overallMatchers"]){
-  //   results[band] = new BandCell(testBands.data.overallMatchers[band][0],band);
-  // }
+  for(band in testBands["data"]["overallMatchers"]){
+    results[band] = new BandCell(testBands.data.overallMatchers[band][0],band);
+  }
   // for(gig in testGigs["overallMatchers"]){
   //   results[gig] = new GigCell(testGigs["overallMatchers"][gig][0],gig);
   // }

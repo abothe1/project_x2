@@ -202,47 +202,101 @@ h1, h2, h3, h4, h6, p, button, input, textarea, li{
 }
 
 /*
-  user gig elements
+user gigs
 */
 .profile-gigs{
   color: white;
   margin-top: 250px;
-  width: 60%;
+  width: 80%;
   margin-left: 20%;
 }
 
-.a-gig{
-  margin-bottom: 20px;
-}
+/*
+  booked gig elements
+*/
 
-.profile-content{
-  width: 100%;
+.booked-gig{
+  margin-bottom: 20px;
 }
 
 .gig-image, .gig-description, .gig-act, .gig-confirm{
   display: inline-block;
   vertical-align: top;
-  width: 24%;
   height: 200px;
-  padding: 4px;
   margin: 0;
+  padding: 0;
+  margin-right: 20px;
 }
 
+.gig-image{
+  width: 200px;
+}
 
-.gig-description > p{
+.gig-pic{
+  position: relative;
+  height: 200px;
+  width: 200px;
+  border-radius: 10px;
+}
+
+.gig-pic-frame{
+  height: 200px;
+  width: 200px;
+  z-index: 4;
+  position: relative;
+  margin-top: -228px;
+}
+
+.gig-description-p{
+  width: 200px;
   height: 200px;
   overflow: scroll;
 }
 
-.gig-description > p::-webkit-scrollbar{
+.gig-description-p::-webkit-scrollbar{
   width: 4px;
 }
 
-.gig-confirm{
+.gig-act{
+  width: 200px;
+}
+
+.act-pic{
+  position: relative;
+  height: 200px;
+  width: 200px;
+  border-radius: 10px;
+}
+
+.act-pic-frame{
+  height: 200px;
+  width: 200px;
+  z-index: 4;
+  position: relative;
+  margin-top: -228px;
+}
+
+.act-nameplate{
+  z-index: 3;
+  position: absolute;
+  height: 50px;
+  width: 200px;
+  background-color: rgba(0,0,0,0.5);
+  margin-top: -77px;
   text-align: center;
 }
 
-.gig-confirm > input{
+.act-name{
+  font-size: 2vmin;
+  color: white;
+}
+
+.gig-confirm{
+  width: 200px;
+  text-align: center;
+}
+
+.gig-confirm-input{
   color: white;
   background-color: rgba(0,0,0,0.5);
   border-radius: 4px;
@@ -251,29 +305,75 @@ h1, h2, h3, h4, h6, p, button, input, textarea, li{
   text-align: center;
 }
 
-.gig-confirm > a{
+.gig-confirm-a{
   color: white;
   font-family: 'Industry',sans-serif;
-  padding-top: 9px;
+  font-size: 2vw;
 }
 
-.gig-confirm > a:hover{
+.gig-confirm-a:hover{
   color: rgba(86,223,240,1.0);
+  text-decoration: none;
 }
 
+/*
+open gig Elements
+*/
 
-.act-pic{
-  background-image: url("../assets/Home/Art/15.jpeg");
-  background-size: contain;
-  height: 200px;
+.open-gig-image, .open-gig-description, .open-gig-loc-time, .open-gig-max-pay{
+  display: inline-block;
+  vertical-align: top;
+  height: 240px;
+  margin: 0;
+  padding: 0;
+  margin-right: 20px;
   width: 200px;
 }
 
-.gig-pic{
-  background-image: url("../assets/Home/Art/6.jpeg");
-  background-size: contain;
-  height: 200px;
-  width: 200px;
+.open-gig-textarea{
+  height: 216px;
+  overflow: scroll;
+  background-color: transparent;
+  color: white;
+  border: none;
+  resize: none;
+}
+
+.open-gig-textarea::-webkit-scrollbar{
+  width: 4px;
+}
+
+.open-gig-loc, .open-gig-date, .open-gig-time{
+  width: 200px !important;
+  border: none;
+  background-color: rgba(0,0,0,0.5);
+  color: white;
+  height: 38px;
+  border-radius: 8px;
+}
+
+.max-pay-input{
+  color: white;
+  background-color: rgba(0,0,0,0.5);
+  border-radius: 4px;
+  border: none;
+  height: 60px;
+  text-align: center;
+}
+
+.open-gig-max-pay{
+  text-align: center;
+}
+
+.open-gig-confirm{
+  color: white;
+  font-family: Industry, sans-serif;
+  font-size: 2vw;
+}
+
+.open-gig-confirm:hover{
+  color: rgba(86,223,240,1.0);
+  text-decoration: none;
 }
 
 
@@ -319,6 +419,7 @@ h1, h2, h3, h4, h6, p, button, input, textarea, li{
   color: white;
   border: none;
   font-size: 20pt;
+  z-index: 100;
 }
 
 #contacts-sidebar{
@@ -326,6 +427,7 @@ h1, h2, h3, h4, h6, p, button, input, textarea, li{
   width: 300px;
   right: 0;
   height: 100%;
+  top: 0;
   position: fixed;
   background-color: rgba(0,0,0,0.9);
   overflow: scroll;
@@ -493,7 +595,6 @@ ticker
 
 #ticker-img{
   z-index: 0;
-  background-color: red;
   position: absolute;
   height: 60px;
   width: 100%;
@@ -518,7 +619,7 @@ scrollbar
   background: #03101a;
   border-radius: 10px;
   border: 1px solid #56dff0;
-  min-height: 20px; !important
+  min-height: 20px !important;
 }
 
 /* Handle on hover */
