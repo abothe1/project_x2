@@ -44,30 +44,9 @@ function parseURL(url){
 }
 function init(){
   var urlJSON = parseURL(window.location.href);
-  console.log(JSON.stringify(urlJSON));
+  console.log("url: "+JSON.stringify(urlJSON));
   performSearch(urlJSON);
-
-  var theGrid = document.getElementById("grid-container");
-  /*
-  var images = ["1.jpg","2.jpeg","3.jpeg","4.jpeg","5.jpeg","6.jpeg","7.jpeg","8.jpeg","9.jpeg","10.jpeg","11.jpeg","12.jpeg","13.jpeg","14.jpeg","15.jpeg","16.jpeg","17.jpeg","18.jpeg","19.jpeg","20.jpeg"];
-  for(i in images){
-    var newDiv = document.createElement("div");
-    newDiv.style.backgroundImage = "url(/assets/Home/Art/"+images[i]+")";
-    // var newImg = document.createElement("img");
-    // newImg.src = "../static/assets/Home/Art/"+images[i];
-    // newDiv.appendChild(newImg);
-    var nameDiv = document.createElement("div");
-    nameDiv.className = "result-name-div";
-    var nameP = document.createElement("p");
-    nameP.innerHTML = images[i];
-    // nameDiv.className = "result-name-p";
-    // nameDiv.innerHTML = images[i];
-    nameDiv.appendChild(nameP);
-    newDiv.appendChild(nameDiv);
-    theGrid.appendChild(newDiv);
-    console.log("appended");
-  }
-  */
+  //showResults(1,1);
 }
 
 var state = 0;
@@ -111,17 +90,6 @@ function filterResults(){
   console.log(state);
 }
 
-function doesContainID(id, arr){
-  console.log("IN CONATINS ID and id is : "  +  id);
-  for (item in arr){
-    console.log("IN CONATINS ID and id in for loop is : "  +  arr[item]);
-    if (arr[item]==id){
-      return true;
-    }
-  }
-  return false;
-}
-
 function performSearch(json){
   var mode = json['searchObject']['mode'];
   var searchTxt = json["searchObject"]['query'];
@@ -138,6 +106,8 @@ function performSearch(json){
    searchTxt=String(searchTxt);
    searchTxt=searchTxt.replace(/%20/g, " ");
    searchTxt=searchTxt.replace(/%22/g, "");
+   var resultBands;
+   var resultGigs;
   if (gigName==null&&bandName==null){
     //serach with no name
   }
@@ -148,7 +118,8 @@ function performSearch(json){
     console.log("band name is : " + bandName);
     $.get("/search", { 'mode': "findGigs", 'query': searchTxt, 'bandName': bandName }, result => {
   		  alert(`result is ${JSON.stringify(result)}`);
-        showResults(mode, null, result);
+        resultGigs = JSON.stringify(result);
+        showResults(mode, null, resultGigs);
   	});
   }
   else{
@@ -158,35 +129,21 @@ function performSearch(json){
     console.log("gig name is : " + gigName);
     $.get("/search", { 'mode': "findBands", 'query': searchTxt, 'gigName': gigName}, result => {
     		alert(`result is ${JSON.stringify(result)}`);
-        showResults(mode, result, null);
-
+        resultBands = JSON.stringify(result);
+        showResults(mode, resultBands, null);
     	});
   }
 
 }
 
 function showResults(mode, bands, gigs){
-  var theGrid = document.getElementById("grid-container");
   if(bands==null){
-    var mixedGigArr=[];
-    var idsInMix = [];
+    mixedGigArr=[];
     var j = 0;
     for (gig in gigs['data']['queryMatchers']){
-      if (doesContainID(gigs['data']['queryMatchers'][gig][0]._id, idsInMix)){
-
-      }
-      else{
-        mixedGigArr.push(gigs['data']['queryMatchers'][gig]);
-        idsInMix.push(gigs['data']['queryMatchers'][gig][0]._id);
-      }
+      mixedGigArr.push(band);
       if (j<gigs['data']['overallMatchers'].length){
-        if (doesContainID(gigs['data']['overallMatchers'][j][0]._id, idsInMix)){
-
-        }
-        else{
-          mixedGigArr.push(gigs['data']['overallMatchers'][j]);
-          idsInMix.push(gigs['data']['overallMatchers'][j][0]._id);
-        }
+        mixedGigArr.push(bands['data']['overallMatchers'][j]);
         j=j+1;
       }
     }
@@ -196,11 +153,11 @@ function showResults(mode, bands, gigs){
     }
     for (gig in mixedGigArr){
       var newDiv = document.createElement("div");
-    //  newDiv.style.backgroundImage = "url(/assets/Home/Art/"+testBands.data.overallMatchers[gig][0].picture+")";
+      newDiv.style.backgroundImage = "url(/assets/Home/Art/"+testBands.data.overallMatchers[gig][0].picture+")";
       var nameDiv = document.createElement("div");
       nameDiv.className = "result-name-div";
       var nameP = document.createElement("p");
-      nameP.innerHTML = mixedGigArr[gig][0].name;
+      nameP.innerHTML = testBands.data.overallMatchers[gig][0].name;
       nameDiv.appendChild(nameP);
       newDiv.appendChild(nameDiv);
       theGrid.appendChild(newDiv);
@@ -209,24 +166,11 @@ function showResults(mode, bands, gigs){
   }
   else{
     var mixedBandArr = [];
-    var idsInMixBands = [];
     var i = 0;
     for (band in bands['data']['queryMatchers']){
-      if (doesContainID(bands['data']['queryMatchers'][band][0]._id, idsInMixBands)){
-
-      }
-      else{
-      mixedBandArr.push(bands['data']['queryMatchers'][band]);
-      idsInMixBands.push(bands['data']['queryMatchers'][band][0]._id);
-      }
+      mixedBandArr.push(band);
       if (i<bands['data']['overallMatchers'].length){
-        if (doesContainID(bands['data']['overallMatchers'][i][0]._id, idsInMixBands)){
-
-        }
-        else{
-          mixedBandArr.push(bands['data']['overallMatchers'][i]);
-          idsInMixBands.push(bands['data']['overallMatchers'][i][0]._id);
-        }
+        mixedBandArr.push(bands['data']['overallMatchers'][i]);
         i=i+1;
       }
     }
@@ -236,11 +180,11 @@ function showResults(mode, bands, gigs){
     }
     for(band in mixedBandArr){
       var newDiv = document.createElement("div");
-      //newDiv.style.backgroundImage = "url(assets/Home/Art/"+mixedBandArr[band].picture+")";
+      newDiv.style.backgroundImage = "url(assets/Home/Art/"+testBands.data.overallMatchers[band][0].picture+")";
       var nameDiv = document.createElement("div");
       nameDiv.className = "result-name-div";
       var nameP = document.createElement("p");
-      nameP.innerHTML = mixedBandArr[band][0].name;
+      nameP.innerHTML = testBands.data.overallMatchers[band][0].name;
       nameDiv.appendChild(nameP);
       newDiv.appendChild(nameDiv);
       theGrid.appendChild(newDiv);

@@ -16,21 +16,27 @@
 
 //must implement getting the session data;
 //var username = getusernamefromsession;
-function updateBand(bandName, query){
-  $.post('/updateBand', {'bandName':bandName, 'query':query}, result =>{
+
+function updateBand(id, query){
+  $.post('/updateBand', {'_id':id, 'query':query}, result =>{
     alert(JSON.stringify(result));
   });
 
 }
-function updateGig(){
-
+function updateGig(id, query){
+  $.post('/updateGig', {'_id':id, 'query':query}, result =>{
+    alert(JSON.stringify(result));
+  });
 }
 function getUsername(){
   console.log("called fucntion getUsername");
   $.get('/user', {query:'nada'}, res=>{
     alert(JSON.stringify(res));
     var user = res;
-    console.log('username fro res is: ' + user['username']);
+    id = user['_id'];
+    socket.on(id, (msg)=>{
+      alert('recieved message here it is: ' + JSON.stringify(msg));
+    });
     getUserInfo(user);
   });
 }
@@ -411,3 +417,28 @@ contactsButton.addEventListener("click",function(){
   }
   open = !open;
 });
+
+//MESSAGING SECTION:
+
+var socket = io();
+function sendMessage(){
+  //set body to text from box and rec id to the inteded reciver's user ID
+  var today = new Date();
+  var date = today.getFullYear()+'-'+(today.getMonth()+1)+'-'+today.getDate();
+  var time = today.getHours() + ":" + today.getMinutes() + ":" + today.getSeconds();
+  var dateTime = date+' '+time;
+  //replace this with real id from contact menu
+  var recID = id;
+  //////
+  var body = "hello world"
+
+  var myMessage = {
+    'senderID':id,
+    'recieverID': recID,
+    'body': body,
+    'timeStamp' : dateTime
+  };
+  $.post('/messages', {'senderID':id, 'recieverID':recID, 'body':body, 'timeStamp':dateTime}, result=>{
+    console.log("got result from positn message it is :" + JSON.stringify(result));
+  });
+}

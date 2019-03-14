@@ -718,7 +718,7 @@ function diff_minutes(dt2, dt1) {
   //name, address, zipcode, price, openDates, application, lat, lng, audioSamples, videoSamples, picture, categories
 
   function createBand(){
-    $.post('/band', {'name':"Deadalus", 'creator':'xxx', 'address':"N27 W5230", 'zipcode': 53012, 'price': 10, 'openDates':["2019-01-26T14:22"], 'application':"We are a good band", 'lat': 100.1, 'lng': 109.2, 'audioSamples':[], 'videoSamples':[], 'picture':"no jpeg yet", 'appliedGigs':['gigneat'], 'categories':{'genres':[],'vibes':[],'insts':[],'gigTypes':[]}}, result => {
+    $.post('/band', {'name':"Deadalus", 'creator':'xxx', 'address':"N27 W5230", 'zipcode': 53012, 'price': 10, 'rating':100.0, 'openDates':["2019-01-26T14:22"], 'application':"We are a good band", 'lat': 100.1, 'lng': 109.2, 'audioSamples':[], 'videoSamples':[], 'picture':"no jpeg yet", 'appliedGigs':['gigneat'], 'categories':{'genres':[],'vibes':[],'insts':[],'gigTypes':[]}}, result => {
       console.log("got cb from post /band");
       alert(`result is ${result}`);
     });

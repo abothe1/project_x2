@@ -86,9 +86,9 @@ router.post('/gig', (req, res) => {
 router.get('/current_events', (req, res) => {
   database.connect(db => {
     let gigDB = db.db('gigs').collection('gigs');
-    gigDB.find({'isFilled':{$eq: true}}).toArray(function(err, result) {
-      if (err){
-        console.warn("Couldnt get gigs: " + err);
+    gigDB.find({'isFilled':{$eq: true}}).toArray(function(err2, result) {
+      if (err2){
+        console.warn("Couldnt get gigs: " + err2);
         res.status(500).end();
         db.close();
       }
@@ -107,7 +107,7 @@ router.get('/current_events', (req, res) => {
 router.post('/band', (req, res) => {
   console.log(req);
   console.log("got into post gigs on router");
-	var {name, creator, address, zipcode, price, openDates, application, lat, lng, audioSamples, videoSamples, picture, categories} = req.body;
+	var {name, creator, address, zipcode, price, rating, openDates, application, lat, lng, audioSamples, videoSamples, picture, categories} = req.body;
 	if (!req.body) {
 		 res.status(400).send('No body sent').end();
 	}
@@ -117,7 +117,7 @@ router.post('/band', (req, res) => {
 
 	database.connect(db => {
 		let bands = db.db('bands').collection('bands');
-		bands.insertOne({'name' : name, 'creator':creator, 'address': address, 'zipcode':zipcode, 'price': price, 'openDates':openDates, 'applicationText':application, 'lat' : lat, 'lng':lng, 'categories' : categories, 'appliedGigs':[], 'upcomingGigs':[], 'finishedGigs':[], 'audioSamples':audioSamples, 'videoSamples':videoSamples, 'picture': picture}, (err, result) => {
+		bands.insertOne({'name' : name, 'creator':creator, 'address': address, 'zipcode':zipcode, 'price': price, 'rating':rating, 'openDates':openDates, 'applicationText':application, 'lat' : lat, 'lng':lng, 'categories' : categories, 'appliedGigs':[], 'upcomingGigs':[], 'finishedGigs':[], 'audioSamples':audioSamples, 'videoSamples':videoSamples, 'picture': picture}, (err, result) => {
 			if (err){
 				console.warn("Couldnt get insert band into database: " + err);
 				res.status(500).end();
