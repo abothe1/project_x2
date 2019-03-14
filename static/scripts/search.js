@@ -187,7 +187,18 @@ function performSearch(json){
    searchTxt=searchTxt.replace(/%20/g, " ");
    searchTxt=searchTxt.replace(/%22/g, "");
   if (gigName==null&&bandName==null){
-    //serach with no name
+    if (mode=='findGigs'){
+      $.get("/searchNoName", { 'mode': "findGigs", 'query': searchTxt}, result => {
+  		    alert(`result is ${JSON.stringify(result)}`);
+          showResults(mode, null, result);
+  	     });
+       }
+    else{
+      $.get("/searchNoName", { 'mode': "findBands", 'query': searchTxt}, result => {
+          alert(`result is ${JSON.stringify(result)}`);
+          showResults(mode, result, null);
+         });
+    }
   }
   else if(gigName==null){
     bandName = String(bandName);
@@ -345,8 +356,8 @@ function searchForBands(){
     alert("You can't search for bands as a band, please select one of your events or your username in the drop down menu.");
     return;
   }
-  else{
-    console.log('in else');
+  else if (serachAsType=='gig'){
+    console.log('in else for search as gig');
 
 
     var mode = 'findBands';
@@ -355,6 +366,22 @@ function searchForBands(){
       'query':searchText,
       'bandName':null,
       'gigName':searchAsName
+    };
+    var jsonForSearch = {
+      'searchObject':searchObject
+    };
+    performSearch(jsonForSearch);
+  }
+  else{
+    console.log('in else for no name');
+
+
+    var mode = 'findBands';
+    var searchObject = {
+      'mode':mode,
+      'query':searchText,
+      'bandName':null,
+      'gigName':null
     };
     var jsonForSearch = {
       'searchObject':searchObject
@@ -394,7 +421,7 @@ function searchForGigs(){
     alert("You can't search for events as an event, please select one of your bands or your username in the drop down menu.");
     return;
   }
-  else{
+  else if (serachAsType=='band'){
     console.log('in else');
 
 
@@ -403,6 +430,22 @@ function searchForGigs(){
       'mode':mode,
       'query':searchText,
       'bandName':searchAsName,
+      'gigName':null
+    };
+    var jsonForSearch = {
+      'searchObject':searchObject
+    };
+    performSearch(jsonForSearch);
+  }
+  else{
+    console.log('in else');
+
+
+    var mode = 'findGigs';
+    var searchObject = {
+      'mode':mode,
+      'query':searchText,
+      'bandName':null,
       'gigName':null
     };
     var jsonForSearch = {

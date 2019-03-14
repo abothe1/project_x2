@@ -117,13 +117,14 @@ router.post('/band', (req, res) => {
 
 	database.connect(db => {
 		let bands = db.db('bands').collection('bands');
-		bands.insertOne({'name' : name, 'creator':creator, 'address': address, 'zipcode':zipcode, 'price': price, 'rating':rating, 'openDates':openDates, 'applicationText':application, 'lat' : lat, 'lng':lng, 'categories' : categories, 'appliedGigs':[], 'upcomingGigs':[], 'finishedGigs':[], 'audioSamples':audioSamples, 'videoSamples':videoSamples, 'picture': picture}, (err, result) => {
+		bands.insertOne({'name' : name, 'creator':creator, 'address': address, 'zipcode':zipcode, 'price': price, 'rating':rating, 'openDates':openDates, 'applicationText':application, 'lat' : lat, 'lng':lng, 'categories' : {'genres':[],'vibes':[],'insts':[],'gigTypes':[]}, 'appliedGigs':[], 'upcomingGigs':[], 'finishedGigs':[], 'audioSamples':audioSamples, 'videoSamples':videoSamples, 'picture': picture}, (err, result) => {
 			if (err){
 				console.warn("Couldnt get insert band into database: " + err);
 				res.status(500).end();
 				db.close();
 			} else {
-				console.log("band inserted");
+				console.log("band inserted with cats as : " + JSON.stringify(categories));
+
 				res.status(200).end();
 				db.close();
 			}
@@ -192,8 +193,55 @@ router.get('/getGigs', (req, res)=>{
     console.warn("Couldn't connect to database: " + err);
 		res.status(500).end();
   });
-
-
 });
+
+router.get('/searchNoName', (req, res) => {
+  console.log("req is search is : " + req);
+  console.log("req.query is search is : " + req.query);
+	var {query, mode} = req.query;
+  console.log("IN SEARCH AND query IS " + query);
+  console.log("IN SEARCH AND MODE IS " + mode);
+	if (!query) {
+		return res.status(400).send('No query supplied').end();
+	} else if (!mode) {
+		return res.status(400).send('No mode supplied').end();
+	}
+
+	switch (mode) {
+		case 'findGigs':
+    console.log("got in searching no name for gigs on search rotues page");
+    //console.log("band namee searching for bands is: " + bandName);
+			database.connect(db => {
+				matching.findGigsNoName(query, db, err => {
+					console.error("Error when finding gigs for "+ err);
+					res.status(500).end();
+				}, data => {
+					res.status(200).json({ success: true, data: data });
+				});
+			}, err => {
+				console.error('[auth][database] Database connection whilst logging in failed');
+				res.status(500).end()
+			})
+			break;
+		case 'findBands':
+    console.log("got in searching no name for bands");
+  //  console.log("gig namee searching for bands is: " + gigName);
+			database.connect(db => {
+				matching.findBandsNoName( query, db, err => {
+					console.error("Error when finding bands : " + err);
+					res.status(500).end();
+				}, data => {
+					res.status(200).json({ success: true, data: data });
+				});
+			}, err => {
+				console.error('[auth][database] Database connection whilst logging in failed');
+				res.status(500).end()
+			});
+			break;
+		default:
+			res.status(400).send("Invalid mode: " + mode).end()
+	}
+});
+
 
 }

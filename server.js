@@ -116,7 +116,7 @@ router.post('/messages', (req, res)=>{
       }
     });
   }, err=>{
-    console.log("Couldn't connec to mongo with error: "+err);
+    console.log("Couldn't connect to mongo with error: "+err);
     db.close();
     res.status(500).end();
   });

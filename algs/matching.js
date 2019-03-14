@@ -201,7 +201,7 @@ module.exports = {
     });
   },
 
- findBandsForGig : function findBandsForGig(myGigName, queryStr, db, errCb, okCb) {
+  findBandsForGig : function findBandsForGig(myGigName, queryStr, db, errCb, okCb) {
    console.log("got in find bands fro gig on alg page");
    console.log("querystr is :" + queryStr);
    console.log("gig searching for bands name is" + myGigName);
@@ -284,9 +284,115 @@ module.exports = {
       }
     });
 
-  }
+  },
 
+  findBandsNoName : function findBandsNoName(queryStr, db, errCb, okCb){
+
+    let allBands = db.db('bands').collection('bands');
+    allBands.find({}).toArray(function(err, result){
+      var genresFromStr=[];
+      var instsFromStr=[];
+      var gigTypesFromStr=[];
+      var vibesFromStr=[];
+      var categories={"genres":[genreBank,genresFromStr,genreMult], "insts":[instBank,instsFromStr,instMult],"vibes":[vibeBank,vibesFromStr,vibeMult],"gigTypes":[gigTypeBank,gigTypesFromStr,typeMult]};
+      var cats = parseQueryString(queryStr, categories);
+      if (err){
+        errCb("Internal server error");
+        db.close();
+        return;
+      }
+      var bands = result;
+      var bandsToScore=[];
+      var queryBandsToScore=[];
+
+      for (b in bands){
+        var queryStrScore=0;
+        var theBand = bands[b];
+        console.log(" ")
+        console.log("theBand For no name is : " + JSON.stringify(theBand));
+        console.log(" ")
+        if(!theBand.categories){
+          console.log("SKipping a band with null categories");
+          continue;
+        }
+
+        var numMatches=0;
+        for (key in cats){
+          console.log("for key in cat and the key is: " + key);
+          if (cats.hasOwnProperty(key)){
+            if (theBand.categories.hasOwnProperty(key)){
+              var contents = cats[key];
+              var fromStr=contents[1];
+              var mult=contents[2];
+              for (var word in fromStr){
+                if (theBand.categories[key].includes(fromStr[word])){
+                  console.log("GOT A MACTHING STRING FOR BAND " + JSON.stringify(theBand));
+                  queryStrScore+=(1*mult);
+                  numMatches+=1;
+                }
+              }
+            }
+          }
+        }
+        queryBandsToScore.push([theBand,numMatches]);
+      }
+      var sortedBands = {"overallMatchers":[],"queryMatchers":sortDict(queryBandsToScore)};
+      console.log("sortedBands on alg page is " + JSON.stringify(sortedBands));
+      db.close();
+      okCb(sortedBands);
+    });
+  },
+
+  findGigsNoName : function findGigsNoName(queryStr, db, errCb, okCb){
+    var genresFromStr=[];
+    var instsFromStr=[];
+    var gigTypesFromStr=[];
+    var vibesFromStr=[];
+    var categories={"genres":[genreBank,genresFromStr,genreMult], "insts":[instBank,instsFromStr,instMult],"vibes":[vibeBank,vibesFromStr,vibeMult],"gigTypes":[gigTypeBank,gigTypesFromStr,typeMult]};
+    var cats = parseQueryString(queryStr, categories);
+    let allGigs = db.db('gigs').collection('gigs');
+    allGigs.find({}).toArray(function(err, result){
+      if (err){
+        errCb("Internal server error");
+        db.close();
+        return;
+      }
+      var gigs = result;
+      var gigsToScore=[];
+      var queryGigsToScore=[];
+      for (g in gigs){
+        var queryStrScore=0;
+        var theGig = gigs[g];
+        if(!theGig.categories){
+          continue;
+        }
+        var numMatches=0;
+        for (key in cats){
+          console.log("for key in cat and the key is: " + key);
+          if (cats.hasOwnProperty(key)){
+            if (theGig.categories.hasOwnProperty(key)){
+              var contents = cats[key];
+              var fromStr=contents[1];
+              var mult=contents[2];
+              for (var word in fromStr){
+                if (theGig.categories[key].includes(fromStr[word])){
+                  queryStrScore+=(1*mult);
+                  numMatches+=1;
+                }
+              }
+            }
+          }
+        }
+        queryGigsToScore.push([theGig,numMatches]);
+      }
+      var sortedGigs = {"overallMatchers":[],"queryMatchers":sortDict(queryGigsToScore)};
+      console.log("sortedGigs on alg page is " + JSON.stringify(sortedGigs));
+      db.close();
+      okCb(sortedGigs);
+    });
+  }
 }
+
   function parseQueryString(queryStr, categories){
     console.log(" ");
     console.log("in parse query str on alg page and str is: " + queryStr + "and categoires are " + JSON.stringify(categories));
