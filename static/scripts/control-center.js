@@ -13,28 +13,35 @@
 // 6. can book/accept/message/favorite a profile
 // 7. Can create new bands/events
 // 8. Can add media and edit any information about existing bands/gigs/media
-var username = 'boothmane';
 
 //must implement getting the session data;
 //var username = getusernamefromsession;
-function updateBand(){
-  var query = {'upcomingGigs':['testGig1']};
-  var name = 'band4';
-  $.post('/updateBand', {'bandName':name, 'query':query}, result =>{
-    alert(result);
+function updateBand(bandName, query){
+  $.post('/updateBand', {'bandName':bandName, 'query':query}, result =>{
+    alert(JSON.stringify(result));
   });
 
 }
 function updateGig(){
 
 }
-function getUserInfo(){
-  var user={'username':username};
-  $.get('/getBands', {'user':user['username']}, result => {
+function getUsername(){
+  console.log("called fucntion getUsername");
+  $.get('/user', {query:'nada'}, res=>{
+    alert(JSON.stringify(res));
+    var user = res;
+    console.log('username fro res is: ' + user['username']);
+    getUserInfo(user);
+  });
+}
+function getUserInfo(user){
+  console.log('in get info and username is ' + user['username']);
+  var username = user['username'];
+  $.get('/getBands', {'creator':username}, result => {
     console.log("bands from db are: " + JSON.stringify(result));
     var bands = JSON.parse(JSON.stringify(result));
     user['bands']=bands;
-    $.get('/getGigs', {'user':user['username']}, result => {
+    $.get('/getGigs', {'creator':username}, result => {
       console.log("gigs from db are: " + JSON.stringify(result));
       var gigs = JSON.parse(JSON.stringify(result));
       user['gigs']=gigs;
@@ -45,13 +52,13 @@ function getUserInfo(){
 }
 function createWebPage(user){
   loadBands(user);
-  loadGigs(user);
+  //loadGigs(user);
 }
 
 
 
 function init(){
-  console.log("enter init()");
+
   var upcoming1 = {
     id: "up1"
   };
@@ -78,80 +85,17 @@ function init(){
   var band0 = {
     name: "electric orchestra",
     id: "band-0",
-    upcomingGigs: [upcoming1, upcoming2, upcoming1, upcoming2, upcoming1],
-    appliedGigs: [application1, application2],
-    finishedGigs: [past1, past2]
+    upcoming: [upcoming1, upcoming2, upcoming1, upcoming2, upcoming1],
+    applications: [application1, application2],
+    past: [past1, past2]
   };
-
-  var gig0 = {
-    name: "fulfilled gig",
-    time: "2019-01-26T14:22",
-    isFilled: true,
-    isConfirmed: false
-  };
-
-  var gig1 = {
-    name: "unfulfilled gig",
-    time: "2019-01-26T14:22",
-    isFilled: false,
-    isConfirmed: false
-  }
-
-  var gig2 = {
-    name: "confirmed gig",
-    time: "2019-01-26T14:22",
-    isFilled: true,
-    isConfirmed: true
-  }
 
   var user = {
-    bands: [band0],
-    gigs: [gig0,gig1,gig2,gig0,gig1,gig2,gig0,gig1,gig2,gig0,gig1,gig2]
+    band: [band0]
   };
   console.log(band0.name);
-  // loadGigs(user);
-  loadBands(user);
-  getUserInfo();
-}
-
-function loadGigs(user){
-  console.log("got into load gigs");
-  var fulfilledCreated = false;
-  var unfulfilledCreated = false;
-  var confirmedCreated = false;
-  for(var i in user['gigs']){
-    var gig = user.gigs[i];
-    // Fulfilled Gigs
-    if(gig.isFilled && !gig.isConfirmed){
-      if(fulfilledCreated){
-
-      }else{
-        // create the section
-
-        fulfilledCreated = true;
-      }
-    }
-    // Unfulfilled Gigs
-    else if(!gig.isFilled && !gig.isConfirmed){
-      if(unfulfilledCreated){
-
-      }else{
-        // create the section
-
-        unfulfilledCreated = true;
-      }
-    }
-    // Past gigs
-    else if(gig.isFilled && gig.isConfirmed){
-      if(confirmedCreated){
-
-      }else{
-        // create the section
-
-        confirmedCreated = true;
-      }
-    }
-  }
+  //loadBands(user);
+  getUsername();
 }
 
 function loadBands(user){
@@ -199,7 +143,7 @@ function makeCarouselWithId(id, band, section){
     var listString = makeListWithId("list-"+id);
     var $list = $(listString);
 
-    for(var gig in band.upcomingGigs){
+    for(var gig in band.upcomigGigs){
       console.log("gig: "+gig);
       var gigId = gig.name;
       var newItemString = makeListItemWithId(gigId);
@@ -235,7 +179,7 @@ function makeCarouselWithId(id, band, section){
     var $carousel = $(carouselString);
     var listString = makeListWithId("list-"+id);
     var $list = $(listString);
-    for(var gig in band.appliedGigs){
+    for(var application in band.appliedGigs){
       var appId = gig.id;
       var newItemString = makeListItemWithId(appId);
       var $newItem = $(newItemString);

@@ -76,11 +76,23 @@
           <img id="searchbar" src="../static/assets/Search/searchbar.png" />
           <input id='search_input'>
         </div>
-        <div id="filters">
-          <a href="javascript:changeState(0)"><img id="m" src="../static/assets/Search/m_filter_selected.png"/></a>
-          <a href="javascript:changeState(1)"><img id="mv" src="../static/assets/Search/mv_filter.png"/></a>
-          <a href="javascript:changeState(2)"><img id="v" src="../static/assets/Search/v_filter.png"/></a>
+        <div id="dropdown-container">
+          <p>you are searching as:</p>
+          <select>
+            <option value="0">Madeline Shade</option>
+            <option value="1">Band 1</option>
+            <option value="2">Band 2</option>
+            <option value="3">Band 3</option>
+          </select>
         </div>
+      </div>
+
+      <div id="filters">
+        <ul>
+        <li><a href="javascript:searchForBoth()"><img id="mv" src="../static/assets/Search/mv_filter.png"/></a></li>
+        <li><a href="javascript:searchForBands()"><img id="m" src="../static/assets/Search/m_filter_selected.png"/></a></li>
+        <li><a href="javascript:searchForGigs()"><img id="v" src="../static/assets/Search/v_filter.png"/></a></li>
+        </ul>
       </div>
 
       <div class="grid-container" id="grid-container"></div>

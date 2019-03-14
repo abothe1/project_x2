@@ -40,54 +40,53 @@ function parseURL(url){
        searchObject: searchObject,
        hash: parser.hash
    };
-
 }
+
+var theGrid = null;
 function init(){
-  var urlJSON = parseURL(window.location.href);
-  console.log("url: "+JSON.stringify(urlJSON));
-  performSearch(urlJSON);
-  showResults(1,1);
+  // var urlJSON = parseURL(window.location.href);
+  // console.log(JSON.stringify(urlJSON));
+  // performSearch(urlJSON);
+  theGrid = document.getElementById("grid-container");
+  // testFrontend();
 }
 
-var state = 0;
+function searchForBands(){
+  var m = document.getElementById("m");
+  var mv = document.getElementById("mv");
+  var v = document.getElementById("v");
+  m.src = "../static/assets/Search/m_filter_selected.png";
+  mv.src = "../static/assets/Search/mv_filter.png"
+  v.src = "../static/assets/Search/v_filter.png"
+}
 
-function changeState(newState){
-  if(newState == state){
-    // do nothing
-  }else{
-    var m = document.getElementById("m");
-    var mv = document.getElementById("mv");
-    var v = document.getElementById("v");
+function searchForGigs(){
+  var m = document.getElementById("m");
+  var mv = document.getElementById("mv");
+  var v = document.getElementById("v");
+  m.src = "../static/assets/Search/m_filter.png";
+  mv.src = "../static/assets/Search/mv_filter.png"
+  v.src = "../static/assets/Search/v_filter_selected.png"
+}
 
-    switch(newState){
-      case 0:
-        m.src = "/assets/Search/m_filter_selected.png";
-        mv.src = "/assets/Search/mv_filter.png"
-        v.src = "/assets/Search/v_filter.png"
-        state = 0;
-        filterResults();
-        break;
-      case 1:
-        m.src = "/assets/Search/m_filter.png";
-        mv.src = "/assets/Search/mv_filter_selected.png"
-        v.src = "/assets/Search/v_filter.png"
-        state = 1;
-        filterResults();
-        break;
-      case 2:
-        m.src = "/assets/Search/m_filter.png";
-        mv.src = "/assets/Search/mv_filter.png"
-        v.src = "/assets/Search/v_filter_selected.png"
-        state = 2;
-        filterResults();
-        break;
+function searchForBoth(){
+  var m = document.getElementById("m");
+  var mv = document.getElementById("mv");
+  var v = document.getElementById("v");
+  m.src = "../static/assets/Search/m_filter.png";
+  mv.src = "../static/assets/Search/mv_filter_selected.png"
+  v.src = "../static/assets/Search/v_filter.png"
+}
+
+function doesContainID(id, arr){
+  console.log("IN CONATINS ID and id is : "  +  id);
+  for (item in arr){
+    console.log("IN CONATINS ID and id in for loop is : "  +  arr[item]);
+    if (arr[item]==id){
+      return true;
     }
   }
-}
-
-
-function filterResults(){
-  console.log(state);
+  return false;
 }
 
 function performSearch(json){
@@ -106,8 +105,6 @@ function performSearch(json){
    searchTxt=String(searchTxt);
    searchTxt=searchTxt.replace(/%20/g, " ");
    searchTxt=searchTxt.replace(/%22/g, "");
-   var resultBands;
-   var resultGigs;
   if (gigName==null&&bandName==null){
     //serach with no name
   }
@@ -118,7 +115,7 @@ function performSearch(json){
     console.log("band name is : " + bandName);
     $.get("/search", { 'mode': "findGigs", 'query': searchTxt, 'bandName': bandName }, result => {
   		  alert(`result is ${JSON.stringify(result)}`);
-        resultBands = JSON.stringify(result);
+        showResults(mode, null, result);
   	});
   }
   else{
@@ -128,13 +125,98 @@ function performSearch(json){
     console.log("gig name is : " + gigName);
     $.get("/search", { 'mode': "findBands", 'query': searchTxt, 'gigName': gigName}, result => {
     		alert(`result is ${JSON.stringify(result)}`);
-        resultGigs = JSON.stringify(result);
+        showResults(mode, result, null);
+
     	});
   }
-  showResults(resultBands,resultGigs);
+
 }
 
-function showResults(bands,gigs){
+function showResults(mode, bands, gigs){
+  var theGrid = document.getElementById("grid-container");
+  if(bands==null){
+    var mixedGigArr=[];
+    var idsInMix = [];
+    var j = 0;
+    for (gig in gigs['data']['queryMatchers']){
+      if (doesContainID(gigs['data']['queryMatchers'][gig][0]._id, idsInMix)){
+
+      }
+      else{
+        mixedGigArr.push(gigs['data']['queryMatchers'][gig]);
+        idsInMix.push(gigs['data']['queryMatchers'][gig][0]._id);
+      }
+      if (j<gigs['data']['overallMatchers'].length){
+        if (doesContainID(gigs['data']['overallMatchers'][j][0]._id, idsInMix)){
+
+        }
+        else{
+          mixedGigArr.push(gigs['data']['overallMatchers'][j]);
+          idsInMix.push(gigs['data']['overallMatchers'][j][0]._id);
+        }
+        j=j+1;
+      }
+    }
+    while (j<gigs['data']['overallMatchers'].length){
+      mixedGigArr.push(gigs['data']['overallMatchers'][j]);
+      j=j+1;
+    }
+    for (gig in mixedGigArr){
+      var newDiv = document.createElement("div");
+    //  newDiv.style.backgroundImage = "url(/assets/Home/Art/"+testBands.data.overallMatchers[gig][0].picture+")";
+      var nameDiv = document.createElement("div");
+      nameDiv.className = "result-name-div";
+      var nameP = document.createElement("p");
+      nameP.innerHTML = mixedGigArr[gig][0].name;
+      nameDiv.appendChild(nameP);
+      newDiv.appendChild(nameDiv);
+      theGrid.appendChild(newDiv);
+      console.log("appended");
+    }
+  }
+  else{
+    var mixedBandArr = [];
+    var idsInMixBands = [];
+    var i = 0;
+    for (band in bands['data']['queryMatchers']){
+      if (doesContainID(bands['data']['queryMatchers'][band][0]._id, idsInMixBands)){
+
+      }
+      else{
+      mixedBandArr.push(bands['data']['queryMatchers'][band]);
+      idsInMixBands.push(bands['data']['queryMatchers'][band][0]._id);
+      }
+      if (i<bands['data']['overallMatchers'].length){
+        if (doesContainID(bands['data']['overallMatchers'][i][0]._id, idsInMixBands)){
+
+        }
+        else{
+          mixedBandArr.push(bands['data']['overallMatchers'][i]);
+          idsInMixBands.push(bands['data']['overallMatchers'][i][0]._id);
+        }
+        i=i+1;
+      }
+    }
+    while (i<bands['data']['overallMatchers'].length){
+      mixedBandArr.push(bands['data']['overallMatchers'][i]);
+      i=i+1;
+    }
+    for(band in mixedBandArr){
+      var newDiv = document.createElement("div");
+      //newDiv.style.backgroundImage = "url(assets/Home/Art/"+mixedBandArr[band].picture+")";
+      var nameDiv = document.createElement("div");
+      nameDiv.className = "result-name-div";
+      var nameP = document.createElement("p");
+      nameP.innerHTML = mixedBandArr[band][0].name;
+      nameDiv.appendChild(nameP);
+      newDiv.appendChild(nameDiv);
+      theGrid.appendChild(newDiv);
+      console.log("appended");
+    }
+  }
+}
+
+function testFrontend(){
   var testBandsString = '{'+
     '"success":true,'+
     '"data":{'+
@@ -145,7 +227,7 @@ function showResults(bands,gigs){
           '"name":"band1",'+
           '"address":"N27 W5230",'+
           '"zipcode":"53012",'+
-          '"price":"10",'+
+          '"price":"100",'+
           '"openDates":null,'+
           '"applicationText":"We are a good band",'+
           '"lat":"100.1","lng":"109.2",'+
@@ -468,18 +550,416 @@ function showResults(bands,gigs){
   '}';
 
   var testBands = JSON.parse(testBandsString);
+
+  var testGigsString =
+  '{'+
+    '"overallMatchers":['+
+      '[{'+
+        '"_id":"5c44fd84003e48d1b718c327",'+
+        '"name":"test1234567",'+
+        '"address":"N27 W5230 Hamilton rd.",'+
+        '"price":"22",'+
+        '"startDate":"2019-01-26T14:22",'+
+        '"endDate":"",'+
+        '"applications":null,'+
+        '"lat":"0",'+
+        '"lng":"0",'+
+        '"categories":'+
+        '{'+
+          '"genres":["bass","punk"],'+
+          '"insts":["bass guitar","bass","guitar"],'+
+          '"vibes":["bass","","","dumb"]'+
+        '},'+
+        '"isFilled":true,'+
+        '"bandFor":"none",'+
+        '"picture":"14.jpeg"'+
+      '}],'+
+      '[{'+
+        '"_id":"5c44fd84003e48d1b718c327",'+
+        '"name":"test1234567",'+
+        '"address":"N27 W5230 Hamilton rd.",'+
+        '"price":"22",'+
+        '"startDate":"2019-01-26T14:22",'+
+        '"endDate":"",'+
+        '"applications":null,'+
+        '"lat":"0",'+
+        '"lng":"0",'+
+        '"categories":'+
+        '{'+
+          '"genres":["bass","punk"],'+
+          '"insts":["bass guitar","bass","guitar"],'+
+          '"vibes":["bass","","","dumb"]'+
+        '},'+
+        '"isFilled":true,'+
+        '"bandFor":"none",'+
+        '"picture":"14.jpeg"'+
+      '}],'+
+      '[{'+
+        '"_id":"5c44fd84003e48d1b718c327",'+
+        '"name":"test1234567",'+
+        '"address":"N27 W5230 Hamilton rd.",'+
+        '"price":"22",'+
+        '"startDate":"2019-01-26T14:22",'+
+        '"endDate":"",'+
+        '"applications":null,'+
+        '"lat":"0",'+
+        '"lng":"0",'+
+        '"categories":'+
+        '{'+
+          '"genres":["bass","punk"],'+
+          '"insts":["bass guitar","bass","guitar"],'+
+          '"vibes":["bass","","","dumb"]'+
+        '},'+
+        '"isFilled":true,'+
+        '"bandFor":"none",'+
+        '"picture":"14.jpeg"'+
+      '}],'+
+      '[{'+
+        '"_id":"5c44fd84003e48d1b718c327",'+
+        '"name":"test1234567",'+
+        '"address":"N27 W5230 Hamilton rd.",'+
+        '"price":"22",'+
+        '"startDate":"2019-01-26T14:22",'+
+        '"endDate":"",'+
+        '"applications":null,'+
+        '"lat":"0",'+
+        '"lng":"0",'+
+        '"categories":'+
+        '{'+
+          '"genres":["bass","punk"],'+
+          '"insts":["bass guitar","bass","guitar"],'+
+          '"vibes":["bass","","","dumb"]'+
+        '},'+
+        '"isFilled":true,'+
+        '"bandFor":"none",'+
+        '"picture":"14.jpeg"'+
+      '}],'+
+      '[{'+
+        '"_id":"5c44fd84003e48d1b718c327",'+
+        '"name":"test1234567",'+
+        '"address":"N27 W5230 Hamilton rd.",'+
+        '"price":"22",'+
+        '"startDate":"2019-01-26T14:22",'+
+        '"endDate":"",'+
+        '"applications":null,'+
+        '"lat":"0",'+
+        '"lng":"0",'+
+        '"categories":'+
+        '{'+
+          '"genres":["bass","punk"],'+
+          '"insts":["bass guitar","bass","guitar"],'+
+          '"vibes":["bass","","","dumb"]'+
+        '},'+
+        '"isFilled":true,'+
+        '"bandFor":"none",'+
+        '"picture":"14.jpeg"'+
+      '}],'+
+      '[{'+
+        '"_id":"5c44fd84003e48d1b718c327",'+
+        '"name":"test1234567",'+
+        '"address":"N27 W5230 Hamilton rd.",'+
+        '"price":"22",'+
+        '"startDate":"2019-01-26T14:22",'+
+        '"endDate":"",'+
+        '"applications":null,'+
+        '"lat":"0",'+
+        '"lng":"0",'+
+        '"categories":'+
+        '{'+
+          '"genres":["bass","punk"],'+
+          '"insts":["bass guitar","bass","guitar"],'+
+          '"vibes":["bass","","","dumb"]'+
+        '},'+
+        '"isFilled":true,'+
+        '"bandFor":"none",'+
+        '"picture":"14.jpeg"'+
+      '}],'+
+      '[{'+
+        '"_id":"5c44fd84003e48d1b718c327",'+
+        '"name":"test1234567",'+
+        '"address":"N27 W5230 Hamilton rd.",'+
+        '"price":"22",'+
+        '"startDate":"2019-01-26T14:22",'+
+        '"endDate":"",'+
+        '"applications":null,'+
+        '"lat":"0",'+
+        '"lng":"0",'+
+        '"categories":'+
+        '{'+
+          '"genres":["bass","punk"],'+
+          '"insts":["bass guitar","bass","guitar"],'+
+          '"vibes":["bass","","","dumb"]'+
+        '},'+
+        '"isFilled":true,'+
+        '"bandFor":"none",'+
+        '"picture":"14.jpeg"'+
+      '}],'+
+      '[{'+
+        '"_id":"5c44fd84003e48d1b718c327",'+
+        '"name":"test1234567",'+
+        '"address":"N27 W5230 Hamilton rd.",'+
+        '"price":"22",'+
+        '"startDate":"2019-01-26T14:22",'+
+        '"endDate":"",'+
+        '"applications":null,'+
+        '"lat":"0",'+
+        '"lng":"0",'+
+        '"categories":'+
+        '{'+
+          '"genres":["bass","punk"],'+
+          '"insts":["bass guitar","bass","guitar"],'+
+          '"vibes":["bass","","","dumb"]'+
+        '},'+
+        '"isFilled":true,'+
+        '"bandFor":"none",'+
+        '"picture":"14.jpeg"'+
+      '}],'+
+      '[{'+
+        '"_id":"5c44fd84003e48d1b718c327",'+
+        '"name":"test1234567",'+
+        '"address":"N27 W5230 Hamilton rd.",'+
+        '"price":"22",'+
+        '"startDate":"2019-01-26T14:22",'+
+        '"endDate":"",'+
+        '"applications":null,'+
+        '"lat":"0",'+
+        '"lng":"0",'+
+        '"categories":'+
+        '{'+
+          '"genres":["bass","punk"],'+
+          '"insts":["bass guitar","bass","guitar"],'+
+          '"vibes":["bass","","","dumb"]'+
+        '},'+
+        '"isFilled":true,'+
+        '"bandFor":"none",'+
+        '"picture":"14.jpeg"'+
+      '}],'+
+      '[{'+
+        '"_id":"5c44fd84003e48d1b718c327",'+
+        '"name":"test1234567",'+
+        '"address":"N27 W5230 Hamilton rd.",'+
+        '"price":"22",'+
+        '"startDate":"2019-01-26T14:22",'+
+        '"endDate":"",'+
+        '"applications":null,'+
+        '"lat":"0",'+
+        '"lng":"0",'+
+        '"categories":'+
+        '{'+
+          '"genres":["bass","punk"],'+
+          '"insts":["bass guitar","bass","guitar"],'+
+          '"vibes":["bass","","","dumb"]'+
+        '},'+
+        '"isFilled":true,'+
+        '"bandFor":"none",'+
+        '"picture":"14.jpeg"'+
+      '}],'+
+      '[{'+
+        '"_id":"5c44fd84003e48d1b718c327",'+
+        '"name":"test1234567",'+
+        '"address":"N27 W5230 Hamilton rd.",'+
+        '"price":"22",'+
+        '"startDate":"2019-01-26T14:22",'+
+        '"endDate":"",'+
+        '"applications":null,'+
+        '"lat":"0",'+
+        '"lng":"0",'+
+        '"categories":'+
+        '{'+
+          '"genres":["bass","punk"],'+
+          '"insts":["bass guitar","bass","guitar"],'+
+          '"vibes":["bass","","","dumb"]'+
+        '},'+
+        '"isFilled":true,'+
+        '"bandFor":"none",'+
+        '"picture":"14.jpeg"'+
+      '}],'+
+      '[{'+
+        '"_id":"5c44fd84003e48d1b718c327",'+
+        '"name":"test1234567",'+
+        '"address":"N27 W5230 Hamilton rd.",'+
+        '"price":"22",'+
+        '"startDate":"2019-01-26T14:22",'+
+        '"endDate":"",'+
+        '"applications":null,'+
+        '"lat":"0",'+
+        '"lng":"0",'+
+        '"categories":'+
+        '{'+
+          '"genres":["bass","punk"],'+
+          '"insts":["bass guitar","bass","guitar"],'+
+          '"vibes":["bass","","","dumb"]'+
+        '},'+
+        '"isFilled":true,'+
+        '"bandFor":"none",'+
+        '"picture":"14.jpeg"'+
+      '}],'+
+      '[{'+
+        '"_id":"5c44fd84003e48d1b718c327",'+
+        '"name":"test1234567",'+
+        '"address":"N27 W5230 Hamilton rd.",'+
+        '"price":"22",'+
+        '"startDate":"2019-01-26T14:22",'+
+        '"endDate":"",'+
+        '"applications":null,'+
+        '"lat":"0",'+
+        '"lng":"0",'+
+        '"categories":'+
+        '{'+
+          '"genres":["bass","punk"],'+
+          '"insts":["bass guitar","bass","guitar"],'+
+          '"vibes":["bass","","","dumb"]'+
+        '},'+
+        '"isFilled":true,'+
+        '"bandFor":"none",'+
+        '"picture":"14.jpeg"'+
+      '}],'+
+      '[{'+
+        '"_id":"999ffff9999sdfsdfsd",'+
+        '"name":"test1234567",'+
+        '"address":"N27 W5230 Hamilton rd.",'+
+        '"price":"22",'+
+        '"startDate":"2019-01-26T14:22",'+
+        '"endDate":"",'+
+        '"applications":null,'+
+        '"lat":"0",'+
+        '"lng":"0",'+
+        '"categories":'+
+        '{'+
+          '"genres":["bass","punk"],'+
+          '"insts":["bass guitar","bass","guitar"],'+
+          '"vibes":["bass","","","dumb"]'+
+        '},'+
+        '"isFilled":true,'+
+        '"bandFor":"none",'+
+        '"picture":"14.jpeg"'+
+      '}]'+
+    ']'+
+  '}';
+
+  console.log(testGigsString);
+  var testGigs = JSON.parse(testGigsString);
   var theGrid = document.getElementById("grid-container");
 
-  for(band in testBands["data"]["overallMatchers"]){
-    var newDiv = document.createElement("div");
-    newDiv.style.backgroundImage = "url(../static/assets/Home/Art/"+testBands.data.overallMatchers[band][0].picture+")";
-    var nameDiv = document.createElement("div");
-    nameDiv.className = "result-name-div";
-    var nameP = document.createElement("p");
-    nameP.innerHTML = testBands.data.overallMatchers[band][0].name;
-    nameDiv.appendChild(nameP);
-    newDiv.appendChild(nameDiv);
-    theGrid.appendChild(newDiv);
-    console.log("appended");
+  var results = [];
+  // for(band in testBands["data"]["overallMatchers"]){
+  //   results[band] = new BandCell(testBands.data.overallMatchers[band][0],band);
+  // }
+  // for(gig in testGigs["overallMatchers"]){
+  //   results[gig] = new GigCell(testGigs["overallMatchers"][gig][0],gig);
+  // }
+}
+
+class BandCell {
+
+  constructor(band,id){
+    this.id = id;
+    this.bandID = band._id;
+    this.newDiv = document.createElement("div");
+    this.newDiv.style.backgroundImage = "url(../static/assets/Home/Art/"+band.picture+")";
+    // overlay
+    this.newOverlay = document.createElement("div");
+    this.newOverlay.className = "result-overlay";
+    this.overlayID = "result-overlay-"+id;
+    this.newOverlay.setAttribute("id",this.overlayID);
+    this.priceText = document.createElement("p");
+    this.priceText.innerHTML = "$"+band.price+"/hr";
+    // audio
+    this.newDiv.audio = new Audio();
+    this.newDiv.audio.src = "../static/assets/Home/transvertion.mp3";
+    this.newDiv.audio.type='audio/mp3';
+    // frame
+    this.newFrame = document.createElement("img");
+    this.newFrame.className = "result-frame";
+    this.newFrame.src = "../static/assets/Control-Center/purplebox.png";
+    this.newFrame.alt = "frame";
+    // name
+    this.nameDiv = document.createElement("div");
+    this.nameDiv.className = "result-name-div";
+    this.nameP = document.createElement("p");
+    this.nameP.innerHTML = band.name;
+    // appends
+    this.newOverlay.appendChild(this.priceText);
+    this.newDiv.appendChild(this.newOverlay);
+    this.newDiv.appendChild(this.newFrame);
+    this.nameDiv.appendChild(this.nameP);
+    this.newDiv.appendChild(this.nameDiv);
+    theGrid.appendChild(this.newDiv);
+    this.AddEventListeners(this);
+  }
+
+  AddEventListeners(obj){
+    this.newDiv.addEventListener("mouseover",function(){
+      obj.newOverlay.style.zIndex = "8";
+      obj.newOverlay.style.opacity = "1.0";
+      var playPromise = obj.newDiv.audio.play();
+      if (playPromise !== undefined) {
+        playPromise.then(function () {
+        	 console.log('Playing....');
+        }).catch(function (error) {
+        	 console.log('Failed to play....' + error);
+        });
+ 		  }
+    },false);
+    this.newDiv.addEventListener("mouseout",function(){
+      obj.newOverlay.style.zIndex = "-8";
+      obj.newOverlay.style.opacity = "0";
+      obj.newDiv.audio.pause();
+    },false);
+    this.newDiv.addEventListener("click",function(){
+      console.log(obj.bandID);
+    },false);
+  }
+}
+
+class GigCell{
+
+  constructor(gig,id){
+    this.id = id;
+    this.gigID = gig._id;
+    console.log("id: "+id);
+    this.newDiv = document.createElement("div");
+    console.log("pic: "+gig.picture);
+
+    this.newDiv.style.backgroundImage = "url(../static/assets/Home/Art/"+gig.picture+")";
+    // overlay
+    this.newOverlay = document.createElement("div");
+    this.newOverlay.className = "result-overlay";
+    this.overlayID = "result-overlay-"+id;
+    this.newOverlay.setAttribute("id",this.overlayID);
+    this.priceText = document.createElement("p");
+    this.priceText.innerHTML = "$"+gig.price+"/hr";
+    // frame
+    this.newFrame = document.createElement("img");
+    this.newFrame.className = "result-frame";
+    this.newFrame.src = "../static/assets/Control-Center/orangebox.png";
+    this.newFrame.alt = "frame";
+    // name
+    this.nameDiv = document.createElement("div");
+    this.nameDiv.className = "result-name-div";
+    this.nameP = document.createElement("p");
+    this.nameP.innerHTML = gig.name;
+    // appends
+    this.newOverlay.appendChild(this.priceText);
+    this.newDiv.appendChild(this.newOverlay);
+    this.newDiv.appendChild(this.newFrame);
+    this.nameDiv.appendChild(this.nameP);
+    this.newDiv.appendChild(this.nameDiv);
+    theGrid.appendChild(this.newDiv);
+    this.AddEventListeners(this);
+  }
+
+  AddEventListeners(obj){
+    this.newDiv.addEventListener("mouseover",function(){
+      obj.newOverlay.style.zIndex = "8";
+      obj.newOverlay.style.opacity = "1.0";
+    },false);
+    this.newDiv.addEventListener("mouseout",function(){
+      obj.newOverlay.style.zIndex = "-8";
+      obj.newOverlay.style.opacity = "0";
+    },false);
+    this.newDiv.addEventListener("click",function(){
+      console.log(obj.gigID);
+    },false);
   }
 }
