@@ -55,6 +55,12 @@ radial menu
 
 h1, h4, h6, p, button, input, textarea{
   font-family: Industry, sans-serif;
+  color: white;
+}
+
+p{
+  margin: 0;
+  padding: 0;
 }
 
 .radialText{
@@ -182,6 +188,37 @@ search bar
   background-color: rgba(0,0,0,0.0);
   border: 0;
   font-size: 36px;
+  color: black;
+}
+
+/*
+Dropdown menu
+*/
+
+#dropdown-container{
+  float: right;
+  margin-right: 80px;
+  margin-top: 20px;
+  z-index: 88;
+  width: 20%;
+  height: 80px;
+  text-align: left;
+}
+
+#dropdown-container > p{
+  padding-left: 8px;
+}
+
+#dropdown-container > select{
+  color: white;
+  width: 100%;
+  background-color: transparent;
+  font-family: Industry, sans-serif;
+  font-size: 22pt;
+  border: none;
+  height: 50px;
+  padding: 0;
+  margin: 0;
 }
 
 /*
@@ -189,18 +226,26 @@ search filters
 */
 
 #filters{
-  top: 30px;
-  right: 50px;
+  top: 260px;
+  left: 0px;
   position: fixed;
   z-index: 4;
   text-align: center;
 }
 
+#filters > ul{
+  list-style-type: none;
+}
+
+li{
+  padding-bottom: 30px;
+}
+
 #filters > a{
   height: 100px;
   width: 100px;
-  padding: 20px;
 }
+
 
 #m{
   height: 44px;
@@ -248,6 +293,36 @@ body elements
   height: 200px;
   width: 200px;
   background-size: cover;
+  border-radius: 10px;
+}
+
+.result-overlay{
+  z-index: -10;
+  opacity: 0;
+  width: 200px;
+  height: 200px;
+  border-radius: 8px;
+  background-color: rgba(0,0,0,0.5);
+  position: absolute;
+  margin-top: -20px;
+  padding: 0;
+}
+
+.result-overlay p{
+  width: 75%;
+  word-wrap: break-word;
+  margin: 0 auto;
+  margin-top: 34%;
+}
+
+.result-frame{
+  z-index: 4;
+  width: 200px;
+  height: 200px;
+  border-radius: none;
+  position: relative;
+  margin-top: -20px;
+  padding: 0;
 }
 
 .result-name-div {
@@ -266,5 +341,4 @@ body elements
 
 .result-name-p{
   color: white;
-
 }
