@@ -444,3 +444,32 @@ function sendMessage(){
 }
 
 socket.on('message, recID:' + id + '', recMessage);
+
+function addRow() {
+  var tableID = "new-band-schedule";
+  var table = document.getElementById(tableID);
+  if (!table) return;
+  var newRow = table.rows[1].cloneNode(true);
+  // Now get the inputs and modify their names
+  var inputs = newRow.getElementsByTagName('input');
+  for (var i=0, iLen=inputs.length; i<iLen; i++) {
+    // Update inputs[i]
+  }
+  // Add the new row to the tBody (required for IE)
+  var tBody = table.tBodies[0];
+  tBody.insertBefore(newRow, tBody.lastChild);
+}
+
+function deleteRow(el) {
+
+  // while there are parents, keep going until reach TR
+  while (el.parentNode && el.tagName.toLowerCase() != 'tr') {
+    el = el.parentNode;
+  }
+
+  // If el has a parentNode it must be a TR, so delete it
+  // Don't delte if only 3 rows left in table
+  if (el.parentNode && el.parentNode.rows.length > 1) {
+    el.parentNode.removeChild(el);
+  }
+}

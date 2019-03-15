@@ -33,6 +33,112 @@
 		</script>
   </head>
   <body onload="init();">
+
+    <div id="modal-wrapper-new-gig" class="modal">
+      <form id="new-gig-form" class="modal-content animate" enctype="multipart/form-data" method="post" action="#">
+
+        <div class="imgcontainer">
+          <span onclick="document.getElementById('modal-wrapper-new-gig').style.display='none'" class="close" title="Close PopUp">&times;</span>
+          <h1 style="text-align:left; padding-left: 20px; font-size: 50pt;">new gig</h1>
+        </div>
+
+        <div class="container" id="new-gig-content">
+          <input id="new-gig-title" class="modal-input" type="text" placeholder="enter a title for your new gig"></input>
+          <label for="new-gig-date">date</label>
+          <input id="new-gig-date" class="modal-input" type="date"></input>
+          <label for="new-gig-start-time">from</label>
+          <input id="new-gig-start-time" class="modal-input" type="time"></input>
+          <label for="new-gig-end-time">to</label>
+          <input id="new-gig-end-time" class="modal-input" type="time"></input>
+          <label for="new-gig-loc">location</label>
+          <input id="new-gig-loc" class="modal-input" type="text"></input>
+          <label for="new-gig-pay">pay rate ($/hr)</label>
+          <input id="new-gig-pay" class="modal-input" type="text"></input>
+          <img id="new-gig-pic-preview"/>
+          <div id="new-gig-spacer"></div>
+          <label for="new-gig-pic">upload image</label>
+          <input id="new-gig-pic" class="modal-input"  name="avatar" type="file"></input>
+          <label id="new-gig-description-label" for="new-gig-description">description</label>
+          <textarea id="new-gig-description" class="modal-textarea"></textarea>
+          <button class="popUpButtons" id="new-gig-post">post</button>
+        </div>
+      </form>
+    </div>
+
+    <div id="modal-wrapper-new-band" class="modal">
+      <form id="new-band-form" class="modal-content animate" enctype="multipart/form-data" method="post" action="#">
+
+        <div class="imgcontainer">
+          <span onclick="document.getElementById('modal-wrapper-new-band').style.display='none'" class="close" title="Close PopUp">&times;</span>
+          <h1 style="text-align:left; padding-left: 20px; font-size: 50pt;">new band</h1>
+        </div>
+
+        <div class="container" id="new-band-content">
+          <input id="new-band-title" class="modal-input" type="text" placeholder="enter a name for your new band"></input>
+          <label for="new-gig-zip">zip code</label>
+          <input id="new-band-zip" class="modal-input" type="text" placeholder=""></input>
+          <label for="new-gig-pay">max travel distance (mi.)</label>
+          <input id="new-band-dist" class="modal-input" type="text" placeholder=""></input>
+          <label for="new-gig-pay">avg. pay ($/hr)</label>
+          <input id="new-band-pay" class="modal-input" type="text" placeholder=""></input>
+          <h3 id="new-band-schedule-label">weekly schedule</h3><h5>add your band's open time slots in the table below</h5>
+          <br>
+          <table id="new-band-schedule">
+            <thead>
+              <th>day of the week</th>
+              <th>start time</th>
+              <th>end time</th>
+            </thead>
+            <tbody>
+              <tr>
+                <td>
+                  <select class="new-band-schedule-select">
+                    <option>Sunday</option>
+                    <option>Monday</option>
+                    <option>Tuesday</option>
+                    <option>Wednesday</option>
+                    <option>Thursday</option>
+                    <option>Friday</option>
+                    <option>Saturday</option>
+                  </select>
+                </td>
+                <td><input type="time" class="new-band-schedule-start-time"></input></td>
+                <td><input type="time" class="new-band-schedule-end-time"></input></td>
+                <td><input type="button" value="remove"onclick="deleteRow(this)" class="new-band-schedule-remove"></input>
+              </tr>
+            </tbody>
+            <tfoot>
+              <tr>
+                <td><a class="new-band-schedule-add" href="javascript:addRow()">add another day</a></td>
+                <td></td>
+                <td></td>
+                <td></td>
+              </tr>
+            </tfoot>
+          </table>
+          <br>
+          <label id="new-band-description-label" for="new-band-description">description</label>
+          <textarea id="new-band-description" class="modal-textarea"></textarea>
+          <h3>avatar</h3>
+          <label for"new-band-pic">upload image</label>
+          <input id="new-band-pic" class="modal-input" name="avatar" type="file"></input>
+          <img id="new-band-pic-preview"/>
+          <br>
+          <h3>soundbyte</h3>
+          <br>
+          <label for"new-band-clip">upload audio clip</label>
+          <input id="new-band-clip" class="modal-input" name="soundbyte" type="file"></input>
+          <br>
+          <label for"new-band-clip-pic">upload clip image</label>
+          <input id="new-band-clip-pic" class="modal-input" name="soundbyte-img" type="file"></input>
+          <img id="new-band-clip-preview"/>
+          <button class="popUpButtons" id="new-band-create">create</button>
+        </div>
+      </form>
+    </div>
+
+
+
     <div id="body-container">
 
       <div id="container">
@@ -66,8 +172,8 @@
           <li><a href="#">Band 3</a></li>
           <li><a href="#">Band 4</a></li>
           <li><a href="#">Band 5</a></li>
-          <li><a href="#">+ Create a Band</a></li>
-          <li><a href="#">+ Post an Event</a></li>
+          <li><a href="#" onclick="document.getElementById('modal-wrapper-new-band').style.display='block'">+ Create a Band</a></li>
+          <li><a href="#" onclick="document.getElementById('modal-wrapper-new-gig').style.display='block'">+ Post an Event</a></li>
         </ul>
       </div>
 
@@ -111,23 +217,27 @@
               </div>
               <div class="open-gig-description">
                 <h3>Description</h3>
-                <textarea class="open-gig-textarea">Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.</textarea>
+                <textarea class="open-gig-textarea">Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim </textarea>
               </div>
-              <div class="open-gig-loc-time">
-                <h3>Location</h3>
-                <input class="open-gig-loc"></input>
+              <div class="open-gig-date-time">
                 <h3>Date</h3>
                 <input class="open-gig-date" type="date"></input>
-                <h3>Time</h3>
-                <input class="open-gig-time" type="time"></input>
+                <h3 id="open-gig-time-label">Time</h3>
+                <label for"open-gig-start-time">from</label>
+                <input class="open-gig-start-time" type="time"></input>
+                <label for"open-gig-end-time">to</label>
+                <input class="open-gig-end-time" type="time"></input>
               </div>
-              <div class="open-gig-max-pay">
-                <h3>Max Pay ($/hr)</h3>
+              <div class="open-gig-loc-pay">
+                <h3>Location</h3>
+                <input class="open-gig-loc"></input>
+                <h3 id="open-gig-pay-label">Max Pay ($/hr)</h3>
                 <input class="max-pay-input"></input>
                 <a href="#"class="open-gig-confirm">confirm changes</a>
               </div>
             </div>
             <div class="open-gig-applicants">
+
             </div>
           </div>
         </div>
