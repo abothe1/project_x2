@@ -243,5 +243,19 @@ router.get('/searchNoName', (req, res) => {
 	}
 });
 
+router.get('/bandsForDrops', (req, res)=>{
+  db.db('bands').collection('bands').find({}, {projection : {'audioSamples':1, 'picture':1}}).toArray((err, result)=>{
+    if (err){
+      console.log('there was an error trying to get audio and picture for bands err is :' + err);
+      res.status(500).end();
+      db.close();
+    }
+    else{
+      console.log('Got audio and pictures out of bands here is result: ' + JSON.stringify(result));
+      res.status(200).send(result);
+      db.close();
+    }
+  });
+});
 
 }

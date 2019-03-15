@@ -425,67 +425,15 @@ for (var s in samples){
 
 
 function search_musicians() {
-var query = $("#search_input").val();
-window.location.href='search_page?query='+query+'&mode=findBands&gigName="the lads get together"';
-/*	$.get("/search", { 'mode': "findBands", 'query': $("#search_input").val(), 'gigName': "the lads get together"},result => {
-		alert(`result is ${JSON.stringify(result)}`);
-
-	});
-  */
+  var query = $("#search_input").val();
+  window.location.href='search_page?query='+query+'&mode=findBands&gigName="null"';
 }
 
 function search_gigs() {
-var query = $("#search_input").val();
-window.location.href='search_page?query="'+query+'&mode=findGigs&bandName="band4"';
-/*
-	$.get("/search", { 'mode': "findGigs", 'query': $("#search_input").val(), 'bandName': "band4" }, result => {
-		  alert(`result is ${JSON.stringify(result)}`);
-      window.location.href='search.html';
-	});
-*/
+  var query = $("#search_input").val();
+  window.location.href='search_page?query="'+query+'&mode=findGigs&bandName="null"';
 }
 
-function post_gig(lat,lng) {
-  console.log("got into post gig");
-  var name = $('#gig_name_input').val();
-  console.log("name from gig form is: " + name);
-  var address = $('#gig_address_input').val();
-  var price = $('#gig_price_input').val();
-  var description = $('#gig_desc_input').val();
-  var startDate = $('#gig_start_input').val();
-  var endDate = $('#gig_end_input').val();
-  var zipcode = $('#gig_zip_input').val();
-  var creator='test123';
-  //must implment getting user name out of session
-  var gig = {'name':name,
-            'creator':creator,
-            'address': address,
-            'price': price,
-            'startDate': startDate,
-            'endDate': endDate,
-            'applications': [],
-            'lat': lat,
-            'lng': lng,
-            'zipcode' : zipcode,
-            'createdBy' : "a user"
-            };
-  var categoriesFromStr = parseQueryString(description);
-  gig['categories'] = categoriesFromStr;
-  console.log(gig);
-	$.post('/gig', {'name':name, 'creator':creator, 'address':address, 'zipcode': zipcode, 'price': price, 'startDate': startDate, 'endDate': endDate, 'applications': [], 'lat': lat, 'lng': lng, 'categories':categoriesFromStr, 'isFilled':true, 'bandFor':'none'}, result => {
-    console.log("got cb from post /gig");
-		alert(`result is ${result}`);
-	});
-}
-
-function flipTicker(){
-	console.log("got into flip ticker func");
-	$("#flip-box-inner0").flip({
-		 trigger: 'manual',
-		 axis:'x'
-	});
-	$('#flip-box-inner0').flip('toggle');
-}
 
 function getLocation() {
   if (navigator.geolocation) {
@@ -589,6 +537,15 @@ function diff_minutes(dt2, dt1) {
  	 return dict;
  }
 
+ function flipTicker(){
+ 	console.log("got into flip ticker func");
+ 	$("#flip-box-inner0").flip({
+ 		 trigger: 'manual',
+ 		 axis:'x'
+ 	});
+ 	$('#flip-box-inner0').flip('toggle');
+ }
+
 
 //login and register stuff//
 
@@ -601,15 +558,9 @@ function diff_minutes(dt2, dt1) {
     $.post('/login', content, res=>{
       alert("Got res from login herre it is: " + JSON.stringify(res));
     });
-    /*
-		post_request('/login', content,
-			_ => redirect_to('/index'),
-			err => alert(`${err.code} error: ${err.cause}`)
-		);
-    */
 	}
 
-//firebase init stuff//
+
   function register() {
     console.log("got into register func");
     var content = {
@@ -620,106 +571,5 @@ function diff_minutes(dt2, dt1) {
 
     $.post('/register', content, res=>{
       alert(JSON.stringify(res));
-    });
-  }
-
-    /*
-    var actionCodeSettings = {
-  // URL you want to redirect back to. The domain (www.example.com) for this
-  // URL must be whitelisted in the Firebase Console.
-    url: 'https://www.example.com/finishSignUp?cartId=1234',
-  // This must be true.
-    handleCodeInApp: true,
-    dynamicLinkDomain: 'example.page.link'
-    };
-    firebase.auth().createUserWithEmailAndPassword($("#reg_email").val(),$("#reg_password")).catchError(function(error){
-      var errorCode = error.code;
-      var errorMessage = error.message;
-      console.log("Got an error in firebase accounr creation " + errorCode + " ," + errorMessage);
-    });
-    /*
-    var content = {
-      username: $("#reg_username").val(),
-      email: $("#reg_email").val(),
-      password: $("#reg_password").val()
-    };
-    console.log(content);
-    post_request('/register', content,
-      _ => redirect_to('/_login'),
-      err => alert(`${err.code} error: ${err.cause}`)
-    );
-    */
-
-
-
-  function sendVerification(){
-    var user = firebase.auth.currentUser;
-    user.sendEmailVerification().then(function(){
-
-    }).catchError(function(err){
-      console.log("error from sendign email verifaaction link to user " + err.message);
-    });
-  }
-  function stringToDate(str){
-    var date = new Date(str);
-    console.log("in string to date and adate is " + date);
-    return date;
-  }
-
-  //GIG creation stuff//
-  function cleanGigInput(){
-    console.log("got into post gig");
-    var name = $('#gig_name_input').val();
-    console.log("name from gig form is: " + name);
-    var address = $('#gig_address_input').val();
-    var price = $('#gig_price_input').val();
-    var description = $('#gig_desc_input').val();
-    var startDate = $('#gig_start_input').val();
-    var endDate = $('#gig_end_input').val();
-    var zipcode = $('#gig_zip_input').val();
-    if (zipcode==null || zipcode == "" || zipcode == " " || zipcode == "Enter Zipcode"){
-    $('#errorMessages').html("Please enter a valid zipcode");
-    }
-    if (price==null || price == "" || price == " " || price == "Enter Price"){
-    $('#errorMessages').html("Please enter a valid price (no dollar sign");
-    }
-    if (address==null || address == "" || address == " " || address == "Enter Address"){
-    $('#errorMessages').html("Please enter a valid address");
-    }
-    if (startDate==null || startDate == "" || startDate == " " || startDate == "Enter Date"){
-    $('#errorMessages').html("Please enter a valid start date<");
-    }
-    if (endDate==null || endDate == "" || endDate == " " || endDate == "Enter Date"){
-    $('#errorMessages').html("Please enter a valid end date");
-    }
-    if (description==null || description == "" || description == " " || description.includes("description")){
-      $('#errorMessages').html("Please enter a description, with genres, vibes, and your gig's type (i.e. birthday party, bar, etc.) and instruments if you would like");
-    }
-    if (name==null || name == "" || name == " " || name == "Enter Gig Name"){
-      $('#errorMessages').html("Please Enter A Unqiue Gig Name");
-    }
-    else{
-      $("#errorMessages").remove();
-      convertZip();
-    }
-  }
-
-  function convertZip(){
-    var zipcode = $('#gig_zip_input').val();
-    $.getJSON('http://api.openweathermap.org/data/2.5/weather?zip='+zipcode+',us&APPID=f89469b4b424d53ac982adacb8db19f6').done(function(data){
-      console.log(JSON.stringify(data));
-      var lat = data.coord.lat;
-      var lng = data.coord.lon;
-      post_gig(lat,lng);
-    });
-  }
-
-  //create band
-  //name, address, zipcode, price, openDates, application, lat, lng, audioSamples, videoSamples, picture, categories
-
-  function createBand(){
-    $.post('/band', {'name':"Deadalus", 'creator':'xxx', 'address':"N27 W5230", 'zipcode': 53012, 'price': 33, 'rating':null, 'openDates':["2019-01-26T14:22"], 'application':"We are a good band", 'lat': 100.1, 'lng': 109.2, 'audioSamples':[], 'videoSamples':[], 'picture':"no jpeg yet", 'appliedGigs':['gigneat23', 'gigawesome12'], 'categories':{'genres':[],'vibes':[],'insts':[],'gigTypes':[]}}, result => {
-      console.log("got cb from post /band");
-      alert(`result is ${result}`);
     });
   }

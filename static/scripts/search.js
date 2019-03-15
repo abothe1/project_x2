@@ -186,7 +186,7 @@ function performSearch(json){
    searchTxt=String(searchTxt);
    searchTxt=searchTxt.replace(/%20/g, " ");
    searchTxt=searchTxt.replace(/%22/g, "");
-  if (gigName==null&&bandName==null){
+  if ((gigName==null&&bandName==null)||(gigName=='null'&&bandName=='null')){
     if (mode=='findGigs'){
       $.get("/searchNoName", { 'mode': "findGigs", 'query': searchTxt}, result => {
   		    alert(`result is ${JSON.stringify(result)}`);
@@ -200,7 +200,7 @@ function performSearch(json){
          });
     }
   }
-  else if(gigName==null){
+  else if(gigName==null || gigName=="null"){
     bandName = String(bandName);
     bandName=bandName.replace(/%20/g, " ");
     bandName=bandName.replace(/%22/g, "");

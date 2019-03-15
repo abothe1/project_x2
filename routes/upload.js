@@ -4,6 +4,172 @@ const database = require('../database.js'),
       multer = require('multer'),
       fs = require('fs');
 
+//picUploader = multer({limits: {fileSize: 2000000 },dest:'static/uploads/'})
+
+/*
+
+router.post('/uploadPhoto', picUploader.single('picture'), (req, res)=>{
+  if (!req.session.key){
+    console.log("No logged in user tried to upload a file");
+    res.status(403).end();
+    return;
+  }
+  if (!req.body){
+    res.status(400).send('No body was sent in request');
+    console.log("No body sent for upload band photo");
+    return;
+  }
+  var {mode, file, idFor} = req.body;
+  var encImg = newImg.toString('base64');
+  var newItem = {
+      idFor: idFor,
+      type: mode,
+      creator: req.session.key,
+      contentType: req.file.mimetype,
+      size: req.file.size,
+      img: Buffer(encImg, 'base64')
+   };
+  if (!mode){
+    res.status(400).send('No mode was sent in request');
+    console.log("No mode sent for upload band photo");
+    return;
+  }
+  if (!req.file){
+    res.status(400).send('No file was sent in request');
+    console.log("No file sent for upload band photo");
+    return;
+  }
+
+  switch(mode){
+    case 'user':
+    database.connect(db=>{
+      db.db('uploads').collection('uploads').insertOne(newItem, (err3, result3)=>{
+          if (err3){
+            console.log("There was an error inserting image from: " + req.session.key + " Error: " + err3);
+            res.status(500).end();
+            return;
+          }
+          console.log(JSON.stringify(result3));
+
+          fs.remove(req.file.path, function(err) {
+            if (err) {
+              console.log("There was an error wuth fs remove Error: " + err);
+            }
+          });
+        console.log('inserted ID of picture jsut inserted is :' + result3['insertedId'])
+        var newvalues = {$set: {picture:result3['insertedId']}};
+        db.close();
+        db.db('users').collection('users').updateOne({'username':req.session.key}, newvalues, result4=>{
+          console.log("Result from uploads db: " + JSON.stringify(result3) + "Result from user db " + JSON.stringify(result4));
+          db.close();
+          res.status(200).send("Result from uploads db: " + JSON.stringify(result3) + "Result from user db " + JSON.stringify(result4));;
+        });
+      }
+    }, err=>{
+      console.log("There was an error connecting to mongo, err: " + err);
+      res.status(500).end();
+      return;
+    });
+    break;
+
+    case 'band':
+    database.connect(db=>{
+      db.db('uploads').collection('uploads').insertOne(newItem, (err3, result3)=>{
+          if (err3){
+            console.log("There was an error inserting image from: " + req.session.key + " Error: " + err3);
+            res.status(500).end();
+            return;
+          }
+          console.log(JSON.stringify(result3));
+
+          fs.remove(req.file.path, function(err) {
+            if (err) {
+              console.log("There was an error wuth fs remove Error: " + err);
+            }
+          });
+        console.log('inserted ID of picture jsut inserted is :' + result3['insertedId'])
+        var newvalues = {$set: {'picture':result3['insertedId']}};
+        db.close();
+        db.db('bands').collection('bands').updateOne({'creator':req.session.key}, newvalues, result4=>{
+          console.log("Result from uploads db: " + JSON.stringify(result3) + "Result from bands db " + JSON.stringify(result4));
+          db.close();
+          res.status(200).send("Result from uploads db: " + JSON.stringify(result3) + "Result from bands db " + JSON.stringify(result4));;
+        });
+      }
+    }, err=>{
+      console.log("There was an error connecting to mongo, err: " + err);
+      res.status(500).end();
+      return;
+    });
+
+    break;
+    case 'gig':
+    database.connect(db=>{
+      db.db('uploads').collection('uploads').insertOne(newItem, (err3, result3)=>{
+          if (err3){
+            console.log("There was an error inserting image from: " + req.session.key + " Error: " + err3);
+            res.status(500).end();
+            return;
+          }
+          console.log(JSON.stringify(result3));
+
+          fs.remove(req.file.path, function(err) {
+            if (err) {
+              console.log("There was an error wuth fs remove Error: " + err);
+            }
+          });
+        console.log('inserted ID of picture jsut inserted is :' + result3['insertedId'])
+        var newvalues = {$set: {'picture':result3['insertedId']}};
+        db.close();
+        db.db('gigs').collection('gigs').updateOne({'creator':req.session.key}, newvalues, result4=>{
+          console.log("Result from uploads db: " + JSON.stringify(result3) + "Result from gigs db " + JSON.stringify(result4));
+          db.close();
+          res.status(200).send("Result from uploads db: " + JSON.stringify(result3) + "Result from GIGS db " + JSON.stringify(result4));;
+        });
+      }
+    }, err=>{
+      console.log("There was an error connecting to mongo, err: " + err);
+      res.status(500).end();
+      return;
+    });
+    break;
+    default:
+    res.status(500).end()
+    return;
+    break;
+  }
+});
+
+router.get('/picture', (req, res)=>{
+  if (!req.query){
+    res.status(400).send('No body was sent in request');
+    console.log("No body sent for upload band photo");
+    return;
+  }
+  var {picID} = req.query;
+    database.connect(db=>{
+      db.db('uploads').collection('uploads').findOne({'_id':picID}, (err2, result2)=>{
+        if (err2){
+          console.log('Could not find pic with id : ' + picID + 'Error: ' + err2);
+          res.status(500).end();
+          return;
+        }
+        else{
+          console.log('RESULT FOR GET upload/pic with ID: ' + picID + 'is : ' + JSON.stringify(result2));
+          res.setHeader('content-type', results.contentType);
+          db.close();
+          res.status(200).send(result2.img.buffer);
+        }
+      });
+    }, err =>{
+      console.log("There was an error connecting to mongo, err: " + err);
+      res.status(500).end();
+      return;
+    });
+});
+*/
+
+
 const UPLOADS_VIRTUAL_BASE_DIR = '/uploads',
       UPLOADS_BASE_DIR = 'static' + UPLOADS_VIRTUAL_BASE_DIR;
 
@@ -20,7 +186,7 @@ router.get('/_upload', (req, res) => {
 			res.status(500).end();
 		}, () => {
 			console.warn(`Username find request from ${req.ip} (for ${id}) couldn't find a username`);
-			res.status(500).end();			
+			res.status(500).end();
 		})
 	}
 })
@@ -167,10 +333,4 @@ router.route('/settings/avatar')
 router.route('/settings/soundbyte')
 	.post(uploadUserFile('/soundbytes', 'soundbytes', 'soundbyte'))
 	.delete(deleteUserFile('/soundbytes', 'soundbytes', 'soundbyte'));
-
 } /* end module.exports */
-
-
-
-
-
