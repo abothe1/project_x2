@@ -811,6 +811,12 @@ pre {
   margin: auto;
 }
 
+.app-wrapper {
+  max-width: 900px;
+  padding: 0px 0px 10px 0px;
+  margin: 0;
+}
+
 .wrapper-2{
   max-width: 900px;
   padding: 0px 0px 10px 0px;
@@ -875,11 +881,59 @@ ul{
 }
 
 .carousel-frame{
-  z-index: 4;
+  z-index: 7;
   width: 200px;
   height: 200px;
   border-radius: none;
   position: absolute;
+}
+
+.result-overlay{
+  z-index: -10;
+  opacity: 0;
+  width: 200px;
+  height: 200px;
+  border-radius: 8px;
+  background-color: rgba(0,0,0,0.5);
+  position: absolute;
+  margin-top: 0px;
+  padding: 0;
+}
+
+.result-overlay-p{
+  width: 75%;
+  word-wrap: break-word;
+  margin: 0 auto;
+  margin-top: 34%;
+  font-size: 2vw;
+  text-align: center;
+}
+
+.result-name-div {
+  z-index: 6;
+  height: 50px;
+  width: 200px;
+  margin-top: 150px;
+  background-color: rgba(0,0,0,0.5);
+  position: absolute;
+  text-align: center;
+}
+
+.result-name-p{
+  color: white;
+}
+
+/*
+upcoming carousel
+*/
+
+.result-overlay-confirm-p{
+  width: 75%;
+  word-wrap: break-word;
+  margin: 0 auto;
+  margin-top: 10%;
+  font-size: 2vw;
+  text-align: center;
 }
 
 /** Carousel Controls **/

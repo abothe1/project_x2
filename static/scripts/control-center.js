@@ -17,6 +17,332 @@
 //must implement getting the session data;
 //var username = getusernamefromsession;
 
+function getBandInfo(bandID){
+  // var exampleBand =
+  // "{+
+  //   "'name':'Deadulus',"+
+  //   "'creator':'xxx',"+
+  //   "'address':'N27 W5230',"+
+  //   "'zipcode': 53012,"+
+  //   "'price': 33,"+
+  //   "'rating':null,"+
+  //   "'openDates':'[2019-01-26T14:22]'," +
+  //   "'application':'We are a good band',"+
+  //   "'lat': 100.1,"+
+  //   "'lng': 109.2,"+
+  //   "'audioSamples':[],"+
+  //   "'videoSamples':[],"+
+  //   "'picture':'../static/assets/Home/Art/9.jpeg',"+
+  //   "'appliedGigs':["+
+  //     "'gigneat23',"+
+  //     "'gigawesome12'"+
+  //   "],"+
+  //   "'categories':{"+
+  //     "'genres':[],"+
+  //     "'vibes':[],"+
+  //     "'insts':[],"+
+  //     "'gigTypes':[]"+
+  //   "}"+
+  // "}";
+
+  var exampleBand = {'name':'Deadalus', '_id': 'ab18110asadafds', 'creator':'xxx', 'address':"N27 W5230", 'zipcode': 53012, 'price': 26, 'rating':null, 'openDates':["2019-01-26T14:22"], 'application':"We are a good band", 'lat': 100.1, 'lng': 109.2, 'audioSamples':[], 'videoSamples':[], 'picture':"../static/assets/Home/Art/9.jpeg", 'appliedGigs':['gigneat23', 'gigawesome12'], 'categories':{'genres':[],'vibes':[],'insts':[],'gigTypes':[]}};
+
+  return exampleBand;
+}
+
+class Carousel{
+  constructor(obj,indicator){
+    switch(indicator){
+      case "applications":
+      // obj will contain band IDs
+      // BOTHE, you most likely have to fix all of this!!!!
+      // get applicant data
+      this.applicants = this.handleBands(obj);
+      // create generic carousel elements
+      // we can handle ID assignment later
+      this.wrapper = document.createElement("div");
+      this.wrapper.className = "app-wrapper";
+      this.carWrap = document.createElement("div");
+      this.carWrap.className = "jcarousel-wrapper";
+      this.carousel = document.createElement("div");
+      this.carousel.className = "jcarousel";
+      this.carList = document.createElement("ul");
+      // fill the list
+      for(var band in this.applicants.apps){
+        // container li
+        var itemId = "applicantions-carousel-li-"+this.applicants.apps[band]._id;
+        var newItem = document.createElement("li");
+        newItem.className = "carousel-li";
+        newItem.id = itemId;
+        // image
+        var newImg = document.createElement("img");
+        newImg.className = "carousel-img";
+        newImg.src = this.applicants.apps[band].picture;
+        // frame
+        var newFrame = document.createElement("img");
+        newFrame.className = "carousel-frame";
+        newFrame.src = "../static/assets/Control-Center/purplebox.png";
+        // overlay
+        var newOverlay = document.createElement("div");
+        newOverlay.className = "result-overlay";
+        var overlayID = "result-overlay-"+band;
+        newOverlay.setAttribute("id",overlayID);
+        var priceText = document.createElement("p");
+        priceText.className = "result-overlay-p";
+        priceText.innerHTML = "$"+this.applicants.apps[band].price+"/hr";
+        // nameplate
+        var nameDiv = document.createElement("div");
+        nameDiv.className = "result-name-div";
+        var nameP = document.createElement("p");
+        nameP.className = "result-name-p";
+        nameP.innerHTML = this.applicants.apps[band].name;
+        // appends
+        newItem.append(newImg);
+        newOverlay.append(priceText);
+        newItem.appendChild(newOverlay);
+        newItem.append(newFrame);
+        nameDiv.append(nameP);
+        newItem.append(nameDiv);
+        this.carList.append(newItem);
+        //event listener data preprocessing
+        newItem.newOverlay = newOverlay;
+        newItem._id = this.applicants.apps[band]._id;
+        this.AddOverlayEventListeners(newItem);
+      }
+      this.carousel.append(this.carList);
+      if(this.applicants.apps.length > 4){
+        // only add arrow controls if the carousel has enough data
+        this.prev = document.createElement("a");
+        this.prev.className = "jcarousel-control-prev";
+        this.prev.href = "#";
+        this.next = document.createElement("a");
+        this.next.className = "jcarousel-control-next";
+        this.next.href = "#";
+        this.carWrap.append(this.prev);
+        this.carWrap.append(this.next);
+      }
+      this.carWrap.append(this.carousel);
+      this.wrapper.append(this.carWrap);
+      break;
+      // upcoming gigs
+      case "upcoming":
+      this.wrapper = document.createElement("div");
+      this.wrapper.className = "wrapper";
+      this.carWrap = document.createElement("div");
+      this.carWrap.className = "jcarousel-wrapper";
+      this.carousel = document.createElement("div");
+      this.carousel.className = "jcarousel";
+      this.list = document.createElement("ul");
+      for(var gig in band.upcomingGigs){
+        var id = band.upcomingGigs[gig]._id;
+        var name = band.upcomingGigs[gig].name;
+        var newItem = document.createElement("li");
+        newItem.className = "carousel-li";
+        // img
+        var newImg = document.createElement("img");
+        newImg.className = "carousel-img";
+        newImg.src = band.upcomingGigs[gig].picture;
+        // frame
+        var newFrame = document.createElement("img");
+        newFrame.className = "carousel-frame";
+        newFrame.src = "../static/assets/Control-Center/purplebox.png";
+        // overlay
+        var newOverlay = document.createElement("div");
+        newOverlay.className = "result-overlay";
+        var overlayID = "result-overlay-"+gig;
+        newOverlay.setAttribute("id",overlayID);
+        var confirmP = document.createElement("p");
+        confirmP.className = "result-overlay-confirm-p";
+        confirmP.innerHTML = "confirm payment of $"+band.upcomingGigs[gig].payment+"/hr";
+        var confirmInput = document.createElement("input");
+        confirmInput.className = "gig-confirm-input";
+        // nameplate
+        var nameDiv = document.createElement("div");
+        nameDiv.className = "result-name-div";
+        var nameP = document.createElement("p");
+        nameP.className = "result-name-p";
+        nameP.innerHTML = band.upcomingGigs[gig].name;
+        newItem.append(newImg);
+        newOverlay.append(confirmP);
+        newOverlay.append(confirmInput);
+        newItem.appendChild(newOverlay);
+        newItem.append(newFrame);
+        nameDiv.append(nameP);
+        newItem.append(nameDiv);
+        this.list.append(newItem);
+        //event listener data preprocessing
+        newItem.newOverlay = newOverlay;
+        newItem._id = band.upcomingGigs[gig]._id;
+        this.AddOverlayEventListeners(newItem);
+      }
+      this.carousel.append(this.list);
+      if(band.upcomingGigs.length > 4){
+        // only add arrow controls if the carousel has enough data
+        this.prev = document.createElement("a");
+        this.prev.className = "jcarousel-control-prev";
+        this.prev.href = "#";
+        this.next = document.createElement("a");
+        this.next.className = "jcarousel-control-next";
+        this.next.href = "#";
+        this.carWrap.append(this.prev);
+        this.carWrap.append(this.next);
+      }
+      this.carWrap.append(this.carousel);
+      this.wrapper.append(this.carWrap);
+      break;
+      // applications
+      case "applications":
+      this.wrapper = document.createElement("div");
+      this.wrapper.className = "wrapper";
+      this.carWrap = document.createElement("div");
+      this.carWrap.className = "jcarousel-wrapper";
+      this.carousel = document.createElement("div");
+      this.carousel.className = "jcarousel";
+      this.list = document.createElement("ul");
+      for(var gig in band.appliedGigs){
+        var id = band.appliedGigs[gig]._id;
+        var name = band.appliedGigs[gig].name;
+        var newItem = document.createElement("li");
+        newItem.className = "carousel-li";
+        // img
+        var newImg = document.createElement("img");
+        newImg.className = "carousel-img";
+        newImg.src = band.appliedGigs[gig].picture;
+        // frame
+        var newFrame = document.createElement("img");
+        newFrame.className = "carousel-frame";
+        newFrame.src = "../static/assets/Control-Center/orangebox.png";
+        // overlay
+        var newOverlay = document.createElement("div");
+        newOverlay.className = "result-overlay";
+        var overlayID = "result-overlay-"+gig;
+        newOverlay.setAttribute("id",overlayID);
+        var priceText = document.createElement("p");
+        priceText.className = "result-overlay-p";
+        priceText.innerHTML = "$"+band.appliedGigs[gig].price+"/hr";
+        // nameplate
+        var nameDiv = document.createElement("div");
+        nameDiv.className = "result-name-div";
+        var nameP = document.createElement("p");
+        nameP.className = "result-name-p";
+        nameP.innerHTML = band.appliedGigs[gig].name;
+        newItem.append(newImg);
+        newOverlay.append(priceText);
+        newItem.appendChild(newOverlay);
+        newItem.append(newFrame);
+        nameDiv.append(nameP);
+        newItem.append(nameDiv);
+        this.list.append(newItem);
+        //event listener data preprocessing
+        newItem.newOverlay = newOverlay;
+        newItem._id = band.appliedGigs[gig]._id;
+        this.AddOverlayEventListeners(newItem);
+      }
+      this.carousel.append(this.list);
+      if(band.appliedGigs.length > 4){
+        // only add arrow controls if the carousel has enough data
+        this.prev = document.createElement("a");
+        this.prev.className = "jcarousel-control-prev";
+        this.prev.href = "#";
+        this.next = document.createElement("a");
+        this.next.className = "jcarousel-control-next";
+        this.next.href = "#";
+        this.carWrap.append(this.prev);
+        this.carWrap.append(this.next);
+      }
+      this.carWrap.append(this.carousel);
+      this.wrapper.append(this.carWrap);
+      break;
+      case past:
+      this.wrapper = document.createElement("div");
+      this.wrapper.className = "wrapper";
+      this.carWrap = document.createElement("div");
+      this.carWrap.className = "jcarousel-wrapper";
+      this.carousel = document.createElement("div");
+      this.carousel.className = "jcarousel";
+      this.list = document.createElement("ul");
+      for(var gig in band.finishedGigs){
+        var id = band.finishedGigs[gig]._id;
+        var name = band.finishedGigs[gig].name;
+        var newItem = document.createElement("li");
+        newItem.className = "carousel-li";
+        // img
+        var newImg = document.createElement("img");
+        newImg.className = "carousel-img";
+        newImg.src = band.finishedGigs[gig].picture;
+        // frame
+        var newFrame = document.createElement("img");
+        newFrame.className = "carousel-frame";
+        newFrame.src = "../static/assets/Control-Center/orangebox.png";
+        // overlay
+        var newOverlay = document.createElement("div");
+        newOverlay.className = "result-overlay";
+        var overlayID = "result-overlay-"+gig;
+        newOverlay.setAttribute("id",overlayID);
+        var priceText = document.createElement("p");
+        priceText.className = "result-overlay-p";
+        priceText.innerHTML = "$"+band.finishedGigs[gig].price+"/hr";
+        // nameplate
+        var nameDiv = document.createElement("div");
+        nameDiv.className = "result-name-div";
+        var nameP = document.createElement("p");
+        nameP.className = "result-name-p";
+        nameP.innerHTML = band.finishedGigs[gig].name;
+        newItem.append(newImg);
+        newOverlay.append(priceText);
+        newItem.appendChild(newOverlay);
+        newItem.append(newFrame);
+        nameDiv.append(nameP);
+        newItem.append(nameDiv);
+        this.list.append(newItem);
+        //event listener data preprocessing
+        newItem.newOverlay = newOverlay;
+        newItem._id = band.finishedGigs[gig]._id;
+        this.AddOverlayEventListeners(newItem);
+      }
+      this.carousel.append(this.list);
+      if(band.finishedGigs.length > 4){
+        // only add arrow controls if the carousel has enough data
+        this.prev = document.createElement("a");
+        this.prev.className = "jcarousel-control-prev";
+        this.prev.href = "#";
+        this.next = document.createElement("a");
+        this.next.className = "jcarousel-control-next";
+        this.next.href = "#";
+        this.carWrap.append(this.prev);
+        this.carWrap.append(this.next);
+      }
+      this.carWrap.append(this.carousel);
+      this.wrapper.append(this.carWrap);
+      break;
+    }
+  }
+
+  AddOverlayEventListeners(obj){
+    obj.addEventListener("mouseover",function(){
+      obj.newOverlay.style.zIndex = "8";
+      obj.newOverlay.style.opacity = "1.0";
+    },false);
+    obj.addEventListener("mouseout",function(){
+      obj.newOverlay.style.zIndex = "-8";
+      obj.newOverlay.style.opacity = "0";
+    },false);
+    obj.addEventListener("click",function(){
+      console.log(obj._id);
+    },false);
+  }
+
+  handleBands(idArr){
+    var appProxy = {
+      "apps": []
+    };
+    for(var bandID in idArr){
+      var aBand = getBandInfo(idArr[bandID]);
+      appProxy["apps"].push(aBand);
+    }
+    return appProxy;
+  }
+}
 
 class BookedGig {
 
@@ -175,6 +501,10 @@ class OpenGig{
     this.gigConfirm.href = "#";
     this.gigConfirm.className = "open-gig-confirm";
     this.gigConfirm.innerHTML = "confirm changes";
+    this.gigAppH = document.createElement("h3");
+    this.gigAppH.innerHTML = "applicants";
+    this.applicantCarousel = new Carousel(gig.applications,"applications");
+    this.carEl = this.applicantCarousel.wrapper;
 
     // tier 3
     this.gigImg.append(this.title);
@@ -204,9 +534,43 @@ class OpenGig{
     this.info.append(this.gigLP);
     // tier 1
     this.container.append(this.info);
+    this.container.append(this.gigAppH);
+    this.container.append(this.carEl);
     // tier 0
     openGigs.append(this.container);
+    setupAction();
   }
+}
+
+
+function yellow(){
+  var application =
+  "{"+
+    "'name':'Deadulus',"+
+    "'_id': '75757399adlafj3',"+
+    "'creator':'xxx',"+
+    "'address':'N27 W5230',"+
+    "'zipcode': 53012,"+
+    "'price': 33,"+
+    "'rating':null,"+
+    "'openDates':'[2019-01-26T14:22]'," +
+    "'application':'We are a good band',"+
+    "'lat': 100.1,"+
+    "'lng': 109.2,"+
+    "'audioSamples':[],"+
+    "'videoSamples':[],"+
+    "'picture':'no jpeg yet',"+
+    "'appliedGigs':["+
+      "'gigneat23',"+
+      "'gigawesome12'"
+    "],"+
+    "'categories':{"+
+      "'genres':[],"+
+      "'vibes':[],"+
+      "'insts':[],"+
+      "'gigTypes':[]"+
+    "}"+
+  "}";
 }
 
 function testOpenGigs(){
@@ -215,6 +579,7 @@ function testOpenGigs(){
     address: "4487 big street, St. Louis, MO 63112",
     picture: "../static/assets/Home/Art/6.jpeg",
     description: "we are a very cool venue, looking for jazzy vibes and cool cats :)",
+    applications: ["bandID1","bandID2","bandID3","bandID4","bandID5"],
     bandFor: {
       name: "king gizzard and the lizard wizard",
       picture: "../static/assets/Home/Art/9.jpeg"
@@ -223,7 +588,13 @@ function testOpenGigs(){
   var testingOpen = new OpenGig(aGig);
 }
 
+class BandSection{
+  constructor(band, identifier){
+    switch(identifier){
 
+    }
+  }
+}
 
 function updateBand(id, query){
   $.post('/updateBand', {'_id':id, 'query':query}, result =>{
@@ -260,8 +631,9 @@ function getUserInfo(user){
       createWebPage(user);
   	});
 	});
-
 }
+
+
 function createWebPage(user){
   loadBands(user);
   //loadGigs(user);
@@ -294,282 +666,13 @@ function init(){
   // then, fill the open gigs section
   testOpenGigs();
 
-
-
-
-
-  // var upcoming1 = {
-  //   id: "up1"
-  // };
-  // var upcoming2 = {
-  //   id: "up2"
-  // };
-  //
-  // var application1 = {
-  //   id: "app1"
-  // };
-  //
-  // var application2 = {
-  //   id: "app2"
-  // };
-  //
-  // var past1 = {
-  //   id: "p1"
-  // };
-  //
-  // var past2 = {
-  //   id: "p2"
-  // };
-  //
-  // var band0 = {
-  //   name: "electric orchestra",
-  //   id: "band-0",
-  //   upcoming: [upcoming1, upcoming2, upcoming1, upcoming2, upcoming1],
-  //   applications: [application1, application2],
-  //   past: [past1, past2]
-  // };
-  //
-  // var user = {
-  //   band: [band0]
-  // };
-  // console.log(band0.name);
-  //loadBands(user);
   // getUsername();
 }
 
-function loadBands(user){
-  console.log("got in load bands");
-  console.log("user is: " + JSON.stringify(user));
-  for (var i in user['bands']){
-    var band = user.bands[i];
-    console.log('band is: ' + JSON.stringify(band));
-    console.log(band.name);
-    buildBandSection(band);
-  }
-}
 
-// Managing Band data
-
-function makeTitle(string){
-  return "<p class='title-text'>"+string+"</p>";
-}
-
-function makeDivWithClassAndId(newClass, id){
-    return "<div class='"+newClass+"' id='"+id+"'></div>";
-}
-
-function makeListWithId(id){
-  return "<ul id='"+id+"'></ul>";
-}
-
-function makeListItemWithId(id){
-  return "<li class='carousel-li' id='carousel-li-"+id+"'></li>";
-}
-
-function makeCarouselWithId(id, band, section){
-  // Create wrapper divs & the <ul>
-  switch(section){
-    //
-    // upcoming section
-    //
-    case "upcoming":
-    var wrapperString = makeDivWithClassAndId("wrapper","wrapper-"+id);
-    var $wrapper = $(wrapperString);
-    var carouselWrapperString = makeDivWithClassAndId("jcarousel-wrapper","jcarousel-wrapper-"+id);
-    var $carouselWrapper = $(carouselWrapperString);
-    var carouselString = makeDivWithClassAndId("jcarousel","jcarousel-"+id);
-    var $carousel = $(carouselString);
-    var listString = makeListWithId("list-"+id);
-    var $list = $(listString);
-
-    for(var gig in band.upcomigGigs){
-      console.log("gig: "+gig);
-      var gigId = gig.name;
-      var newItemString = makeListItemWithId(gigId);
-      console.log("li string: "+newItemString);
-      //<li class='carousel-li' id='carousel-li-undefined'></li>
-      var testNewItem = "<li class='carousel-li' id='carousel-li-"+gig.name+"'></li>";
-      var $newItem = $("<li></li>");
-      // placeholder images, can be generalized via separate functions.
-      var $newImg = $("<img class='carousel-img' src='../static/assets/Home/Art/3.jpeg' alt='Image 3' />");
-      var $newFrame = $("<img class='carousel-frame' src='../static/assets/Control-Center/purplebox.png' alt='frame' />");
-      $newItem.append($newImg);
-      $newItem.append($newFrame);
-      $list.append(($newItem));
-    }
-    $wrapper.append($carouselWrapper);
-    $carouselWrapper.append($carousel);
-    $carousel.append($list);
-    var $prev = $("<a href='#' class='jcarousel-control-prev'></a>")
-    var $next = $("<a href='#' class='jcarousel-control-next'></a>")
-    $carousel.after($prev, $next);
-    //$("#contacts-sidebar").after($wrapper);
-    $("#main-content-wrapper").append($wrapper);
-    break;
-    //
-    // applications section
-    //
-    case "applications":
-    var wrapperString = makeDivWithClassAndId("wrapper","wrapper-"+id);
-    var $wrapper = $(wrapperString);
-    var carouselWrapperString = makeDivWithClassAndId("jcarousel-wrapper","jcarousel-wrapper-"+id);
-    var $carouselWrapper = $(carouselWrapperString);
-    var carouselString = makeDivWithClassAndId("jcarousel","jcarousel-"+id);
-    var $carousel = $(carouselString);
-    var listString = makeListWithId("list-"+id);
-    var $list = $(listString);
-    for(var application in band.appliedGigs){
-      var appId = gig.id;
-      var newItemString = makeListItemWithId(appId);
-      var $newItem = $(newItemString);
-      // placeholder images, can be generalized via separate functions.
-      var $newImg = $("<img class='carousel-img' src='../static/assets/Home/Art/3.jpeg' alt='Image 3'>");
-      var $newFrame = $("<img class='carousel-frame' src='../static/assets/Control-Center/purplebox.png' alt='frame'>");
-      $newItem.append($newImg);
-      $newItem.append($newFrame);
-      $list.append($newItem);
-    }
-    $wrapper.append($carouselWrapper);
-    $carouselWrapper.append($carousel);
-    $carousel.append($list);
-    var $prev = $("<a href='#' class='jcarousel-control-prev'></a>")
-    var $next = $("<a href='#' class='jcarousel-control-next'></a>")
-    $carousel.after($prev, $next);
-    //$("#contacts-sidebar").after($wrapper);
-    $("#main-content-wrapper").append($wrapper);
-    break;
-    //
-    // past section
-    //
-    case "past":
-    var wrapperString = makeDivWithClassAndId("wrapper","wrapper-"+id);
-    var $wrapper = $(wrapperString);
-    var carouselWrapperString = makeDivWithClassAndId("jcarousel-wrapper","jcarousel-wrapper-"+id);
-    var $carouselWrapper = $(carouselWrapperString);
-    var carouselString = makeDivWithClassAndId("jcarousel","jcarousel-"+id);
-    var $carousel = $(carouselString);
-    var listString = makeListWithId("list-"+id);
-    var $list = $(listString);
-    for(var show in band.finishedGigs){
-      var showId = show.name;
-      var newItemString = makeListItemWithId(showId);
-      var $newItem = $(newItemString);
-      // placeholder images, can be generalized via separate functions.
-      var $newImg = $("<img class='carousel-img' src='../static/assets/Home/Art/3.jpeg' alt='Image 3'>");
-      var $newFrame = $("<img class='carousel-frame' src='../static/assets/Control-Center/purplebox.png' alt='frame'>");
-      $newItem.append($newImg);
-      $newItem.append($newFrame);
-      $list.append($newItem);
-    }
-    $wrapper.append($carouselWrapper);
-    $carouselWrapper.append($carousel);
-    $carousel.append($list);
-    var $prev = $("<a href='#' class='jcarousel-control-prev'></a>")
-    var $next = $("<a href='#' class='jcarousel-control-next'></a>")
-    $carousel.after($prev, $next);
-    //$("#contacts-sidebar").after($wrapper);
-    $("#main-content-wrapper").append($wrapper);
-    break;
-  }
-  setupAction();
-}
-
-function buildBandSection(band){
-  console.log(band.name);
-  var elementId = "band-"+band.name;
-  var titleString = makeTitle(band.name);
-  var $bandTitle = $(titleString);
-  $("#main-content-wrapper").append($bandTitle);
-  if (band.upcomingGigs.length > 0){
-    var upcomingTitleTag = makeTitle("Upcoming");
-    var $upcomingTitle = $(upcomingTitleTag);
-    $("#main-content-wrapper").append($upcomingTitle);
-    var upcomingId = elementId+"-upcoming";
-    makeCarouselWithId(upcomingId, band, "upcoming");
-  }
-  if (band.appliedGigs.length > 0){
-    var applicationsTitleTag = makeTitle("Applications");
-    var $applicationsTitle = $(applicationsTitleTag);
-    $("#main-content-wrapper").append($applicationsTitle);
-    var applicationsId = elementId+"-applications";
-    makeCarouselWithId(applicationsId, band, "applications");
-
-  }
-  if (band.finishedGigs.length > 0){
-    var pastTitleTag = makeTitle("Previous Shows");
-    var $pastTitle = $(pastTitleTag);
-    $("#main-content-wrapper").append($pastTitle);
-    var pastId = elementId+"-past";
-    makeCarouselWithId(pastId, band, "past");
-  }
-  $("#main-content-wrapper").append($("<br><br><br>"));
-}
-
-// Managing Event Hosting Data
-
-function buildEventHostingSection(event){
-
-}
-
-function buildApplicants(applicants){
-
-}
-
-function buildPastHostedGigs(pastGigs){
-
-}
-
-function buildCarouselUpcoming(data){
-  // Create wrapper divs & the <ul>
-  var $wrapper = $("<div class='wrapper'></div>"),
-  $carouselWrapper = $("<div class='jcarousel-wrapper'></div>"),
-  $carousel = $("<div class='jcarousel'></div>"),
-  $list = $("<ul></ul>");
-
-  $wrapper.append($carouselWrapper);
-  $carouselWrapper.append($carousel);
-  $carousel.append($list);
-
-  // fill the <ul>
-  var i = 6;  // number of things to add
-  var stepper = 0;
-  while(i > 0){
-    var $newItem = $("<li class='carousel-li'></li>");
-    var $newImg = $("<img class='carousel-img' src='/static/assets/Home/Art/3.jpeg' alt='Image 3'>");
-    $newItem.append($newImg);
-    switch(stepper){
-      case 0:
-        var $newFrame = $("<img class='carousel-frame' src='/static/assets/Control-Center/redbox.png' alt='frame'>");
-        stepper++;
-        break;
-      case 1:
-        var $newFrame = $("<img class='carousel-frame' src='/static/assets/Control-Center/pinkbox.png' alt='frame'>");
-        stepper++;
-        break;
-      case 2:
-        var $newFrame = $("<img class='carousel-frame' src='/static/assets/Control-Center/orangebox.png' alt='frame'>");
-        stepper++;
-        break;
-      case 3:
-        var $newFrame = $("<img class='carousel-frame' src='/static/assets/Control-Center/purplebox.png' alt='frame'>");
-        stepper=0;
-        break;
-    }
-    $newItem.append($newFrame);
-    $list.append($newItem);
-    i--;
-  }
-  var $prev = $("<a href='#' class='jcarousel-control-prev'></a>")
-  var $next = $("<a href='#' class='jcarousel-control-next'></a>")
-  $carousel.after($prev, $next);
-  //$("#contacts-sidebar").after($wrapper);
-  $("#main-content-wrapper").append($wrapper);
-  setupAction();
-}
 
 function setupAction(){
   var jcarousel = $('.jcarousel');
-
   jcarousel
       .on('jcarousel:reload jcarousel:create', function () {
           var carousel = $(this),
@@ -613,28 +716,6 @@ function setupAction(){
               return '<a href="#' + page + '">' + page + '</a>';
           }
       });
-
-  $('.carousel-img').hover(
-    //Handler In
-    function(){
-      console.log("enter-img");
-    },
-    //Handler Out
-    function(){
-      console.log("exit-img");
-    }
-  );
-
-  $('.carousel-li').hover(
-    //Handler In
-    function(){
-      console.log("enter-li");
-    },
-    //Handler Out
-    function(){
-      console.log("exit-li");
-    }
-  );
 }
 
 
