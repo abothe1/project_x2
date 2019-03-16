@@ -3,6 +3,7 @@ module.exports = router => {
 const database = require('../database.js'),
       matching = require('../algs/matching.js');
 console.log(matching);
+var ObjectId = require('mongodb').ObjectID;
 
 router.get('/search', (req, res) => {
   console.log("req is search is : " + req);
@@ -53,35 +54,7 @@ router.get('/search', (req, res) => {
 	}
 });
 
-router.post('/gig', (req, res) => {
-  console.log(req);
-  console.log("got into post gigs on router");
-	var {name, creator, address, price, startDate, endDate, applications, lat, lng, categories} = req.body;
-	if (!req.body) {
-		 res.status(400).send('No body sent').end();
-	}
-//  gig['isFilled']=true;
-//  gig['bandFor']='none';
-	console.log("Received body for gig: " + req.body.name);
 
-	database.connect(db => {
-		let gigs = db.db('gigs').collection('gigs');
-		gigs.insertOne({'name' : name, 'creator' : creator, 'address': address, 'price': price, 'startDate' : startDate, 'endDate' : endDate, 'applications' : applications, 'lat' : lat, 'lng':lng, 'categories' : categories, 'isFilled':true, 'bandFor' : 'none' }, (err, result) => {
-			if (err){
-				console.warn("Couldnt get insert gig into database: " + err);
-				res.status(500).end();
-				db.close();
-			} else {
-				console.log("gig inserted");
-				res.status(200).end();
-				db.close();
-			}
-		});
-	}, err => {
-		console.warn("Couldn't connect to database: " + err);
-		res.status(500).end();
-	});
-});
 
 router.get('/current_events', (req, res) => {
   database.connect(db => {
@@ -104,44 +77,10 @@ router.get('/current_events', (req, res) => {
   });
 });
 
-router.post('/band', (req, res) => {
-  console.log(req);
-  console.log("got into post gigs on router");
-	var {name, creator, address, zipcode, price, rating, openDates, application, lat, lng, audioSamples, videoSamples, picture, categories} = req.body;
-	if (!req.body) {
-		 res.status(400).send('No body sent').end();
-	}
-//  gig['isFilled']=true;
-//  gig['bandFor']='none';
-	console.log("Received body for band: " + req.body.name);
 
-	database.connect(db => {
-		let bands = db.db('bands').collection('bands');
-		bands.insertOne({'name' : name, 'creator':creator, 'address': address, 'zipcode':zipcode, 'price': price, 'rating':rating, 'openDates':openDates, 'applicationText':application, 'lat' : lat, 'lng':lng, 'categories' : {'genres':[],'vibes':[],'insts':[],'gigTypes':[]}, 'appliedGigs':[], 'upcomingGigs':[], 'finishedGigs':[], 'audioSamples':audioSamples, 'videoSamples':videoSamples, 'picture': picture}, (err, result) => {
-			if (err){
-				console.warn("Couldnt get insert band into database: " + err);
-				res.status(500).end();
-				db.close();
-			} else {
-				console.log("band inserted with cats as : " + JSON.stringify(categories));
 
-				res.status(200).end();
-				db.close();
-			}
-		});
-	}, err => {
-		console.warn("Couldn't connect to database: " + err);
-		res.status(500).end();
-	});
-});
-
-router.get('/search_page', (req,res) => {
-  res.render('search.html');
-});
 
 router.get('/getBands', (req, res)=>{
-
-
   if (! req.body){
     console.log("No req body sent, in get bands And Gigs for user");
     res.status(200).send('No req body sent');

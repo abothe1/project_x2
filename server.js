@@ -85,9 +85,11 @@ router.get('/index', (_, res) => { res.render('index.html'); });
 require('./routes/auth.js')(router, app); // login, register, logout
 require('./routes/upload.js')(router, app); // uploads and downlaods data
 require('./routes/search.js')(router, app); //searches and posting
+require('./routes/create.js')(router, app); //  for adding new bands and gigs
 require('./routes/update.js')(router, app); // for updating gigs and bands
 require('./routes/navigation.js')(router, app); // for navigating the website
 require('./routes/sessionInfo.js')(router, app); // for getting info in and out of sessions
+require('./routes/interactions.js')(router, app); // for allowing bands and gigs to interact
 
 //for routing messaing and emiting the message:
 
@@ -104,7 +106,6 @@ router.post('/messages', (req, res)=>{
       if (err2){
         consoel.log("There was an error adding the message from " + senderID + "Error was: " + err2);
         res.status(500).end();
-        db.close();
       }
       else{
         console.log("Message with body: "+ body +"was instered into db");
@@ -117,7 +118,6 @@ router.post('/messages', (req, res)=>{
     });
   }, err=>{
     console.log("Couldn't connect to mongo with error: "+err);
-    db.close();
     res.status(500).end();
   });
 

@@ -29,7 +29,7 @@ getLocation();
 getCurrentEvents();
 var categories = {};
 var debugLayout = false;
-
+var isLoggedIn=false;
 //setInterval(getCurrentEvents, 60000);
 $.getScript('assets/banks.js', function(data, status)
 {
@@ -344,55 +344,15 @@ function RandImg(){
 })(jQuery);
 
 //classes
-class User{
-	constructor(){
-		this.name="";
-		this.password="";
-		this.type="";
-		this.bandID="";
-		this.events=[];
-		this.email="";
-		this.phone="";
-		this.sessionID="";
-		this.lat=0.0;
-		this.lng=0.0;
-		this.address="";
-	}
-}
+
 class Sample{
 	constructor(pic,audio){
 		this.pic=pic;
 		this.audio=audio;
 	}
 }
-class Band{
-	constructor(json){
-		this.memebers=json["members"];
-		this.name=json["name"];
-		this.id=json["id"];
-		this.gigs=json["gigs"];
-		this.instruments=json["instruments"];
-		this.rating=json["rating"];
-		this.genres=json["genres"];
-		this.samples=json["samples"]
-		this.profPic=json["profPic"];
-	}
 
-}
-class Gig{
-	constructor(json){
-		this.date=json["date"];
-		this.price=json["price"];
-		this.isOpen=json["open"];
-		this.id=json["id"];
-		this.bandID=json["bandID"];
-		this.posterID=json["posterID"];
-		this.genres=json["genres"];
-		this.type=json["type"];
-		this.isDone=json["done"];
-		this.isAlc=json["isAlc"];
-	}
-}
+
 
 //global vars
 var samples = [];
@@ -556,7 +516,13 @@ function diff_minutes(dt2, dt1) {
 			password: $("#loginPassword").val(),
 		}
     $.post('/login', content, res=>{
-      alert("Got res from login herre it is: " + JSON.stringify(res));
+      console.log("Got res from login herre it is: " + JSON.stringify(res));
+      if(res.success){
+        isLoggedIn=true;
+      }
+      else{
+        isLoggedIn=false;
+      }
     });
 	}
 
@@ -572,4 +538,9 @@ function diff_minutes(dt2, dt1) {
     $.post('/register', content, res=>{
       alert(JSON.stringify(res));
     });
+  }
+  function stringToDate(str){
+    var date = new Date(str);
+    console.log("in string to date and adate is " + date);
+    return date;
   }

@@ -76,7 +76,7 @@
    "upbeat","vibrant","vocal","high-volume","low-volume","loud","soft","hard","hardcore","west-coast","east-coast","chopper","vibes",
    "angry","melancholy","blue","new","old","young","difuse","nasty","raunchy","ridiculous","real","dumb"
    ,"evil","godly","zealous","functional","stupid","purple","green","gnarly","fun","forceful","fucking","fuck","fucked up","crazy","sloppy","disgusting"];
-  //this is so i can commit;
+
   var genreMult=1;
   var ratingMult=1;
   var instMult=1;
@@ -88,10 +88,12 @@
   var timeEqualizer=1000;
   var priceEQ=10;
   var minQueryMatches=3;
+  var ObjectId = require('mongodb').ObjectID;
 module.exports = {
+
   findGigsForBand : function findGigsForBand(myBandName, queryStr, db, errCb, cbOk){
     console.log("on algs ppage searching for bands and band naem is : " + myBandName);
-     db.db('bands').collection('bands').findOne({name:myBandName}, function(err, result){
+     db.db('bands').collection('bands').findOne({'_id':ObjectId(myBandName)}, function(err, result){
       if (err){
         console.log("there was an error getting " + myBandName + " out of the db " + err);
         errCB(err);
@@ -159,23 +161,14 @@ module.exports = {
                 var priceDiff=Math.abs((theGig.price-myBand.price));
                 var priceScore= (-(priceDiff/priceEQ)*priceMult);
                 console.log("pirce score is : " + priceScore);
+                /*
                 var diffX=Math.pow((theGig.lat-myBand.lat),2);
                 var diffY=Math.pow((theGig.lng-myBand.lng),2);
                 var distance = Math.pow((diffX+diffY),0.5);
-                var distScore = -(distance*distMult);
+                */
+                var distScore = scoreOnDist(myBand.maxDist, theGig.lat, theGig.lng, myBand.lat, myBand.lng);
                 console.log("dist score is : " + distScore);
-                var dateDiffs=[];
-                for (date in myBand.openDates){
-                  var timeDiff=diff_minutes(myBand.openDates[0],theGig.startDate);
-                  dateDiffs.push(timeDiff);
-                }
-                var minDiff = dateDiffs[0];
-                for (diff in dateDiffs){
-                  if (diff < minDiff) {
-                    minDiff = diff;
-                  }
-                }
-
+                var minDiff = scoreOnDates(myBand.openDates, theGig.date, theGig.startTime, theGig.endTime);
                 var timeDiff = minDiff / timeEqualizer;
                 var timeScore= -timeDiff*timeMult;
                 console.log("time score is : " + timeScore);
@@ -205,7 +198,7 @@ module.exports = {
    console.log("got in find bands fro gig on alg page");
    console.log("querystr is :" + queryStr);
    console.log("gig searching for bands name is" + myGigName);
-    var myGig = db.db('gigs').collection('gigs').findOne({'name':myGigName}, function(err, result){
+    var myGig = db.db('gigs').collection('gigs').findOne({'_id':ObjectId(myGigName)}, function(err, result){
       if (err){
         console.log("there was an error finding the gig " + myGigName + "the err was: " + err);
         errCB(err);
@@ -251,17 +244,7 @@ module.exports = {
               var priceDiff = Math.abs( (myGig.price-  theBand.price));
               console.log("price diff in find bands for gig is: " + priceDiff);
               var priceScore = (-(priceDiff/priceEQ) * priceMult);
-              var dateDiffs = [];
-              for (date in theBand.openDates){
-                var timeDiff=diff_minutes(theBand.openDates[0],myGig.startDate);
-                dateDiffs.push(timeDiff);
-              }
-              var minDiff = dateDiffs[0];
-              for (diff in dateDiffs){
-                if (diff < minDiff){
-                  minDiff=diff;
-                }
-              }
+              var minDiff = scoreOnDates(theBand.openDates, myGig.date, myGig.startTime, myGig.endTime);
               var timeDiff = (minDiff) / timeEqualizer;
               var timeScore = -timeDiff * timeMult;
               var ratingScore = theBand.rating*ratingMult;
@@ -437,6 +420,74 @@ module.exports = {
      return dict;
   }
 
+  function scoreOnDates(bandOpenDates, gigDate, gigStartTime, gigEndTime, gigDay){
+    if (!bandOpenDates || !gigDate || !gigStartTime || !gigEndTime || !gigDay){
+      return 0;
+    }
+    var totalDiff = 5000;
+    var dayMatches = false;
+    var diffs = [];
+    for (var key in bandOpenDates){
+      var bandDay = bandOpenDates[key][0];
+      if (!(bandDay == gayDay)){
+        continue;
+      }
+      dayMatches = true;
+      var dateStartGig = new Date();
+      var dateEndGig = new Date();
+      var dateStartBand = new Date();
+      var dateEndBand = new Date();
+      dateStartGig.setTime(gigStartTime);
+      dateStartBand.setTime(bandOpenDates[key][1]);
+      dateEndGig.setTime(gigEndTime);
+      dateEndBand.setTime(bandOpenDates[key][2]);
+      var startDiff = diff_minutes(dateStartGig,dateStartBand);
+      var endDiff = diff_minutes(dateEndGig,dateEndBand);
+      diffs.push(startDiff+endDiff);
+    }
+    if (dayMatches){
+      var ans = diffs[0];
+      for (var dif in diffs){
+        if(diffs[dif]<)ans{
+          ans=diffs[dif];
+        }
+      }
+      return ans;
+    }
+    else{
+      return totalDiff;
+    }
+
+  }
+
+  function scoreOnDist (myBandMaxDist, lat1, lng1, lat2, lon2){
+    //negate final
+
+    if (myBandMaxDist){
+      return 0;
+    }
+    function toRad(x) {
+      return x * Math.PI / 180;
+    }
+    var R = 6371; // km
+    var x1 = lat2 - lat1;
+    var dLat = toRad(x1);
+    var x2 = lon2 - lon1;
+    var dLon = toRad(x2)
+    var a = Math.sin(dLat / 2) * Math.sin(dLat / 2) +
+      Math.cos(toRad(lat1)) * Math.cos(toRad(lat2)) *
+      Math.sin(dLon / 2) * Math.sin(dLon / 2);
+    var c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
+    var d = R * c;
+
+    d /= 1.60934;
+    if (myBandMaxDist<d){
+      return -d*100;
+    }
+    else{
+      return -d;
+    }
+  }
 
 
 //call this for a band searching for a gig, myBand is a json band and

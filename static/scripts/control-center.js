@@ -34,6 +34,7 @@ function getUsername(){
     alert(JSON.stringify(res));
     var user = res;
     id = user['_id'];
+    $('#userNameHeader').html(user['username']);
     socket.on(id, (msg)=>{
       alert('recieved message here it is: ' + JSON.stringify(msg));
     });
@@ -417,6 +418,300 @@ contactsButton.addEventListener("click",function(){
   }
   open = !open;
 });
+//Schedule stuff//
+var timesRowAdded=0;
+var timesRowDeleted=0;
+var weeklySched = {'0':['Sunday']};
+function addRow() {
+  console.log('Add row was cicked');
+  timesRowAdded=timesRowAdded+1;
+  var rowOn = timesRowAdded-timesRowDeleted;
+  console.log('rowOn is ' + rowOn);
+
+  var tableID = "new-band-schedule";
+  var table = document.getElementById(tableID);
+  if (!table) return;
+  var newRow = table.rows[1].cloneNode(true);
+  // Now get the inputs and modify their names
+  var inputs = newRow.getElementsByTagName('input');
+  var sel = newRow.getElementsByTagName('select')[0];
+  sel.name=rowOn;
+  console.log('Sel in add row is: ')
+  console.log(sel);
+  for (var input in inputs){
+    //input.setAttribute=('name',rowOn.toString());
+    inputs[input].name = rowOn.toString();
+    console.log('Input Name is : ');
+    console.log(inputs[input].name);
+  }
+  // Add the new row to the tBody (required for IE)
+  var tBody = table.tBodies[0];
+//  newRow.setAttribute('name', rowOn.toString();)
+//  newRow.name = rowOn.toString();
+  console.log('Name is : ');
+//  console.log(sel.name);
+  weeklySched[rowOn]=[];
+  tBody.insertBefore(newRow, tBody.lastChild);
+}
+
+function deleteRow(el) {
+  timesRowDeleted=timesRowDeleted+1;
+
+  // while there are parents, keep going until reach TR
+  while (el.parentNode && el.tagName.toLowerCase() != 'tr') {
+    el = el.parentNode;
+  }
+
+  // If el has a parentNode it must be a TR, so delete it
+  // Don't delte if only 3 rows left in table
+  if (el.parentNode && el.parentNode.rows.length > 1) {
+    el.parentNode.removeChild(el);
+  }
+}
+//Band creation section:
+function selectOnChange(sel){
+  console.log("selectOnSubmit:  sel isss");
+  console.log(sel);
+  console.log(sel.value);
+  console.log(sel.name);
+  if(!sel.name){
+    console.log("Got in if");
+    weeklySched['0'][0]=sel.value;
+  }
+  else{
+    weeklySched[sel.name][0]=sel.value;
+  }
+
+}
+function startTimeChange(time){
+  if (!time.name){
+    weeklySched['0'][1]=time.value;
+  }
+  else{
+    weeklySched[time.name][1]=time.value;
+  }
+
+  console.log('startTimeChange');
+  console.log(time);
+  console.log(time.name);
+}
+function endTimeChange(time){
+  if (!time.name){
+    weeklySched['0'][2]=time.value;
+  }
+  else{
+    weeklySched[time.name][2]=time.value;
+  }
+  console.log('endTimeChange');
+  console.log(time);
+  console.log(time.name);
+  console.log("Weekly Sched is :" + JSON.stringify(weeklySched));
+}
+function createBand(){
+  var myNewBand = {
+    'name': $('#new-band-title').val(),
+    'zipcode':$('#new-band-zip').val(),
+    'maxDist':$('#new-band-dist').val(),
+    'price': $('#new-band-pay').val(),
+    'picture':$('#new-band-pic').val(),
+    'audioSample':$('#new-band-clip').val(),
+    'audioPic':$('#new-band-clip-pic').val(),
+    'description':$('#new-band-description').val(),
+    'openDates':weeklySched
+  };
+  for (var key in myNewBand){
+    console.log(myNewBand[key]);
+    console.log(key);
+    if (myNewBand[key]==null || myNewBand[key]==" " || myNewBand[key]==""){
+
+      alert("Sorry, you must fill out the enitre form with non-empty values");
+      return;
+    }
+  }
+  convertZipBand(myNewBand);
+
+}
+
+function sendBandToDB(lat, lng, myBand){
+  var name = myBand['name'];
+  var zipcode = myBand['zipcode'];
+  var maxDist = myBand['maxDist'];
+  var price = myBand['price'];
+  var picture = myBand['picture'];
+  var audioSample = myBand['audioSample'];
+  var audioPic = myBand['audioPic'];
+  var description = myBand['description'];
+  var openDates = myBand['openDates'];
+  var qCategories = parseQueryString(description);
+
+  $.post('/band', {'name':name, 'zipcode':zipcode, 'maxDist':maxDist, 'price':price, 'picture':picture, 'audioSample':audioSample,'audioPic':audioPic,'description':description, 'openDates':openDates, 'categories':qCategories}, result=>{
+    alert(result);
+  });
+}
+
+function postGig(){
+  cleanGigInput();
+}
+/*
+<input id="new-gig-title" class="modal-input" type="text" placeholder="enter a title for your new gig"></input>
+<label for="new-gig-date">date</label>
+<input id="new-gig-date" class="modal-input" type="date"></input>
+<label for="new-gig-start-time">from</label>
+<input id="new-gig-start-time" class="modal-input" type="time"></input>
+<label for="new-gig-end-time">to</label>
+<input id="new-gig-end-time" class="modal-input" type="time"></input>
+<label for="new-gig-loc">location</label>
+<input id="new-gig-loc" class="modal-input" type="text"></input>
+<label for="new-gig-pay">pay rate ($/hr)</label>
+<input id="new-gig-pay" class="modal-input" type="text"></input>
+<img id="new-gig-pic-preview"/>
+<div id="new-gig-spacer"></div>
+<label for="new-gig-pic">upload image</label>
+<input id="new-gig-pic" class="modal-input"  name="avatar" type="file"></input>
+<label id="new-gig-description-label" for="new-gig-description">description</label>
+<textarea id="new-gig-description" class="modal-textarea"></textarea>*/
+function cleanGigInput(){
+  console.log("got into post gig");
+  var name = $('#new-gig-title').val();
+  console.log("name from gig form is: " + name);
+  var address = $('#new-gig-loc').val();
+  var price = $('#new-gig-pay').val();
+  var description = $('#new-gig-description').val();
+  var startDate = $('#new-gig-date').val();
+  var startTime = $('#new-gig-start-time').val();
+  var endTime = $('#new-gig-end-time').val();
+  var date = new Date(startDate);
+  var day = date.getDay();
+  console.log("Date is: " + date + "day is : " + day);
+  //Replace this real endate soon:
+  var endDate = endTime;
+  ////////
+  var zipcode = $('#new-gig-zip').val();
+  var pic = $('#new-gig-pic').val();
+  //pic call back thing
+  var picID = 'none yet';
+  ///
+  var gig = {'name':name,
+            'address': address,
+            'price': price,
+            'startDate': startDate,
+            'startTime':startTime,
+            'endTime': endDate,
+            'zipcode' : zipcode,
+            'description': description,
+            'picID': picID,
+            'day':day,
+          };
+  for (key in gig){
+    if(gig[key]==null || gig[key]==" " || gig[key]==""){
+      console.log(key);
+      alert("Sorry, you must fill out the enitre form with non-empty values");
+      return;
+    }
+  }
+
+  convertZipGig(gig);
+
+}
+
+function sendGigToDB(lat,lng, myNewGig) {
+  //must implment getting user name out of session
+  var description =  myNewGig['description'];
+  var categoriesFromStr = parseQueryString(description);
+  var name = myNewGig['name'];
+  var address = myNewGig['address'];
+  var zipcode = myNewGig['zipcode'];
+  var price = myNewGig['price'];
+  var startDate = myNewGig['startDate'];
+  var endTime = myNewGig['endTime'];
+  var description = myNewGig['description'];
+  var startTime = myNewGig['startTime'];
+  var day = myNewGig['day'];
+  switch (day){
+    case 0:
+    day = "Sunday";
+    break;
+    case 1:
+    day = "Monday";
+    break;
+    case 2:
+    day = "Tuesday";
+    break;
+    case 3:
+    day = "Wednesday";
+    break;
+    case 4:
+    day = "Thursday";
+    break;
+    case 5:
+    day = "Friday";
+    break;
+    case 6:
+    day = "Saturday";
+    break;
+    default:
+    alert("Please enter a valid date");
+    return;
+    break;
+  }
+  var picID = myNewGig['picID']
+
+  console.log(JSON.stringify(myNewGig));
+	$.post('/gig', {'name':name, 'address':address, 'picture': picID, 'zipcode': zipcode, 'price': price, 'startDate': startDate, 'startTime':startTime, 'day':day, 'endTime': endTime, 'applications': [], 'lat': lat, 'lng': lng, 'categories':categoriesFromStr, 'isFilled':false, 'bandFor':null, 'description':description}, result => {
+    console.log("got cb from post /gig");
+		alert(`result is ${result}`);
+	});
+}
+
+
+function convertZipGig(myGig){
+  var zipcode = myGig['zipcode'];
+  if (!(zipcode.length==5)){
+    alert('Please enter a valid zipcode');
+    return;
+  }
+  $.getJSON('http://api.openweathermap.org/data/2.5/weather?zip='+zipcode+',us&APPID=f89469b4b424d53ac982adacb8db19f6').done(function(data){
+    console.log(JSON.stringify(data));
+    var lat = data.coord.lat;
+    var lng = data.coord.lon;
+    sendGigToDB(lat,lng, myGig);
+  });
+}
+function convertZipBand(myBand){
+  var zipcode = myBand['zipcode'];
+  if (!(zipcode.length==5)){
+    alert('Please enter a valid zipcode');
+    return;
+  }
+  console.log(zipcode);
+  $.getJSON('http://api.openweathermap.org/data/2.5/weather?zip='+zipcode+',us&APPID=f89469b4b424d53ac982adacb8db19f6').done(function(data){
+    console.log(JSON.stringify(data));
+    var lat = data.coord.lat;
+    var lng = data.coord.lon;
+    sendBandToDB(lat,lng, myBand);
+  });
+}
+
+function parseQueryString(str){
+  var categoriesFromStr={};
+  var lowerCased = str.toLowerCase();
+  console.log("in parse q str the lower cased str is "+str);
+  for (key in categories){
+    var type = categories[key]
+    categoriesFromStr[type]=[];
+    console.log("key is " + key);
+    console.log("banks are " + wordBank[type]);
+    for (word in wordBank[type]){
+      console.log("word is : " + wordBank[type][word]);
+      if (lowerCased.includes(wordBank[type][word])){
+        console.log("word is in if : " + wordBank[type][word]);
+        categoriesFromStr[type].push(wordBank[type][word]);
+      }
+    }
+  }
+  console.log("in parse from str, the categories from str are now" + JSON.stringify(categoriesFromStr));
+  return categoriesFromStr;
+}
 
 //MESSAGING SECTION:
 
@@ -442,3 +737,67 @@ function sendMessage(){
     console.log("got result from positn message it is :" + JSON.stringify(result));
   });
 }
+
+
+//WORD BANK//
+var categories=['genres','insts','gigTypes','vibes'];
+var wordBank = {
+ genres:["blues","classic rock","country","dance","disco","funk","grunge",
+ "hip-hop","hiphop","hip hop","rap","jazz","metal","new age","oldies","other","pop","r&b","r and b","randb",
+ "rap","reggae","rock","techno","industrial","alternative","ska",
+ "death metal","death-metal","pranks","soundtrack","euro-techno","ambient",
+ "trip-hop","triphop","trip hop","vocal","jazz+funk","jazzfunk","funk","fusion","trance","classical",
+ "instrumental","acid","house","game","gospel",
+ "noise","alternrock","alternative rock","alternative","bass","soul","punk","space","meditative",
+ "instrumental pop","instrumental rock","ethnic","gothic",
+ "darkwave","techno-industrial","electronic","pop-folk","pop folk",
+ "eurodance","dream","southern rock","comedy","cult","gangsta",
+ "top 40","christian rap","pop/funk","jungle","native american",
+ "cabaret","new wave","psychadelic","rave","showtunes","trailer",
+ "lo-fi","tribal","acid punk","acid jazz","polka","retro",
+ "musical","rock & roll","rock and roll","hard rock","folk","folk-rock","folk rock",
+ "national folk","swing","fast fusion","bebop","latin","revival",
+ "celtic","bluegrass","avantgarde","gothic rock","progressive rock",
+ "psychedelic rock","symphonic rock","slow rock","big band",
+ "chorus","easy listening","acoustic","humour","speech","chanson",
+ "opera","chamber music","sonata","symphony","booty bass","primus",
+ "porn groove","satire","slow jam","club","tango","samba",
+ "folklore","ballad","power ballad","Rrythmic soul","freestyle",
+ "duet","punk rock","drum solo","acapella","euro-house","dance hall","edm","grime","dubstep","drum and bass","drum&bass","cover","covers"],
+
+ insts:["accordion","bagpipes","banjo","bass guitar","bass","bassoon","berimbau","dj","d.j.","singer","rapper","mc","bongo","freestyler","cello",
+ "clarinet","cornet","cymbal","didgeridoo","double bass","upright","drum kit","drums","percussion","flute","french horn","glass harmonica","gong",
+ "guitar","acoustic","electronic","harmonica","harp","harpsichord","hammered dulcimer","synth","tambourine","hurdy gurdy","jew’s harp",
+ "lute","lyre","mandolin","marimba","melodica","oboe","ocarina","octobass","organ","sound system","pan pipes","piano","piccolo","recorder","saxophone",
+ "sitar","synthesizer","timpani","triangle","trombone","trumpet","theremin","tuba","poet","vocals","viola","violin","whamola","xylophone","zither"],
+
+ gigTypes:["birthday","party","fraternity","frat","bar","concert","corporate","kids","adult","adults","highschool","college","retirement","sorority",
+ "gay","pride","festival","radio","hall","dance","bachelor","bachelorette","show","talent","chill","kickback","hangout","mobile","car","house","home","parade",
+ "street","theater","exhibition","show","event","wedding","funeral","burial","eccentric","church","synagouge","mosque","temple","circle","meditation","studio session",
+ "performance","rally","march","protest","ceremony","holiday","christmas","new years","halloween","valentines","bash","mosh","orgy","date","night out","night in",
+ "night-in","service","store","opening","closing","buisness","booth","meeting","introduction","orientation","graduation"],
+
+ vibes:["anthem","aria","ariose","arioso","assonance","atmospheric","background","banging","banger","bangers","baroque","beat","bell-like","bombastic",
+ "booming","boomy","bop","breath","breathy","bright","bass","cadence",
+ "call","canorous","canticle","cappella","carol","catchy","chamber","chant","cheerful","chime",
+ "choral","chorale","classical","clear","consonant","contemporary","danceable","deep","descant","ditty",
+ "dramatic","dulcet","dynamic","eclectic","electronic","energetic","entertaining","euphonic","euphonious","evensong",
+ "evergreen","experimental","explosive","facile","fast","funky","happy","harmonic","harmonious","headbanging","headbanger","head banging","healing",
+ "heroic","high-flown","high-sounding","high","hit","homophonic","honeyed","hook","hymn",
+ "flawless","fluid","forte","fresh","fugue","full","full-toned","fuses", "golden","grand","groovy","covers","covers","jazzy","lay",
+ "hyped","hype","hypnotic","hi-fi","improvised","in tune","inflection","instrumental","intonation","intricate","intro","jam","jaunty",
+ "lied","light","lilt","lilting","liquid","live","lively","lofty","lyric","lyrical",
+ "magniloquent","major","masterful","mellifluous","mellow","melodic","melodious","melody","minor","modern","monophonic","musical","musicality",
+ "muzak","ode","opera","orchestral","orotund","paean","passionate","percussive",
+ "pianissimo","piece","piping","plainsong","playful","pleasant","poetic","polyphonic","pompous",
+ "popular","progressive","psalm","recitative","refined","refrain","resonance","resonant","resounding",
+ "reverberant","rhythmic","rhythmical","rich","ringing","riveting","rockin’","rockin","rollicking","romantic","round","shout",
+ "silver-toned","silvery","sing","soft","song","songful","sonic",
+ "session","shrill","singable","singing","soprano","soulful","staccato","stentorian","stentorious","strain","strong","sweet-sounding",
+ "sweet-toned","swing","symphonic",
+ "sonorous","soothing","sophisticated","symphonious","symphony","tubular","tumid","tuned","tuneful","unison","up-tempo","unified","uplifting",
+ "sweet","throbbing","tight","timeless","tonal","atonal","treble","warble","wobble","wavey","warm","wet","dry","wild","woodnote","western",
+ "upbeat","vibrant","vocal","high-volume","low-volume","loud","soft","hard","hardcore","west-coast","east-coast","chopper","vibes",
+ "angry","melancholy","blue","new","old","young","difuse","nasty","raunchy","ridiculous","real","dumb"
+ ,"evil","godly","zealous","functional","stupid","purple","green","gnarly","fun","forceful","fucking","fuck","fucked up","crazy","sloppy","disgusting"]
+};

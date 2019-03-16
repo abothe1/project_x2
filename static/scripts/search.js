@@ -39,6 +39,16 @@ function populateDropDown(myUser, myBands, myGigs){
   console.log(" *** ");
   console.log("USER: "+JSON.stringify(myUser)+" BANDS: "+JSON.stringify(myBands)+"GIGS: "+JSON.stringify(myGigs));
   console.log(" ");
+  if(myUser==null || myUser=="" || myUser==" " || myUser=="null"){
+    var selectMenu = document.getElementById('selectDrop');
+  //  var userDropTitle = document.createElement('<option value="'+myUser._id+'">'+myUser.username+'</option>');
+    var userDropTitle=document.createElement('option');
+    userDropTitle.innerHTML=myUser.username;
+    userDropTitle.setAttribute('value','user');
+    userDropTitle.setAttribute('id', 'userDropTitle');
+    selectMenu.appendChild(userDropTitle);
+    return;
+  }
   var selectMenu = document.getElementById('selectDrop');
 //  var userDropTitle = document.createElement('<option value="'+myUser._id+'">'+myUser.username+'</option>');
   var userDropTitle=document.createElement('option');
@@ -50,6 +60,7 @@ function populateDropDown(myUser, myBands, myGigs){
     var bandTitle=document.createElement('option');
     bandTitle.innerHTML=myBands[band].name;
     bandTitle.setAttribute('value','band');
+    bandTitle.setAttribute('data-objID', myBands[band]._id);
     bandTitle.setAttribute('id', 'band'+band+'DropTitle');
     selectMenu.appendChild(bandTitle);
   }
@@ -57,6 +68,7 @@ function populateDropDown(myUser, myBands, myGigs){
     var gigTitle=document.createElement('option');
     gigTitle.innerHTML=myGigs[gig].name;
     gigTitle.setAttribute('value','gig');
+    gigTitle.setAttribute('data-objID', myGigs[gig]._id);
     gigTitle.setAttribute('id', 'gig'+gig+'DropTitle');
     selectMenu.appendChild(gigTitle);
   }
@@ -175,6 +187,12 @@ function performSearch(json){
   var searchTxt = json["searchObject"]['query'];
   var gigName = json["searchObject"]['gigName'];
   var bandName = json["searchObject"]['bandName'];
+  bandName = String(bandName);
+  bandName=bandName.replace(/%20/g, " ");
+  bandName=bandName.replace(/%22/g, "");
+  gigName = String(gigName);
+  gigName=gigName.replace(/%20/g, " ");
+  gigName=gigName.replace(/%22/g, "");
   if (mode==null){
     console.log("Error: there was no mod supplied");
     return;
@@ -186,42 +204,35 @@ function performSearch(json){
    searchTxt=String(searchTxt);
    searchTxt=searchTxt.replace(/%20/g, " ");
    searchTxt=searchTxt.replace(/%22/g, "");
-  if ((gigName==null&&bandName==null)||(gigName=='null'&&bandName=='null')){
-    if (mode=='findGigs'){
-      $.get("/searchNoName", { 'mode': "findGigs", 'query': searchTxt}, result => {
-  		    alert(`result is ${JSON.stringify(result)}`);
-          showResults(mode, null, result);
-  	     });
-       }
-    else{
-      $.get("/searchNoName", { 'mode': "findBands", 'query': searchTxt}, result => {
-          alert(`result is ${JSON.stringify(result)}`);
-          showResults(mode, result, null);
-         });
-    }
-  }
-  else if(gigName==null || gigName=="null"){
-    bandName = String(bandName);
-    bandName=bandName.replace(/%20/g, " ");
-    bandName=bandName.replace(/%22/g, "");
-    console.log("band name is : " + bandName);
-    $.get("/search", { 'mode': "findGigs", 'query': searchTxt, 'bandName': bandName }, result => {
-  		  alert(`result is ${JSON.stringify(result)}`);
-        showResults(mode, null, result);
-  	});
-  }
-  else{
-    gigName = String(gigName);
-    gigName=gigName.replace(/%20/g, " ");
-    gigName=gigName.replace(/%22/g, "");
-    console.log("gig name is : " + gigName);
-    $.get("/search", { 'mode': "findBands", 'query': searchTxt, 'gigName': gigName}, result => {
-    		alert(`result is ${JSON.stringify(result)}`);
-        showResults(mode, result, null);
-
-    	});
-  }
-
+   if (mode=='findGigs'){
+     if(bandName==null || bandName=='null'){
+       console.log('got in first if gig for search');
+       $.get("/searchNoName", { 'mode': "findGigs", 'query': searchTxt}, result => {
+   		    alert(`result is ${JSON.stringify(result)}`);
+           showResults(mode, null, result);
+   	    });
+     }
+     else{
+       $.get("/search", { 'mode': "findGigs", 'query': searchTxt, 'bandName': bandName }, result => {
+     		  alert(`result is ${JSON.stringify(result)}`);
+           showResults(mode, null, result);
+     	  });
+     }
+   }
+   else{
+     if(gigName==null || gigName=='null'){
+       $.get("/searchNoName", { 'mode': "findBands", 'query': searchTxt}, result => {
+           alert(`result is ${JSON.stringify(result)}`);
+           showResults(mode, result, null);
+        });
+     }
+     else{
+       $.get("/search", { 'mode': "findBands", 'query': searchTxt, 'gigName': gigName}, result => {
+       		alert(`result is ${JSON.stringify(result)}`);
+           showResults(mode, result, null);
+       	});
+     }
+   }
 }
 
 function showResults(mode, bands, gigs){
@@ -341,7 +352,10 @@ function searchForBands(){
   mv.src = "/assets/Search/mv_filter.png";
   v.src = "/assets/Search/v_filter.png";
 
-  var searchAsName = $('#selectDrop option:selected').text();
+  var searchAsName = $('#selectDrop option:selected').data();
+  console.log(JSON.stringify(searchAsName));
+  searchAsName=searchAsName['objid']
+  console.log('Data from drop down is : '+searchAsName);
   var serachAsType = $('#selectDrop option:selected').val();
   var searchText = $('#search_input').val();
 
@@ -406,7 +420,7 @@ function searchForGigs(){
   mv.src = "/assets/Search/mv_filter.png";
   v.src = "/assets/Search/v_filter_selected.png";
 
-  var searchAsName = $('#selectDrop option:selected').text();
+  var searchAsName = $('#selectDrop option:selected').data()['objid'];
   var serachAsType = $('#selectDrop option:selected').val();
   var searchText = $('#search_input').val();
 

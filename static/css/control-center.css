@@ -53,7 +53,7 @@ a {
 radial menu
 */
 
-h1, h4, h6, p, button, input, textarea, li{
+h1, h2, h3, h4, h5, h6, p, button, input, textarea, li{
   font-family: Industry, sans-serif;
 }
 
@@ -202,6 +202,226 @@ h1, h4, h6, p, button, input, textarea, li{
 }
 
 /*
+user gigs
+*/
+.profile-gigs{
+  color: white;
+  margin-top: 250px;
+  width: 80%;
+  margin-left: 20%;
+}
+
+/*
+  booked gig elements
+*/
+
+.booked-gig{
+  margin-bottom: 20px;
+}
+
+.gig-image, .gig-description, .gig-act, .gig-confirm{
+  display: inline-block;
+  vertical-align: top;
+  height: 200px;
+  margin: 0;
+  padding: 0;
+  margin-right: 20px;
+}
+
+.gig-image{
+  width: 200px;
+}
+
+.gig-pic{
+  position: relative;
+  height: 200px;
+  width: 200px;
+  border-radius: 10px;
+}
+
+.gig-pic-frame{
+  height: 200px;
+  width: 200px;
+  z-index: 4;
+  position: relative;
+  margin-top: -228px;
+}
+
+.gig-description-p{
+  width: 200px;
+  height: 200px;
+  overflow: scroll;
+  background-color: #333d44;
+  border-radius: 8px;
+  padding: 2px;
+}
+
+.gig-description-p::-webkit-scrollbar{
+  width: 4px;
+}
+
+.gig-description-p::-webkit-scrollbar-thumb{
+  background-color: #56dff0;
+}
+
+.gig-act{
+  width: 200px;
+}
+
+.act-pic{
+  position: relative;
+  height: 200px;
+  width: 200px;
+  border-radius: 10px;
+}
+
+.act-pic-frame{
+  height: 200px;
+  width: 200px;
+  z-index: 4;
+  position: relative;
+  margin-top: -228px;
+}
+
+.act-nameplate{
+  z-index: 3;
+  position: absolute;
+  height: 50px;
+  width: 200px;
+  background-color: rgba(0,0,0,0.5);
+  margin-top: -77px;
+  text-align: center;
+}
+
+.act-name{
+  font-size: 2vmin;
+  color: white;
+}
+
+.gig-confirm{
+  width: 200px;
+  text-align: center;
+}
+
+.gig-confirm-input{
+  color: white;
+  background-color: #333d44;
+  border-radius: 8px;
+  border: none;
+  height: 60px;
+  text-align: center;
+}
+
+.gig-confirm-a{
+  color: rgba(86,223,240,1.0);
+  font-family: 'Industry',sans-serif;
+  font-size: 2vw;
+}
+
+.gig-confirm-a:hover{
+  color: white;
+  text-decoration: none;
+}
+
+/*
+open gig Elements
+*/
+
+.open-gig-image, .open-gig-description, .open-gig-date-time
+,.open-gig-loc-pay{
+  display: inline-block;
+  vertical-align: top;
+  height: 240px;
+  margin: 0;
+  padding: 0;
+  margin-right: 20px;
+  width: 200px;
+}
+
+
+.open-gig-textarea{
+  height: 200px;
+  overflow: scroll;
+  background-color: transparent;
+  color: white;
+  border: none;
+  resize: none;
+  background-color: #333d44;
+  border-radius: 8px;
+  padding: 2px;
+}
+
+.open-gig-textarea::-webkit-scrollbar{
+  width: 4px;
+}
+
+.open-gig-textarea::-webkit-scrollbar-thumb{
+  background-color: #56dff0;
+}
+
+.open-gig-loc, .open-gig-date{
+  width: 200px !important;
+  border: none;
+  background-color: #333d44;
+  color: white;
+  height: 38px;
+  border-radius: 8px;
+}
+
+.open-gig-start-time, .open-gig-end-time{
+  width: 128px !important;
+  border: none;
+  background-color: #333d44;
+  color: white;
+  height: 38px;
+  border-radius: 8px;
+  text-align: center;
+  font-size: 10pt;
+}
+
+#open-gig-time-label{
+  margin-top: 10px;
+}
+
+.open-gig-start-time{
+  margin-top: 10px;
+}
+
+.open-gig-end-time{
+  margin-top: 10px;
+  margin-left: 28px;
+}
+
+.max-pay-input{
+  color: white;
+  background-color: #333d44;
+  border-radius: 4px;
+  border: none;
+  height: 60px;
+  text-align: center;
+}
+
+.open-gig-max-pay{
+  text-align: center;
+}
+
+#open-gig-pay-label{
+  margin-top: 10px;
+}
+
+.open-gig-confirm{
+  color: rgba(86,223,240,1.0);
+  font-family: Industry, sans-serif;
+  font-size: 18pt;
+}
+
+.open-gig-confirm:hover{
+  color: white;
+  text-decoration: none;
+}
+
+
+/*
   profiles list elements
 */
 
@@ -243,6 +463,7 @@ h1, h4, h6, p, button, input, textarea, li{
   color: white;
   border: none;
   font-size: 20pt;
+  z-index: 100;
 }
 
 #contacts-sidebar{
@@ -250,11 +471,328 @@ h1, h4, h6, p, button, input, textarea, li{
   width: 300px;
   right: 0;
   height: 100%;
+  top: 0;
   position: fixed;
   background-color: rgba(0,0,0,0.9);
   overflow: scroll;
   display: none;
 }
+
+/*
+  modal elements
+*/
+
+.modal {
+  display:none;
+  position: fixed;
+  z-index: 1;
+  left: 0;
+  top: 0;
+  width: 100%;
+  height: 100%;
+  overflow: auto;
+  background-color: rgba(0,0,0,0.4);
+}
+
+/* Modal Content Box */
+.modal-content {
+  background-image: url("/assets/Control-Center/new-gig-bg.png");
+  background-color: transparent;
+  background-size: contain;
+  background-clip: border-box;
+  background-repeat: no-repeat;
+  overflow: scroll;
+  margin: 4% auto 15% auto;
+  width: 75%;
+  height: 80%;
+  margin-left: 200px;
+  padding-bottom: 80px;
+  color: white;
+}
+
+.modal-input{
+  color: white;
+  background-color: #333d44;
+  border-radius: 8px;
+  border: none !important;
+}
+
+.modal-button{
+  color: white;
+  font-family: Industry, sans-serif;
+  font-size: 14pt;
+}
+
+.modal-button:hover{
+  color: #56dff0;
+}
+
+.popUpButtons {
+  background-color: transparent;
+  color: #56dff0;
+  padding: 14px 20px;
+  margin: 8px 26px;
+  border: none;
+  cursor: pointer;
+  width: 90%;
+  font-size: 32px;
+}
+.popUpButtons:hover {
+    opacity: 0.8;
+}
+
+/* The Close Button (x) */
+.close {
+    position: absolute;
+    right: 40px;
+    top: 0;
+    color: #fff;
+    font-size: 35px;
+    font-weight: bold;
+}
+.close:hover,.close:focus {
+    alpha: 0.6;
+    cursor: pointer;
+}
+
+/* Add Zoom Animation */
+.animate {
+    animation: zoom 0.6s
+}
+
+@keyframes zoom {
+    from {transform: scale(0)}
+    to {transform: scale(1)}
+}
+
+/*
+  new gig elements
+*/
+
+label{
+  font-family: Industry, sans-serif;
+  font-size: 16pt;
+  padding-right: 20px;
+}
+
+#modal-wrapper-new-gig{
+  z-index: 5;
+}
+
+#new-gig-content > input{
+  height: 50px;
+  text-indent: 20px;
+  font-family: Industry, sans-serif;
+  font-size: 16pt;
+}
+
+#new-gig-title{
+  width: 65%;
+  top: 25px;
+  position: absolute;
+  margin-left: 260px;
+}
+
+#new-gig-date{
+  width: 40%;
+  margin-right: 10px;
+  margin-top: 5px;
+}
+
+#new-gig-start-time, #new-gig-end-time{
+  width: 15%;
+  margin-top: 10px;
+}
+
+#new-gig-start-time{
+  margin-right: 30px;
+}
+
+#new-gig-loc{
+  margin-top: 24px;
+  width: 82.5%;
+}
+
+#new-gig-pay{
+  margin-top: 24px;
+  width: 30%;
+}
+
+#new-gig-pic-preview{
+  height: 124px;
+  width: 124px;
+  margin-top: 24px;
+  right: 200px;
+  position: absolute;
+  border: none !important;
+  border-radius: 8px;
+  background-color: #333d44;
+}
+
+#new-gig-spacer{
+  height: 50px;
+  width: 40%;
+  padding: 0;
+  margin: 0;
+  position: relative;
+  display: inline-block;
+}
+
+#new-gig-pic{
+  margin-top: 24px;
+  width: 50%;
+  line-height: 40px;
+}
+
+#new-gig-pic::-webkit-file-upload-button {
+  visibility: hidden;
+}
+
+#new-gig-description-label{
+  position: absolute;
+  left: 16px;
+  bottom: 32%;
+}
+
+#new-gig-description{
+  margin-top: 24px;
+  width: 80%;
+  height: 35%;
+  margin-left: 128px;
+  border: none;
+  border-radius: 14px;
+  background-color: #333d44;
+  color: white;
+  resize: none;
+  text-indent: 20px;
+  font-size: 16pt;
+}
+
+#new-gig-post{
+  margin-top: -6px;
+  padding: 0;
+  font-size: 32pt;
+}
+
+/*
+  new band modal elements
+*/
+
+#modal-wrapper-new-band{
+  z-index: 5;
+}
+
+#new-band-content > input{
+  height: 50px;
+  text-indent: 20px;
+  font-family: Industry, sans-serif;
+  font-size: 16pt;
+}
+
+#new-band-title{
+  width: 60%;
+  top: 25px;
+  position: absolute;
+  margin-left: 320px;
+}
+
+#new-band-zip{
+  width: 150px;
+  margin-right: 20px;
+}
+
+#new-band-dist,#new-band-pay{
+  width: 100px;
+}
+
+#new-band-dist{
+  margin-right: 20px;
+}
+
+#new-band-schedule-label{
+  margin-top: 12px;
+}
+
+#new-band-schedule{
+  text-align: center;
+  font-family: Industry,sans-serif;
+  font-size: 18pt;
+  width: 75%;
+}
+
+.new-band-schedule-select,.new-band-schedule-start-time, .new-band-schedule-end-time{
+  height: 50px;
+  font-family: Industry, sans-serif;
+  font-size: 16pt;
+  width: 150px;
+  color: white;
+  background-color: #333d44;
+  border-radius: 8px;
+  border: none !important;
+  text-indent: 8px;
+}
+
+.new-band-schedule-remove,.new-band-schedule-add{
+  color: #56dff0;
+  font-family: Industry, sans-serif;
+  font-size: 14pt;
+  background-color: transparent;
+  border: none;
+}
+
+.new-band-schedule-remove:hover,.new-band-schedule-add:hover{
+  color: white;
+  text-decoration: none;
+  cursor:pointer;
+}
+
+#new-band-description-label{
+  margin-top: 12px;
+  vertical-align:top;
+}
+
+#new-band-description{
+  margin-top: 12px;
+  width: 80%;
+  height: 35%;
+  border: none;
+  border-radius: 14px;
+  background-color: #333d44;
+  color: white;
+  resize: none;
+  font-size: 16pt;
+}
+
+#new-band-pic, #new-band-clip, #new-band-clip-pic{
+  margin-top: 24px;
+  margin-right: 12px;
+  width: 400px;
+  line-height: 40px;
+  text-align: left;
+}
+
+#new-band-pic::-webkit-file-upload-button, #new-band-clip::-webkit-file-upload-button, #new-band-clip-pic::-webkit-file-upload-button {
+  visibility: hidden;
+}
+
+#new-band-pic-preview, #new-band-clip-preview{
+  height: 124px;
+  width: 124px;
+  margin-top: 0px;
+  border: none !important;
+  border-radius: 8px;
+  background-color: #333d44;
+}
+
+#new-band-clip-preview{
+  margin-top: -76px;
+}
+
+#new-band-create{
+  font-size: 48pt;
+  margin-top: 24px;
+}
+
 /*
   carousel elements
 */
@@ -417,7 +955,6 @@ ticker
 
 #ticker-img{
   z-index: 0;
-  background-color: red;
   position: absolute;
   height: 60px;
   width: 100%;
@@ -442,10 +979,14 @@ scrollbar
   background: #03101a;
   border-radius: 10px;
   border: 1px solid #56dff0;
-  min-height: 20px; !important
+  min-height: 20px !important;
 }
 
 /* Handle on hover */
 ::-webkit-scrollbar-thumb:hover {
   background: #56dff0;
+}
+
+::-webkit-scrollbar-corner {
+  background: rgba(0,0,0,0);
 }

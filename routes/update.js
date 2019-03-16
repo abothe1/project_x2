@@ -1,15 +1,15 @@
 module.exports = router => {
   const database = require('../database.js');
-
+  var ObjectId = require('mongodb').ObjectID;
   router.post('/updateGig', (req, res) => {
     if (!req.body) {
   		 res.status(400).send('No body sent').end();
   	}
     database.connect(db=>{
-      var {gigName, query} = req.body;
+      var {id, query} = req.body;
       var newvalues = {$set: query};
-      db.db('gigs').collection("gigs").updateOne({'name':gigName}, newvalues, res =>{
-        console.log("updated gig " + gigName);
+      db.db('gigs').collection("gigs").updateOne({'_id':ObjectId(id)}, newvalues, res =>{
+        console.log("updated gig " + id);
         db.close();
       }, error =>{
         console.log("There was an error: " + error);
@@ -27,11 +27,11 @@ module.exports = router => {
   		 res.status(400).send('No body sent').end();
   	}
 
-    var {bandName, query} = req.body;
+    var {id, query} = req.body;
     var newvalues = {$set: query};
     database.connect(db=>{
-      db.db('bands').collection("bands").updateOne({'name':bandName}, newvalues, res=>{
-        console.log("updated band " + bandName);
+      db.db('bands').collection("bands").updateOne({'_id':ObjectId(id)}, newvalues, res=>{
+        console.log("updated band " + id);
         db.close();
       }, error=>{
         console.log("There was an error: " + err);
@@ -52,7 +52,7 @@ module.exports = router => {
     var {id, newRating} = req.body;
 
     database.connect(db=>{
-      db.db('bands').collection('bands').findOne({'_id':id}, function(err2, result){
+      db.db('bands').collection('bands').findOne({'_id':ObjectId(id)}, function(err2, result){
         if (err2){
           console.log("Error while trying to find band with id: "+id+"Error: "+err2);
           res.sataus(500).end();
@@ -88,7 +88,7 @@ module.exports = router => {
             var query = {'rating':newRating, 'numRatings':numRatings};
             var newvalues = {$set: query};
             database.connect(db=>{
-              db.db('bands').collection("bands").updateOne({'_id':id}, newvalues, res=>{
+              db.db('bands').collection("bands").updateOne({'_id':ObjectId(id)}, newvalues, res=>{
                 console.log("updated band " + bandName);
                 db.close();
               }, error=>{
