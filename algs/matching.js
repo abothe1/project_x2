@@ -448,7 +448,7 @@ module.exports = {
     if (dayMatches){
       var ans = diffs[0];
       for (var dif in diffs){
-        if(diffs[dif]<)ans{
+        if(diffs[dif]<ans){
           ans=diffs[dif];
         }
       }
@@ -460,7 +460,7 @@ module.exports = {
 
   }
 
-  function scoreOnDist (myBandMaxDist, lat1, lng1, lat2, lon2){
+  function scoreOnDist (myBandMaxDist, lat1, lon1, lat2, lon2){
     //negate final
 
     if (myBandMaxDist){

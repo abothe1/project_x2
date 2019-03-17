@@ -19,7 +19,8 @@ router.post('/gig', (req, res) => {
 
   database.connect(db => {
     let gigs = db.db('gigs').collection('gigs');
-    gigs.insertOne({'name' : name, 'creator' : creator, 'address': address, 'zipcode':zipcode, 'startTime':startTime, 'price': price, 'date' : startDate, 'endTime' : endTime, 'applications' : applications, 'bandsAskedToPlay':[], 'lat' : lat, 'lng':lng, 'categories' : categories, 'description':description, 'isFilled':false, 'bandFor' : null }, (err, result) => {
+    let confirmCode=createGigConfirmCode(name);
+    gigs.insertOne({'name' : name, 'creator' : creator, 'address': address, 'zipcode':zipcode, 'startTime':startTime, 'price': price, 'date' : startDate, 'endTime' : endTime, 'applications' : applications, 'bandsAskedToPlay':[], 'lat' : lat, 'lng':lng, 'categories' : categories, 'description':description, 'isFilled':false, 'bandFor' : null, 'confirmationCode':confirmCode}, (err, result) => {
       if (err){
         console.warn("Couldnt get insert gig into database: " + err);
         res.status(500).end();
@@ -72,6 +73,9 @@ router.post('/band', (req, res) => {
 		res.status(500).end();
 	});
 });
-
+  function createGigConfirmCode(name){
+    //INSERT KWAN's Func here:
+    return name;
+  }
 
 } // end of module exports
