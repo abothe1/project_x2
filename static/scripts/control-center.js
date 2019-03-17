@@ -44,16 +44,22 @@ function getBandInfo(bandID){
   //     "'gigTypes':[]"+
   //   "}"+
   // "}";
-
+  // actually get a band info
   var exampleBand = {'name':'Deadalus', '_id': 'ab18110asadafds', 'creator':'xxx', 'address':"N27 W5230", 'zipcode': 53012, 'price': 26, 'rating':null, 'openDates':["2019-01-26T14:22"], 'application':"We are a good band", 'lat': 100.1, 'lng': 109.2, 'audioSamples':[], 'videoSamples':[], 'picture':"../static/assets/Home/Art/9.jpeg", 'appliedGigs':['gigneat23', 'gigawesome12'], 'categories':{'genres':[],'vibes':[],'insts':[],'gigTypes':[]}};
 
   return exampleBand;
 }
 
+function getGigInfo(gigID){
+  // actually get a gig info
+  var exampleGig = {"name": "the rum house","_id":"3289rwedsfjl", "pay":"24","address": "4487 big street, St. Louis, MO 63112","picture": "../static/assets/Home/Art/6.jpeg","description": "we are a very cool venue, looking for jazzy vibes and cool cats :)","applications": ["bandID1","bandID2","bandID3","bandID4","bandID5"],"bandFor": {}};
+  return exampleGig;
+}
+
 class Carousel{
   constructor(obj,indicator){
     switch(indicator){
-      case "applications":
+      case "hosted-applications":
       // obj will contain band IDs
       // BOTHE, you most likely have to fix all of this!!!!
       // get applicant data
@@ -124,8 +130,76 @@ class Carousel{
       this.carWrap.append(this.carousel);
       this.wrapper.append(this.carWrap);
       break;
+      case "past-hosted":
+      // this.pastGigs = this.handleGigs(obj);
+      this.pastGigs = obj;
+      this.wrapper = document.createElement("div");
+      this.wrapper.className = "wrapper";
+      this.wrapper.style.marginLeft = "0px";
+      this.carWrap = document.createElement("div");
+      this.carWrap.className = "jcarousel-wrapper";
+      this.carousel = document.createElement("div");
+      this.carousel.className = "jcarousel";
+      this.list = document.createElement("ul");
+      for(var gig in this.pastGigs.gigs){
+        var id = this.pastGigs.gigs[gig]._id;
+        var name = this.pastGigs.gigs[gig].name;
+        var newItem = document.createElement("li");
+        newItem.className = "carousel-li";
+        // img
+        var newImg = document.createElement("img");
+        newImg.className = "carousel-img";
+        newImg.src = this.pastGigs.gigs[gig].picture;
+        // frame
+        var newFrame = document.createElement("img");
+        newFrame.className = "carousel-frame";
+        newFrame.src = "../static/assets/Control-Center/orangebox.png";
+        // overlay
+        var newOverlay = document.createElement("div");
+        newOverlay.className = "result-overlay";
+        var overlayID = "result-overlay-"+gig;
+        newOverlay.setAttribute("id",overlayID);
+        var priceText = document.createElement("p");
+        priceText.className = "result-overlay-p";
+        priceText.innerHTML = "$"+this.pastGigs.gigs[gig].price+"/hr";
+        // nameplate
+        var nameDiv = document.createElement("div");
+        nameDiv.className = "result-name-div";
+        var nameP = document.createElement("p");
+        nameP.className = "result-name-p";
+        nameP.innerHTML = this.pastGigs.gigs[gig].name;
+        newItem.append(newImg);
+        newOverlay.append(priceText);
+        newItem.appendChild(newOverlay);
+        newItem.append(newFrame);
+        nameDiv.append(nameP);
+        newItem.append(nameDiv);
+        this.list.append(newItem);
+        //event listener data preprocessing
+        newItem.newOverlay = newOverlay;
+        newItem._id = this.pastGigs.gigs[gig]._id;
+        this.AddOverlayEventListeners(newItem);
+      }
+      this.carousel.append(this.list);
+      if(this.pastGigs.gigs.length > 4){
+        // only add arrow controls if the carousel has enough data
+        this.prev = document.createElement("a");
+        this.prev.className = "jcarousel-control-prev";
+        this.prev.href = "#";
+        this.next = document.createElement("a");
+        this.next.className = "jcarousel-control-next";
+        this.next.href = "#";
+        this.carWrap.append(this.prev);
+        this.carWrap.append(this.next);
+      }
+      this.carWrap.append(this.carousel);
+      this.wrapper.append(this.carWrap);
+      profileGigs.append(this.wrapper);
+      break;
       // upcoming gigs
       case "upcoming":
+      //get upcoming data
+      this.upcomingGigs = this.handleGigs(obj);
       this.wrapper = document.createElement("div");
       this.wrapper.className = "wrapper";
       this.carWrap = document.createElement("div");
@@ -133,15 +207,15 @@ class Carousel{
       this.carousel = document.createElement("div");
       this.carousel.className = "jcarousel";
       this.list = document.createElement("ul");
-      for(var gig in band.upcomingGigs){
-        var id = band.upcomingGigs[gig]._id;
-        var name = band.upcomingGigs[gig].name;
+      for(var gig in this.upcomingGigs.gigs){
+        var id = this.upcomingGigs.gigs[gig]._id;
+        var name = this.upcomingGigs.gigs[gig].name;
         var newItem = document.createElement("li");
         newItem.className = "carousel-li";
         // img
         var newImg = document.createElement("img");
         newImg.className = "carousel-img";
-        newImg.src = band.upcomingGigs[gig].picture;
+        newImg.src = this.upcomingGigs.gigs[gig].picture;
         // frame
         var newFrame = document.createElement("img");
         newFrame.className = "carousel-frame";
@@ -153,7 +227,7 @@ class Carousel{
         newOverlay.setAttribute("id",overlayID);
         var confirmP = document.createElement("p");
         confirmP.className = "result-overlay-confirm-p";
-        confirmP.innerHTML = "confirm payment of $"+band.upcomingGigs[gig].payment+"/hr";
+        confirmP.innerHTML = "confirm payment of $"+this.upcomingGigs.gigs[gig].price+"/hr";
         var confirmInput = document.createElement("input");
         confirmInput.className = "gig-confirm-input";
         // nameplate
@@ -161,7 +235,7 @@ class Carousel{
         nameDiv.className = "result-name-div";
         var nameP = document.createElement("p");
         nameP.className = "result-name-p";
-        nameP.innerHTML = band.upcomingGigs[gig].name;
+        nameP.innerHTML = this.upcomingGigs.gigs[gig].name;
         newItem.append(newImg);
         newOverlay.append(confirmP);
         newOverlay.append(confirmInput);
@@ -172,11 +246,11 @@ class Carousel{
         this.list.append(newItem);
         //event listener data preprocessing
         newItem.newOverlay = newOverlay;
-        newItem._id = band.upcomingGigs[gig]._id;
+        newItem._id = this.upcomingGigs.gigs[gig]._id;
         this.AddOverlayEventListeners(newItem);
       }
       this.carousel.append(this.list);
-      if(band.upcomingGigs.length > 4){
+      if(this.upcomingGigs.gigs.length > 4){
         // only add arrow controls if the carousel has enough data
         this.prev = document.createElement("a");
         this.prev.className = "jcarousel-control-prev";
@@ -192,6 +266,8 @@ class Carousel{
       break;
       // applications
       case "applications":
+      // get applied gigs info
+      this.appliedGigs = this.handleGigs(obj);
       this.wrapper = document.createElement("div");
       this.wrapper.className = "wrapper";
       this.carWrap = document.createElement("div");
@@ -199,15 +275,15 @@ class Carousel{
       this.carousel = document.createElement("div");
       this.carousel.className = "jcarousel";
       this.list = document.createElement("ul");
-      for(var gig in band.appliedGigs){
-        var id = band.appliedGigs[gig]._id;
-        var name = band.appliedGigs[gig].name;
+      for(var gig in this.appliedGigs.gigs){
+        var id = this.appliedGigs.gigs[gig]._id;
+        var name = this.appliedGigs.gigs[gig].name;
         var newItem = document.createElement("li");
         newItem.className = "carousel-li";
         // img
         var newImg = document.createElement("img");
         newImg.className = "carousel-img";
-        newImg.src = band.appliedGigs[gig].picture;
+        newImg.src = this.appliedGigs.gigs[gig].picture;
         // frame
         var newFrame = document.createElement("img");
         newFrame.className = "carousel-frame";
@@ -219,13 +295,13 @@ class Carousel{
         newOverlay.setAttribute("id",overlayID);
         var priceText = document.createElement("p");
         priceText.className = "result-overlay-p";
-        priceText.innerHTML = "$"+band.appliedGigs[gig].price+"/hr";
+        priceText.innerHTML = "$"+this.appliedGigs.gigs[gig].price+"/hr";
         // nameplate
         var nameDiv = document.createElement("div");
         nameDiv.className = "result-name-div";
         var nameP = document.createElement("p");
         nameP.className = "result-name-p";
-        nameP.innerHTML = band.appliedGigs[gig].name;
+        nameP.innerHTML = this.appliedGigs.gigs[gig].name;
         newItem.append(newImg);
         newOverlay.append(priceText);
         newItem.appendChild(newOverlay);
@@ -235,11 +311,11 @@ class Carousel{
         this.list.append(newItem);
         //event listener data preprocessing
         newItem.newOverlay = newOverlay;
-        newItem._id = band.appliedGigs[gig]._id;
+        newItem._id = this.appliedGigs.gigs[gig]._id;
         this.AddOverlayEventListeners(newItem);
       }
       this.carousel.append(this.list);
-      if(band.appliedGigs.length > 4){
+      if(this.appliedGigs.gigs.length > 4){
         // only add arrow controls if the carousel has enough data
         this.prev = document.createElement("a");
         this.prev.className = "jcarousel-control-prev";
@@ -253,7 +329,9 @@ class Carousel{
       this.carWrap.append(this.carousel);
       this.wrapper.append(this.carWrap);
       break;
-      case past:
+      case "past":
+      // get past gigs info
+      this.pastGigs = this.handleGigs(obj);
       this.wrapper = document.createElement("div");
       this.wrapper.className = "wrapper";
       this.carWrap = document.createElement("div");
@@ -261,15 +339,15 @@ class Carousel{
       this.carousel = document.createElement("div");
       this.carousel.className = "jcarousel";
       this.list = document.createElement("ul");
-      for(var gig in band.finishedGigs){
-        var id = band.finishedGigs[gig]._id;
-        var name = band.finishedGigs[gig].name;
+      for(var gig in this.pastGigs.gigs){
+        var id = this.pastGigs.gigs[gig]._id;
+        var name = this.pastGigs.gigs[gig].name;
         var newItem = document.createElement("li");
         newItem.className = "carousel-li";
         // img
         var newImg = document.createElement("img");
         newImg.className = "carousel-img";
-        newImg.src = band.finishedGigs[gig].picture;
+        newImg.src = this.pastGigs.gigs[gig].picture;
         // frame
         var newFrame = document.createElement("img");
         newFrame.className = "carousel-frame";
@@ -281,13 +359,13 @@ class Carousel{
         newOverlay.setAttribute("id",overlayID);
         var priceText = document.createElement("p");
         priceText.className = "result-overlay-p";
-        priceText.innerHTML = "$"+band.finishedGigs[gig].price+"/hr";
+        priceText.innerHTML = "$"+this.pastGigs.gigs[gig].price+"/hr";
         // nameplate
         var nameDiv = document.createElement("div");
         nameDiv.className = "result-name-div";
         var nameP = document.createElement("p");
         nameP.className = "result-name-p";
-        nameP.innerHTML = band.finishedGigs[gig].name;
+        nameP.innerHTML = this.pastGigs.gigs[gig].name;
         newItem.append(newImg);
         newOverlay.append(priceText);
         newItem.appendChild(newOverlay);
@@ -297,11 +375,75 @@ class Carousel{
         this.list.append(newItem);
         //event listener data preprocessing
         newItem.newOverlay = newOverlay;
-        newItem._id = band.finishedGigs[gig]._id;
+        newItem._id = this.pastGigs.gigs[gig]._id;
         this.AddOverlayEventListeners(newItem);
       }
       this.carousel.append(this.list);
-      if(band.finishedGigs.length > 4){
+      if(this.pastGigs.gigs.length > 4){
+        // only add arrow controls if the carousel has enough data
+        this.prev = document.createElement("a");
+        this.prev.className = "jcarousel-control-prev";
+        this.prev.href = "#";
+        this.next = document.createElement("a");
+        this.next.className = "jcarousel-control-next";
+        this.next.href = "#";
+        this.carWrap.append(this.prev);
+        this.carWrap.append(this.next);
+      }
+      this.carWrap.append(this.carousel);
+      this.wrapper.append(this.carWrap);
+      break;
+      case "interested-gigs":
+      // get past gigs info
+      this.interstedGigs = this.handleGigs(obj);
+      this.wrapper = document.createElement("div");
+      this.wrapper.className = "wrapper";
+      this.carWrap = document.createElement("div");
+      this.carWrap.className = "jcarousel-wrapper";
+      this.carousel = document.createElement("div");
+      this.carousel.className = "jcarousel";
+      this.list = document.createElement("ul");
+      for(var gig in this.interstedGigs.gigs){
+        var id = this.interstedGigs.gigs[gig]._id;
+        var name = this.interstedGigs.gigs[gig].name;
+        var newItem = document.createElement("li");
+        newItem.className = "carousel-li";
+        // img
+        var newImg = document.createElement("img");
+        newImg.className = "carousel-img";
+        newImg.src = this.interstedGigs.gigs[gig].picture;
+        // frame
+        var newFrame = document.createElement("img");
+        newFrame.className = "carousel-frame";
+        newFrame.src = "../static/assets/Control-Center/orangebox.png";
+        // overlay
+        var newOverlay = document.createElement("div");
+        newOverlay.className = "result-overlay";
+        var overlayID = "result-overlay-"+gig;
+        newOverlay.setAttribute("id",overlayID);
+        var priceText = document.createElement("p");
+        priceText.className = "result-overlay-p";
+        priceText.innerHTML = "$"+this.interstedGigs.gigs[gig].price+"/hr";
+        // nameplate
+        var nameDiv = document.createElement("div");
+        nameDiv.className = "result-name-div";
+        var nameP = document.createElement("p");
+        nameP.className = "result-name-p";
+        nameP.innerHTML = this.interstedGigs.gigs[gig].name;
+        newItem.append(newImg);
+        newOverlay.append(priceText);
+        newItem.appendChild(newOverlay);
+        newItem.append(newFrame);
+        nameDiv.append(nameP);
+        newItem.append(nameDiv);
+        this.list.append(newItem);
+        //event listener data preprocessing
+        newItem.newOverlay = newOverlay;
+        newItem._id = this.interstedGigs.gigs[gig]._id;
+        this.AddOverlayEventListeners(newItem);
+      }
+      this.carousel.append(this.list);
+      if(this.interstedGigs.gigs.length > 4){
         // only add arrow controls if the carousel has enough data
         this.prev = document.createElement("a");
         this.prev.className = "jcarousel-control-prev";
@@ -341,6 +483,17 @@ class Carousel{
       appProxy["apps"].push(aBand);
     }
     return appProxy;
+  }
+
+  handleGigs(idArr){
+    var gigProxy = {
+      "gigs":[]
+    };
+    for(var gigID in idArr){
+      var aGig = getGigInfo(idArr[gigID]);
+      gigProxy["gigs"].push(aGig);
+    }
+    return gigProxy;
   }
 }
 
@@ -503,7 +656,7 @@ class OpenGig{
     this.gigConfirm.innerHTML = "confirm changes";
     this.gigAppH = document.createElement("h3");
     this.gigAppH.innerHTML = "applicants";
-    this.applicantCarousel = new Carousel(gig.applications,"applications");
+    this.applicantCarousel = new Carousel(gig.applications,"hosted-applications");
     this.carEl = this.applicantCarousel.wrapper;
 
     // tier 3
@@ -588,13 +741,132 @@ function testOpenGigs(){
   var testingOpen = new OpenGig(aGig);
 }
 
+function testPastHostedGigs(){
+  var aGig = {
+    name: "the rum house",
+    address: "4487 big street, St. Louis, MO 63112",
+    picture: "../static/assets/Home/Art/6.jpeg",
+    description: "we are a very cool venue, looking for jazzy vibes and cool cats :)",
+    bandFor: {
+      name: "king gizzard and the lizard wizard",
+      picture: "../static/assets/Home/Art/9.jpeg"
+    }
+  };
+  var aGig2 = {
+    name: "the rum house",
+    address: "4487 big street, St. Louis, MO 63112",
+    picture: "../static/assets/Home/Art/6.jpeg",
+    description: "we are a very cool venue, looking for jazzy vibes and cool cats :)",
+    bandFor: {
+      name: "king gizzard and the lizard wizard",
+      picture: "../static/assets/Home/Art/9.jpeg"
+    }
+  };
+  var aGig3 = {
+    name: "the rum house",
+    address: "4487 big street, St. Louis, MO 63112",
+    picture: "../static/assets/Home/Art/6.jpeg",
+    description: "we are a very cool venue, looking for jazzy vibes and cool cats :)",
+    bandFor: {
+      name: "king gizzard and the lizard wizard",
+      picture: "../static/assets/Home/Art/9.jpeg"
+    }
+  };
+  var aGig4 = {
+    name: "the rum house",
+    address: "4487 big street, St. Louis, MO 63112",
+    picture: "../static/assets/Home/Art/6.jpeg",
+    description: "we are a very cool venue, looking for jazzy vibes and cool cats :)",
+    bandFor: {
+      name: "king gizzard and the lizard wizard",
+      picture: "../static/assets/Home/Art/9.jpeg"
+    }
+  };
+  var aGig5 = {
+    name: "the rum house",
+    address: "4487 big street, St. Louis, MO 63112",
+    picture: "../static/assets/Home/Art/6.jpeg",
+    description: "we are a very cool venue, looking for jazzy vibes and cool cats :)",
+    bandFor: {
+      name: "king gizzard and the lizard wizard",
+      picture: "../static/assets/Home/Art/9.jpeg"
+    }
+  };
+  var title = document.createElement("h2");
+  var testGigs = [aGig,aGig2,aGig3,aGig4,aGig5];
+  var proxy = {};
+  proxy.gigs = testGigs;
+  var testingPastHosted = new Carousel(proxy,"past-hosted");
+  setupAction();
+}
+
 class BandSection{
   constructor(band, identifier){
     switch(identifier){
-
+      case "upcoming":
+      if(band.upcomingGigs.length > 0){
+        this.title = document.createElement("p");
+        this.title.className = "title-text";
+        this.tite.innerHTML = "Upcoming Gigs";
+        mainContent.append(this.title);
+        this.carousel = new Carousel(band.upcomingGigs,"upcoming");
+        mainContent.append(this.carousel);
+      }
+      break;
+      case "applications":
+      if(band.appliedGigs.length > 0){
+        this.title = document.createElement("p");
+        this.title.className = "title-text";
+        this.tite.innerHTML = "Applied Gigs";
+        mainContent.append(this.title);
+        this.carousel = new Carousel(band.appliedGigs,"applications");
+        mainContent.append(this.carousel);
+      }
+      break;
+      case "past":
+      if(band.pastGigs.length > 0){
+        this.title = document.createElement("p");
+        this.title.className = "title-text";
+        this.tite.innerHTML = "Past Gigs";
+        mainContent.append(this.title);
+        this.carousel = new Carousel(band.pastGigs,"past");
+        mainContent.append(this.carousel);
+      }
+      break;
+      case "interested-gigs":
+      if(band.interstedGigs.length > 0){
+        this.title = document.createElement("p");
+        this.title.className = "title-text";
+        this.tite.innerHTML = "Interested Gigs";
+        mainContent.append(this.title);
+        this.carousel = new Carousel(band.interstedGigs,"interested-gigs");
+        mainContent.append(this.carousel);
+      }
+      break;
     }
   }
 }
+
+function buildBand(bands){
+  // after we have actual bands, not IDs
+  for(band in bands){
+    var bandTitle = document.createElement("p");
+    bandTitle.className = "title-text";
+    bandTitle.innerHTML = bands[band].name;
+    bandTitle.id = bands[band].name+"-section";
+    var newNav = document.createElement("li");
+    var newNavA = document.createElement("a");
+    newNavA.href = "#"+bands[band].name+"-section";
+    profilesList.
+    mainContent.append(bandTitle);
+    var upcomingSection = new BandSection(bands[band],"upcoming");
+    var applicationsSection = new BandSection(bands[band],"applications");
+    var pastSection = new BandSection(bands[band],"past");
+    var interestedSection = new BandSection(bands[band],"interested-gigs");
+  }
+}
+
+
 
 function updateBand(id, query){
   $.post('/updateBand', {'_id':id, 'query':query}, result =>{
@@ -642,19 +914,25 @@ function createWebPage(user){
 var profileGigs = null;
 var bookedGigs = null;
 var openGigs = null;
+var pastHostedGigs = null;
+
+var mainContent = null;
+var profilesList = null;
 
 function init(){
   profileGigs = document.getElementById("profile-gigs");
+  mainContent = document.getElementById("main-content-wrapper");
+  profilesList = document.getElementById("profiles-list");
 
   //// IF a profile has booked gigs,
-  // bookedGigs = document.createElement("div");
-  // bookedGigs.className = "booked-gigs";
-  // var bookedGigsH = document.createElement("h2");
-  // bookedGigsH.innerHTML = "Booked Events";
-  // bookedGigs.append(bookedGigsH);
-  // profileGigs.append(bookedGigs);
+  bookedGigs = document.createElement("div");
+  bookedGigs.className = "booked-gigs";
+  var bookedGigsH = document.createElement("h2");
+  bookedGigsH.innerHTML = "Booked Events";
+  bookedGigs.append(bookedGigsH);
+  profileGigs.append(bookedGigs);
   //// then, fill the booked gigs section
-  // testBookedGigs();
+  testBookedGigs();
 
   // IF a profile has open gigs,
   openGigs = document.createElement("div");
@@ -665,6 +943,16 @@ function init(){
   profileGigs.append(openGigs);
   // then, fill the open gigs section
   testOpenGigs();
+
+  // IF a profile has past hosted gigs,
+  pastHostedGigs = document.createElement("div");
+  pastHostedGigs.className = "open-gigs";
+  var pastHostedGigsH = document.createElement("h2");
+  pastHostedGigsH.innerHTML = "Past Events";
+  pastHostedGigs.append(pastHostedGigsH);
+  profileGigs.append(pastHostedGigs);
+  // then, fill the past gigs section
+  testPastHostedGigs();
 
   // getUsername();
 }
