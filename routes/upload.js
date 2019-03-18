@@ -313,6 +313,5 @@ router.route('/bands/soundbyte')
 	.post(uploadBandFile('/soundbytes', 'soundbytes', 'soundbyte'))
 	.delete(deleteBandFile('/soundbytes', 'soundbytes', 'soundbyte'));
 
-
-
+  
 } /* end module.exports */

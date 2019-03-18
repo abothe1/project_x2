@@ -3,7 +3,7 @@ module.exports = router => {
   router.get('/control-center', (req, res)=>{
     console.log("In control nav and req key is : " + req.session.key);
     if(!req.session.key){
-      res.status(401).end();
+      res.status(401).send("You must be logged in to access your home page");
       return;
     }
     res.render('control-center.html');

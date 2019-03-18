@@ -83,7 +83,7 @@ router.get('/', (_, res) => res.redirect('/index'));
 router.get('/index', (_, res) => { res.render('index.html'); });
 
 require('./routes/auth.js')(router, app); // login, register, logout
-require('./routes/upload.js')(router, app); // uploads and downlaods data
+require('./routes/upload2.js')(router, app); // uploads and downlaods data
 require('./routes/search.js')(router, app); //searches and posting
 require('./routes/create.js')(router, app); //  for adding new bands and gigs
 require('./routes/update.js')(router, app); // for updating gigs and bands

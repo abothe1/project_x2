@@ -196,5 +196,62 @@ router.get('/bandsForDrops', (req, res)=>{
     }
   });
 });
+router.get('/aGig', (req, res)=>{
+  if (!req.body) {
+     res.status(400).send('No body sent').end();
+  }
+  if (!req.session.key){
+    res.status(401).send('No body sent').end();
+    console.log('user tried to apply without being logged in');
+  }
+  var {gigID}=req.body;
+  database.connect(db=>{
+    db.band('gigs').collection('gigs').findOne({'_id':database.objectId(gigID)}, (err2, result2)=>{
+      if (err2) {
+        console.log('There was an erro rtrying to get gig with id ' + gigID + " ERROR: " + err2);
+        db.close();
+        res.status(500).end();
+      }
+      else{
+        cosnole.log("IN find a gig result is " + result2);
+        db.close();
+        res.status(200).send(result2);
+      }
+    });
+  }, err=>{
+    console.log('There was an error connect to db: ' + err);
+    res.status(500).end();
+  });
+});
+
+router.get('/aBand', (req, res)=>{
+  if (!req.body) {
+     res.status(400).send('No body sent').end();
+  }
+  if (!req.session.key){
+    res.status(401).send('No body sent').end();
+    console.log('user tried to apply without being logged in');
+  }
+  var {bandID}=req.body;
+  database.connect(db=>{
+    db.band('bands').collection('bands').findOne({'_id':database.objectId(bandID)}, (err2, result2)=>{
+      if (err2){
+        console.log('There was an erro rtrying to get band with id ' + bandID + " ERROR: " + err2);
+        db.close();
+        res.status(500).end();
+      }
+      else{
+        cosnole.log("IN find a band result is " + result2);
+        db.close();
+        res.status(200).send(result2);
+      }
+    })
+  }, err=>{
+    console.log('There was an error connect to db: ' + err);
+    res.status(500).end();
+  });
+});
+
+
 
 }

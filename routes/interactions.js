@@ -273,14 +273,18 @@ module.exports = router => {
                   }
                 }
                 if(gigMatches){
-                  if(result3['upcomingGigs']['confirmationCode']==confirmCode){
-
+                  if(!(result3['upcomingGigs']['confirmationCode']==confirmCode)){
+                    console.log('Confirm code did not match the one we were looking for in gig send code');
+                    db.close();
+                    res.status(200).send("Code did not match that band's gig");
                   }
                   else{
-                    var newValues2 = {$pull: {'upcomingGigs.$[element]'},
-                                      $push: {'finishedGigs':gigID}
-                                     };
-                    var filters = {arrayFilters:[element:gigID};
+                    var newValues2 =
+                    {
+                      $pull: 'upcomingGigs.$[element]',
+                      $push: {'finishedGigs':gigID}
+                    };
+                    var filters = {arrayFilters:[{element:gigID}]};
 
                     db.db('bands').collection('bands').updateOne({'_id':database.objectId(bandID)}, newValues2, filters, (err4, result4)=>{
                       if (err4){
