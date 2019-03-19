@@ -65,6 +65,27 @@
       </form>
     </div>
 
+    <div id="modal-wrapper-new-sample" class="modal">
+      <form id="new-sample-form" class="modal-content-sample animate" enctype = "multipart/form-data" method="post" action="#">
+        <div class="imgcontainer">
+          <span onclick="document.getElementById('modal-wrapper-new-sample').style.display='none'" class="close-sample" title="Close PopUp">&times;</span>
+          <h1 style="text-align:left; padding-left: 20px; font-size: 50pt;">new sample</h1>
+        </div>
+
+        <div class="container" id="new-sample-content">
+          <img id="new-sample-preview"/>
+          <img id="new-sample-pic-preview"/>
+          <label for="new-sample-audio" id="audio-label">upload audio</input>
+          <input id="new-sample-audio" class="modal-input"  name="audio" type="file"></input>
+          <label for="new-sample-pic">upload image</input>
+          <input id="new-sample-pic" class="modal-input"  name="pic" type="file"></input>
+          <label for="new-sample-name">sample title</label>
+          <input id="new-sample-name" class="modal-input" name="sample-name" type="text"></input>
+          <button class="popUpButtons" id="new-sample-upload">upload</button>
+        </div>
+      </form>
+    </div>
+
     <div id="modal-wrapper-new-band" class="modal">
       <form id="new-band-form" class="modal-content animate" enctype="multipart/form-data" method="post" action="#">
 

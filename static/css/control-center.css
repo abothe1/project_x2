@@ -179,6 +179,11 @@ h1, h2, h3, h4, h5, h6, p, button, input, textarea, li{
   height: 40px;
 }
 
+.half-star{
+  width: 20px;
+  height: 40px;
+}
+
 #stars{
   position: absolute;
   margin-left: 65%;
@@ -186,19 +191,8 @@ h1, h2, h3, h4, h5, h6, p, button, input, textarea, li{
   width: 100%;
 }
 
-#star-1{
-}
-
-#star-2{
-}
-
-#star-3{
-}
-
-#star-4{
-}
-
-#star-5{
+#star-1, #star-2, #star-3, #star-4, #star-5{
+  display: none;
 }
 
 /*
@@ -603,6 +597,20 @@ open gig Elements
     cursor: pointer;
 }
 
+.close-sample{
+  position: absolute;
+  color: #fff;
+  font-size: 35px;
+  font-weight: bold;
+  display: inline-block;
+  margin-left: 520px;
+}
+
+.close-sample:hover,.close-sample:focus {
+    alpha: 0.6;
+    cursor: pointer;
+}
+
 /* Add Zoom Animation */
 .animate {
     animation: zoom 0.6s
@@ -611,6 +619,61 @@ open gig Elements
 @keyframes zoom {
     from {transform: scale(0)}
     to {transform: scale(1)}
+}
+
+/*
+  new sample
+*/
+
+.modal-content-sample{
+  background-image: url("../assets/Home/modalbg.png");
+  background-color: transparent;
+  background-size: contain;
+  background-clip: border-box;
+  background-repeat: no-repeat;
+  margin: 4% auto 15% auto;
+  width: 40%;
+  height: 80%;
+  padding-bottom: 80px;
+  color: white;
+}
+
+#modal-wrapper-new-sample{
+  z-index: 50;
+}
+
+#new-sample-content input{
+  height: 50px;
+  text-indent: 20px;
+  font-family: Industry, sans-serif;
+  font-size: 16pt;
+}
+
+#new-sample-name, #new-sample-audio, #new-sample-pic{
+  width: 65%;
+  margin-top: 20px;
+}
+
+#new-sample-pic-preview, #new-sample-preview{
+  height: 124px;
+  width: 124px;
+  margin-top: 24px;
+  position: absolute;
+  border: none !important;
+  border-radius: 8px;
+  background-color: #333d44;
+}
+
+#new-sample-pic-preview{
+  margin-left: 200px;
+}
+
+#audio-label{
+  margin-top: 160px;
+}
+
+#new-sample-pic::-webkit-file-upload-button, #new-sample-audio::-webkit-file-upload-button {
+  visibility: hidden;
 }
 
 /*
@@ -971,6 +1034,19 @@ ul{
   color: white;
 }
 
+#add-sample-div{
+  border-radius: 8px;
+  background-color: rgba(0,0,0,0.3);
+}
+
+.carousel-clip-plus{
+  position: absolute;
+  font-size: 200pt;
+  margin-top: -74px;
+  color: white;
+  margin-left: 28px;
+}
+
 /*
 upcoming carousel
 */
@@ -1070,8 +1146,7 @@ chat boxes
     bottom:0;
     background:  #CCCCCC;
     z-index: 109;
-    background-color: rgba(0,0,0,0.5);
-
+    background-color: rgba(0,0,0,0.3);
 }
 
 .ui-chatbox-titlebar {
@@ -1096,20 +1171,27 @@ chat boxes
 
 .ui-chatbox-input {
     padding: 0px;
-    border-left: 2px solid #56dff0;
-    border-right: 2px solid #56dff0;
+    border-left: 2px solid rgba(86,223,240,0.5);
+    border-right: 2px solid rgba(86,223,240,0.5);
     overflow: hidden;
     height: 45px;
     width: 300px;
+    background-color: transparent;
 }
 
 .ui-chatbox-input-box {
-    margin: 0px;
-    padding: 0px;
     height: 45px;
     background-color: transparent;
     border: none;
     color: white;
+    resize: none;
+    margin-top: -2px;
+    font-size: 12pt;
+    padding-left: 20px;
+}
+
+.ui-chatbox-input-box::-webkit-scrollbar{
+  width: 4px;
 }
 
 .ui-chatbox-icon {
@@ -1130,15 +1212,16 @@ chat boxes
     white-space: -pre-wrap;     /* Opera <7 */
     white-space: -o-pre-wrap;   /* Opera 7 */
     word-wrap: break-word;      /* IE */
+    font-family: Industry, sans-serif;
+    margin-left: 15px;
 }
 
 .ui-widget-header{
   height: 47px;
-  border-left: 2px solid #56dff0;
-  border-right: 2px solid #56dff0;
-  border-top: 2px solid #56dff0;
+  border-left: 2px solid rgba(86,223,240,0.5);
+  border-right: 2px solid rgba(86,223,240,0.5);
+  border-top: 2px solid rgba(86,223,240,0.5);
   padding: 0;
-  background-color: rgba(0,0,0,0.5);
   color: white;
   font-family: Industry, sans-serif;
 }
@@ -1154,9 +1237,21 @@ chat boxes
 
 .ui-chatbox-log{
   padding: 0;
-  background-color: rgba(0,0,0,0.5);
-  border: 2px solid #56dff0;
+  background-color: transparent;
+  border-right: 2px solid rgba(86,223,240,0.5);
+  border-left: 2px solid rgba(86,223,240,0.5);
+  border-top: 2px dotted rgba(86,223,240,0.5);
   color: white;
+}
+
+#chat_title{
+  font-size: 22pt;
+  margin-left: 15px;
+}
+
+#chat_closer{
+  font-size: 22pt;
+  margin-right: 15px;
 }
 
 

@@ -458,6 +458,86 @@ class Carousel{
       this.carWrap.append(this.carousel);
       this.wrapper.append(this.carWrap);
       break;
+      case "band-samples":
+      // get past gigs info
+      this.wrapper = document.createElement("div");
+      this.wrapper.className = "wrapper";
+      this.carWrap = document.createElement("div");
+      this.carWrap.className = "jcarousel-wrapper";
+      this.carousel = document.createElement("div");
+      this.carousel.className = "jcarousel";
+      this.list = document.createElement("ul");
+      console.log("before looP");
+      for(var sample in obj){
+        console.log('within loop');
+        var name = obj[sample].name;
+        var newItem = document.createElement("li");
+        newItem.className = "carousel-li";
+        // img
+        var newImg = document.createElement("img");
+        newImg.className = "carousel-img";
+        newImg.src = obj[sample].picture;
+        // frame
+        var newFrame = document.createElement("img");
+        newFrame.className = "carousel-frame";
+        newFrame.src = "../static/assets/Control-Center/purplebox.png";
+        // overlay
+        var newOverlay = document.createElement("div");
+        newOverlay.className = "result-overlay";
+        var overlayID = "result-overlay-"+sample;
+        newOverlay.setAttribute("id",overlayID);
+        var priceText = document.createElement("p");
+        priceText.className = "result-overlay-p";
+        priceText.innerHTML = "";
+        // nameplate
+        var nameDiv = document.createElement("div");
+        nameDiv.className = "result-name-div";
+        var nameP = document.createElement("p");
+        nameP.className = "result-name-p";
+        nameP.innerHTML = obj[sample].name;
+        newItem.append(newImg);
+        newOverlay.append(priceText);
+        newItem.appendChild(newOverlay);
+        newItem.append(newFrame);
+        nameDiv.append(nameP);
+        newItem.append(nameDiv);
+        this.list.append(newItem);
+        //event listener data preprocessing
+        newItem.newOverlay = newOverlay;
+        this.AddOverlayEventListeners(newItem);
+      }
+      // add the default 'add clip' item
+      var newItem = document.createElement("li");
+      newItem.className = "carousel-li";
+      // icon
+      var newIcon = document.createElement("h1");
+      newIcon.className = "carousel-clip-plus";
+      newIcon.innerHTML = "+";
+      // frame
+      var newFrame = document.createElement("img");
+      newFrame.className = "carousel-frame";
+      newFrame.src = "../static/assets/Control-Center/purplebox.png";
+      newFrame.id = "add-sample-div";
+
+      newItem.append(newIcon);
+      newItem.append(newFrame);
+      this.list.append(newItem);
+      this.AddSampleEventListener(newItem);
+      this.carousel.append(this.list);
+      if(obj.length + 1 > 4){
+        // only add arrow controls if the carousel has enough data
+        this.prev = document.createElement("a");
+        this.prev.className = "jcarousel-control-prev";
+        this.prev.href = "#";
+        this.next = document.createElement("a");
+        this.next.className = "jcarousel-control-next";
+        this.next.href = "#";
+        this.carWrap.append(this.prev);
+        this.carWrap.append(this.next);
+      }
+      this.carWrap.append(this.carousel);
+      this.wrapper.append(this.carWrap);
+      break;
     }
   }
 
@@ -473,6 +553,12 @@ class Carousel{
     obj.addEventListener("click",function(){
       console.log(obj._id);
     },false);
+  }
+
+  AddSampleEventListener(obj){
+    obj.addEventListener("click",function(){
+      document.getElementById('modal-wrapper-new-sample').style.display='block';
+    });
   }
 
   handleBands(idArr){
@@ -912,6 +998,97 @@ function createWebPage(user){
   //loadGigs(user);
 }
 
+function loadStars(rating){
+  var starVal = rating / 20.0;
+  if(starVal == 5){
+    star1.style.display = "inline-block";
+    star2.style.display = "inline-block";
+    star3.style.display = "inline-block";
+    star4.style.display = "inline-block";
+    star5.style.display = "inline-block";
+  }
+  else if(starVal < 5 && starVal >= 4.5){
+    star1.style.display = "inline-block";
+    star2.style.display = "inline-block";
+    star3.style.display = "inline-block";
+    star4.style.display = "inline-block";
+    star5.src = "../static/assets/Control-Center/half-star.png";
+    star5.className = "half-star";
+    star5.style.display = "inline-block";
+  }
+  else if(starVal < 4.5 && starVal >= 4.0){
+    star1.style.display = "inline-block";
+    star2.style.display = "inline-block";
+    star3.style.display = "inline-block";
+    star4.style.display = "inline-block";
+    star5.style.display = "none";
+  }
+  else if(starVal < 4.0 && starVal >= 3.5){
+    star1.style.display = "inline-block";
+    star2.style.display = "inline-block";
+    star3.style.display = "inline-block";
+    star4.src = "../static/assets/Control-Center/half-star.png";
+    star4.className = "half-star";
+    star4.style.display = "inline-block";
+    star5.style.display = "none";
+  }
+  else if(starVal < 3.5 && starVal >= 3.0){
+    star1.style.display = "inline-block";
+    star2.style.display = "inline-block";
+    star3.style.display = "inline-block";
+    star4.style.display = "none";
+    star5.style.display = "none";
+  }
+  else if(starVal < 3.0 && starVal >= 2.5){
+    star1.style.display = "inline-block";
+    star2.style.display = "inline-block";
+    star3.src = "../static/assets/Control-Center/half-star.png";
+    star3.className = "half-star";
+    star3.style.display = "inline-block";
+    star4.style.display = "none";
+    star5.style.display = "none";
+  }
+  else if(starVal < 2.5 && starVal >= 2.0){
+    star1.style.display = "inline-block";
+    star2.style.display = "inline-block";
+    star3.style.display = "none";
+    star4.style.display = "none";
+    star5.style.display = "none";
+  }
+  else if(starVal < 2.0 && starVal >= 1.5){
+    star1.style.display = "inline-block";
+    star2.src = "../static/assets/Control-Center/half-star.png";
+    star2.className = "half-star";
+    star2.style.display = "inline-block";
+    star3.style.display = "none";
+    star4.style.display = "none";
+    star5.style.display = "none";
+  }
+  else if(starVal < 1.5 && starVal >= 1.0){
+    star1.style.display = "inline-block";
+    star2.style.display = "none";
+    star3.style.display = "none";
+    star4.style.display = "none";
+    star5.style.display = "none";
+  }
+  else if(starVal < 1.0 && starVal >= 0.5){
+    star1.src = "../static/assets/Control-Center/half-star.png";
+    star1.className = "half-star";
+    star1.style.display = "inline-block";
+    star2.style.display = "none";
+    star3.style.display = "none";
+    star4.style.display = "none";
+    star5.style.display = "none";
+  }
+  else if(starVal < 0.5 && starVal >= 0.0){
+    star1.style.display = "none";
+    star2.style.display = "none";
+    star3.style.display = "none";
+    star4.style.display = "none";
+    star5.style.display = "none";
+  }
+}
+
 var profileGigs = null;
 var bookedGigs = null;
 var openGigs = null;
@@ -920,41 +1097,58 @@ var pastHostedGigs = null;
 var mainContent = null;
 var profilesList = null;
 
+var star1 = null;
+var star2 = null;
+var star3 = null;
+var star4 = null;
+var star5 = null;
+
 function init(){
   profileGigs = document.getElementById("profile-gigs");
   mainContent = document.getElementById("main-content-wrapper");
   profilesList = document.getElementById("profiles-list");
 
+  star1 = document.getElementById("star-1");
+  star2 = document.getElementById("star-2");
+  star3 = document.getElementById("star-3");
+  star4 = document.getElementById("star-4");
+  star5 = document.getElementById("star-5");
+
+  loadStars(50);
+
   //// IF a profile has booked gigs,
-  bookedGigs = document.createElement("div");
-  bookedGigs.className = "booked-gigs";
-  var bookedGigsH = document.createElement("h2");
-  bookedGigsH.innerHTML = "Booked Events";
-  bookedGigs.append(bookedGigsH);
-  profileGigs.append(bookedGigs);
+  // bookedGigs = document.createElement("div");
+  // bookedGigs.className = "booked-gigs";
+  // var bookedGigsH = document.createElement("h2");
+  // bookedGigsH.innerHTML = "Booked Events";
+  // bookedGigs.append(bookedGigsH);
+  // profileGigs.append(bookedGigs);
   //// then, fill the booked gigs section
-  testBookedGigs();
+  // testBookedGigs();
 
   // IF a profile has open gigs,
-  openGigs = document.createElement("div");
-  openGigs.className = "open-gigs";
-  var openGigsH = document.createElement("h2");
-  openGigsH.innerHTML = "Open Events";
-  openGigs.append(openGigsH);
-  profileGigs.append(openGigs);
+  // openGigs = document.createElement("div");
+  // openGigs.className = "open-gigs";
+  // var openGigsH = document.createElement("h2");
+  // openGigsH.innerHTML = "Open Events";
+  // openGigs.append(openGigsH);
+  // profileGigs.append(openGigs);
   // then, fill the open gigs section
-  testOpenGigs();
+  // testOpenGigs();
 
   // IF a profile has past hosted gigs,
-  pastHostedGigs = document.createElement("div");
-  pastHostedGigs.className = "open-gigs";
-  var pastHostedGigsH = document.createElement("h2");
-  pastHostedGigsH.innerHTML = "Past Events";
-  pastHostedGigs.append(pastHostedGigsH);
-  profileGigs.append(pastHostedGigs);
+  // pastHostedGigs = document.createElement("div");
+  // pastHostedGigs.className = "open-gigs";
+  // var pastHostedGigsH = document.createElement("h2");
+  // pastHostedGigsH.innerHTML = "Past Events";
+  // pastHostedGigs.append(pastHostedGigsH);
+  // profileGigs.append(pastHostedGigs);
   // then, fill the past gigs section
-  testPastHostedGigs();
+  // testPastHostedGigs();
 
+  var empty = [];
+  var clipCar = new Carousel(empty, "band-samples");
+  mainContent.append(clipCar.wrapper);
 
 
   // getUsername();
@@ -1072,7 +1266,7 @@ function init(){
                     self.toggleContent(event);
                 })
                 .appendTo(uiChatbox),
-            uiChatboxTitle = (self.uiChatboxTitle = $('<span></span>'))
+            uiChatboxTitle = (self.uiChatboxTitle = $('<span id="chat_title"></span>'))
                 .html(title)
                 .appendTo(uiChatboxTitlebar),
             uiChatboxTitlebarClose = (self.uiChatboxTitlebarClose = $('<a href="#"></a>'))
@@ -1088,10 +1282,10 @@ function init(){
                     return false;
                 })
                 .appendTo(uiChatboxTitlebar),
-            uiChatboxTitlebarCloseText = $('<span></span>')
+            uiChatboxTitlebarCloseText = $('<span id="chat_closer"></span>')
                 .addClass('ui-icon ' +
                           'ui-icon-closethick')
-                .text('close')
+                .text('X')
                 .appendTo(uiChatboxTitlebarClose),
             // uiChatboxTitlebarMinimize = (self.uiChatboxTitlebarMinimize = $('<a href="#"></a>'))
             //     .addClass('ui-corner-all ' +
