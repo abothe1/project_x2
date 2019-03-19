@@ -28,6 +28,11 @@ const database = require('../database.js'),
         console.log('User tried to upload gig pic while not logged in');
         res.status(401).end();
       }
+      if (!(req.file.mimetype=='image/jpeg' || req.file.mimetype=='image/png')){
+        console.log('Wrong mimetype')
+        res.status(200).send("Wrong mimeType");
+        return;
+      }
       var fileName = 'static/uploads/GigPics/'+req.file.filename;
       console.log(req.file);      //res.send(req.file);
       fs.rename(req.file.path, fileName, err2=>{
@@ -50,6 +55,11 @@ const database = require('../database.js'),
       if (!req.file){
         console.log('No file sent');
         res.status(400).end();
+      }
+      if (!(req.file.mimetype=='image/jpeg' || req.file.mimetype=='image/png')){
+        console.log('Wrong mimetype')
+        res.status(200).send("Wrong mimeType");
+        return;
       }
     console.log(req.file);
     var fileName = 'static/uploads/BandPics/'+req.file.filename;
@@ -77,6 +87,12 @@ const database = require('../database.js'),
         console.log('No file sent');
         res.status(400).end();
       }
+      if (!(req.file.mimetype=='audio/mp3' || req.file.mimetype=='image/wav')){
+        console.log('Wrong mimetype')
+        res.status(200).send("Wrong mimeType");
+        return;
+      }
+
     console.log(req.file);
     var fileName = 'static/uploads/SoundBytes/'+req.file.filename;
     console.log(req.file);      //res.send(req.file);
@@ -96,6 +112,15 @@ const database = require('../database.js'),
     if (!req.session.key){
       console.log('User tried to upload gig pic while not logged in');
       res.status(401).end();
+    }
+    if (!req.file){
+      console.log('No file sent');
+      res.status(400).end();
+    }
+    if (!(req.file.mimetype=='image/jpeg' || req.file.mimetype=='image/png')){
+      console.log('Wrong mimetype')
+      res.status(200).send("Wrong mimeType");
+      return;
     }
 
     console.log(req.file);

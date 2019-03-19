@@ -1495,11 +1495,21 @@ function convertZipGig(myGig){
     alert('Please enter a valid zipcode');
     return;
   }
-  $.getJSON('http://api.openweathermap.org/data/2.5/weather?zip='+zipcode+',us&APPID=f89469b4b424d53ac982adacb8db19f6').done(function(data){
-    console.log(JSON.stringify(data));
-    var lat = data.coord.lat;
-    var lng = data.coord.lon;
-    sendGigToDB(lat,lng, myGig);
+  var success = false;
+  setTimeout(function() {
+    if (!success)
+    {
+        // Handle error accordingly
+        console.log("Got error with zipcode");
+        alert("Please enter a valid zipcode");
+        return;
+    }
+  }, 5000);
+    $.getJSON('http://api.openweathermap.org/data/2.5/weather?zip='+zipcode+',us&APPID=f89469b4b424d53ac982adacb8db19f6').done(function(data){
+      console.log(JSON.stringify(data));
+      var lat = data.coord.lat;
+      var lng = data.coord.lon;
+      sendGigToDB(lat,lng, myGig);
   });
 }
 function convertZipBand(myBand){
@@ -1509,12 +1519,26 @@ function convertZipBand(myBand){
     return;
   }
   console.log(zipcode);
-  $.getJSON('http://api.openweathermap.org/data/2.5/weather?zip='+zipcode+',us&APPID=f89469b4b424d53ac982adacb8db19f6').done(function(data){
-    console.log(JSON.stringify(data));
-    var lat = data.coord.lat;
-    var lng = data.coord.lon;
-    sendBandToDB(lat,lng, myBand);
-  });
+  var success = false;
+  setTimeout(function() {
+    if (!success)
+    {
+        // Handle error accordingly
+        console.log("Got error with zipcode");
+        alert("Please enter a valid zipcode");
+        return;
+    }
+  }, 5000);
+    $.getJSON('http://api.openweathermap.org/data/2.5/weather?zip='+zipcode+',us&APPID=f89469b4b424d53ac982adacb8db19f6').done(function(data){
+      console.log(JSON.stringify(data));
+      success=true;
+      var lat = data.coord.lat;
+      var lng = data.coord.lon;
+      sendBandToDB(lat,lng, myBand);
+    });
+
+
+
 }
 
 function parseQueryString(str){
