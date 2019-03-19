@@ -1270,6 +1270,7 @@ function sendBandToDB(lat, lng, myBand){
   var description = myBand['description'];
   var openDates = myBand['openDates'];
   var qCategories = parseQueryString(description);
+
   if(!($("#new-band-pic")[0].files || $("#new-band-pic")[0].files[0])){
     alert('Please enter a valid .jpeg, or .png file for bands profile picture');
     return;
@@ -1351,7 +1352,7 @@ function sendBandToDB(lat, lng, myBand){
   });
 }
 function tesSRC(){
-  $('#testPic').src='/public/uploads/BandPics/de8b00fc52613ede0cdc3e09dffdcecd';
+  $('#testPic').src='static/uploads/GigPics/64e8c9ffbee6a8f44f205b50f59a5f3c';
 }
 
 function postGig(){

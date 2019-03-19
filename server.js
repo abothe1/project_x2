@@ -75,6 +75,7 @@ app.use(express.urlencoded({ extended: true }));
 // Make statics readable
 app.use(express.static(STATIC_DIR));
 
+
 // create the router
 var router = express.Router();
 
