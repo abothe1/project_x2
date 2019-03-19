@@ -197,23 +197,25 @@ router.get('/bandsForDrops', (req, res)=>{
   });
 });
 router.get('/aGig', (req, res)=>{
-  if (!req.body) {
+  if (!req.query) {
      res.status(400).send('No body sent').end();
   }
   if (!req.session.key){
     res.status(401).send('No body sent').end();
     console.log('user tried to apply without being logged in');
   }
-  var {gigID}=req.body;
+  console.log(req.query);
+  var {gigID} = req.query;
+  console.log("Gig id is : " + gigID);
   database.connect(db=>{
-    db.band('gigs').collection('gigs').findOne({'_id':database.objectId(gigID)}, (err2, result2)=>{
+    db.db('gigs').collection('gigs').findOne({'_id':database.objectId(gigID)}, (err2, result2)=>{
       if (err2) {
         console.log('There was an erro rtrying to get gig with id ' + gigID + " ERROR: " + err2);
         db.close();
         res.status(500).end();
       }
       else{
-        cosnole.log("IN find a gig result is " + result2);
+        console.log("IN find a gig result is " + result2);
         db.close();
         res.status(200).send(result2);
       }
@@ -225,14 +227,14 @@ router.get('/aGig', (req, res)=>{
 });
 
 router.get('/aBand', (req, res)=>{
-  if (!req.body) {
+  if (!req.query) {
      res.status(400).send('No body sent').end();
   }
   if (!req.session.key){
     res.status(401).send('No body sent').end();
     console.log('user tried to apply without being logged in');
   }
-  var {bandID}=req.body;
+  var {bandID}=req.query;
   database.connect(db=>{
     db.band('bands').collection('bands').findOne({'_id':database.objectId(bandID)}, (err2, result2)=>{
       if (err2){
