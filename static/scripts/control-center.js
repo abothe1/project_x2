@@ -23,7 +23,7 @@ var mainContent = null;
 var profilesList = null;
 
 class OpenGig{
-  constructor(gig){
+  constructor(gig, openGigCallback){
     this.container = document.createElement("div");
     this.container.className = "open-gig";
     this.info = document.createElement("div");
@@ -37,7 +37,7 @@ class OpenGig{
     this.gigPic.src = gig.picture;
     this.gigPicFrame = document.createElement("img");
     this.gigPicFrame.className = "gig-pic-frame";
-    this.gigPicFrame.src = "../static/assets/Home/orangebox.png";
+    this.gigPicFrame.src = "/assets/Home/orangebox.png";
     this.gigDesc = document.createElement("div");
     this.gigDesc.className = "open-gig-description";
     this.gigDescH = document.createElement("h3");
@@ -89,42 +89,114 @@ class OpenGig{
     this.gigConfirm.innerHTML = "confirm changes";
     this.gigAppH = document.createElement("h3");
     this.gigAppH.innerHTML = "applicants";
-    this.applicantCarousel = new Carousel(gig.applications,"hosted-applications");
-    this.carEl = this.applicantCarousel.wrapper;
+    if(gig.hasOwnProperty("applications")){
+      if(gig.applications != null){
+        new Carousel(gig.applications,"hosted-applications",carCallback=>{
+          this.applicantCarousel = carCallback;
+          this.carEl = this.applicantCarousel.wrapper;
+          // tier 3
+          this.gigImg.append(this.title);
+          this.gigImg.append(this.gigPic);
+          this.gigImg.append(this.gigPicFrame);
 
-    // tier 3
-    this.gigImg.append(this.title);
-    this.gigImg.append(this.gigPic);
-    this.gigImg.append(this.gigPicFrame);
+          this.gigDesc.append(this.gigDescH);
+          this.gigDesc.append(this.gigDescT);
 
-    this.gigDesc.append(this.gigDescH);
-    this.gigDesc.append(this.gigDescT);
+          this.gigDT.append(this.gigDTH);
+          this.gigDT.append(this.gigDate);
+          this.gigDT.append(this.gigTimeL);
+          this.gigDT.append(this.gigSTL);
+          this.gigDT.append(this.gigST);
+          this.gigDT.append(this.gigETL);
+          this.gigDT.append(this.gigET);
 
-    this.gigDT.append(this.gigDTH);
-    this.gigDT.append(this.gigDate);
-    this.gigDT.append(this.gigTimeL);
-    this.gigDT.append(this.gigSTL);
-    this.gigDT.append(this.gigST);
-    this.gigDT.append(this.gigETL);
-    this.gigDT.append(this.gigET);
+          this.gigLP.append(this.gigLPH);
+          this.gigLP.append(this.gigLoc);
+          this.gigLP.append(this.gigPL);
+          this.gigLP.append(this.gigPay);
+          this.gigLP.append(this.gigConfirm);
+          // tier 2
+          this.info.append(this.gigImg);
+          this.info.append(this.gigDesc);
+          this.info.append(this.gigDT);
+          this.info.append(this.gigLP);
+          // tier 1
+          this.container.append(this.info);
+          this.container.append(this.gigAppH);
+          this.container.append(this.carEl);
+          // tier 0
+          // openGigs.append(this.container);
+          openGigCallback(this);
+        });
+      }
+      else{
+        // tier 3
+        this.gigImg.append(this.title);
+        this.gigImg.append(this.gigPic);
+        this.gigImg.append(this.gigPicFrame);
 
-    this.gigLP.append(this.gigLPH);
-    this.gigLP.append(this.gigLoc);
-    this.gigLP.append(this.gigPL);
-    this.gigLP.append(this.gigPay);
-    this.gigLP.append(this.gigConfirm);
-    // tier 2
-    this.info.append(this.gigImg);
-    this.info.append(this.gigDesc);
-    this.info.append(this.gigDT);
-    this.info.append(this.gigLP);
-    // tier 1
-    this.container.append(this.info);
-    this.container.append(this.gigAppH);
-    this.container.append(this.carEl);
-    // tier 0
-    openGigs.append(this.container);
-    setupAction();
+        this.gigDesc.append(this.gigDescH);
+        this.gigDesc.append(this.gigDescT);
+
+        this.gigDT.append(this.gigDTH);
+        this.gigDT.append(this.gigDate);
+        this.gigDT.append(this.gigTimeL);
+        this.gigDT.append(this.gigSTL);
+        this.gigDT.append(this.gigST);
+        this.gigDT.append(this.gigETL);
+        this.gigDT.append(this.gigET);
+
+        this.gigLP.append(this.gigLPH);
+        this.gigLP.append(this.gigLoc);
+        this.gigLP.append(this.gigPL);
+        this.gigLP.append(this.gigPay);
+        this.gigLP.append(this.gigConfirm);
+        // tier 2
+        this.info.append(this.gigImg);
+        this.info.append(this.gigDesc);
+        this.info.append(this.gigDT);
+        this.info.append(this.gigLP);
+        // tier 1
+        this.container.append(this.info);
+        // tier 0
+        // openGigs.append(this.container);
+        openGigCallback(this);
+      }
+    }
+    else{
+      // tier 3
+      this.gigImg.append(this.title);
+      this.gigImg.append(this.gigPic);
+      this.gigImg.append(this.gigPicFrame);
+
+      this.gigDesc.append(this.gigDescH);
+      this.gigDesc.append(this.gigDescT);
+
+      this.gigDT.append(this.gigDTH);
+      this.gigDT.append(this.gigDate);
+      this.gigDT.append(this.gigTimeL);
+      this.gigDT.append(this.gigSTL);
+      this.gigDT.append(this.gigST);
+      this.gigDT.append(this.gigETL);
+      this.gigDT.append(this.gigET);
+
+      this.gigLP.append(this.gigLPH);
+      this.gigLP.append(this.gigLoc);
+      this.gigLP.append(this.gigPL);
+      this.gigLP.append(this.gigPay);
+      this.gigLP.append(this.gigConfirm);
+      // tier 2
+      this.info.append(this.gigImg);
+      this.info.append(this.gigDesc);
+      this.info.append(this.gigDT);
+      this.info.append(this.gigLP);
+      // tier 1
+      this.container.append(this.info);
+      // tier 0
+      // openGigs.append(this.container);
+      openGigCallback(this);
+    }
+
   }
 }
 
@@ -253,6 +325,19 @@ class GigSection{
       }
       break;
       case "open":
+      var openGigs = document.createElement("div");
+      openGigs.className = "booked-gigs";
+      var openGigsH = document.createElement("h2");
+      openGigsH.innerHTML = "Open Events";
+      openGigs.append(openGigsH);
+      profileGigs.append(openGigs);
+      for(var gig in gigs){
+        if(!(gigs[gig].isFilled)){
+          new OpenGig(gigs[gig], res=>{
+            openGigs.append(res.container);
+          });
+        }
+      }
       break;
       case "past-hosted":
       break;
@@ -1003,6 +1088,8 @@ function buildGigs(gigs){
     //handle
   }else{
     new GigSection(gigs,"booked");
+    new GigSection(gigs,"open");
+    // new GigSection(gigs,"past-hosted");
     // new GigSection(gigs,"open", gigSectionCallback=>{
     //   profileGigs.append(gigSectionCallback.container);
     //   setupAction();
