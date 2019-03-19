@@ -20,15 +20,13 @@ router.post('/gig', (req, res) => {
   database.connect(db => {
     let gigs = db.db('gigs').collection('gigs');
     let confirmCode=createGigConfirmCode(name);
-    gigs.insertOne({'name' : name, 'creator' : creator, 'address': address, 'zipcode':zipcode, 'startTime':startTime, 'price': price, 'date' : date, 'endTime' : endTime, 'applications' : applications, 'bandsAskedToPlay':[], 'lat' : lat, 'lng':lng, 'categories' : categories, 'description':description, 'isFilled':false, 'bandFor' : null, 'confirmationCode':confirmCode, 'picture':picture}, (err, result) => {
+    gigs.insertOne({'name' : name, 'confrimed':false, 'creator' : creator, 'address': address, 'zipcode':zipcode, 'startTime':startTime, 'price': price, 'date' : date, 'endTime' : endTime, 'applications' : applications, 'bandsAskedToPlay':[], 'lat' : lat, 'lng':lng, 'categories' : categories, 'description':description, 'isFilled':false, 'bandFor' : null, 'confirmationCode':confirmCode, 'picture':picture}, (err, result) => {
       if (err){
         console.warn("Couldnt get insert gig into database: " + err);
         res.status(500).end();
-        db.close();
       } else {
         console.log("gig inserted result: " + result["ops"][0]["_id"]);
         res.status(200).send(result["ops"][0]["_id"]);
-        db.close();
       }
     });
   }, err => {
@@ -60,12 +58,10 @@ router.post('/band', (req, res) => {
 			if (err){
 				console.warn("Couldnt get insert band into database: " + err);
 				res.status(500).end();
-				db.close();
 			} else {
 				console.log("band inserted with cats as : " + JSON.stringify(categories));
+				res.status(200).send(result);
 
-				res.status(200).end();
-				db.close();
 			}
 		});
 	}, err => {

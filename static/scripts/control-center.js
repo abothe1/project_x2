@@ -22,84 +22,6 @@ var pastHostedGigs = null;
 var mainContent = null;
 var profilesList = null;
 
-
-//ABs functions:
-function getGigInfo(gigID, cb){
-  console.log('getGigINFo gig id is : ' + gigID);
-  $.get('/aGig', {'gigID':gigID}, result=>{
-    console.log('Got result from get a gig here it is : ' + JSON.stringify(result));
-    cb(result);
-  });
-}
-function getBandInfo(bandID, cb){
-  $.get('/aBand', {'bandID':bandID}, result=>{
-    console.log('Got result from get a band here it is : ' + JSON.stringify(result));
-    cb(result);
-  });
-}
-
-//ABS classes:
-class BandSection{
-  constructor(band, identifier, bandSectionCallback){
-     // console.log('band inc Band Section is + :' + JSON.stringify(band));
-    switch(identifier){
-      case "upcoming":
-      if(band.upcomingGigs.length > 0){
-        new Carousel(band.upcomingGigs, "upcoming", carCallback =>{
-          this.title = document.createElement("p");
-          this.title.className = "title-text";
-          this.title.innerHTML = "Upcoming Gigs";
-          mainContent.append(this.title);
-          this.carousel = carCallback;
-          console.log(this.carousel.wrapper);
-          mainContent.append(this.carousel.wrapper);
-          bandSectionCallback(this);
-        });
-      }
-      break;
-      case "applications":
-      if(band.appliedGigs.length > 0){
-        new Carousel(band.appliedGigs,"applications", result =>{
-          this.title = document.createElement("p");
-          this.title.className = "title-text";
-          this.title.innerHTML = "Applied Gigs";
-          mainContent.append(this.title);
-          this.carousel = result;
-          mainContent.append(this.carousel);
-        });
-      }
-      break;
-      case "past":
-      if(band.finishedGigs.length > 0){
-        new Carousel(band.finishedGigs,"past", result =>{
-          this.title = document.createElement("p");
-          this.title.className = "title-text";
-          this.title.innerHTML = "Past Gigs";
-          mainContent.append(this.title);
-          this.carousel = result;
-          mainContent.append(this.carousel);
-        });
-      }
-      break;
-      case "interested-gigs":
-      if(!band.interstedGigs){
-        break;
-      }
-      if(band.interstedGigs.length > 0){
-        new Carousel(band.interstedGigs,"interested-gigs", result =>{
-          this.title = document.createElement("p");
-          this.title.className = "title-text";
-          this.title.innerHTML = "Interested Gigs";
-          mainContent.append(this.title);
-          this.carousel = result;
-          mainContent.append(this.carousel);
-        });
-      }
-      break;
-    }
-  }
-}
-
 class OpenGig{
   constructor(gig){
     this.container = document.createElement("div");
@@ -208,7 +130,8 @@ class OpenGig{
 
 class BookedGig {
 
-  constructor(gig){
+  constructor(gig, bookedGigCallback){
+
     this.container = document.createElement("div");
     this.container.className = "booked-gig";
     this.titleEl = document.createElement("h3");
@@ -224,7 +147,7 @@ class BookedGig {
     this.gigPic.src = gig.picture;
     this.gigPicFrame = document.createElement("img");
     this.gigPicFrame.className = "gig-pic-frame";
-    this.gigPicFrame.src = "../static/assets/Home/orangebox.png";
+    this.gigPicFrame.src = "/assets/Home/orangebox.png";
     this.gigDesc = document.createElement("div");
     this.gigDesc.className = "gig-description";
     this.gigDescP = document.createElement("p");
@@ -234,15 +157,13 @@ class BookedGig {
     this.gigAct.className = "gig-act";
     this.actPic = document.createElement("img");
     this.actPic.className = "act-pic";
-    this.actPic.src = gig.bandFor.picture;
     this.actPicFrame = document.createElement("img");
     this.actPicFrame.className = "act-pic-frame";
-    this.actPicFrame.src = "../static/assets/Home/orangebox.png";
+    this.actPicFrame.src = "/assets/Home/orangebox.png";
     this.actNameplate = document.createElement("div");
     this.actNameplate.className = "act-nameplate";
     this.actName = document.createElement("p");
     this.actName.className = "act-name";
-    this.actName.innerHTML = gig.bandFor.name;
     this.gigConfirm = document.createElement("div");
     this.gigConfirm.className = "gig-confirm";
     this.gigConfirmP = document.createElement("p");
@@ -254,32 +175,152 @@ class BookedGig {
     this.gigConfirmA.className = "gig-confirm-a";
     this.gigConfirmA.href = "#"; // can be changed to a javascript function for code submission
     this.gigConfirmA.innerHTML = "confirm";
-// tier 4
-    this.actNameplate.append(this.actName);
-// tier 3
-    this.gigImg.append(this.gigPic);
-    this.gigImg.append(this.gigPicFrame);
+    //async
+    getBandInfo(gig.bandFor, res=>{
+      this.band = res;
+      console.log(JSON.stringify(res));
+      this.actPic.src = this.band.picture;
+      this.actName.innerHTML = this.band.name;
 
-    this.gigDesc.append(this.gigDescP);
+      // tier 4
+          this.actNameplate.append(this.actName);
+      // tier 3
+          this.gigImg.append(this.gigPic);
+          this.gigImg.append(this.gigPicFrame);
 
-    this.gigAct.append(this.actPic);
-    this.gigAct.append(this.actPicFrame);
-    this.gigAct.append(this.actNameplate);
+          this.gigDesc.append(this.gigDescP);
 
-    this.gigConfirm.append(this.gigConfirmP);
-    this.gigConfirm.append(this.gigConfirmInput);
-    this.gigConfirm.append(this.gigConfirmA);
-// tier 2
-    this.gigContent.append(this.gigImg);
-    this.gigContent.append(this.gigDesc);
-    this.gigContent.append(this.gigAct);
-    this.gigContent.append(this.gigConfirm);
-// tier 1
-    this.container.append(this.titleEl);
-    this.container.append(this.locEl);
-    this.container.append(this.gigContent);
-// tier 0
-    bookedGigs.append(this.container);
+          this.gigAct.append(this.actPic);
+          this.gigAct.append(this.actPicFrame);
+          this.gigAct.append(this.actNameplate);
+
+          this.gigConfirm.append(this.gigConfirmP);
+          this.gigConfirm.append(this.gigConfirmInput);
+          this.gigConfirm.append(this.gigConfirmA);
+      // tier 2
+          this.gigContent.append(this.gigImg);
+          this.gigContent.append(this.gigDesc);
+          this.gigContent.append(this.gigAct);
+          this.gigContent.append(this.gigConfirm);
+      // tier 1
+          this.container.append(this.titleEl);
+          this.container.append(this.locEl);
+          this.container.append(this.gigContent);
+      // tier 0
+          // bookedGigs.append(this.container);
+          bookedGigCallback(this);
+    });
+
+
+  }
+}
+
+//ABs functions:
+function getGigInfo(gigID, cb){
+  console.log('getGigINFo gig id is : ' + gigID);
+  $.get('/aGig', {'gigID':gigID}, result=>{
+    console.log('Got result from get a gig here it is : ' + JSON.stringify(result));
+    cb(result);
+  });
+}
+function getBandInfo(bandID, cb){
+  console.log('////////////////////');
+  console.log(bandID);
+  $.get('/aBand', {'id':bandID}, result=>{
+    console.log('Got result from get a band here it is : ' + JSON.stringify(result));
+    cb(result);
+  });
+}
+
+//ABS classes:
+
+class GigSection{
+  constructor(gigs,identifier){
+    switch(identifier){
+      case "booked":
+      var bookedGigs = document.createElement("div");
+      bookedGigs.className = "booked-gigs";
+      var bookedGigsH = document.createElement("h2");
+      bookedGigsH.innerHTML = "Booked Events";
+      bookedGigs.append(bookedGigsH);
+      profileGigs.append(bookedGigs);
+      for(var gig in gigs){
+        if(gigs[gig].isFilled){
+          new BookedGig(gigs[gig], res=>{
+            bookedGigs.append(res.container);
+          });
+        }
+      }
+      break;
+      case "open":
+      break;
+      case "past-hosted":
+      break;
+    }
+  }
+}
+
+class BandSection{
+  constructor(band, identifier, bandSectionCallback){
+     // console.log('band inc Band Section is + :' + JSON.stringify(band));
+    switch(identifier){
+      case "upcoming":
+      if(band.upcomingGigs.length > 0){
+        new Carousel(band.upcomingGigs, "upcoming", carCallback =>{
+          this.title = document.createElement("p");
+          this.title.className = "title-text";
+          this.title.innerHTML = "Upcoming Gigs";
+          this.container = document.createElement("div");
+          this.container.append(this.title);
+          this.carousel = carCallback;
+          this.container.append(this.carousel.wrapper);
+          bandSectionCallback(this);
+        });
+      }
+      break;
+      case "applications":
+      if(band.appliedGigs.length > 0){
+        new Carousel(band.appliedGigs,"applications", carCallback =>{
+          this.title = document.createElement("p");
+          this.title.className = "title-text";
+          this.title.innerHTML = "Applied Gigs";
+          this.container = document.createElement("div");
+          this.container.append(this.title);
+          this.carousel = carCallback;
+          this.container.append(this.carousel.wrapper);
+          bandSectionCallback(this);
+        });
+      }
+      break;
+      case "past":
+      if(band.finishedGigs.length > 0){
+        new Carousel(band.finishedGigs,"past", carCallback =>{
+          this.title = document.createElement("p");
+          this.title.className = "title-text";
+          this.title.innerHTML = "Past Gigs";
+          this.container = document.createElement("div");
+          this.container.append(this.title);
+          this.carousel = carCallback;
+          this.container.append(this.carousel.wrapper);
+          bandSectionCallback(this);
+        });
+      }
+      break;
+      case "interested-gigs":
+      if(band.interestedGigs.length > 0){
+        new Carousel(band.interestedGigs,"interested-gigs", carCallback =>{
+          this.title = document.createElement("p");
+          this.title.className = "title-text";
+          this.title.innerHTML = "Interested Gigs";
+          this.container = document.createElement("div");
+          this.container.append(this.title);
+          this.carousel = carCallback;
+          this.container.append(this.carousel.wrapper);
+          bandSectionCallback(this);
+        });
+      }
+      break;
+    }
   }
 }
 
@@ -356,6 +397,7 @@ class Carousel{
         }
         this.carWrap.append(this.carousel);
         this.wrapper.append(this.carWrap);
+        carCallback(this);
       });
       break;
       case "past-hosted":
@@ -423,14 +465,14 @@ class Carousel{
         this.carWrap.append(this.carousel);
         this.wrapper.append(this.carWrap);
         profileGigs.append(this.wrapper);
+        carCallback(this);
       });
       break;
       // upcoming gigs
       case "upcoming":
       //get upcoming data
-      console.log("in upcoming");
       this.handleGigs(obj, result=>{
-        console.log(JSON.stringify(result));
+        // console.log(JSON.stringify(result));
         this.upcomingGigs = result;
         this.wrapper = document.createElement("div");
         this.wrapper.className = "wrapper";
@@ -499,7 +541,6 @@ class Carousel{
         this.wrapper.append(this.carWrap);
         carCallback(this);
       });
-
       break;
       // applications
       case "applications":
@@ -521,7 +562,9 @@ class Carousel{
           // img
           var newImg = document.createElement("img");
           newImg.className = "carousel-img";
-          newImg.src = this.appliedGigs[gig].picture;
+          if(this.appliedGigs[gig].hasOwnProperty("picture")){
+            newImg.src = this.appliedGigs[gig].picture;
+          }
           // frame
           var newFrame = document.createElement("img");
           newFrame.className = "carousel-frame";
@@ -566,6 +609,7 @@ class Carousel{
         }
         this.carWrap.append(this.carousel);
         this.wrapper.append(this.carWrap);
+        carCallback(this);
       });
       break;
       case "past":
@@ -579,15 +623,17 @@ class Carousel{
         this.carousel = document.createElement("div");
         this.carousel.className = "jcarousel";
         this.list = document.createElement("ul");
-        for(var gig in this.pastGigs){
-          var id = this.pastGigs[gig]._id;
-          var name = this.pastGigs[gig].name;
+        this.pastGigs.forEach(function(gig){
+          var id = gig._id;
+          var name = gig.name;
           var newItem = document.createElement("li");
           newItem.className = "carousel-li";
           // img
           var newImg = document.createElement("img");
           newImg.className = "carousel-img";
-          newImg.src = this.pastGigs[gig].picture;
+          if(gig.hasOwnProperty("picture")){
+            newImg.src = gig.picture;
+          }
           // frame
           var newFrame = document.createElement("img");
           newFrame.className = "carousel-frame";
@@ -595,17 +641,17 @@ class Carousel{
           // overlay
           var newOverlay = document.createElement("div");
           newOverlay.className = "result-overlay";
-          var overlayID = "result-overlay-"+gig;
+          var overlayID = "result-overlay-"+gig.name;
           newOverlay.setAttribute("id",overlayID);
           var priceText = document.createElement("p");
           priceText.className = "result-overlay-p";
-          priceText.innerHTML = "$"+this.pastGigs[gig].price+"/hr";
+          priceText.innerHTML = "$"+gig.price+"/hr";
           // nameplate
           var nameDiv = document.createElement("div");
           nameDiv.className = "result-name-div";
           var nameP = document.createElement("p");
           nameP.className = "result-name-p";
-          nameP.innerHTML = this.pastGigs[gig].name;
+          nameP.innerHTML = gig.name;
           newItem.append(newImg);
           newOverlay.append(priceText);
           newItem.appendChild(newOverlay);
@@ -615,9 +661,9 @@ class Carousel{
           this.list.append(newItem);
           //event listener data preprocessing
           newItem.newOverlay = newOverlay;
-          newItem._id = this.pastGigs[gig]._id;
+          newItem._id = gig._id;
           this.AddOverlayEventListeners(newItem);
-        }
+        },this);
         this.carousel.append(this.list);
         if(this.pastGigs.length > 4){
           // only add arrow controls if the carousel has enough data
@@ -632,12 +678,13 @@ class Carousel{
         }
         this.carWrap.append(this.carousel);
         this.wrapper.append(this.carWrap);
+        carCallback(this);
       });
       break;
       case "interested-gigs":
       // get past gigs info
       this.handleGigs(obj, result=>{
-        this.interstedGigs = result;
+        this.interestedGigs = result;
         this.wrapper = document.createElement("div");
         this.wrapper.className = "wrapper";
         this.carWrap = document.createElement("div");
@@ -645,15 +692,17 @@ class Carousel{
         this.carousel = document.createElement("div");
         this.carousel.className = "jcarousel";
         this.list = document.createElement("ul");
-        for(var gig in this.interstedGigs){
-          var id = this.interstedGigs[gig]._id;
-          var name = this.interstedGigs[gig].name;
+        for(var gig in this.interestedGigs){
+          var id = this.interestedGigs[gig]._id;
+          var name = this.interestedGigs[gig].name;
           var newItem = document.createElement("li");
           newItem.className = "carousel-li";
           // img
           var newImg = document.createElement("img");
           newImg.className = "carousel-img";
-          newImg.src = this.interstedGigs[gig].picture;
+          if(this.interestedGigs[gig].hasOwnProperty("picture")){
+            newImg.src = this.interestedGigs[gig].picture;
+          }
           // frame
           var newFrame = document.createElement("img");
           newFrame.className = "carousel-frame";
@@ -665,13 +714,13 @@ class Carousel{
           newOverlay.setAttribute("id",overlayID);
           var priceText = document.createElement("p");
           priceText.className = "result-overlay-p";
-          priceText.innerHTML = "$"+this.interstedGigs[gig].price+"/hr";
+          priceText.innerHTML = "$"+this.interestedGigs[gig].price+"/hr";
           // nameplate
           var nameDiv = document.createElement("div");
           nameDiv.className = "result-name-div";
           var nameP = document.createElement("p");
           nameP.className = "result-name-p";
-          nameP.innerHTML = this.interstedGigs[gig].name;
+          nameP.innerHTML = this.interestedGigs[gig].name;
           newItem.append(newImg);
           newOverlay.append(priceText);
           newItem.appendChild(newOverlay);
@@ -681,11 +730,11 @@ class Carousel{
           this.list.append(newItem);
           //event listener data preprocessing
           newItem.newOverlay = newOverlay;
-          newItem._id = this.interstedGigs[gig]._id;
+          newItem._id = this.interestedGigs[gig]._id;
           this.AddOverlayEventListeners(newItem);
         }
         this.carousel.append(this.list);
-        if(this.interstedGigs.length > 4){
+        if(this.interestedGigs.length > 4){
           // only add arrow controls if the carousel has enough data
           this.prev = document.createElement("a");
           this.prev.className = "jcarousel-control-prev";
@@ -698,6 +747,7 @@ class Carousel{
         }
         this.carWrap.append(this.carousel);
         this.wrapper.append(this.carWrap);
+        carCallback(this);
       });
       break;
       case "band-samples":
@@ -779,20 +829,27 @@ class Carousel{
       }
       this.carWrap.append(this.carousel);
       this.wrapper.append(this.carWrap);
+      carCallback(this);
       break;
     }
   }
 
   handleBands(idArr){
-    this.handleBandssHelper(idArr, res=>{
-      cb(res);
+    this.handleBandsHelper(idArr, res=>{
+      if (res.length==idArr.length){
+        cb(res);
+      }
     });
 
   }
 
-  handleGigs(idArr, cb){
+
+  handleGigs(idArr, cb, ){
+  //  var gigProxy=[];
     this.handleGigsHelper(idArr, res=>{
-      cb(res);
+      if (res.length==idArr.length){
+        cb(res);
+      }
     });
 
   }
@@ -817,7 +874,7 @@ class Carousel{
     idArr.forEach(function(id, i){
       console.log('ID in handle gigs is : ');
       console.log(idArr[i])
-      getGigInfo(id, res=>{
+      getBandInfo(id, res=>{
         console.log('in get gig info and res is:' + JSON.stringify(res));
         bands.push(res);
         if (bands.lenth==idArr.lenth){
@@ -848,6 +905,7 @@ class Carousel{
   }
 }
 
+var callbackStepper = 0;
 
 
 function updateBand(id, query){
@@ -857,7 +915,7 @@ function updateBand(id, query){
 }
 
 function updateGig(id, query){
-  $.post('/updateGig', {'_id':id, 'query':query}, result =>{
+  $.post('/updateGig', {'id':id, 'query':query}, result =>{
     alert(JSON.stringify(result));
   });
 }
@@ -878,11 +936,11 @@ function getUserInfo(user){
   console.log('in get info and username is ' + user['username']);
   var username = user['username'];
   $.get('/getBands', {'creator':username}, result => {
-    // console.log("bands from db are: " + JSON.stringify(result));
+    console.log("bands from db are: " + JSON.stringify(result));
     var bands = JSON.parse(JSON.stringify(result));
     user['bands']=bands;
     $.get('/getGigs', {'creator':username}, result => {
-      // console.log("gigs from db are: " + JSON.stringify(result));
+      console.log("gigs from db are: " + JSON.stringify(result));
       var gigs = JSON.parse(JSON.stringify(result));
       user['gigs']=gigs;
       createWebPage(user);
@@ -890,34 +948,77 @@ function getUserInfo(user){
 	});
 
 }
-function buildBand(bands){
+function buildBands(bands){
   // after we have actual bands, not IDs
-  for (var band in bands){
-    new BandSection(bands[band],"upcoming", bandSectionCallback=>{
-      var bandTitle = document.createElement("p");
-      bandTitle.className = "title-text";
-      bandTitle.innerHTML = bands[band].name;
-      bandTitle.id = bands[band].name+"-section";
-      var newNav = document.createElement("li");
-      var newNavA = document.createElement("a");
-      newNavA.href = "#"+bands[band].name+"-section";
+
+  // handleGigsHelper(idArr, cb){
+  //   var gigProxy = [];
+  //   idArr.forEach(function(id, i){
+  //     console.log('ID in handle gigs is : ');
+  //     console.log(idArr[i])
+  //     getGigInfo(id, res=>{
+  //       console.log('in get gig info and res is:' + JSON.stringify(res));
+  //       gigProxy.push(res);
+  //       if (gigProxy.lenth==idArr.lenth){
+  //         cb(gigProxy);
+  //       }
+  //     });
+  //   });
+  // }
+
+  bands.forEach(function(band){
+    var bandTitle = document.createElement("p");
+    bandTitle.className = "title-text";
+    bandTitle.innerHTML = band.name;
+    bandTitle.id = band.name+"-section";
+    var newNav = document.createElement("li");
+    var newNavA = document.createElement("a");
+    newNavA.href = "#"+band.name+"-section";
+    var bandContainer = document.createElement("div");
+    bandContainer.append(bandTitle);
     //  profilesList.
-      mainContent.append(bandTitle);
+    mainContent.append(bandContainer);
+    new BandSection(band,"upcoming", bandSectionCallback=>{
+      bandContainer.append(bandSectionCallback.container);
+      setupAction();
     });
-    // var applicationsSection = new BandSection(bands[band],"applications");
-    // var pastSection = new BandSection(bands[band],"past");
-    // var interestedSection = new BandSection(bands[band],"interested-gigs");
+    new BandSection(band,"applications", bandSectionCallback=>{
+      bandContainer.append(bandSectionCallback.container);
+      setupAction();
+    });
+    new BandSection(band,"past", bandSectionCallback=>{
+      bandContainer.append(bandSectionCallback.container);
+      setupAction();
+    });
+    new BandSection(band,"interested-gigs", bandSectionCallback=>{
+      bandContainer.append(bandSectionCallback.container);
+      setupAction();
+    });
+
+  });
+}
+
+function buildGigs(gigs){
+  if(gigs.hasOwnProperty("isConfirmed")){
+    //handle
+  }else{
+    new GigSection(gigs,"booked");
+    // new GigSection(gigs,"open", gigSectionCallback=>{
+    //   profileGigs.append(gigSectionCallback.container);
+    //   setupAction();
+    // });
   }
 }
 
 function createWebPage(user){
+  console.log(JSON.stringify(user));
   var allBands = user['bands'];
   var allGigs = user['gigs'];
   profileGigs = document.getElementById("profile-gigs");
   mainContent = document.getElementById("main-content-wrapper");
   profilesList = document.getElementById("profiles-list");
-  buildBand(allBands);
-  //buildGigs(user);
+  buildBands(allBands);
+  buildGigs(allGigs);
 
 
   //// IF a profile has booked gigs,

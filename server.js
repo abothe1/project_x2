@@ -91,6 +91,7 @@ require('./routes/update.js')(router, app); // for updating gigs and bands
 require('./routes/navigation.js')(router, app); // for navigating the website
 require('./routes/sessionInfo.js')(router, app); // for getting info in and out of sessions
 require('./routes/interactions.js')(router, app); // for allowing bands and gigs to interact
+require('./routes/delete.js')(router, app); // for ressetting everythingegt rid of htis
 
 //for routing messaing and emiting the message:
 

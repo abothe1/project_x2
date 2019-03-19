@@ -7,10 +7,11 @@ module.exports = router => {
   	}
     database.connect(db=>{
       var {id, query} = req.body;
-      var newvalues = {$set: query};
-      db.db('gigs').collection("gigs").updateOne({'_id':ObjectId(id)}, newvalues, res =>{
+      var newvalues = query;
+      db.db('gigs').collection("gigs").updateOne({'_id':ObjectId(id)}, newvalues, result =>{
         console.log("updated gig " + id);
-        db.close();
+        res.status(200).send(result);
+
       }, error =>{
         console.log("There was an error: " + error);
         res.send("Internal server error").end();
@@ -28,12 +29,15 @@ module.exports = router => {
   	}
 
     var {id, query} = req.body;
-    var newvalues = {$set: query};
+    var newvalues =  query;
+    console.log('query :' + JSON.stringify(query));
     database.connect(db=>{
-      db.db('bands').collection("bands").updateOne({'_id':ObjectId(id)}, newvalues, res=>{
+      db.db('bands').collection("bands").updateOne({'_id':ObjectId(id)}, newvalues, result=>{
         console.log("updated band " + id);
         db.close();
+        res.status(200).end();
       }, error=>{
+        db.close();
         console.log("There was an error: " + err);
         res.send("Internal server error").end();
       });

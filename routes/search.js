@@ -187,12 +187,10 @@ router.get('/bandsForDrops', (req, res)=>{
     if (err){
       console.log('there was an error trying to get audio and picture for bands err is :' + err);
       res.status(500).end();
-      db.close();
     }
     else{
       console.log('Got audio and pictures out of bands here is result: ' + JSON.stringify(result));
       res.status(200).send(result);
-      db.close();
     }
   });
 });
@@ -211,12 +209,11 @@ router.get('/aGig', (req, res)=>{
     db.db('gigs').collection('gigs').findOne({'_id':database.objectId(gigID)}, (err2, result2)=>{
       if (err2) {
         console.log('There was an erro rtrying to get gig with id ' + gigID + " ERROR: " + err2);
-        db.close();
         res.status(500).end();
+
       }
       else{
         console.log("IN find a gig result is " + result2);
-        db.close();
         res.status(200).send(result2);
       }
     });
@@ -234,20 +231,21 @@ router.get('/aBand', (req, res)=>{
     res.status(401).send('No body sent').end();
     console.log('user tried to apply without being logged in');
   }
-  var {bandID}=req.query;
+
+  var {id}=req.query;
+  console.log('Id :' + id);
   database.connect(db=>{
-    db.band('bands').collection('bands').findOne({'_id':database.objectId(bandID)}, (err2, result2)=>{
+    db.db('bands').collection('bands').findOne({_id:database.objectId(id)}, (err2, result2)=>{
       if (err2){
-        console.log('There was an erro rtrying to get band with id ' + bandID + " ERROR: " + err2);
-        db.close();
+        console.log('There was an erro rtrying to get band with id ' + id + " ERROR: " + err2);
         res.status(500).end();
       }
       else{
-        cosnole.log("IN find a band result is " + result2);
-        db.close();
+        console.log("IN find a band result is " + result2);
         res.status(200).send(result2);
       }
-    })
+
+    });
   }, err=>{
     console.log('There was an error connect to db: ' + err);
     res.status(500).end();

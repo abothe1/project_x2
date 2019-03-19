@@ -544,3 +544,9 @@ function diff_minutes(dt2, dt1) {
     console.log("in string to date and adate is " + date);
     return date;
   }
+
+  function deleteCol(mode){
+    $.post('/delete', {'mode':mode}, result=>{
+      alert(result);
+    });
+  }

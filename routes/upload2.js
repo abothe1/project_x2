@@ -87,7 +87,7 @@ const database = require('../database.js'),
         console.log('No file sent');
         res.status(400).end();
       }
-      if (!(req.file.mimetype=='audio/mp3' || req.file.mimetype=='image/wav')){
+      if (!(req.file.mimetype=='audio/mp3' || req.file.mimetype=='audio/wav')){
         console.log('Wrong mimetype')
         res.status(200).send("Wrong mimeType");
         return;
