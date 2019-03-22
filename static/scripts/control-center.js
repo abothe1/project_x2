@@ -1,4 +1,4 @@
-// helpful snippet for later
+this.handle// helpful snippet for later
 // jQuery('<div/>', {
 //     id: 'some-id',
 //     class: 'some-class',
@@ -14,452 +14,1100 @@
 // 7. Can create new bands/events
 // 8. Can add media and edit any information about existing bands/gigs/media
 
-//must implement getting the session data;
-//var username = getusernamefromsession;
-// var got = require('./chatbox.mjs');
+var profileGigs = null;
+var bookedGigs = null;
+var openGigs = null;
+var pastHostedGigs = null;
 
-function getBandInfo(bandID){
-  // var exampleBand =
-  // "{+
-  //   "'name':'Deadulus',"+
-  //   "'creator':'xxx',"+
-  //   "'address':'N27 W5230',"+
-  //   "'zipcode': 53012,"+
-  //   "'price': 33,"+
-  //   "'rating':null,"+
-  //   "'openDates':'[2019-01-26T14:22]'," +
-  //   "'application':'We are a good band',"+
-  //   "'lat': 100.1,"+
-  //   "'lng': 109.2,"+
-  //   "'audioSamples':[],"+
-  //   "'videoSamples':[],"+
-  //   "'picture':'../static/assets/Home/Art/9.jpeg',"+
-  //   "'appliedGigs':["+
-  //     "'gigneat23',"+
-  //     "'gigawesome12'"+
-  //   "],"+
-  //   "'categories':{"+
-  //     "'genres':[],"+
-  //     "'vibes':[],"+
-  //     "'insts':[],"+
-  //     "'gigTypes':[]"+
-  //   "}"+
-  // "}";
-  // actually get a band info
-  var exampleBand = {'name':'Deadalus', '_id': 'ab18110asadafds', 'creator':'xxx', 'address':"N27 W5230", 'zipcode': 53012, 'price': 26, 'rating':null, 'openDates':["2019-01-26T14:22"], 'application':"We are a good band", 'lat': 100.1, 'lng': 109.2, 'audioSamples':[], 'videoSamples':[], 'picture':"../static/assets/Home/Art/9.jpeg", 'appliedGigs':['gigneat23', 'gigawesome12'], 'categories':{'genres':[],'vibes':[],'insts':[],'gigTypes':[]}};
+var mainContent = null;
+var profilesList = null;
 
-  return exampleBand;
+//CHNAGE GIGS SECTION:?////////
+
+var changingGigs = {};
+function gigDateChanged(input){
+  console.log(" ");
+  //console.log('In descritpt changed the gig id is: ' + theGig._id);
+  console.log("The input value is: " + input.value);
+}
+function gigStartTimeChanged(input){
+  console.log(" ");
+  //console.log('In descritpt changed the gig id is: ' + theGig._id);
+  console.log("The input value is: " + input.value);
+}
+function gigEndTimeChanged(input){
+  console.log(" ");
+//  console.log('In descritpt changed the gig id is: ' + theGig._id);
+  console.log("The input value is: " + input.value);
+}
+function gigPayChanged(input){
+  console.log(" ");
+//  console.log('In descritpt changed the gig id is: ' + theGig._id);
+  console.log("The input value is: " + input.value);
+}
+function gigDescriptChanged(input){
+  console.log(" ");
+//  console.log('In descritpt changed the gig id is: ' + theGig._id);
+  console.log("The input value is: " + input.value);
+}
+function gigConfirmHit(input){
+  console.log(" ");
+  console.log('In descritpt changed the gig id is: ' + input);
 }
 
-function getGigInfo(gigID){
-  // actually get a gig info
-  var exampleGig = {"name": "the rum house","_id":"3289rwedsfjl", "pay":"24","address": "4487 big street, St. Louis, MO 63112","picture": "../static/assets/Home/Art/6.jpeg","description": "we are a very cool venue, looking for jazzy vibes and cool cats :)","applications": ["bandID1","bandID2","bandID3","bandID4","bandID5"],"bandFor": {}};
-  return exampleGig;
+///////////////
+class OpenGig{
+  constructor(gig, openGigCallback){
+    this.titleDiv = document.createElement("div");
+    this.titleReal = document.createElement("h3");
+    this.titleReal.innerHTML = gig.name;
+    this.titleDiv.append(this.titleReal);
+    this.container = document.createElement("div");
+    this.container.className = "open-gig";
+    this.info = document.createElement("div");
+    this.info.className = "open-gig-info";
+    this.gigImg = document.createElement("div");
+    this.gigImg.className = "open-gig-image";
+    this.title = document.createElement("h3");
+    this.title.innerHTML = "Gig Image";
+    this.title.className = "gig-title";
+    this.gigPic = document.createElement("img");
+    this.gigPic.className = "gig-pic";
+    this.gigPic.src = gig.picture;
+    this.gigPicFrame = document.createElement("img");
+    this.gigPicFrame.className = "gig-pic-frame";
+    this.gigPicFrame.src = "/assets/Home/orangebox.png";
+    this.gigDesc = document.createElement("div");
+    this.gigDesc.className = "open-gig-description";
+    this.gigDescH = document.createElement("h3");
+    this.gigDescH.innerHTML = "Description";
+    this.gigDescT = document.createElement("textarea");
+    this.gigDescT.className = "open-gig-textarea";
+    this.gigDescT.onchange = gigDescriptChange(this.gigDescT);
+    this.gigDescT.innerHTML = gig.description;
+    this.gigDT = document.createElement("div");
+    this.gigDT.className = "open-gig-date-time";
+    this.gigDTH = document.createElement("h3");
+    this.gigDTH.innerHTML = "Date";
+    this.gigDate = document.createElement("input");
+    this.gigDate.className = "open-gig-date";
+    this.gigDate.onchange = 'gigDateChanged(this)';
+    this.gigDate.name=gig._id;
+    this.gigDate.type = "date";
+    // this.gigDate.value = gig.date;
+    this.gigTimeL = document.createElement("h3");
+    this.gigTimeL.id = "open-gig-time-label";
+    this.gigTimeL.innerHTML = "Time";
+    this.gigSTL = document.createElement("label");
+    this.gigSTL.for = "open-gig-start-time";
+    this.gigSTL.innerHTML = "from"
+    this.gigST = document.createElement("input");
+    this.gigST.className = "open-gig-start-time";
+    this.gigST.type = "time";
+    this.gigST.onchange = gigStartTimeChanged(this.gigST);
+    this.gigST.name=gig._id;
+    // this.gigST.value = gig.startTime;
+    this.gigETL = document.createElement("label");
+    this.gigETL.for = "open-gig-end-time";
+    this.gigETL.innerHTML = "to";
+    this.gigET = document.createElement("input");
+    this.gigET.className = "open-gig-end-time";
+    this.gigET.type = "time";
+    this.gigET.onchange = 'gigEndTimeChanged(this)';
+    this.gigET.name=gig._id;
+    // this.gigET.value = gig.endTime;
+    this.gigLP = document.createElement("div");
+    this.gigLP.className = "open-gig-loc-pay";
+    this.gigLPH = document.createElement("h3");
+    this.gigLPH.innerHTML = "Location";
+    this.gigLoc = document.createElement("input");
+    this.gigLoc.className = "open-gig-loc";
+    this.gigLoc.value = gig.address;
+    this.gigLoc.onchange = 'gigLocChanged(this)';
+    this.gigLoc.name=gig._id;
+
+    this.gigPL = document.createElement("h3");
+    this.gigPL.id = "open-gig-pay-label";
+    this.gigPL.innerHTML = "Max Pay ($/hr)";
+    this.gigPay = document.createElement("input");
+    this.gigPay.className = "max-pay-input";
+    this.gigPay.onchange = 'gigPayChanged(this)';
+    this.gigPay.name=gig._id;
+
+    // this.gigPay.value = gig.payment;
+    this.gigConfirm = document.createElement("button");
+    this.gigConfirm.onclick = 'gigConfirmHit(this)';
+    this.gigConfirm.name=gig._id;
+    this.gigConfirm.className = "open-gig-confirm";
+    this.gigConfirm.innerHTML = "confirm changes";
+    this.gigAppH = document.createElement("h3");
+    this.gigAppH.innerHTML = "applicants";
+
+    if(gig.hasOwnProperty("applications")){
+      if(gig.applications != null){
+        new Carousel(gig.applications,"hosted-applications",carCallback=>{
+          this.applicantCarousel = carCallback;
+          this.carEl = this.applicantCarousel.wrapper;
+          // tier 3
+          this.gigImg.append(this.title);
+          this.gigImg.append(this.gigPic);
+          this.gigImg.append(this.gigPicFrame);
+
+          this.gigDesc.append(this.gigDescH);
+          this.gigDesc.append(this.gigDescT);
+
+          this.gigDT.append(this.gigDTH);
+          this.gigDT.append(this.gigDate);
+          this.gigDT.append(this.gigTimeL);
+          this.gigDT.append(this.gigSTL);
+          this.gigDT.append(this.gigST);
+          this.gigDT.append(this.gigETL);
+          this.gigDT.append(this.gigET);
+
+          this.gigLP.append(this.gigLPH);
+          this.gigLP.append(this.gigLoc);
+          this.gigLP.append(this.gigPL);
+          this.gigLP.append(this.gigPay);
+          this.gigLP.append(this.gigConfirm);
+          // tier 2
+          this.info.append(this.gigImg);
+          this.info.append(this.gigDesc);
+          this.info.append(this.gigDT);
+          this.info.append(this.gigLP);
+          // tier 1
+          this.container.append(this.info);
+          this.container.append(this.gigAppH);
+          this.container.append(this.carEl);
+          this.titleDiv.append(this.container);
+          // tier 0
+          // openGigs.append(this.container);
+          openGigCallback(this);
+        });
+      }
+      else{
+        // tier 3
+        this.gigImg.append(this.title);
+        this.gigImg.append(this.gigPic);
+        this.gigImg.append(this.gigPicFrame);
+
+        this.gigDesc.append(this.gigDescH);
+        this.gigDesc.append(this.gigDescT);
+
+        this.gigDT.append(this.gigDTH);
+        this.gigDT.append(this.gigDate);
+        this.gigDT.append(this.gigTimeL);
+        this.gigDT.append(this.gigSTL);
+        this.gigDT.append(this.gigST);
+        this.gigDT.append(this.gigETL);
+        this.gigDT.append(this.gigET);
+
+        this.gigLP.append(this.gigLPH);
+        this.gigLP.append(this.gigLoc);
+        this.gigLP.append(this.gigPL);
+        this.gigLP.append(this.gigPay);
+        this.gigLP.append(this.gigConfirm);
+        // tier 2
+        this.info.append(this.gigImg);
+        this.info.append(this.gigDesc);
+        this.info.append(this.gigDT);
+        this.info.append(this.gigLP);
+        // tier 1
+        this.container.append(this.info);
+        this.titleDiv.append(this.container);
+        // tier 0
+        // openGigs.append(this.container);
+        openGigCallback(this);
+      }
+    }
+    else{
+      // tier 3
+      this.gigImg.append(this.title);
+      this.gigImg.append(this.gigPic);
+      this.gigImg.append(this.gigPicFrame);
+
+      this.gigDesc.append(this.gigDescH);
+      this.gigDesc.append(this.gigDescT);
+
+      this.gigDT.append(this.gigDTH);
+      this.gigDT.append(this.gigDate);
+      this.gigDT.append(this.gigTimeL);
+      this.gigDT.append(this.gigSTL);
+      this.gigDT.append(this.gigST);
+      this.gigDT.append(this.gigETL);
+      this.gigDT.append(this.gigET);
+
+      this.gigLP.append(this.gigLPH);
+      this.gigLP.append(this.gigLoc);
+      this.gigLP.append(this.gigPL);
+      this.gigLP.append(this.gigPay);
+      this.gigLP.append(this.gigConfirm);
+      // tier 2
+      this.info.append(this.gigImg);
+      this.info.append(this.gigDesc);
+      this.info.append(this.gigDT);
+      this.info.append(this.gigLP);
+      // tier 1
+      this.container.append(this.info);
+      this.titleDiv.append(this.container);
+      // tier 0
+      // openGigs.append(this.container);
+      openGigCallback(this);
+    }
+
+  }
+}
+
+class BookedGig {
+
+  constructor(gig, bookedGigCallback){
+    this.container = document.createElement("div");
+    this.container.className = "booked-gig";
+    this.titleEl = document.createElement("h3");
+    this.titleEl.innerHTML = gig.name;
+    this.titleEl.className = "gig-title";
+    this.locEl = document.createElement("h3");
+    this.locEl.innerHTML = gig.address;
+    this.gigContent = document.createElement("div");
+    this.gigContent.className = "gig-content";
+    this.gigImg = document.createElement("div");
+    this.gigImg.className = "gig-image";
+    this.gigPic = document.createElement("img");
+    this.gigPic.className = "gig-pic";
+    this.gigPic.src = gig.picture;
+    this.gigPicFrame = document.createElement("img");
+    this.gigPicFrame.className = "gig-pic-frame";
+    this.gigPicFrame.src = "/assets/Home/orangebox.png";
+    this.gigDesc = document.createElement("div");
+    this.gigDesc.className = "gig-description";
+    this.gigDescP = document.createElement("p");
+    this.gigDescP.className = "gig-description-p";
+    this.gigDescP.innerHTML = gig.description;
+    this.gigAct = document.createElement("div");
+    this.gigAct.className = "gig-act";
+    this.actPic = document.createElement("img");
+    this.actPic.className = "act-pic";
+    this.actPicFrame = document.createElement("img");
+    this.actPicFrame.className = "act-pic-frame";
+    this.actPicFrame.src = "/assets/Home/orangebox.png";
+    this.actNameplate = document.createElement("div");
+    this.actNameplate.className = "act-nameplate";
+    this.actName = document.createElement("p");
+    this.actName.className = "act-name";
+    this.gigConfirm = document.createElement("div");
+    this.gigConfirm.className = "gig-confirm";
+    this.gigConfirmP = document.createElement("p");
+    this.gigConfirmP.className = "gig-confirm-p";
+    this.gigConfirmP.innerHTML = "upon completion of this event, enter the confirmation code:";
+    this.gigConfirmInput = document.createElement("input");
+    this.gigConfirmInput.className = "gig-confirm-input";
+    this.gigConfirmA = document.createElement("a");
+    this.gigConfirmA.className = "gig-confirm-a";
+    this.gigConfirmA.href = "#"; // can be changed to a javascript function for code submission
+    this.gigConfirmA.innerHTML = "confirm";
+    //async
+    getBandInfo(gig.bandFor, res=>{
+      this.band = res;
+      console.log(JSON.stringify(res));
+      this.actPic.src = this.band.picture;
+      this.actName.innerHTML = this.band.name;
+
+      // tier 4
+          this.actNameplate.append(this.actName);
+      // tier 3
+          this.gigImg.append(this.gigPic);
+          this.gigImg.append(this.gigPicFrame);
+
+          this.gigDesc.append(this.gigDescP);
+
+          this.gigAct.append(this.actPic);
+          this.gigAct.append(this.actPicFrame);
+          this.gigAct.append(this.actNameplate);
+
+          this.gigConfirm.append(this.gigConfirmP);
+          this.gigConfirm.append(this.gigConfirmInput);
+          this.gigConfirm.append(this.gigConfirmA);
+      // tier 2
+          this.gigContent.append(this.gigImg);
+          this.gigContent.append(this.gigDesc);
+          this.gigContent.append(this.gigAct);
+          this.gigContent.append(this.gigConfirm);
+      // tier 1
+          this.container.append(this.titleEl);
+          this.container.append(this.locEl);
+          this.container.append(this.gigContent);
+      // tier 0
+          // bookedGigs.append(this.container);
+          bookedGigCallback(this);
+    });
+
+
+  }
+}
+
+//ABs functions:
+function getGigInfo(gigID, cb){
+  console.log('getGigINFo gig id is : ' + gigID);
+  $.get('/aGig', {'gigID':gigID}, result=>{
+    console.log('Got result from get a gig here it is : ' + JSON.stringify(result));
+    cb(result);
+  });
+}
+function getBandInfo(bandID, cb){
+  console.log('////////////////////');
+  console.log(bandID);
+  $.get('/aBand', {'id':bandID}, result=>{
+    console.log('Got result from get a band here it is : ' + JSON.stringify(result));
+    cb(result);
+  });
+}
+
+//ABS classes:
+
+class GigSection{
+  constructor(gigs,identifier){
+    switch(identifier){
+      case "booked":
+      var bookedGigs = document.createElement("div");
+      bookedGigs.className = "booked-gigs";
+      var bookedGigsH = document.createElement("h2");
+      bookedGigsH.innerHTML = "Booked Events";
+      bookedGigs.append(bookedGigsH);
+      profileGigs.append(bookedGigs);
+      for(var gig in gigs){
+        if(gigs[gig].isFilled){
+          new BookedGig(gigs[gig], res=>{
+            bookedGigs.append(res.container);
+          });
+        }
+      }
+      break;
+      case "open":
+      var openGigs = document.createElement("div");
+      openGigs.className = "booked-gigs";
+      var openGigsH = document.createElement("h2");
+      openGigsH.innerHTML = "Open Events";
+      openGigs.append(openGigsH);
+      profileGigs.append(openGigs);
+      for(var gig in gigs){
+        if(!(gigs[gig].isFilled)){
+          new OpenGig(gigs[gig], res=>{
+            openGigs.append(res.titleDiv);
+          });
+        }
+      }
+      break;
+      case "past-hosted":
+      break;
+    }
+  }
+}
+
+class BandSection{
+  constructor(band, identifier, bandSectionCallback){
+     // console.log('band inc Band Section is + :' + JSON.stringify(band));
+    switch(identifier){
+      case "info":
+      this.title = document.createElement("p");
+      this.title.className = "title-text";
+      this.title.innerHTML = "Band Info";
+      this.container = document.createElement("div");
+      this.container.append(this.title);
+      this.stars = document.createElement("div");
+      this.stars.className = "band-stars";
+      this.star1 = document.createElement("img");
+      this.star1.className = "star";
+      this.star1.id = band._id+"-star-1";
+      this.star2 = document.createElement("img");
+      this.star2.className = "star";
+      this.star2.id = band._id+"-star-2";
+      this.star3 = document.createElement("img");
+      this.star3.className = "star";
+      this.star3.id = band._id+"-star-3";
+      this.star4 = document.createElement("img");
+      this.star4.className = "star";
+      this.star4.id = band._id+"-star-4";
+      this.star5 = document.createElement("img");
+      this.star5.className = "star";
+      this.star5.id = band._id+"-star-5";
+      this.stars.append(this.star1);
+      this.stars.append(this.star2);
+      this.stars.append(this.star3);
+      this.stars.append(this.star4);
+      this.stars.append(this.star5);
+      this.container.append(this.stars);
+      this.editButton = document.createElement("input");
+      this.editButton.type = 'button';
+      this.editButton.value = "edit band";
+      this.editButton.className = "edit-band-button";
+      this.editButton.addEventListener('click',function(){
+        var modalWrapCurrent = document.getElementById('modal-wrapper-current-band');
+
+        this.editBandTitle = document.getElementById("current-band-title");
+        this.editBandTitle.value = band.name;
+        this.editBandTitle.addEventListener("change",function(){
+
+        });
+        this.editBandZip = document.getElementById("current-band-zip");
+        this.editBandZip.value = band.zipcode;
+        this.editBandZip.addEventListener("change",function(){
+
+        });
+        this.editBandPrice = document.getElementById("current-band-pay");
+        this.editBandPrice.value = band.price;
+        this.editBandPrice.addEventListener("change",function(){
+
+        });
+        this.editBandDesc = document.getElementById("current-band-description");
+        this.editBandDesc.value = band.description;
+        this.editBandDesc.addEventListener("change",function(){
+
+        });
+        this.editScheduleTable = document.getElementById("current-band-schedule");
+        this.editScheduleTableBody = document.getElementById("current-band-schedule-tbody");
+        for(var day in band.openDates){
+          var dayOfWeek = band.openDates[day][0];
+          var startTime = band.openDates[day][1];
+          console.log("start: "+startTime);
+          var endTime = band.openDates[day][2];
+          console.log("end: "+endTime);
+          var newRow = document.createElement("tr");
+          var colOne = document.createElement("td");
+          var selectionEl = document.createElement("select");
+          selectionEl.className = "current-band-schedule-select";
+          var optionSun = document.createElement("option");
+          optionSun.innerHTML = "Sunday";
+          selectionEl.append(optionSun);
+          var optionMon = document.createElement("option");
+          optionMon.innerHTML = "Monday";
+          selectionEl.append(optionMon);
+          var optionTue = document.createElement("option");
+          optionTue.innerHTML = "Tuesday";
+          selectionEl.append(optionTue);
+          var optionWed = document.createElement("option");
+          optionWed.innerHTML = "Wednesday";
+          selectionEl.append(optionWed);
+          var optionThu = document.createElement("option");
+          optionThu.innerHTML = "Thursday";
+          selectionEl.append(optionThu);
+          var optionFri = document.createElement("option");
+          optionFri.innerHTML = "Friday";
+          selectionEl.append(optionFri);
+          var optionSat = document.createElement("option");
+          optionSat.innerHTML = "Saturday";
+          selectionEl.append(optionSat);
+          selectionEl.value = dayOfWeek;
+          colOne.append(selectionEl);
+          var colTwo = document.createElement("td");
+          var startTimeInput = document.createElement("input");
+          startTimeInput.type = "time";
+          startTimeInput.className = "current-band-schedule-start-time";
+          startTimeInput.value = startTime;
+          colTwo.append(startTimeInput);
+          var colThree = document.createElement("td");
+          var endTimeInput = document.createElement("input");
+          endTimeInput.type = "time";
+          endTimeInput.className = "current-band-schedule-end-time";
+          endTimeInput.value = endTime;
+          colThree.append(endTimeInput);
+          var colFour = document.createElement("td");
+          var removeButton = document.createElement("input");
+          removeButton.type = "button";
+          removeButton.value = "remove";
+          removeButton.className = "current-band-schedule-remove";
+          removeButton.addEventListener("click",function(){
+            console.log("remove row clicked");
+            deleteRow(removeButton);
+          });
+          colFour.append(removeButton);
+          newRow.append(colOne);
+          newRow.append(colTwo);
+          newRow.append(colThree);
+          newRow.append(colFour);
+          this.editScheduleTableBody.append(newRow);
+        }
+        this.editScheduleTableFoot = document.getElementById("current-band-schedule-tfoot");
+        var footRow = document.createElement("tr");
+        var colOne = document.createElement("td");
+        this.addDayButton = document.createElement("a");
+        this.addDayButton.className = "current-band-schedule-add";
+        this.addDayButton.href = "#";
+        this.addDayButton.innerHTML = "add another day";
+        this.addDayButton.addEventListener("click",function(){
+          var editScheduleTableBody = document.getElementById("current-band-schedule-tbody");
+          var newRow = document.createElement("tr");
+          var colOne = document.createElement("td");
+          var selectionEl = document.createElement("select");
+          selectionEl.className = "current-band-schedule-select";
+          var optionSun = document.createElement("option");
+          optionSun.innerHTML = "Sunday";
+          selectionEl.append(optionSun);
+          var optionMon = document.createElement("option");
+          optionMon.innerHTML = "Monday";
+          selectionEl.append(optionMon);
+          var optionTue = document.createElement("option");
+          optionTue.innerHTML = "Tuesday";
+          selectionEl.append(optionTue);
+          var optionWed = document.createElement("option");
+          optionWed.innerHTML = "Wednesday";
+          selectionEl.append(optionWed);
+          var optionThu = document.createElement("option");
+          optionThu.innerHTML = "Thursday";
+          selectionEl.append(optionThu);
+          var optionFri = document.createElement("option");
+          optionFri.innerHTML = "Friday";
+          selectionEl.append(optionFri);
+          var optionSat = document.createElement("option");
+          optionSat.innerHTML = "Saturday";
+          selectionEl.append(optionSat);
+          colOne.append(selectionEl);
+          var colTwo = document.createElement("td");
+          var startTimeInput = document.createElement("input");
+          startTimeInput.type = "time";
+          startTimeInput.className = "current-band-schedule-start-time";
+          colTwo.append(startTimeInput);
+          var colThree = document.createElement("td");
+          var endTimeInput = document.createElement("input");
+          endTimeInput.type = "time";
+          endTimeInput.className = "current-band-schedule-end-time";
+          colThree.append(endTimeInput);
+          var colFour = document.createElement("td");
+          var removeButton = document.createElement("input");
+          removeButton.type = "button";
+          removeButton.value = "remove";
+          removeButton.className = "current-band-schedule-remove";
+          removeButton.addEventListener("click",function(){
+            console.log("remove row clicked");
+            deleteRow(removeButton);
+          });
+          colFour.append(removeButton);
+          newRow.append(colOne);
+          newRow.append(colTwo);
+          newRow.append(colThree);
+          newRow.append(colFour);
+          editScheduleTableBody.append(newRow);
+        });
+        colOne.append(this.addDayButton);
+        var colTwo = document.createElement("td");
+        var colThree = document.createElement("td");
+        var colFour = document.createElement("td");
+        this.editScheduleTableFoot.append(colOne);
+        this.editScheduleTableFoot.append(colTwo);
+        this.editScheduleTableFoot.append(colThree);
+        this.editScheduleTableFoot.append(colFour);
+        // document.getElementById("current-band-dist").value = band.maxDist;
+        document.getElementById("current-band-pic-preview").src = band.picture;
+
+        document.getElementById("close-edit-band").addEventListener("click",function(){
+          var tb = document.getElementById("current-band-schedule-tbody");
+          while(tb.hasChildNodes()){
+             tb.removeChild(tb.firstChild);
+          }
+          var tf = document.getElementById("current-band-schedule-tfoot");
+          while(tf.hasChildNodes()){
+            tf.removeChild(tf.firstChild);
+          }
+          document.getElementById('modal-wrapper-current-band').style.display='none';
+        });
+
+        document.getElementById("current-band-edit").addEventListener("click",function(){
+          // edit stuff
+        });
+
+
+        modalWrapCurrent.style.display='block';
+      });
+      this.container.append(this.editButton);
+      bandSectionCallback(this);
+      break;
+      case "upcoming":
+      if(band.upcomingGigs.length > 0){
+        new Carousel(band.upcomingGigs, "upcoming", carCallback =>{
+          this.title = document.createElement("p");
+          this.title.className = "title-text";
+          this.title.innerHTML = "Upcoming Gigs";
+          this.container = document.createElement("div");
+          this.container.append(this.title);
+          this.carousel = carCallback;
+          this.container.append(this.carousel.wrapper);
+          bandSectionCallback(this);
+        });
+      }
+      break;
+      case "applications":
+      if(band.appliedGigs.length > 0){
+        new Carousel(band.appliedGigs,"applications", carCallback =>{
+          this.title = document.createElement("p");
+          this.title.className = "title-text";
+          this.title.innerHTML = "Applied Gigs";
+          this.container = document.createElement("div");
+          this.container.append(this.title);
+          this.carousel = carCallback;
+          this.container.append(this.carousel.wrapper);
+          bandSectionCallback(this);
+        });
+      }
+      break;
+      case "past":
+      if(band.finishedGigs.length > 0){
+        new Carousel(band.finishedGigs,"past", carCallback =>{
+          this.title = document.createElement("p");
+          this.title.className = "title-text";
+          this.title.innerHTML = "Past Gigs";
+          this.container = document.createElement("div");
+          this.container.append(this.title);
+          this.carousel = carCallback;
+          this.container.append(this.carousel.wrapper);
+          bandSectionCallback(this);
+        });
+      }
+      break;
+      case "interested-gigs":
+      if(band.interestedGigs.length > 0){
+        new Carousel(band.interestedGigs,"interested-gigs", carCallback =>{
+          this.title = document.createElement("p");
+          this.title.className = "title-text";
+          this.title.innerHTML = "Interested Gigs";
+          this.container = document.createElement("div");
+          this.container.append(this.title);
+          this.carousel = carCallback;
+          this.container.append(this.carousel.wrapper);
+          bandSectionCallback(this);
+        });
+      }
+      break;
+    }
+  }
 }
 
 class Carousel{
-  constructor(obj,indicator){
+  constructor(obj,indicator,carCallback){
     switch(indicator){
       case "hosted-applications":
       // obj will contain band IDs
-      // BOTHE, you most likely have to fix all of this!!!!
       // get applicant data
-      this.applicants = this.handleBands(obj);
-      // create generic carousel elements
-      // we can handle ID assignment later
-      this.wrapper = document.createElement("div");
-      this.wrapper.className = "app-wrapper";
-      this.carWrap = document.createElement("div");
-      this.carWrap.className = "jcarousel-wrapper";
-      this.carousel = document.createElement("div");
-      this.carousel.className = "jcarousel";
-      this.carList = document.createElement("ul");
-      // fill the list
-      for(var band in this.applicants.apps){
-        // container li
-        var itemId = "applicantions-carousel-li-"+this.applicants.apps[band]._id;
-        var newItem = document.createElement("li");
-        newItem.className = "carousel-li";
-        newItem.id = itemId;
-        // image
-        var newImg = document.createElement("img");
-        newImg.className = "carousel-img";
-        newImg.src = this.applicants.apps[band].picture;
-        // frame
-        var newFrame = document.createElement("img");
-        newFrame.className = "carousel-frame";
-        newFrame.src = "../static/assets/Control-Center/purplebox.png";
-        // overlay
-        var newOverlay = document.createElement("div");
-        newOverlay.className = "result-overlay";
-        var overlayID = "result-overlay-"+band;
-        newOverlay.setAttribute("id",overlayID);
-        var priceText = document.createElement("p");
-        priceText.className = "result-overlay-p";
-        priceText.innerHTML = "$"+this.applicants.apps[band].price+"/hr";
-        // nameplate
-        var nameDiv = document.createElement("div");
-        nameDiv.className = "result-name-div";
-        var nameP = document.createElement("p");
-        nameP.className = "result-name-p";
-        nameP.innerHTML = this.applicants.apps[band].name;
-        // appends
-        newItem.append(newImg);
-        newOverlay.append(priceText);
-        newItem.appendChild(newOverlay);
-        newItem.append(newFrame);
-        nameDiv.append(nameP);
-        newItem.append(nameDiv);
-        this.carList.append(newItem);
-        //event listener data preprocessing
-        newItem.newOverlay = newOverlay;
-        newItem._id = this.applicants.apps[band]._id;
-        this.AddOverlayEventListeners(newItem);
-      }
-      this.carousel.append(this.carList);
-      if(this.applicants.apps.length > 4){
-        // only add arrow controls if the carousel has enough data
-        this.prev = document.createElement("a");
-        this.prev.className = "jcarousel-control-prev";
-        this.prev.href = "#";
-        this.next = document.createElement("a");
-        this.next.className = "jcarousel-control-next";
-        this.next.href = "#";
-        this.carWrap.append(this.prev);
-        this.carWrap.append(this.next);
-      }
-      this.carWrap.append(this.carousel);
-      this.wrapper.append(this.carWrap);
+      this.handleBands(obj, result=>{
+        this.applicants = result;
+        // create generic carousel elements
+        // we can handle ID assignment later
+        this.wrapper = document.createElement("div");
+        this.wrapper.className = "app-wrapper";
+        this.carWrap = document.createElement("div");
+        this.carWrap.className = "jcarousel-wrapper";
+        this.carousel = document.createElement("div");
+        this.carousel.className = "jcarousel";
+        this.carList = document.createElement("ul");
+        // fill the list
+        for(var band in this.applicants){
+          // container li
+          var itemId = "applicantions-carousel-li-"+this.applicants[band]._id;
+          var newItem = document.createElement("li");
+          newItem.className = "carousel-li";
+          newItem.id = itemId;
+          // image
+          var newImg = document.createElement("img");
+          newImg.className = "carousel-img";
+          newImg.src = this.applicants[band].picture;
+          // frame
+          var newFrame = document.createElement("img");
+          newFrame.className = "carousel-frame";
+          newFrame.src = "/assets/Control-Center/purplebox.png";
+          // overlay
+          var newOverlay = document.createElement("div");
+          newOverlay.className = "result-overlay";
+          var overlayID = "result-overlay-"+band;
+          newOverlay.setAttribute("id",overlayID);
+          var priceText = document.createElement("p");
+          priceText.className = "result-overlay-p";
+          priceText.innerHTML = "$"+this.applicants[band].price+"/hr";
+          // nameplate
+          var nameDiv = document.createElement("div");
+          nameDiv.className = "result-name-div";
+          var nameP = document.createElement("p");
+          nameP.className = "result-name-p";
+          nameP.innerHTML = this.applicants[band].name;
+          // appends
+          newItem.append(newImg);
+          newOverlay.append(priceText);
+          newItem.appendChild(newOverlay);
+          newItem.append(newFrame);
+          nameDiv.append(nameP);
+          newItem.append(nameDiv);
+          this.carList.append(newItem);
+          //event listener data preprocessing
+          newItem.newOverlay = newOverlay;
+          newItem._id = this.applicants[band]._id;
+          this.AddOverlayEventListeners(newItem);
+        }
+        this.carousel.append(this.carList);
+        if(this.applicants.length > 4){
+          // only add arrow controls if the carousel has enough data
+          this.prev = document.createElement("a");
+          this.prev.className = "jcarousel-control-prev";
+          this.prev.href = "#";
+          this.next = document.createElement("a");
+          this.next.className = "jcarousel-control-next";
+          this.next.href = "#";
+          this.carWrap.append(this.prev);
+          this.carWrap.append(this.next);
+        }
+        this.carWrap.append(this.carousel);
+        this.wrapper.append(this.carWrap);
+        carCallback(this);
+      });
       break;
       case "past-hosted":
-      // this.pastGigs = this.handleGigs(obj);
-      this.pastGigs = obj;
-      this.wrapper = document.createElement("div");
-      this.wrapper.className = "wrapper";
-      this.wrapper.style.marginLeft = "0px";
-      this.carWrap = document.createElement("div");
-      this.carWrap.className = "jcarousel-wrapper";
-      this.carousel = document.createElement("div");
-      this.carousel.className = "jcarousel";
-      this.list = document.createElement("ul");
-      for(var gig in this.pastGigs.gigs){
-        var id = this.pastGigs.gigs[gig]._id;
-        var name = this.pastGigs.gigs[gig].name;
-        var newItem = document.createElement("li");
-        newItem.className = "carousel-li";
-        // img
-        var newImg = document.createElement("img");
-        newImg.className = "carousel-img";
-        newImg.src = this.pastGigs.gigs[gig].picture;
-        // frame
-        var newFrame = document.createElement("img");
-        newFrame.className = "carousel-frame";
-        newFrame.src = "../static/assets/Control-Center/orangebox.png";
-        // overlay
-        var newOverlay = document.createElement("div");
-        newOverlay.className = "result-overlay";
-        var overlayID = "result-overlay-"+gig;
-        newOverlay.setAttribute("id",overlayID);
-        var priceText = document.createElement("p");
-        priceText.className = "result-overlay-p";
-        priceText.innerHTML = "$"+this.pastGigs.gigs[gig].price+"/hr";
-        // nameplate
-        var nameDiv = document.createElement("div");
-        nameDiv.className = "result-name-div";
-        var nameP = document.createElement("p");
-        nameP.className = "result-name-p";
-        nameP.innerHTML = this.pastGigs.gigs[gig].name;
-        newItem.append(newImg);
-        newOverlay.append(priceText);
-        newItem.appendChild(newOverlay);
-        newItem.append(newFrame);
-        nameDiv.append(nameP);
-        newItem.append(nameDiv);
-        this.list.append(newItem);
-        //event listener data preprocessing
-        newItem.newOverlay = newOverlay;
-        newItem._id = this.pastGigs.gigs[gig]._id;
-        this.AddOverlayEventListeners(newItem);
-      }
-      this.carousel.append(this.list);
-      if(this.pastGigs.gigs.length > 4){
-        // only add arrow controls if the carousel has enough data
-        this.prev = document.createElement("a");
-        this.prev.className = "jcarousel-control-prev";
-        this.prev.href = "#";
-        this.next = document.createElement("a");
-        this.next.className = "jcarousel-control-next";
-        this.next.href = "#";
-        this.carWrap.append(this.prev);
-        this.carWrap.append(this.next);
-      }
-      this.carWrap.append(this.carousel);
-      this.wrapper.append(this.carWrap);
-      profileGigs.append(this.wrapper);
+      this.handleGigs(obj, result=>{
+        this.pastGigs = result;
+        this.wrapper = document.createElement("div");
+        this.wrapper.className = "wrapper";
+        this.wrapper.style.marginLeft = "0px";
+        this.carWrap = document.createElement("div");
+        this.carWrap.className = "jcarousel-wrapper";
+        this.carousel = document.createElement("div");
+        this.carousel.className = "jcarousel";
+        this.list = document.createElement("ul");
+        for(var gig in this.pastGigs){
+          var id = this.pastGigs[gig]._id;
+          var name = this.pastGigs[gig].name;
+          var newItem = document.createElement("li");
+          newItem.className = "carousel-li";
+          // img
+          var newImg = document.createElement("img");
+          newImg.className = "carousel-img";
+          newImg.src = this.pastGigs[gig].picture;
+          // frame
+          var newFrame = document.createElement("img");
+          newFrame.className = "carousel-frame";
+          newFrame.src = "/assets/Control-Center/orangebox.png";
+          // overlay
+          var newOverlay = document.createElement("div");
+          newOverlay.className = "result-overlay";
+          var overlayID = "result-overlay-"+gig;
+          newOverlay.setAttribute("id",overlayID);
+          var priceText = document.createElement("p");
+          priceText.className = "result-overlay-p";
+          priceText.innerHTML = "$"+this.pastGigs[gig].price+"/hr";
+          // nameplate
+          var nameDiv = document.createElement("div");
+          nameDiv.className = "result-name-div";
+          var nameP = document.createElement("p");
+          nameP.className = "result-name-p";
+          nameP.innerHTML = this.pastGigs[gig].name;
+          newItem.append(newImg);
+          newOverlay.append(priceText);
+          newItem.appendChild(newOverlay);
+          newItem.append(newFrame);
+          nameDiv.append(nameP);
+          newItem.append(nameDiv);
+          this.list.append(newItem);
+          //event listener data preprocessing
+          newItem.newOverlay = newOverlay;
+          newItem._id = this.pastGigs[gig]._id;
+          this.AddOverlayEventListeners(newItem);
+        }
+        this.carousel.append(this.list);
+        if(this.pastGigs.length > 4){
+          // only add arrow controls if the carousel has enough data
+          this.prev = document.createElement("a");
+          this.prev.className = "jcarousel-control-prev";
+          this.prev.href = "#";
+          this.next = document.createElement("a");
+          this.next.className = "jcarousel-control-next";
+          this.next.href = "#";
+          this.carWrap.append(this.prev);
+          this.carWrap.append(this.next);
+        }
+        this.carWrap.append(this.carousel);
+        this.wrapper.append(this.carWrap);
+        profileGigs.append(this.wrapper);
+        carCallback(this);
+      });
       break;
       // upcoming gigs
       case "upcoming":
       //get upcoming data
-      this.upcomingGigs = this.handleGigs(obj);
-      this.wrapper = document.createElement("div");
-      this.wrapper.className = "wrapper";
-      this.carWrap = document.createElement("div");
-      this.carWrap.className = "jcarousel-wrapper";
-      this.carousel = document.createElement("div");
-      this.carousel.className = "jcarousel";
-      this.list = document.createElement("ul");
-      for(var gig in this.upcomingGigs.gigs){
-        var id = this.upcomingGigs.gigs[gig]._id;
-        var name = this.upcomingGigs.gigs[gig].name;
-        var newItem = document.createElement("li");
-        newItem.className = "carousel-li";
-        // img
-        var newImg = document.createElement("img");
-        newImg.className = "carousel-img";
-        newImg.src = this.upcomingGigs.gigs[gig].picture;
-        // frame
-        var newFrame = document.createElement("img");
-        newFrame.className = "carousel-frame";
-        newFrame.src = "../static/assets/Control-Center/purplebox.png";
-        // overlay
-        var newOverlay = document.createElement("div");
-        newOverlay.className = "result-overlay";
-        var overlayID = "result-overlay-"+gig;
-        newOverlay.setAttribute("id",overlayID);
-        var confirmP = document.createElement("p");
-        confirmP.className = "result-overlay-confirm-p";
-        confirmP.innerHTML = "confirm payment of $"+this.upcomingGigs.gigs[gig].price+"/hr";
-        var confirmInput = document.createElement("input");
-        confirmInput.className = "gig-confirm-input";
-        // nameplate
-        var nameDiv = document.createElement("div");
-        nameDiv.className = "result-name-div";
-        var nameP = document.createElement("p");
-        nameP.className = "result-name-p";
-        nameP.innerHTML = this.upcomingGigs.gigs[gig].name;
-        newItem.append(newImg);
-        newOverlay.append(confirmP);
-        newOverlay.append(confirmInput);
-        newItem.appendChild(newOverlay);
-        newItem.append(newFrame);
-        nameDiv.append(nameP);
-        newItem.append(nameDiv);
-        this.list.append(newItem);
-        //event listener data preprocessing
-        newItem.newOverlay = newOverlay;
-        newItem._id = this.upcomingGigs.gigs[gig]._id;
-        this.AddOverlayEventListeners(newItem);
-      }
-      this.carousel.append(this.list);
-      if(this.upcomingGigs.gigs.length > 4){
-        // only add arrow controls if the carousel has enough data
-        this.prev = document.createElement("a");
-        this.prev.className = "jcarousel-control-prev";
-        this.prev.href = "#";
-        this.next = document.createElement("a");
-        this.next.className = "jcarousel-control-next";
-        this.next.href = "#";
-        this.carWrap.append(this.prev);
-        this.carWrap.append(this.next);
-      }
-      this.carWrap.append(this.carousel);
-      this.wrapper.append(this.carWrap);
+      this.handleGigs(obj, result=>{
+        // console.log(JSON.stringify(result));
+        this.upcomingGigs = result;
+        this.wrapper = document.createElement("div");
+        this.wrapper.className = "wrapper";
+        this.carWrap = document.createElement("div");
+        this.carWrap.className = "jcarousel-wrapper";
+        this.carousel = document.createElement("div");
+        this.carousel.className = "jcarousel";
+        this.list = document.createElement("ul");
+        for(var gig in this.upcomingGigs){
+          var id = this.upcomingGigs[gig]._id;
+          var name = this.upcomingGigs[gig].name;
+          var newItem = document.createElement("li");
+          newItem.className = "carousel-li";
+          // img
+          var newImg = document.createElement("img");
+          newImg.className = "carousel-img";
+          if(this.upcomingGigs[gig].hasOwnProperty("picture")){
+            newImg.src = this.upcomingGigs[gig].picture;
+          }
+          // frame
+          var newFrame = document.createElement("img");
+          newFrame.className = "carousel-frame";
+          newFrame.src = "/assets/Control-Center/purplebox.png";
+          // overlay
+          var newOverlay = document.createElement("div");
+          newOverlay.className = "result-overlay";
+          var overlayID = "result-overlay-"+gig;
+          newOverlay.setAttribute("id",overlayID);
+          var confirmP = document.createElement("p");
+          confirmP.className = "result-overlay-confirm-p";
+          confirmP.innerHTML = "confirm payment of $"+this.upcomingGigs[gig].price+"/hr";
+          var confirmInput = document.createElement("input");
+          confirmInput.className = "gig-confirm-input-upcoming";
+          confirmInput.placeholder = "code from venue"
+          // nameplate
+          var nameDiv = document.createElement("div");
+          nameDiv.className = "result-name-div";
+          var nameP = document.createElement("p");
+          nameP.className = "result-name-p";
+          nameP.innerHTML = this.upcomingGigs[gig].name;
+          newItem.append(newImg);
+          newOverlay.append(confirmP);
+          newOverlay.append(confirmInput);
+          newItem.appendChild(newOverlay);
+          newItem.append(newFrame);
+          nameDiv.append(nameP);
+          newItem.append(nameDiv);
+          this.list.append(newItem);
+          //event listener data preprocessing
+          newItem.newOverlay = newOverlay;
+          newItem._id = this.upcomingGigs[gig]._id;
+          this.AddOverlayEventListeners(newItem);
+        }
+        this.carousel.append(this.list);
+        if(this.upcomingGigs.length > 4){
+          // only add arrow controls if the carousel has enough data
+          this.prev = document.createElement("a");
+          this.prev.className = "jcarousel-control-prev";
+          this.prev.href = "#";
+          this.next = document.createElement("a");
+          this.next.className = "jcarousel-control-next";
+          this.next.href = "#";
+          this.carWrap.append(this.prev);
+          this.carWrap.append(this.next);
+        }
+        this.carWrap.append(this.carousel);
+        this.wrapper.append(this.carWrap);
+        carCallback(this);
+      });
       break;
       // applications
       case "applications":
       // get applied gigs info
-      this.appliedGigs = this.handleGigs(obj);
-      this.wrapper = document.createElement("div");
-      this.wrapper.className = "wrapper";
-      this.carWrap = document.createElement("div");
-      this.carWrap.className = "jcarousel-wrapper";
-      this.carousel = document.createElement("div");
-      this.carousel.className = "jcarousel";
-      this.list = document.createElement("ul");
-      for(var gig in this.appliedGigs.gigs){
-        var id = this.appliedGigs.gigs[gig]._id;
-        var name = this.appliedGigs.gigs[gig].name;
-        var newItem = document.createElement("li");
-        newItem.className = "carousel-li";
-        // img
-        var newImg = document.createElement("img");
-        newImg.className = "carousel-img";
-        newImg.src = this.appliedGigs.gigs[gig].picture;
-        // frame
-        var newFrame = document.createElement("img");
-        newFrame.className = "carousel-frame";
-        newFrame.src = "../static/assets/Control-Center/orangebox.png";
-        // overlay
-        var newOverlay = document.createElement("div");
-        newOverlay.className = "result-overlay";
-        var overlayID = "result-overlay-"+gig;
-        newOverlay.setAttribute("id",overlayID);
-        var priceText = document.createElement("p");
-        priceText.className = "result-overlay-p";
-        priceText.innerHTML = "$"+this.appliedGigs.gigs[gig].price+"/hr";
-        // nameplate
-        var nameDiv = document.createElement("div");
-        nameDiv.className = "result-name-div";
-        var nameP = document.createElement("p");
-        nameP.className = "result-name-p";
-        nameP.innerHTML = this.appliedGigs.gigs[gig].name;
-        newItem.append(newImg);
-        newOverlay.append(priceText);
-        newItem.appendChild(newOverlay);
-        newItem.append(newFrame);
-        nameDiv.append(nameP);
-        newItem.append(nameDiv);
-        this.list.append(newItem);
-        //event listener data preprocessing
-        newItem.newOverlay = newOverlay;
-        newItem._id = this.appliedGigs.gigs[gig]._id;
-        this.AddOverlayEventListeners(newItem);
-      }
-      this.carousel.append(this.list);
-      if(this.appliedGigs.gigs.length > 4){
-        // only add arrow controls if the carousel has enough data
-        this.prev = document.createElement("a");
-        this.prev.className = "jcarousel-control-prev";
-        this.prev.href = "#";
-        this.next = document.createElement("a");
-        this.next.className = "jcarousel-control-next";
-        this.next.href = "#";
-        this.carWrap.append(this.prev);
-        this.carWrap.append(this.next);
-      }
-      this.carWrap.append(this.carousel);
-      this.wrapper.append(this.carWrap);
+      this.handleGigs(obj, result=>{
+        this.appliedGigs = result;
+        this.wrapper = document.createElement("div");
+        this.wrapper.className = "wrapper";
+        this.carWrap = document.createElement("div");
+        this.carWrap.className = "jcarousel-wrapper";
+        this.carousel = document.createElement("div");
+        this.carousel.className = "jcarousel";
+        this.list = document.createElement("ul");
+        for(var gig in this.appliedGigs){
+          var id = this.appliedGigs[gig]._id;
+          var name = this.appliedGigs[gig].name;
+          var newItem = document.createElement("li");
+          newItem.className = "carousel-li";
+          // img
+          var newImg = document.createElement("img");
+          newImg.className = "carousel-img";
+          if(this.appliedGigs[gig].hasOwnProperty("picture")){
+            newImg.src = this.appliedGigs[gig].picture;
+          }
+          // frame
+          var newFrame = document.createElement("img");
+          newFrame.className = "carousel-frame";
+          newFrame.src = "/assets/Control-Center/orangebox.png";
+          // overlay
+          var newOverlay = document.createElement("div");
+          newOverlay.className = "result-overlay";
+          var overlayID = "result-overlay-"+gig;
+          newOverlay.setAttribute("id",overlayID);
+          var priceText = document.createElement("p");
+          priceText.className = "result-overlay-p";
+          priceText.innerHTML = "$"+this.appliedGigs[gig].price+"/hr";
+          // nameplate
+          var nameDiv = document.createElement("div");
+          nameDiv.className = "result-name-div";
+          var nameP = document.createElement("p");
+          nameP.className = "result-name-p";
+          nameP.innerHTML = this.appliedGigs[gig].name;
+          newItem.append(newImg);
+          newOverlay.append(priceText);
+          newItem.appendChild(newOverlay);
+          newItem.append(newFrame);
+          nameDiv.append(nameP);
+          newItem.append(nameDiv);
+          this.list.append(newItem);
+          //event listener data preprocessing
+          newItem.newOverlay = newOverlay;
+          newItem._id = this.appliedGigs[gig]._id;
+          this.AddOverlayEventListeners(newItem);
+        }
+        this.carousel.append(this.list);
+        if(this.appliedGigs.length > 4){
+          // only add arrow controls if the carousel has enough data
+          this.prev = document.createElement("a");
+          this.prev.className = "jcarousel-control-prev";
+          this.prev.href = "#";
+          this.next = document.createElement("a");
+          this.next.className = "jcarousel-control-next";
+          this.next.href = "#";
+          this.carWrap.append(this.prev);
+          this.carWrap.append(this.next);
+        }
+        this.carWrap.append(this.carousel);
+        this.wrapper.append(this.carWrap);
+        carCallback(this);
+      });
       break;
       case "past":
       // get past gigs info
-      this.pastGigs = this.handleGigs(obj);
-      this.wrapper = document.createElement("div");
-      this.wrapper.className = "wrapper";
-      this.carWrap = document.createElement("div");
-      this.carWrap.className = "jcarousel-wrapper";
-      this.carousel = document.createElement("div");
-      this.carousel.className = "jcarousel";
-      this.list = document.createElement("ul");
-      for(var gig in this.pastGigs.gigs){
-        var id = this.pastGigs.gigs[gig]._id;
-        var name = this.pastGigs.gigs[gig].name;
-        var newItem = document.createElement("li");
-        newItem.className = "carousel-li";
-        // img
-        var newImg = document.createElement("img");
-        newImg.className = "carousel-img";
-        newImg.src = this.pastGigs.gigs[gig].picture;
-        // frame
-        var newFrame = document.createElement("img");
-        newFrame.className = "carousel-frame";
-        newFrame.src = "../static/assets/Control-Center/orangebox.png";
-        // overlay
-        var newOverlay = document.createElement("div");
-        newOverlay.className = "result-overlay";
-        var overlayID = "result-overlay-"+gig;
-        newOverlay.setAttribute("id",overlayID);
-        var priceText = document.createElement("p");
-        priceText.className = "result-overlay-p";
-        priceText.innerHTML = "$"+this.pastGigs.gigs[gig].price+"/hr";
-        // nameplate
-        var nameDiv = document.createElement("div");
-        nameDiv.className = "result-name-div";
-        var nameP = document.createElement("p");
-        nameP.className = "result-name-p";
-        nameP.innerHTML = this.pastGigs.gigs[gig].name;
-        newItem.append(newImg);
-        newOverlay.append(priceText);
-        newItem.appendChild(newOverlay);
-        newItem.append(newFrame);
-        nameDiv.append(nameP);
-        newItem.append(nameDiv);
-        this.list.append(newItem);
-        //event listener data preprocessing
-        newItem.newOverlay = newOverlay;
-        newItem._id = this.pastGigs.gigs[gig]._id;
-        this.AddOverlayEventListeners(newItem);
-      }
-      this.carousel.append(this.list);
-      if(this.pastGigs.gigs.length > 4){
-        // only add arrow controls if the carousel has enough data
-        this.prev = document.createElement("a");
-        this.prev.className = "jcarousel-control-prev";
-        this.prev.href = "#";
-        this.next = document.createElement("a");
-        this.next.className = "jcarousel-control-next";
-        this.next.href = "#";
-        this.carWrap.append(this.prev);
-        this.carWrap.append(this.next);
-      }
-      this.carWrap.append(this.carousel);
-      this.wrapper.append(this.carWrap);
+      this.handleGigs(obj, result=>{
+        this.pastGigs = result;
+        this.wrapper = document.createElement("div");
+        this.wrapper.className = "wrapper";
+        this.carWrap = document.createElement("div");
+        this.carWrap.className = "jcarousel-wrapper";
+        this.carousel = document.createElement("div");
+        this.carousel.className = "jcarousel";
+        this.list = document.createElement("ul");
+        this.pastGigs.forEach(function(gig){
+          var id = gig._id;
+          var name = gig.name;
+          var newItem = document.createElement("li");
+          newItem.className = "carousel-li";
+          // img
+          var newImg = document.createElement("img");
+          newImg.className = "carousel-img";
+          if(gig.hasOwnProperty("picture")){
+            newImg.src = gig.picture;
+          }
+          // frame
+          var newFrame = document.createElement("img");
+          newFrame.className = "carousel-frame";
+          newFrame.src = "/assets/Control-Center/orangebox.png";
+          // overlay
+          var newOverlay = document.createElement("div");
+          newOverlay.className = "result-overlay";
+          var overlayID = "result-overlay-"+gig.name;
+          newOverlay.setAttribute("id",overlayID);
+          var priceText = document.createElement("p");
+          priceText.className = "result-overlay-p";
+          priceText.innerHTML = "$"+gig.price+"/hr";
+          // nameplate
+          var nameDiv = document.createElement("div");
+          nameDiv.className = "result-name-div";
+          var nameP = document.createElement("p");
+          nameP.className = "result-name-p";
+          nameP.innerHTML = gig.name;
+          newItem.append(newImg);
+          newOverlay.append(priceText);
+          newItem.appendChild(newOverlay);
+          newItem.append(newFrame);
+          nameDiv.append(nameP);
+          newItem.append(nameDiv);
+          this.list.append(newItem);
+          //event listener data preprocessing
+          newItem.newOverlay = newOverlay;
+          newItem._id = gig._id;
+          this.AddOverlayEventListeners(newItem);
+        },this);
+        this.carousel.append(this.list);
+        if(this.pastGigs.length > 4){
+          // only add arrow controls if the carousel has enough data
+          this.prev = document.createElement("a");
+          this.prev.className = "jcarousel-control-prev";
+          this.prev.href = "#";
+          this.next = document.createElement("a");
+          this.next.className = "jcarousel-control-next";
+          this.next.href = "#";
+          this.carWrap.append(this.prev);
+          this.carWrap.append(this.next);
+        }
+        this.carWrap.append(this.carousel);
+        this.wrapper.append(this.carWrap);
+        carCallback(this);
+      });
       break;
       case "interested-gigs":
       // get past gigs info
-      this.interstedGigs = this.handleGigs(obj);
-      this.wrapper = document.createElement("div");
-      this.wrapper.className = "wrapper";
-      this.carWrap = document.createElement("div");
-      this.carWrap.className = "jcarousel-wrapper";
-      this.carousel = document.createElement("div");
-      this.carousel.className = "jcarousel";
-      this.list = document.createElement("ul");
-      for(var gig in this.interstedGigs.gigs){
-        var id = this.interstedGigs.gigs[gig]._id;
-        var name = this.interstedGigs.gigs[gig].name;
-        var newItem = document.createElement("li");
-        newItem.className = "carousel-li";
-        // img
-        var newImg = document.createElement("img");
-        newImg.className = "carousel-img";
-        newImg.src = this.interstedGigs.gigs[gig].picture;
-        // frame
-        var newFrame = document.createElement("img");
-        newFrame.className = "carousel-frame";
-        newFrame.src = "../static/assets/Control-Center/orangebox.png";
-        // overlay
-        var newOverlay = document.createElement("div");
-        newOverlay.className = "result-overlay";
-        var overlayID = "result-overlay-"+gig;
-        newOverlay.setAttribute("id",overlayID);
-        var priceText = document.createElement("p");
-        priceText.className = "result-overlay-p";
-        priceText.innerHTML = "$"+this.interstedGigs.gigs[gig].price+"/hr";
-        // nameplate
-        var nameDiv = document.createElement("div");
-        nameDiv.className = "result-name-div";
-        var nameP = document.createElement("p");
-        nameP.className = "result-name-p";
-        nameP.innerHTML = this.interstedGigs.gigs[gig].name;
-        newItem.append(newImg);
-        newOverlay.append(priceText);
-        newItem.appendChild(newOverlay);
-        newItem.append(newFrame);
-        nameDiv.append(nameP);
-        newItem.append(nameDiv);
-        this.list.append(newItem);
-        //event listener data preprocessing
-        newItem.newOverlay = newOverlay;
-        newItem._id = this.interstedGigs.gigs[gig]._id;
-        this.AddOverlayEventListeners(newItem);
-      }
-      this.carousel.append(this.list);
-      if(this.interstedGigs.gigs.length > 4){
-        // only add arrow controls if the carousel has enough data
-        this.prev = document.createElement("a");
-        this.prev.className = "jcarousel-control-prev";
-        this.prev.href = "#";
-        this.next = document.createElement("a");
-        this.next.className = "jcarousel-control-next";
-        this.next.href = "#";
-        this.carWrap.append(this.prev);
-        this.carWrap.append(this.next);
-      }
-      this.carWrap.append(this.carousel);
-      this.wrapper.append(this.carWrap);
+      this.handleGigs(obj, result=>{
+        this.interestedGigs = result;
+        this.wrapper = document.createElement("div");
+        this.wrapper.className = "wrapper";
+        this.carWrap = document.createElement("div");
+        this.carWrap.className = "jcarousel-wrapper";
+        this.carousel = document.createElement("div");
+        this.carousel.className = "jcarousel";
+        this.list = document.createElement("ul");
+        for(var gig in this.interestedGigs){
+          var id = this.interestedGigs[gig]._id;
+          var name = this.interestedGigs[gig].name;
+          var newItem = document.createElement("li");
+          newItem.className = "carousel-li";
+          // img
+          var newImg = document.createElement("img");
+          newImg.className = "carousel-img";
+          if(this.interestedGigs[gig].hasOwnProperty("picture")){
+            newImg.src = this.interestedGigs[gig].picture;
+          }
+          // frame
+          var newFrame = document.createElement("img");
+          newFrame.className = "carousel-frame";
+          newFrame.src = "/assets/Control-Center/orangebox.png";
+          // overlay
+          var newOverlay = document.createElement("div");
+          newOverlay.className = "result-overlay";
+          var overlayID = "result-overlay-"+gig;
+          newOverlay.setAttribute("id",overlayID);
+          var priceText = document.createElement("p");
+          priceText.className = "result-overlay-p";
+          priceText.innerHTML = "$"+this.interestedGigs[gig].price+"/hr";
+          // nameplate
+          var nameDiv = document.createElement("div");
+          nameDiv.className = "result-name-div";
+          var nameP = document.createElement("p");
+          nameP.className = "result-name-p";
+          nameP.innerHTML = this.interestedGigs[gig].name;
+          newItem.append(newImg);
+          newOverlay.append(priceText);
+          newItem.appendChild(newOverlay);
+          newItem.append(newFrame);
+          nameDiv.append(nameP);
+          newItem.append(nameDiv);
+          this.list.append(newItem);
+          //event listener data preprocessing
+          newItem.newOverlay = newOverlay;
+          newItem._id = this.interestedGigs[gig]._id;
+          this.AddOverlayEventListeners(newItem);
+        }
+        this.carousel.append(this.list);
+        if(this.interestedGigs.length > 4){
+          // only add arrow controls if the carousel has enough data
+          this.prev = document.createElement("a");
+          this.prev.className = "jcarousel-control-prev";
+          this.prev.href = "#";
+          this.next = document.createElement("a");
+          this.next.className = "jcarousel-control-next";
+          this.next.href = "#";
+          this.carWrap.append(this.prev);
+          this.carWrap.append(this.next);
+        }
+        this.carWrap.append(this.carousel);
+        this.wrapper.append(this.carWrap);
+        carCallback(this);
+      });
       break;
       case "band-samples":
-      // get past gigs info
+      // get sample info
       this.wrapper = document.createElement("div");
       this.wrapper.className = "wrapper";
       this.carWrap = document.createElement("div");
@@ -537,8 +1185,57 @@ class Carousel{
       }
       this.carWrap.append(this.carousel);
       this.wrapper.append(this.carWrap);
+      carCallback(this);
       break;
     }
+  }
+
+  handleBands(idArr){
+    this.handleBandsHelper(idArr, res=>{
+      if (res.length==idArr.length){
+        cb(res);
+      }
+    });
+  }
+
+
+  handleGigs(idArr, cb, ){
+  //  var gigProxy=[];
+    this.handleGigsHelper(idArr, res=>{
+      if (res.length==idArr.length){
+        cb(res);
+      }
+    });
+  }
+
+  handleGigsHelper(idArr, cb){
+    var gigProxy = [];
+    idArr.forEach(function(id, i){
+      console.log('ID in handle gigs is : ');
+      console.log(idArr[i])
+      getGigInfo(id, res=>{
+        console.log('in get gig info and res is:' + JSON.stringify(res));
+        gigProxy.push(res);
+        if (gigProxy.lenth==idArr.lenth){
+          cb(gigProxy);
+        }
+      });
+    });
+  }
+
+  handleBandsHelper(idArr, cb){
+    var bands = [];
+    idArr.forEach(function(id, i){
+      console.log('ID in handle gigs is : ');
+      console.log(idArr[i])
+      getBandInfo(id, res=>{
+        console.log('in get gig info and res is:' + JSON.stringify(res));
+        bands.push(res);
+        if (bands.lenth==idArr.lenth){
+          cb(bands);
+        }
+      });
+    });
   }
 
   AddOverlayEventListeners(obj){
@@ -560,409 +1257,19 @@ class Carousel{
       document.getElementById('modal-wrapper-new-sample').style.display='block';
     });
   }
-
-  handleBands(idArr){
-    var appProxy = {
-      "apps": []
-    };
-    for(var bandID in idArr){
-      var aBand = getBandInfo(idArr[bandID]);
-      appProxy["apps"].push(aBand);
-    }
-    return appProxy;
-  }
-
-  handleGigs(idArr){
-    var gigProxy = {
-      "gigs":[]
-    };
-    for(var gigID in idArr){
-      var aGig = getGigInfo(idArr[gigID]);
-      gigProxy["gigs"].push(aGig);
-    }
-    return gigProxy;
-  }
 }
 
-class BookedGig {
-
-  constructor(gig){
-    this.container = document.createElement("div");
-    this.container.className = "booked-gig";
-    this.titleEl = document.createElement("h3");
-    this.titleEl.innerHTML = gig.name;
-    this.locEl = document.createElement("h3");
-    this.locEl.innerHTML = gig.address;
-    this.gigContent = document.createElement("div");
-    this.gigContent.className = "gig-content";
-    this.gigImg = document.createElement("div");
-    this.gigImg.className = "gig-image";
-    this.gigPic = document.createElement("img");
-    this.gigPic.className = "gig-pic";
-    this.gigPic.src = gig.picture;
-    this.gigPicFrame = document.createElement("img");
-    this.gigPicFrame.className = "gig-pic-frame";
-    this.gigPicFrame.src = "../static/assets/Home/orangebox.png";
-    this.gigDesc = document.createElement("div");
-    this.gigDesc.className = "gig-description";
-    this.gigDescP = document.createElement("p");
-    this.gigDescP.className = "gig-description-p";
-    this.gigDescP.innerHTML = gig.description;
-    this.gigAct = document.createElement("div");
-    this.gigAct.className = "gig-act";
-    this.actPic = document.createElement("img");
-    this.actPic.className = "act-pic";
-    this.actPic.src = gig.bandFor.picture;
-    this.actPicFrame = document.createElement("img");
-    this.actPicFrame.className = "act-pic-frame";
-    this.actPicFrame.src = "../static/assets/Home/orangebox.png";
-    this.actNameplate = document.createElement("div");
-    this.actNameplate.className = "act-nameplate";
-    this.actName = document.createElement("p");
-    this.actName.className = "act-name";
-    this.actName.innerHTML = gig.bandFor.name;
-    this.gigConfirm = document.createElement("div");
-    this.gigConfirm.className = "gig-confirm";
-    this.gigConfirmP = document.createElement("p");
-    this.gigConfirmP.className = "gig-confirm-p";
-    this.gigConfirmP.innerHTML = "upon completion of this event, enter the confirmation code:";
-    this.gigConfirmInput = document.createElement("input");
-    this.gigConfirmInput.className = "gig-confirm-input";
-    this.gigConfirmA = document.createElement("a");
-    this.gigConfirmA.className = "gig-confirm-a";
-    this.gigConfirmA.href = "#"; // can be changed to a javascript function for code submission
-    this.gigConfirmA.innerHTML = "confirm";
-
-// tier 4
-    this.actNameplate.append(this.actName);
-// tier 3
-    this.gigImg.append(this.gigPic);
-    this.gigImg.append(this.gigPicFrame);
-
-    this.gigDesc.append(this.gigDescP);
-
-    this.gigAct.append(this.actPic);
-    this.gigAct.append(this.actPicFrame);
-    this.gigAct.append(this.actNameplate);
-
-    this.gigConfirm.append(this.gigConfirmP);
-    this.gigConfirm.append(this.gigConfirmInput);
-    this.gigConfirm.append(this.gigConfirmA);
-// tier 2
-    this.gigContent.append(this.gigImg);
-    this.gigContent.append(this.gigDesc);
-    this.gigContent.append(this.gigAct);
-    this.gigContent.append(this.gigConfirm);
-// tier 1
-    this.container.append(this.titleEl);
-    this.container.append(this.locEl);
-    this.container.append(this.gigContent);
-// tier 0
-    bookedGigs.append(this.container);
-  }
-}
-
-function testBookedGigs(){
-  var aGig = {
-    name: "the rum house",
-    address: "4487 big street, St. Louis, MO 63112",
-    picture: "../static/assets/Home/Art/6.jpeg",
-    description: "we are a very cool venue, looking for jazzy vibes and cool cats :)",
-    bandFor: {
-      name: "king gizzard and the lizard wizard",
-      picture: "../static/assets/Home/Art/9.jpeg"
-    }
-  };
-  var testingBooked = new BookedGig(aGig);
-}
-
-class OpenGig{
-  constructor(gig){
-    this.container = document.createElement("div");
-    this.container.className = "open-gig";
-    this.info = document.createElement("div");
-    this.info.className = "open-gig-info";
-    this.gigImg = document.createElement("div");
-    this.gigImg.className = "open-gig-image";
-    this.title = document.createElement("h3");
-    this.title.innerHTML = gig.name;
-    this.gigPic = document.createElement("img");
-    this.gigPic.className = "gig-pic";
-    this.gigPic.src = gig.picture;
-    this.gigPicFrame = document.createElement("img");
-    this.gigPicFrame.className = "gig-pic-frame";
-    this.gigPicFrame.src = "../static/assets/Home/orangebox.png";
-    this.gigDesc = document.createElement("div");
-    this.gigDesc.className = "open-gig-description";
-    this.gigDescH = document.createElement("h3");
-    this.gigDescH.innerHTML = "Description";
-    this.gigDescT = document.createElement("textarea");
-    this.gigDescT.className = "open-gig-textarea";
-    this.gigDescT.innerHTML = gig.description;
-    this.gigDT = document.createElement("div");
-    this.gigDT.className = "open-gig-date-time";
-    this.gigDTH = document.createElement("h3");
-    this.gigDTH.innerHTML = "Date";
-    this.gigDate = document.createElement("input");
-    this.gigDate.className = "open-gig-date";
-    this.gigDate.type = "date";
-    // this.gigDate.value = gig.date;
-    this.gigTimeL = document.createElement("h3");
-    this.gigTimeL.id = "open-gig-time-label";
-    this.gigTimeL.innerHTML = "Time";
-    this.gigSTL = document.createElement("label");
-    this.gigSTL.for = "open-gig-start-time";
-    this.gigSTL.innerHTML = "from"
-    this.gigST = document.createElement("input");
-    this.gigST.className = "open-gig-start-time";
-    this.gigST.type = "time";
-    // this.gigST.value = gig.startTime;
-    this.gigETL = document.createElement("label");
-    this.gigETL.for = "open-gig-end-time";
-    this.gigETL.innerHTML = "to";
-    this.gigET = document.createElement("input");
-    this.gigET.className = "open-gig-end-time";
-    this.gigET.type = "time";
-    // this.gigET.value = gig.endTime;
-    this.gigLP = document.createElement("div");
-    this.gigLP.className = "open-gig-loc-pay";
-    this.gigLPH = document.createElement("h3");
-    this.gigLPH.innerHTML = "Location";
-    this.gigLoc = document.createElement("input");
-    this.gigLoc.className = "open-gig-loc";
-    this.gigLoc.value = gig.address;
-    this.gigPL = document.createElement("h3");
-    this.gigPL.id = "open-gig-pay-label";
-    this.gigPL.innerHTML = "Max Pay ($/hr)";
-    this.gigPay = document.createElement("input");
-    this.gigPay.className = "max-pay-input";
-    // this.gigPay.value = gig.payment;
-    this.gigConfirm = document.createElement("a");
-    this.gigConfirm.href = "#";
-    this.gigConfirm.className = "open-gig-confirm";
-    this.gigConfirm.innerHTML = "confirm changes";
-    this.gigAppH = document.createElement("h3");
-    this.gigAppH.innerHTML = "applicants";
-    this.applicantCarousel = new Carousel(gig.applications,"hosted-applications");
-    this.carEl = this.applicantCarousel.wrapper;
-
-    // tier 3
-    this.gigImg.append(this.title);
-    this.gigImg.append(this.gigPic);
-    this.gigImg.append(this.gigPicFrame);
-
-    this.gigDesc.append(this.gigDescH);
-    this.gigDesc.append(this.gigDescT);
-
-    this.gigDT.append(this.gigDTH);
-    this.gigDT.append(this.gigDate);
-    this.gigDT.append(this.gigTimeL);
-    this.gigDT.append(this.gigSTL);
-    this.gigDT.append(this.gigST);
-    this.gigDT.append(this.gigETL);
-    this.gigDT.append(this.gigET);
-
-    this.gigLP.append(this.gigLPH);
-    this.gigLP.append(this.gigLoc);
-    this.gigLP.append(this.gigPL);
-    this.gigLP.append(this.gigPay);
-    this.gigLP.append(this.gigConfirm);
-    // tier 2
-    this.info.append(this.gigImg);
-    this.info.append(this.gigDesc);
-    this.info.append(this.gigDT);
-    this.info.append(this.gigLP);
-    // tier 1
-    this.container.append(this.info);
-    this.container.append(this.gigAppH);
-    this.container.append(this.carEl);
-    // tier 0
-    openGigs.append(this.container);
-    setupAction();
-  }
-}
-
-
-function yellow(){
-  var application =
-  "{"+
-    "'name':'Deadulus',"+
-    "'_id': '75757399adlafj3',"+
-    "'creator':'xxx',"+
-    "'address':'N27 W5230',"+
-    "'zipcode': 53012,"+
-    "'price': 33,"+
-    "'rating':null,"+
-    "'openDates':'[2019-01-26T14:22]'," +
-    "'application':'We are a good band',"+
-    "'lat': 100.1,"+
-    "'lng': 109.2,"+
-    "'audioSamples':[],"+
-    "'videoSamples':[],"+
-    "'picture':'no jpeg yet',"+
-    "'appliedGigs':["+
-      "'gigneat23',"+
-      "'gigawesome12'"
-    "],"+
-    "'categories':{"+
-      "'genres':[],"+
-      "'vibes':[],"+
-      "'insts':[],"+
-      "'gigTypes':[]"+
-    "}"+
-  "}";
-}
-
-function testOpenGigs(){
-  var aGig = {
-    name: "the rum house",
-    address: "4487 big street, St. Louis, MO 63112",
-    picture: "../static/assets/Home/Art/6.jpeg",
-    description: "we are a very cool venue, looking for jazzy vibes and cool cats :)",
-    applications: ["bandID1","bandID2","bandID3","bandID4","bandID5"],
-    bandFor: {
-      name: "king gizzard and the lizard wizard",
-      picture: "../static/assets/Home/Art/9.jpeg"
-    }
-  };
-  var testingOpen = new OpenGig(aGig);
-}
-
-function testPastHostedGigs(){
-  var aGig = {
-    name: "the rum house",
-    address: "4487 big street, St. Louis, MO 63112",
-    picture: "../static/assets/Home/Art/6.jpeg",
-    description: "we are a very cool venue, looking for jazzy vibes and cool cats :)",
-    bandFor: {
-      name: "king gizzard and the lizard wizard",
-      picture: "../static/assets/Home/Art/9.jpeg"
-    }
-  };
-  var aGig2 = {
-    name: "the rum house",
-    address: "4487 big street, St. Louis, MO 63112",
-    picture: "../static/assets/Home/Art/6.jpeg",
-    description: "we are a very cool venue, looking for jazzy vibes and cool cats :)",
-    bandFor: {
-      name: "king gizzard and the lizard wizard",
-      picture: "../static/assets/Home/Art/9.jpeg"
-    }
-  };
-  var aGig3 = {
-    name: "the rum house",
-    address: "4487 big street, St. Louis, MO 63112",
-    picture: "../static/assets/Home/Art/6.jpeg",
-    description: "we are a very cool venue, looking for jazzy vibes and cool cats :)",
-    bandFor: {
-      name: "king gizzard and the lizard wizard",
-      picture: "../static/assets/Home/Art/9.jpeg"
-    }
-  };
-  var aGig4 = {
-    name: "the rum house",
-    address: "4487 big street, St. Louis, MO 63112",
-    picture: "../static/assets/Home/Art/6.jpeg",
-    description: "we are a very cool venue, looking for jazzy vibes and cool cats :)",
-    bandFor: {
-      name: "king gizzard and the lizard wizard",
-      picture: "../static/assets/Home/Art/9.jpeg"
-    }
-  };
-  var aGig5 = {
-    name: "the rum house",
-    address: "4487 big street, St. Louis, MO 63112",
-    picture: "../static/assets/Home/Art/6.jpeg",
-    description: "we are a very cool venue, looking for jazzy vibes and cool cats :)",
-    bandFor: {
-      name: "king gizzard and the lizard wizard",
-      picture: "../static/assets/Home/Art/9.jpeg"
-    }
-  };
-  var title = document.createElement("h2");
-  var testGigs = [aGig,aGig2,aGig3,aGig4,aGig5];
-  var proxy = {};
-  proxy.gigs = testGigs;
-  var testingPastHosted = new Carousel(proxy,"past-hosted");
-  setupAction();
-}
-
-class BandSection{
-  constructor(band, identifier){
-    switch(identifier){
-      case "upcoming":
-      if(band.upcomingGigs.length > 0){
-        this.title = document.createElement("p");
-        this.title.className = "title-text";
-        this.tite.innerHTML = "Upcoming Gigs";
-        mainContent.append(this.title);
-        this.carousel = new Carousel(band.upcomingGigs,"upcoming");
-        mainContent.append(this.carousel);
-      }
-      break;
-      case "applications":
-      if(band.appliedGigs.length > 0){
-        this.title = document.createElement("p");
-        this.title.className = "title-text";
-        this.tite.innerHTML = "Applied Gigs";
-        mainContent.append(this.title);
-        this.carousel = new Carousel(band.appliedGigs,"applications");
-        mainContent.append(this.carousel);
-      }
-      break;
-      case "past":
-      if(band.pastGigs.length > 0){
-        this.title = document.createElement("p");
-        this.title.className = "title-text";
-        this.tite.innerHTML = "Past Gigs";
-        mainContent.append(this.title);
-        this.carousel = new Carousel(band.pastGigs,"past");
-        mainContent.append(this.carousel);
-      }
-      break;
-      case "interested-gigs":
-      if(band.interstedGigs.length > 0){
-        this.title = document.createElement("p");
-        this.title.className = "title-text";
-        this.tite.innerHTML = "Interested Gigs";
-        mainContent.append(this.title);
-        this.carousel = new Carousel(band.interstedGigs,"interested-gigs");
-        mainContent.append(this.carousel);
-      }
-      break;
-    }
-  }
-}
-
-function buildBand(bands){
-  // after we have actual bands, not IDs
-  for(band in bands){
-    var bandTitle = document.createElement("p");
-    bandTitle.className = "title-text";
-    bandTitle.innerHTML = bands[band].name;
-    bandTitle.id = bands[band].name+"-section";
-    var newNav = document.createElement("li");
-    var newNavA = document.createElement("a");
-    newNavA.href = "#"+bands[band].name+"-section";
-    profilesList.
-    mainContent.append(bandTitle);
-    var upcomingSection = new BandSection(bands[band],"upcoming");
-    var applicationsSection = new BandSection(bands[band],"applications");
-    var pastSection = new BandSection(bands[band],"past");
-    var interestedSection = new BandSection(bands[band],"interested-gigs");
-  }
-}
-
+var callbackStepper = 0;
 
 
 function updateBand(id, query){
-  $.post('/updateBand', {'_id':id, 'query':query}, result =>{
+  $.post('/updateBand', {'id':id, 'query':query}, result =>{
     alert(JSON.stringify(result));
   });
-
 }
+
 function updateGig(id, query){
-  $.post('/updateGig', {'_id':id, 'query':query}, result =>{
+  $.post('/updateGig', {'id':id, 'query':query}, result =>{
     alert(JSON.stringify(result));
   });
 }
@@ -972,7 +1279,10 @@ function getUsername(){
     alert(JSON.stringify(res));
     var user = res;
     id = user['_id'];
-    console.log('username fro res is: ' + user['username']);
+    $('#userNameHeader').html(user['username']);
+    socket.on(id, (msg)=>{
+      alert('recieved message here it is: ' + JSON.stringify(msg));
+    });
     getUserInfo(user);
   });
 }
@@ -990,15 +1300,92 @@ function getUserInfo(user){
       createWebPage(user);
   	});
 	});
+
+}
+function buildBands(bands, buildBandsCallback){
+  // after we have actual bands, not IDs
+
+  // handleGigsHelper(idArr, cb){
+  //   var gigProxy = [];
+  //   idArr.forEach(function(id, i){
+  //     console.log('ID in handle gigs is : ');
+  //     console.log(idArr[i])
+  //     getGigInfo(id, res=>{
+  //       console.log('in get gig info and res is:' + JSON.stringify(res));
+  //       gigProxy.push(res);
+  //       if (gigProxy.lenth==idArr.lenth){
+  //         cb(gigProxy);
+  //       }
+  //     });
+  //   });
+  // }
+
+  bands.forEach(function(band){
+    var bandTitle = document.createElement("p");
+    bandTitle.className = "title-text";
+    bandTitle.innerHTML = band.name;
+    bandTitle.id = band.name+"-section";
+    var newNav = document.createElement("li");
+    var newNavA = document.createElement("a");
+    newNavA.href = "#"+band.name+"-section";
+    var bandContainer = document.createElement("div");
+    bandContainer.append(bandTitle);
+    //  profilesList.
+    mainContent.append(bandContainer);
+    new BandSection(band,"info",bandSectionCallback=>{
+      bandContainer.append(bandSectionCallback.container);
+      var starArr = [bandSectionCallback.star1.id,bandSectionCallback.star2.id,bandSectionCallback.star3.id,bandSectionCallback.star4.id,bandSectionCallback.star5.id];
+      loadStars(band.rating,starArr);
+    });
+    // new BandSection(band,"upcoming", bandSectionCallback=>{
+    //   bandContainer.append(bandSectionCallback.container);
+    //   setupAction();
+    // });
+    // new BandSection(band,"applications", bandSectionCallback=>{
+    //   bandContainer.append(bandSectionCallback.container);
+    //   setupAction();
+    // });
+    // new BandSection(band,"past", bandSectionCallback=>{
+    //   bandContainer.append(bandSectionCallback.container);
+    //   setupAction();
+    // });
+    // new BandSection(band,"interested-gigs", bandSectionCallback=>{
+    //   bandContainer.append(bandSectionCallback.container);
+    //   setupAction();
+    // });
+
+  });
+  buildBandsCallback();
+}
+
+function buildGigs(gigs){
+  if(gigs.hasOwnProperty("isConfirmed")){
+    //handle
+  }else{
+    new GigSection(gigs,"booked");
+    new GigSection(gigs,"open");
+    // new GigSection(gigs,"past-hosted");
+    // new GigSection(gigs,"open", gigSectionCallback=>{
+    //   profileGigs.append(gigSectionCallback.container);
+    //   setupAction();
+    // });
+  }
 }
 
 
-function createWebPage(user){
-  loadBands(user);
-  //loadGigs(user);
-}
+// AB EDIT
+function loadStars(rating, stars){
+  var star1 = document.getElementById(stars[0]);
+  var star2 = document.getElementById(stars[1]);
+  var star3 = document.getElementById(stars[2]);
+  var star4 = document.getElementById(stars[3]);
+  var star5 = document.getElementById(stars[4]);
+  star1.src = "../static/assets/Control-Center/star.png";
+  star2.src = "../static/assets/Control-Center/star.png";
+  star3.src = "../static/assets/Control-Center/star.png";
+  star4.src = "../static/assets/Control-Center/star.png";
+  star5.src = "../static/assets/Control-Center/star.png";
 
-function loadStars(rating){
   var starVal = rating / 20.0;
   if(starVal == 5){
     star1.style.display = "inline-block";
@@ -1089,69 +1476,167 @@ function loadStars(rating){
   }
 }
 
-var profileGigs = null;
-var bookedGigs = null;
-var openGigs = null;
-var pastHostedGigs = null;
-
-var mainContent = null;
-var profilesList = null;
-
-var star1 = null;
-var star2 = null;
-var star3 = null;
-var star4 = null;
-var star5 = null;
-
-function init(){
+function createWebPage(user){
+  console.log(JSON.stringify(user));
+  var allBands = user['bands'];
+  var allGigs = user['gigs'];
   profileGigs = document.getElementById("profile-gigs");
   mainContent = document.getElementById("main-content-wrapper");
   profilesList = document.getElementById("profiles-list");
+  buildBands(allBands,function(){
+    var bottomSpacer = document.createElement("div");
+    bottomSpacer.className = "bottom-spacer";
+    bottomSpacer.append(document.createElement("br"));
+    mainContent.append(bottomSpacer);
+  });
+  buildGigs(allGigs);
 
-  star1 = document.getElementById("star-1");
-  star2 = document.getElementById("star-2");
-  star3 = document.getElementById("star-3");
-  star4 = document.getElementById("star-4");
-  star5 = document.getElementById("star-5");
-
-  loadStars(50);
 
   //// IF a profile has booked gigs,
-  // bookedGigs = document.createElement("div");
-  // bookedGigs.className = "booked-gigs";
-  // var bookedGigsH = document.createElement("h2");
-  // bookedGigsH.innerHTML = "Booked Events";
-  // bookedGigs.append(bookedGigsH);
-  // profileGigs.append(bookedGigs);
+  /*
+  for (var i in allBands){
+    var theBand = allBands[i];
+    for (var upGig in theBand.upcomigGigs){
+      new BookedGig(theBand.upcomigGigs[upGig]);
+    }
+    for (var appGig in )
+  }
+  bookedGigs = document.createElement("div");
+  bookedGigs.className = "booked-gigs";
+  var bookedGigsH = document.createElement("h2");
+  bookedGigsH.innerHTML = "Booked Events";
+  bookedGigs.append(bookedGigsH);
+  profileGigs.append(bookedGigs);
   //// then, fill the booked gigs section
-  // testBookedGigs();
+  testBookedGigs();
 
   // IF a profile has open gigs,
-  // openGigs = document.createElement("div");
-  // openGigs.className = "open-gigs";
-  // var openGigsH = document.createElement("h2");
-  // openGigsH.innerHTML = "Open Events";
-  // openGigs.append(openGigsH);
-  // profileGigs.append(openGigs);
+  openGigs = document.createElement("div");
+  openGigs.className = "open-gigs";
+  var openGigsH = document.createElement("h2");
+  openGigsH.innerHTML = "Open Events";
+  openGigs.append(openGigsH);
+  profileGigs.append(openGigs);
   // then, fill the open gigs section
-  // testOpenGigs();
+  testOpenGigs();
 
   // IF a profile has past hosted gigs,
-  // pastHostedGigs = document.createElement("div");
-  // pastHostedGigs.className = "open-gigs";
-  // var pastHostedGigsH = document.createElement("h2");
-  // pastHostedGigsH.innerHTML = "Past Events";
-  // pastHostedGigs.append(pastHostedGigsH);
-  // profileGigs.append(pastHostedGigs);
-  // then, fill the past gigs section
-  // testPastHostedGigs();
-
-  var empty = [];
-  var clipCar = new Carousel(empty, "band-samples");
-  mainContent.append(clipCar.wrapper);
+  pastHostedGigs = document.createElement("div");
+  pastHostedGigs.className = "open-gigs";
+  var pastHostedGigsH = document.createElement("h2");
+  pastHostedGigsH.innerHTML = "Past Events";
+  pastHostedGigs.append(pastHostedGigsH);
+  profileGigs.append(pastHostedGigs);
+  // then, fill the open gigs section
+  testPastHostedGigs();
+*/
+}
 
 
+
+function init(){
+  //loadBands(user);
   // getUsername();
+  var star1 = "user-star-1";
+  var star2 = "user-star-2";
+  var star3 = "user-star-3";
+  var star4 = "user-star-4";
+  var star5 = "user-star-5";
+  var stars = [star1,star2,star3,star4,star5];
+  var mainContent = document.getElementById("main-content-wrapper");
+
+  loadStars(60, stars);
+
+  var user = {
+    "name": "booth",
+    "contacts": [
+      {"_id": "oidfasjodisjfasd", "name":"zeee"}, {"_id": "sadfsdafsdfasdfasd", "name":"adddd"}, {"_id": "ldasjkfdsajdflsad", "name":"creee"}
+    ]
+  };
+
+
+  // messages[user._id] // gives array of messages, with body; timestamp; reciever;
+  createContacts(user.contacts, user.name);
+
+
+}
+
+function createContacts(contacts, yourUsername){
+  contacts.sort(function(a, b){
+      if(a.name < b.name) { return -1; }
+      if(a.name > b.name) { return 1; }
+      return 0;
+  });
+
+  var list = document.getElementById("contacts-content");
+
+  var letters = {
+    "a": false,
+    "b": false,
+    "c": false,
+    "d": false,
+    "e": false,
+    "f": false,
+    "g": false,
+    "h": false,
+    "i": false,
+    "j": false,
+    "k": false,
+    "l": false,
+    "m": false,
+    "n": false,
+    "o": false,
+    "p": false,
+    "q": false,
+    "r": false,
+    "s": false,
+    "t": false,
+    "u": false,
+    "v": false,
+    "w": false,
+    "x": false,
+    "y": false,
+    "z": false
+  };
+
+  for(var person in contacts){
+    var id = contacts[person]._id;
+    var name = contacts[person].name;
+    var lowercaseName = name.toLowerCase();
+    if(!letters[lowercaseName.charAt(0)]){
+      // add a letter div
+      var letterDiv = document.createElement("div");
+      letterDiv.className = "contacts-divider";
+      var theLetter = document.createElement("h2");
+      theLetter.className = "contacts-letter";
+      var nameLetter = lowercaseName.charAt(0);
+      theLetter.innerHTML = nameLetter;
+      letterDiv.append(theLetter);
+      var newLine = document.createElement("div");
+      newLine.className = "contacts-line";
+      letterDiv.append(newLine);
+      list.append(letterDiv);
+      letters[lowercaseName.charAt(0)] = true;
+    }
+    new ContactLink(name,id,contactLinkCallBack => {
+      contactLinkCallBack.contactLink.addEventListener("click",function(){
+        var box = null;
+        if(box) {
+            box.chatbox("option", "boxManager").toggleBox();
+        }
+        else {
+            box = $("#chat-div").chatbox({id:contactLinkCallBack.id,
+                                          user:{ first_name: yourUsername },
+                                          title : contactLinkCallBack.name,
+                                          messageSent : function(id, user, msg) {
+                                              // $("#log").append(id + " said: " + msg + "<br/>");
+                                              $("#chat-div").chatbox("option", "boxManager").addMsg(user.first_name, msg);
+                                          }});
+        }
+        console.log(contactLinkCallBack.contactLink.id);
+      });
+    });
+  }
 }
 
 (function($) {
@@ -1169,6 +1654,7 @@ function init(){
                 this.boxManager.addMsg(user.first_name, msg);
             },
             boxClosed: function(id) {
+
             }, // called when the close icon is clicked
             boxManager: {
                 // thanks to the widget factory facility
@@ -1287,24 +1773,6 @@ function init(){
                           'ui-icon-closethick')
                 .text('X')
                 .appendTo(uiChatboxTitlebarClose),
-            // uiChatboxTitlebarMinimize = (self.uiChatboxTitlebarMinimize = $('<a href="#"></a>'))
-            //     .addClass('ui-corner-all ' +
-            //               'ui-chatbox-icon'
-            //              )
-            //     .attr('role', 'button')
-            //     .hover(function() { uiChatboxTitlebarMinimize.addClass('ui-state-hover'); },
-            //            function() { uiChatboxTitlebarMinimize.removeClass('ui-state-hover'); })
-            //     .click(function(event) {
-            //         self.toggleContent(event);
-            //         return false;
-            //     })
-            //     .appendTo(uiChatboxTitlebar),
-            // uiChatboxTitlebarMinimizeText = $('<span></span>')
-            //     .addClass('ui-icon ' +
-            //               'ui-icon-minusthick')
-            //     .text('minimize')
-            //     .appendTo(uiChatboxTitlebarMinimize),
-            // content
             uiChatboxContent = (self.uiChatboxContent = $('<div></div>'))
                 .addClass('ui-widget-content ' +
                           'ui-chatbox-content '
@@ -1399,29 +1867,25 @@ function init(){
     });
 }(jQuery));
 
-$(document).ready(function(){
-          var box = null;
-          console.log("document ready");
-          $("#chat-a").click(function(event, ui) {
-              if(box) {
-                  box.chatbox("option", "boxManager").toggleBox();
-              }
-              else {
-                  box = $("#chat-div").chatbox({id:"chat_div",
-                                                user:{key : "value"},
-                                                title : "test chat",
-                                                messageSent : function(id, user, msg) {
-                                                    // $("#log").append(id + " said: " + msg + "<br/>");
-                                                    $("#chat-div").chatbox("option", "boxManager").addMsg(id, msg);
-                                                }});
-              }
-          });
-});
-
-
+class ContactLink {
+  constructor(name,id, contactLinkCallBack){
+    var list = document.getElementById("contacts-content");
+    console.log("in constructor");
+    this.contactLink = document.createElement("a");
+    this.contactLink.href = "#";
+    this.contactLink.id = "contact-link-"+id;
+    this.contactLink.className = "contacts-link";
+    this.contactLink.innerHTML = name;
+    this.name = name;
+    this.id = id;
+    list.append(this.contactLink);
+    contactLinkCallBack(this);
+  }
+}
 
 function setupAction(){
   var jcarousel = $('.jcarousel');
+
   jcarousel
       .on('jcarousel:reload jcarousel:create', function () {
           var carousel = $(this),
@@ -1465,7 +1929,50 @@ function setupAction(){
               return '<a href="#' + page + '">' + page + '</a>';
           }
       });
+
+  $('.carousel-img').hover(
+    //Handler In
+    function(){
+      console.log("enter-img");
+    },
+    //Handler Out
+    function(){
+      console.log("exit-img");
+    }
+  );
+
+  $('.carousel-li').hover(
+    //Handler In
+    function(){
+      console.log("enter-li");
+    },
+    //Handler Out
+    function(){
+      console.log("exit-li");
+    }
+  );
 }
+
+
+
+$(document).ready(function(){
+          var box = null;
+          console.log("document ready");
+          $("#chat-a").click(function(event, ui) {
+              if(box) {
+                  box.chatbox("option", "boxManager").toggleBox();
+              }
+              else {
+                  box = $("#chat-div").chatbox({id:"chat_div",
+                                                user:{key : "value"},
+                                                title : "test chat",
+                                                messageSent : function(id, user, msg) {
+                                                    // $("#log").append(id + " said: " + msg + "<br/>");
+                                                    $("#chat-div").chatbox("option", "boxManager").addMsg(id, msg);
+                                                }});
+              }
+          });
+});
 
 
 var contactsButton = document.getElementById('contacts-button');
@@ -1480,13 +1987,417 @@ contactsButton.addEventListener("click",function(){
   }
   open = !open;
 });
+//Schedule stuff//
+var timesRowAdded=0;
+var timesRowDeleted=0;
+var weeklySched = {'0':['Sunday']};
+function addRow(flag) {
+  switch(flag){
+    case "new":
+    var tableID = "new-band-schedule";
+    var table = document.getElementById(tableID);
+    if (!table) return;
+    var newRow = table.rows[1].cloneNode(true);
+    // Now get the inputs and modify their names
+    var inputs = newRow.getElementsByTagName('input');
+    for (var i=0, iLen=inputs.length; i<iLen; i++) {
+      // Update inputs[i]
+    }
+    // Add the new row to the tBody (required for IE)
+    var tBody = table.tBodies[0];
+    tBody.insertBefore(newRow, tBody.lastChild);
+    break;
+  }
+}
+
+function deleteRow(el) {
+  timesRowDeleted=timesRowDeleted+1;
+
+  // while there are parents, keep going until reach TR
+  while (el.parentNode && el.tagName.toLowerCase() != 'tr') {
+    el = el.parentNode;
+  }
+
+  // If el has a parentNode it must be a TR, so delete it
+  // Don't delte if only 3 rows left in table
+  if (el.parentNode && el.parentNode.rows.length > 1) {
+    el.parentNode.removeChild(el);
+  }
+}
+//Band creation section:
+function selectOnChange(sel){
+  console.log("selectOnSubmit:  sel isss");
+  console.log(sel);
+  console.log(sel.value);
+  console.log(sel.name);
+  if(!sel.name){
+    console.log("Got in if");
+    weeklySched['0'][0]=sel.value;
+  }
+  else{
+    weeklySched[sel.name][0]=sel.value;
+  }
+
+}
+function startTimeChange(time){
+  if (!time.name){
+    weeklySched['0'][1]=time.value;
+  }
+  else{
+    weeklySched[time.name][1]=time.value;
+  }
+
+  console.log('startTimeChange');
+  console.log(time);
+  console.log(time.name);
+}
+function endTimeChange(time){
+  if (!time.name){
+    weeklySched['0'][2]=time.value;
+  }
+  else{
+    weeklySched[time.name][2]=time.value;
+  }
+  console.log('endTimeChange');
+  console.log(time);
+  console.log(time.name);
+  console.log("Weekly Sched is :" + JSON.stringify(weeklySched));
+}
+function createBand(){
+  var myNewBand = {
+    'name': $('#new-band-title').val(),
+    'zipcode':$('#new-band-zip').val(),
+    'maxDist':$('#new-band-dist').val(),
+    'price': $('#new-band-pay').val(),
+    'picture':$('#new-band-pic').val(),
+    'audioSample':$('#new-band-clip').val(),
+    'audioPic':$('#new-band-clip-pic').val(),
+    'description':$('#new-band-description').val(),
+    'openDates':weeklySched
+  };
+  for (var key in myNewBand){
+    console.log(myNewBand[key]);
+    console.log(key);
+    if (myNewBand[key]==null || myNewBand[key]==" " || myNewBand[key]==""){
+
+      alert("Sorry, you must fill out the enitre form with non-empty values");
+      return;
+    }
+  }
+  convertZipBand(myNewBand);
+
+}
+
+function sendBandToDB(lat, lng, myBand){
+  var name = myBand['name'];
+  var zipcode = myBand['zipcode'];
+  var maxDist = myBand['maxDist'];
+  var price = myBand['price'];
+  var picture = myBand['picture'];
+  var audioSample = myBand['audioSample'];
+  var audioPic = myBand['audioPic'];
+  var description = myBand['description'];
+  var openDates = myBand['openDates'];
+  var qCategories = parseQueryString(description);
+
+  if(!($("#new-band-pic")[0].files || $("#new-band-pic")[0].files[0])){
+    alert('Please enter a valid .jpeg, or .png file for bands profile picture');
+    return;
+  }
+  else if($("#new-band-pic")[0].files[0].type != 'image/jpeg'){
+    if ($('#new-band-pic')[0].files[0].type != 'image/png'){
+      alert('Please enter a valid .jpeg, or .png file for bands sample picture');
+      return;
+    }
+  }
+  if(!($("#new-band-clip-pic")[0].files || $("#new-band-clip-pic")[0].files[0])){
+    alert('Please enter a valid .jpeg, or .png file for bands profile picture');
+    return;
+  }
+  else if($("#new-band-clip-pic")[0].files[0].type != 'image/jpeg'){
+    if ($("#new-band-clip-pic")[0].files[0].type != 'image/png'){
+      alert('Please enter a valid .jpeg, or .png file for bands sample picture');
+      return;
+    }
+  }
+  if(!($("#new-band-clip")[0].files || $("#new-band-clip")[0].files[0])){
+    alert('Please enter a valid .wav, or .mp3 file for bands profile picture');
+    return;
+  }
+  else if($("#new-band-clip")[0].files[0].type != 'audio/wav'){
+    if ($("#new-band-clip")[0].files[0].type != 'audio/mp3'){
+      alert('Please enter a valid .jpeg, or .png file for bands sample picture');
+      return;
+    }
+  }
+  var image = $("#new-band-pic")[0].files[0];
+  var formdata = new FormData();
+  var bandAvatarPath = null;
+  var bandSoundPath = null;
+  var bandSamplePicPath = null;
+  formdata.append('image', image);
+  $.ajax({
+      url: '/uploadBandAvatar',
+      data: formdata,
+      contentType: false,
+      processData: false,
+      type: 'POST',
+      'success':function(data){
+          alert(data);
+          bandAvatarPath=data;
+          var sound = $("#new-band-clip")[0].files[0];
+          formdata = new FormData();
+          formdata.append('soundByte', sound);
+          $.ajax({
+              url: '/uploadSoundByte',
+              data: formdata,
+              contentType: false,
+              processData: false,
+              type: 'POST',
+              'success':function(data){
+                  alert(data);
+                  bandSoundPath=data;
+                  var samplePic = $('#new-band-clip-pic')[0].files[0];
+                  formdata = new FormData();
+                  formdata.append('audioPic', samplePic);
+                  $.ajax({
+                      url: '/uploadAudioPic',
+                      data: formdata,
+                      contentType: false,
+                      processData: false,
+                      type: 'POST',
+                      'success':function(data){
+                        bandSamplePicPath=data;
+                        var sample = {'audio':bandSoundPath, 'picture':bandSamplePicPath};
+                        $.post('/band', {'name':name, 'zipcode':zipcode, 'maxDist':maxDist, 'price':price, 'picture':bandAvatarPath, 'sample':sample,'description':description, 'openDates':openDates, 'categories':qCategories, 'lat':lat, 'lng':lng}, result=>{
+                          alert(result);
+                        });
+                      }
+                  });
+
+              }
+          });
+      }
+  });
+}
+function tesSRC(){
+  $('#testPic').src='static/uploads/GigPics/64e8c9ffbee6a8f44f205b50f59a5f3c';
+}
+
+function postGig(){
+  cleanGigInput();
+}
+/*
+<input id="new-gig-title" class="modal-input" type="text" placeholder="enter a title for your new gig"></input>
+<label for="new-gig-date">date</label>
+<input id="new-gig-date" class="modal-input" type="date"></input>
+<label for="new-gig-start-time">from</label>
+<input id="new-gig-start-time" class="modal-input" type="time"></input>
+<label for="new-gig-end-time">to</label>
+<input id="new-gig-end-time" class="modal-input" type="time"></input>
+<label for="new-gig-loc">location</label>
+<input id="new-gig-loc" class="modal-input" type="text"></input>
+<label for="new-gig-pay">pay rate ($/hr)</label>
+<input id="new-gig-pay" class="modal-input" type="text"></input>
+<img id="new-gig-pic-preview"/>
+<div id="new-gig-spacer"></div>
+<label for="new-gig-pic">upload image</label>
+<input id="new-gig-pic" class="modal-input"  name="avatar" type="file"></input>
+<label id="new-gig-description-label" for="new-gig-description">description</label>
+<textarea id="new-gig-description" class="modal-textarea"></textarea>*/
+function cleanGigInput(){
+  console.log("got into post gig");
+  var name = $('#new-gig-title').val();
+  console.log("name from gig form is: " + name);
+  var address = $('#new-gig-loc').val();
+  var price = $('#new-gig-pay').val();
+  var description = $('#new-gig-description').val();
+  var startDate = $('#new-gig-date').val();
+  var startTime = $('#new-gig-start-time').val();
+  var endTime = $('#new-gig-end-time').val();
+  var date = new Date(startDate);
+  var day = date.getDay();
+  console.log("Date is: " + date + "day is : " + day);
+  //Replace this real endate soon:
+  var endDate = endTime;
+  ////////
+  var zipcode = $('#new-gig-zip').val();
+  //var pic = newGigPic;
+  console.log(newGigPic);
+  var pic = newGigPic;
+  var gig = {'name':name,
+            'address': address,
+            'price': price,
+            'startDate': startDate,
+            'startTime':startTime,
+            'endTime': endDate,
+            'zipcode' : zipcode,
+            'description': description,
+            'picID': pic,
+            'day':day,
+          };
+  for (key in gig){
+    if(gig[key]==null || gig[key]==" " || gig[key]==""){
+      console.log(key);
+      alert("Sorry, you must fill out the enitre form with non-empty values");
+      return;
+    }
+  }
+
+  convertZipGig(gig);
+
+}
+
+function sendGigToDB(lat,lng, myNewGig) {
+  //must implment getting user name out of session
+  var description =  myNewGig['description'];
+  var categoriesFromStr = parseQueryString(description);
+  var name = myNewGig['name'];
+  var address = myNewGig['address'];
+  var zipcode = myNewGig['zipcode'];
+  var price = myNewGig['price'];
+  var startDate = myNewGig['startDate'];
+  var endTime = myNewGig['endTime'];
+  var description = myNewGig['description'];
+  var startTime = myNewGig['startTime'];
+  var day = myNewGig['day'];
+  switch (day){
+    case 0:
+    day = "Sunday";
+    break;
+    case 1:
+    day = "Monday";
+    break;
+    case 2:
+    day = "Tuesday";
+    break;
+    case 3:
+    day = "Wednesday";
+    break;
+    case 4:
+    day = "Thursday";
+    break;
+    case 5:
+    day = "Friday";
+    break;
+    case 6:
+    day = "Saturday";
+    break;
+    default:
+    alert("Please enter a valid date");
+    return;
+    break;
+  }
+
+  //var picID = newGigPic;
+  console.log("In send to db and global pic is : " + JSON.stringify(newGigPic));
+  console.log(JSON.stringify(myNewGig));
+  var image = $("#new-gig-pic")[0].files[0];
+  var formdata = new FormData();
+  formdata.append('image', image);
+  $.ajax({
+      url: '/uploadGigPic',
+      data: formdata,
+      contentType: false,
+      processData: false,
+      type: 'POST',
+      'success':function(data){
+          alert(data);
+          picPath=data;
+          $.post('/gig', {'name':name, 'address':address, 'zipcode': zipcode, 'price': price, 'startDate': startDate, 'startTime':startTime, 'day':day, 'endTime': endTime, 'applications': [], 'lat': lat, 'lng': lng, 'categories':categoriesFromStr, 'isFilled':false, 'bandFor':null, 'description':description, 'picture':picPath}, result => {
+              console.log("got cb from post /gig");
+              alert('result is ' + JSON.stringify(result));
+
+            });
+      }
+
+
+  });
+
+
+}
+
+//HELPER functions and messaging///
+
+function convertZipGig(myGig){
+  var zipcode = myGig['zipcode'];
+  if (!(zipcode.length==5)){
+    alert('Please enter a valid zipcode');
+    return;
+  }
+  var success = false;
+  setTimeout(function() {
+    if (!success)
+    {
+        // Handle error accordingly
+        console.log("Got error with zipcode");
+        alert("Please enter a valid zipcode");
+        return;
+    }
+  }, 5000);
+    $.getJSON('http://api.openweathermap.org/data/2.5/weather?zip='+zipcode+',us&APPID=f89469b4b424d53ac982adacb8db19f6').done(function(data){
+      console.log(JSON.stringify(data));
+      var lat = data.coord.lat;
+      var lng = data.coord.lon;
+      sendGigToDB(lat,lng, myGig);
+  });
+}
+function convertZipBand(myBand){
+  var zipcode = myBand['zipcode'];
+  if (!(zipcode.length==5)){
+    alert('Please enter a valid zipcode');
+    return;
+  }
+  console.log(zipcode);
+  var success = false;
+  setTimeout(function() {
+    if (!success)
+    {
+        // Handle error accordingly
+        console.log("Got error with zipcode");
+        alert("Please enter a valid zipcode");
+        return;
+    }
+  }, 5000);
+    $.getJSON('http://api.openweathermap.org/data/2.5/weather?zip='+zipcode+',us&APPID=f89469b4b424d53ac982adacb8db19f6').done(function(data){
+      console.log(JSON.stringify(data));
+      success=true;
+      var lat = data.coord.lat;
+      var lng = data.coord.lon;
+      sendBandToDB(lat,lng, myBand);
+    });
+
+
+
+}
+
+function parseQueryString(str){
+  var categoriesFromStr={};
+  var lowerCased = str.toLowerCase();
+  lowerCased = lowerCased.replace(',', '""');
+  console.log("in parse q str the lower cased str is "+str);
+  for (key in categories){
+    var type = categories[key]
+    categoriesFromStr[type]=[];
+    console.log("key is " + key);
+    console.log("banks are " + wordBank[type]);
+    for (word in wordBank[type]){
+      console.log("word is : " + wordBank[type][word]);
+      if (lowerCased.includes(wordBank[type][word])){
+        console.log("word is in if : " + wordBank[type][word]);
+        categoriesFromStr[type].push(wordBank[type][word]);
+      }
+    }
+  }
+  console.log("in parse from str, the categories from str are now" + JSON.stringify(categoriesFromStr));
+  return categoriesFromStr;
+}
+
+//changeGigSection
 
 //MESSAGING SECTION:
 
 var socket = io();
-function recMessage(message){
-  console.log('recieved message here it is: ' + JSON.stringify(message));
-}
 function sendMessage(){
   //set body to text from box and rec id to the inteded reciver's user ID
   var today = new Date();
@@ -1494,7 +2405,7 @@ function sendMessage(){
   var time = today.getHours() + ":" + today.getMinutes() + ":" + today.getSeconds();
   var dateTime = date+' '+time;
   //replace this with real id from contact menu
-  var recID = 3232323323;
+  var recID = id;
   //////
   var body = "hello world"
 
@@ -1509,33 +2420,120 @@ function sendMessage(){
   });
 }
 
-socket.on('message, recID:' + id + '', recMessage);
 
-function addRow() {
-  var tableID = "new-band-schedule";
-  var table = document.getElementById(tableID);
-  if (!table) return;
-  var newRow = table.rows[1].cloneNode(true);
-  // Now get the inputs and modify their names
-  var inputs = newRow.getElementsByTagName('input');
-  for (var i=0, iLen=inputs.length; i<iLen; i++) {
-    // Update inputs[i]
-  }
-  // Add the new row to the tBody (required for IE)
-  var tBody = table.tBodies[0];
-  tBody.insertBefore(newRow, tBody.lastChild);
+//WORD BANK//
+var categories=['genres','insts','gigTypes','vibes'];
+var wordBank = {
+ genres:["blues","classic rock","country","dance","disco","funk","grunge",
+ "hip-hop","hiphop","hip hop","rap","jazz","metal","new age","oldies","other","pop","r&b","r and b","randb",
+ "rap","reggae","rock","techno","industrial","alternative","ska",
+ "death metal","death-metal","pranks","soundtrack","euro-techno","ambient",
+ "trip-hop","triphop","trip hop","vocal","jazz+funk","jazzfunk","funk","fusion","trance","classical",
+ "instrumental","acid","house","game","gospel",
+ "noise","alternrock","alternative rock","alternative","bass","soul","punk","space","meditative",
+ "instrumental pop","instrumental rock","ethnic","gothic",
+ "darkwave","techno-industrial","electronic","pop-folk","pop folk",
+ "eurodance","dream","southern rock","comedy","cult","gangsta",
+ "top 40","christian rap","pop/funk","jungle","native american",
+ "cabaret","new wave","psychadelic","rave","showtunes","trailer",
+ "lo-fi","tribal","acid punk","acid jazz","polka","retro",
+ "musical","rock & roll","rock and roll","hard rock","folk","folk-rock","folk rock",
+ "national folk","swing","fast fusion","bebop","latin","revival",
+ "celtic","bluegrass","avantgarde","gothic rock","progressive rock",
+ "psychedelic rock","symphonic rock","slow rock","big band",
+ "chorus","easy listening","acoustic","humour","speech","chanson",
+ "opera","chamber music","sonata","symphony","booty bass","primus",
+ "porn groove","satire","slow jam","club","tango","samba",
+ "folklore","ballad","power ballad","Rrythmic soul","freestyle",
+ "duet","punk rock","drum solo","acapella","euro-house","dance hall","edm","grime","dubstep","drum and bass","drum&bass","cover","covers"],
+
+ insts:["accordion","bagpipes","banjo","bass guitar","bass","bassoon","berimbau","dj","d.j.","singer","rapper","mc","bongo","freestyler","cello",
+ "clarinet","cornet","cymbal","didgeridoo","double bass","upright","drum kit","drums","percussion","flute","french horn","glass harmonica","gong",
+ "guitar","acoustic","electronic","harmonica","harp","harpsichord","hammered dulcimer","synth","tambourine","hurdy gurdy","jew’s harp",
+ "lute","lyre","mandolin","marimba","melodica","oboe","ocarina","octobass","organ","sound system","pan pipes","piano","piccolo","recorder","saxophone",
+ "sitar","synthesizer","timpani","triangle","trombone","trumpet","theremin","tuba","poet","vocals","viola","violin","whamola","xylophone","zither"],
+
+ gigTypes:["birthday","party","fraternity","frat","bar","concert","corporate","kids","adult","adults","highschool","college","retirement","sorority",
+ "gay","pride","festival","radio","hall","dance","bachelor","bachelorette","show","talent","chill","kickback","hangout","mobile","car","house","home","parade",
+ "street","theater","exhibition","show","event","wedding","funeral","burial","eccentric","church","synagouge","mosque","temple","circle","meditation","studio session",
+ "performance","rally","march","protest","ceremony","holiday","christmas","new years","halloween","valentines","bash","mosh","orgy","date","night out","night in",
+ "night-in","service","store","opening","closing","buisness","booth","meeting","introduction","orientation","graduation"],
+
+ vibes:["anthem","aria","ariose","arioso","assonance","atmospheric","background","banging","banger","bangers","baroque","beat","bell-like","bombastic",
+ "booming","boomy","bop","breath","breathy","bright","bass","cadence",
+ "call","canorous","canticle","cappella","carol","catchy","chamber","chant","cheerful","chime",
+ "choral","chorale","classical","clear","consonant","contemporary","danceable","deep","descant","ditty",
+ "dramatic","dulcet","dynamic","eclectic","electronic","energetic","entertaining","euphonic","euphonious","evensong",
+ "evergreen","experimental","explosive","facile","fast","funky","happy","harmonic","harmonious","headbanging","headbanger","head banging","healing",
+ "heroic","high-flown","high-sounding","high","hit","homophonic","honeyed","hook","hymn",
+ "flawless","fluid","forte","fresh","fugue","full","full-toned","fuses", "golden","grand","groovy","covers","covers","jazzy","lay",
+ "hyped","hype","hypnotic","hi-fi","improvised","in tune","inflection","instrumental","intonation","intricate","intro","jam","jaunty",
+ "lied","light","lilt","lilting","liquid","live","lively","lofty","lyric","lyrical",
+ "magniloquent","major","masterful","mellifluous","mellow","melodic","melodious","melody","minor","modern","monophonic","musical","musicality",
+ "muzak","ode","opera","orchestral","orotund","paean","passionate","percussive",
+ "pianissimo","piece","piping","plainsong","playful","pleasant","poetic","polyphonic","pompous",
+ "popular","progressive","psalm","recitative","refined","refrain","resonance","resonant","resounding",
+ "reverberant","rhythmic","rhythmical","rich","ringing","riveting","rockin’","rockin","rollicking","romantic","round","shout",
+ "silver-toned","silvery","sing","soft","song","songful","sonic",
+ "session","shrill","singable","singing","soprano","soulful","staccato","stentorian","stentorious","strain","strong","sweet-sounding",
+ "sweet-toned","swing","symphonic",
+ "sonorous","soothing","sophisticated","symphonious","symphony","tubular","tumid","tuned","tuneful","unison","up-tempo","unified","uplifting",
+ "sweet","throbbing","tight","timeless","tonal","atonal","treble","warble","wobble","wavey","warm","wet","dry","wild","woodnote","western",
+ "upbeat","vibrant","vocal","high-volume","low-volume","loud","soft","hard","hardcore","west-coast","east-coast","chopper","vibes",
+ "angry","melancholy","blue","new","old","young","difuse","nasty","raunchy","ridiculous","real","dumb"
+ ,"evil","godly","zealous","functional","stupid","purple","green","gnarly","fun","forceful","fucking","fuck","fucked up","crazy","sloppy","disgusting"]
+};
+//var fs = require('fs');
+var newGigPic = null;
+function readURL(input) {
+
+    if (input.files && input.files[0]) {
+      console.log(input.files[0]);
+      newGigPic=input.files[0];
+        var reader = new FileReader();
+        reader.onload = function (e) {
+            $('#new-gig-pic-preview').attr('src', e.target.result);
+        }
+        reader.readAsDataURL(input.files[0]);
+    }
 }
 
-function deleteRow(el) {
+$("#new-gig-pic").change(function(){
+    readURL(this);
+});
+var newPicBand = null;
+function readURLForB(input) {
+    if (input.files && input.files[0]) {
+      newPicBand=input.files[0];
+        var reader = new FileReader();
 
-  // while there are parents, keep going until reach TR
-  while (el.parentNode && el.tagName.toLowerCase() != 'tr') {
-    el = el.parentNode;
-  }
+        reader.onload = function (e) {
+            $('#new-band-pic-preview').attr('src', e.target.result);
+        }
 
-  // If el has a parentNode it must be a TR, so delete it
-  // Don't delte if only 3 rows left in table
-  if (el.parentNode && el.parentNode.rows.length > 1) {
-    el.parentNode.removeChild(el);
-  }
+        reader.readAsDataURL(input.files[0]);
+    }
 }
+
+$("#new-band-pic").change(function(){
+    readURLForB(this);
+});
+var newBandSamplePic=null;
+function readURLForB2(input) {
+    if (input.files && input.files[0]) {
+        var reader = new FileReader();
+        newBandSamplePic=input.files[0];
+        reader.onload = function (e) {
+            $('#new-band-clip-preview').attr('src', e.target.result);
+        }
+
+        reader.readAsDataURL(input.files[0]);
+    }
+}
+
+$("#new-band-clip-pic").change(function(){
+    readURLForB2(this);
+});
+
+
+// function to create file from base64 encoded string

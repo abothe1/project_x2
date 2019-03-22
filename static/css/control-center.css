@@ -184,15 +184,21 @@ h1, h2, h3, h4, h5, h6, p, button, input, textarea, li{
   height: 40px;
 }
 
-#stars{
+/*AB EDIT*/
+#user-stars{
   position: absolute;
   margin-left: 65%;
   margin-top: -5%;
   width: 100%;
 }
 
-#star-1, #star-2, #star-3, #star-4, #star-5{
+#user-star-1, #user-star-2, #user-star-3, #user-star-4, #user-star-5{
   display: none;
+}
+
+.band-stars{
+  width: 220px;
+  height: 40px;
 }
 
 /*
@@ -413,7 +419,6 @@ open gig Elements
   color: white;
   text-decoration: none;
 }
-
 
 /*
   profiles list elements
@@ -900,6 +905,126 @@ label{
 }
 
 #new-band-create{
+  font-size: 48pt;
+  margin-top: 24px;
+}
+
+/*
+  edit band elements
+  // AB EDIT
+*/
+
+#modal-wrapper-current-band{
+  z-index: 50;
+}
+
+#current-band-content > input{
+  height: 50px;
+  text-indent: 20px;
+  font-family: Industry, sans-serif;
+  font-size: 16pt;
+}
+
+#current-band-title{
+  width: 60%;
+  top: 25px;
+  position: absolute;
+  margin-left: 320px;
+}
+
+#current-band-zip{
+  width: 150px;
+  margin-right: 20px;
+}
+
+#current-band-dist,#current-band-pay{
+  width: 100px;
+}
+
+#current-band-dist{
+  margin-right: 20px;
+}
+
+#current-band-schedule-label{
+  margin-top: 12px;
+}
+
+#current-band-schedule{
+  text-align: center;
+  font-family: Industry,sans-serif;
+  font-size: 18pt;
+  width: 75%;
+}
+
+.current-band-schedule-select,.current-band-schedule-start-time, .current-band-schedule-end-time{
+  height: 50px;
+  font-family: Industry, sans-serif;
+  font-size: 16pt;
+  width: 150px;
+  color: white;
+  background-color: #333d44;
+  border-radius: 8px;
+  border: none !important;
+  text-indent: 8px;
+}
+
+.current-band-schedule-remove,.current-band-schedule-add{
+  color: #56dff0;
+  font-family: Industry, sans-serif;
+  font-size: 14pt;
+  background-color: transparent;
+  border: none;
+}
+
+.current-band-schedule-remove:hover,.current-band-schedule-add:hover{
+  color: white;
+  text-decoration: none;
+  cursor:pointer;
+}
+
+#current-band-description-label{
+  margin-top: 12px;
+  vertical-align:top;
+}
+
+#current-band-description{
+  margin-top: 12px;
+  width: 80%;
+  height: 35%;
+  border: none;
+  border-radius: 14px;
+  background-color: #333d44;
+  color: white;
+  resize: none;
+  font-size: 16pt;
+}
+
+#current-band-pic, #current-band-clip, #current-band-clip-pic{
+  margin-top: 24px;
+  margin-right: 12px;
+  width: 400px;
+  line-height: 40px;
+  text-align: left;
+}
+
+#current-band-pic::-webkit-file-upload-button, #current-band-clip::-webkit-file-upload-button, #current-band-clip-pic::-webkit-file-upload-button {
+  visibility: hidden;
+}
+
+#current-band-pic-preview, #current-band-clip-preview{
+  height: 124px;
+  width: 124px;
+  margin-top: 0px;
+  border: none !important;
+  border-radius: 8px;
+  background-color: #333d44;
+}
+
+#current-band-clip-preview{
+  margin-top: -76px;
+}
+
+#current-band-create{
   font-size: 48pt;
   margin-top: 24px;
 }

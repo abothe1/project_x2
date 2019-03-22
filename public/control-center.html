@@ -130,7 +130,7 @@
             </tbody>
             <tfoot>
               <tr>
-                <td><a class="new-band-schedule-add" href="javascript:addRow()">add another day</a></td>
+                <td><a class="new-band-schedule-add" href="javascript:addRow('new')">add another day</a></td>
                 <td></td>
                 <td></td>
                 <td></td>
@@ -158,6 +158,46 @@
       </form>
     </div>
 
+    <div id="modal-wrapper-current-band" class="modal">
+      <form id="current-band-form" class="modal-content animate" enctype="multipart/form-data" method="post" action="#">
+
+        <div class="imgcontainer">
+          <span id="close-edit-band" class="close" title="Close PopUp">&times;</span>
+          <h1 style="text-align:left; padding-left: 20px; font-size: 50pt;">your band</h1>
+        </div>
+
+        <div class="container" id="current-band-content">
+          <input id="current-band-title" class="modal-input" type="text"></input>
+          <label for="current-gig-zip">zip code</label>
+          <input id="current-band-zip" class="modal-input" type="text"></input>
+          <label for="current-gig-pay">max travel distance (mi.)</label>
+          <input id="current-band-dist" class="modal-input" type="text"></input>
+          <label for="current-band-pay">avg. pay ($/hr)</label>
+          <input id="current-band-pay" class="modal-input" type="text"></input>
+          <h3 id="current-band-schedule-label">weekly schedule</h3><h5>add your band's open time slots in the table below</h5>
+          <br>
+          <table id="current-band-schedule">
+            <thead>
+              <th>day of the week</th>
+              <th>start time</th>
+              <th>end time</th>
+            </thead>
+            <tbody id="current-band-schedule-tbody"></tbody>
+            <tfoot id="current-band-schedule-tfoot"></tfoot>
+          </table>
+          <br>
+          <label id="current-band-description-label" for="current-band-description">description</label>
+          <textarea id="current-band-description" class="modal-textarea"></textarea>
+          <h3>avatar</h3>
+          <label for"current-band-pic">upload image</label>
+          <input id="current-band-pic" class="modal-input" name="avatar" type="file"></input>
+          <img id="current-band-pic-preview"/>
+          <br>
+          <button class="popUpButtons" id="current-band-edit">edit</button>
+        </div>
+      </form>
+    </div>
+
 
 
     <div id="body-container">
@@ -177,12 +217,12 @@
 
       <div class="profile-header">
         <p class="profile-header-text">Jimmy McNards</p>
-        <div id="stars">
-          <img class="star" id="star-1" src="../static/assets/Control-Center/star.png"/>
-          <img class="star" id="star-2" src="../static/assets/Control-Center/star.png"/>
-          <img class="star" id="star-3" src="../static/assets/Control-Center/star.png"/>
-          <img class="star" id="star-4" src="../static/assets/Control-Center/star.png"/>
-          <img class="star" id="star-5" src="../static/assets/Control-Center/star.png"/>
+        <div id="user-stars">
+          <img class="star" id="user-star-1" src="../static/assets/Control-Center/star.png"/>
+          <img class="star" id="user-star-2" src="../static/assets/Control-Center/star.png"/>
+          <img class="star" id="user-star-3" src="../static/assets/Control-Center/star.png"/>
+          <img class="star" id="user-star-4" src="../static/assets/Control-Center/star.png"/>
+          <img class="star" id="user-star-5" src="../static/assets/Control-Center/star.png"/>
         </div>
       </div>
 
@@ -190,6 +230,7 @@
         <ul>
           <li><a href="#" onclick="document.getElementById('modal-wrapper-new-band').style.display='block'">+ Create a Band</a></li>
           <li><a href="#" onclick="document.getElementById('modal-wrapper-new-gig').style.display='block'">+ Post an Event</a></li>
+          <li><a href="#" onclick="document.getElementById('modal-wrapper-current-band').style.display='block'">Test Edit Band</a></li>
         </ul>
       </div>
 
@@ -207,23 +248,7 @@
 
       <div id="contacts-sidebar">
         <img id="contacts-bg" src="../static/assets/Control-Center/contacts-bg.png" alt="contacts" />
-        <div id="contacts-content">
-          <div class="contacts-divider"><h2 class="contacts-letter">a</h2><div class="contacts-line"></div></div>
-          <a href="#" id="chat-a" class="contacts-link">aaron</a>
-          <a href="#" class="contacts-link">amy</a>
-          <div class="contacts-divider"><h2 class="contacts-letter">b</h2><div class="contacts-line"></div></div>
-          <div class="contacts-divider"><h2 class="contacts-letter">c</h2><div class="contacts-line"></div></div>
-          <div class="contacts-divider"><h2 class="contacts-letter">d</h2><div class="contacts-line"></div></div>
-          <div class="contacts-divider"><h2 class="contacts-letter">e</h2><div class="contacts-line"></div></div>
-          <div class="contacts-divider"><h2 class="contacts-letter">f</h2><div class="contacts-line"></div></div>
-          <div class="contacts-divider"><h2 class="contacts-letter">g</h2><div class="contacts-line"></div></div>
-          <div class="contacts-divider"><h2 class="contacts-letter">h</h2><div class="contacts-line"></div></div>
-          <div class="contacts-divider"><h2 class="contacts-letter">i</h2><div class="contacts-line"></div></div>
-          <div class="contacts-divider"><h2 class="contacts-letter">j</h2><div class="contacts-line"></div></div>
-          <div class="contacts-divider"><h2 class="contacts-letter">k</h2><div class="contacts-line"></div></div>
-          <div class="contacts-divider"><h2 class="contacts-letter">l</h2><div class="contacts-line"></div></div>
-          <div class="contacts-divider"><h2 class="contacts-letter">m</h2><div class="contacts-line"></div></div>
-        </div>
+        <div id="contacts-content"></div>
       </div>
 
       <div id="main-content-wrapper">

@@ -3,6 +3,7 @@
     "start": "NODE_ENV=development node server.js"
   },
   "dependencies": {
+    "mongodb": "^3.2.1",
     "winston": "^3.1.0",
     "winston-daily-rotate-file": "^3.5.2"
   }
