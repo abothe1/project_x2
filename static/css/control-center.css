@@ -644,7 +644,7 @@ open gig Elements
 }
 
 #modal-wrapper-new-sample{
-  z-index: 50;
+  z-index: 110;
 }
 
 #new-sample-content input{
@@ -692,7 +692,7 @@ label{
 }
 
 #modal-wrapper-new-gig{
-  z-index: 50;
+  z-index: 110;
 }
 
 #new-gig-content > input{
@@ -795,7 +795,7 @@ label{
 */
 
 #modal-wrapper-new-band{
-  z-index: 50;
+  z-index: 110;
 }
 
 #new-band-content > input{
@@ -915,7 +915,7 @@ label{
 */
 
 #modal-wrapper-current-band{
-  z-index: 50;
+  z-index: 110;
 }
 
 #current-band-content > input{
