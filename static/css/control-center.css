@@ -410,14 +410,17 @@ open gig Elements
 }
 
 .open-gig-confirm{
+  background-color: transparent;
   color: rgba(86,223,240,1.0);
   font-family: Industry, sans-serif;
   font-size: 18pt;
+  border: none;
 }
 
 .open-gig-confirm:hover{
   color: white;
   text-decoration: none;
+  cursor: pointer;
 }
 
 /*
@@ -471,7 +474,7 @@ open gig Elements
   right: 0;
   height: 66%;
   position: fixed;
-  background-color: rgba(0,0,0,0.3);
+  background-color: rgba(0,0,0,0.8);
   bottom: 6%;
   display: none;
   overflow: hidden;
@@ -1271,7 +1274,7 @@ chat boxes
     bottom:0;
     background:  #CCCCCC;
     z-index: 109;
-    background-color: rgba(0,0,0,0.3);
+    background-color: rgba(0,0,0,0.7);
 }
 
 .ui-chatbox-titlebar {
@@ -1409,4 +1412,75 @@ scrollbar
 
 ::-webkit-scrollbar-corner {
   background: rgba(0,0,0,0);
+}
+
+.car-view-button, .car-book-button, .car-decline-button{
+  margin-left: 10%;
+  width: 80%;
+  background-color: rgba(0,0,0,0.8);
+  border-radius: 10px;
+  height: 32px;
+  margin-top: 8%;
+}
+
+.car-view-button,.car-book-button{
+  color: #56dff0;
+  border-color: #56dff0;
+}
+
+.car-decline-button{
+  color: #ba141a;
+  border-color: #ba141a;
+}
+
+.edit-band-button{
+  background-color: rgba(0,0,0,0.8);
+  border-radius: 10px;
+  height: 40px;
+  color: #56dff0;
+  border-color: #56dff0;
+  margin-top: 10px;
+}
+
+.rate-p, .rate-input, .rate-button{
+  margin-top: 10px;
+  width: 60%;
+  margin-left: 20%;
+}
+
+.rate-p{
+  color: white;
+  font-size: 10pt;
+  text-align: center;
+}
+
+.rate-input{
+  color: white;
+  background-color: rgba(0,0,0,0.8);
+  border-color: #56dff0;
+  height: 40px;
+  border-radius: 10px;
+  text-align: center;
+}
+
+.rate-button{
+  color: white;
+  background-color: rgba(0,0,0,0.8);
+  border-color: #56dff0;
+  height: 40px;
+  border-radius: 10px;
+}
+
+.rate-button:hover{
+  cursor: pointer;
+}
+
+.red-x{
+  position: absolute;
+  color: red;
+  z-index: 8;
+  font-size: 120pt;
+  margin-top: -10px;
+  margin-left: 50px;
+
 }

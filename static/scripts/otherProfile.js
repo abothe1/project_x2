@@ -1,14 +1,224 @@
-var box = null;
-var mainContent = null;
-var profilesList = null;
-var globalMessageArray = null;
+class SampleCarousel{
+  constructor(sampleCarCallback){
+    this.carWrap = document.createElement("div");
+    this.carWrap.className = "jcarousel-wrapper";
+    this.carousel = document.createElement("div");
+    this.carousel.className = "jcarousel";
+    this.list = document.createElement("ul");
+    for(var sample in otherBand.audioSamples){
+      var newItem = document.createElement("li");
+      newItem.className = "carousel-li";
+      newItem.audio = new Audio();
+      newItem.audio.src = otherBand.audioSamples[sample].audio;
+      newItem.audio.type = "audio/mp3";
+      // img
+      var newImg = document.createElement("img");
+      newImg.className = "carousel-img";
+      newImg.src = otherBand.audioSamples[sample].picture;
+      // frame
+      var newFrame = document.createElement("img");
+      newFrame.className = "carousel-frame";
+      newFrame.src = "../static/assets/Control-Center/purplebox.png";
+      newItem.imgObj = newImg;
+      newItem.append(newImg);
+      newItem.append(newFrame);
+      this.list.append(newItem);
+      newItem.addEventListener("mouseover",function(){
+        newItem.imgObj.style.opacity = "0.8";
+        var playPromise = newItem.audio.play();
+        if(playPromise != undefined){
+          playPromise.then(function () {
+          	 // console.log('Playing....');
+          }).catch(function (error) {
+          	 console.log('Failed to play....' + error);
+          });
+        }
+      },false);
+      newItem.addEventListener("mouseout",function(){
+        newItem.imgObj.style.opacity = "1.0";
+        newItem.audio.pause();
+      },false);
+    }
+    this.carousel.append(this.list);
+    if(otherBand.audioSamples.length + 1 > 4){
+      // only add arrow controls if the carousel has enough data
+      this.prev = document.createElement("a");
+      this.prev.className = "jcarousel-control-prev";
+      this.prev.href = "#";
+      this.next = document.createElement("a");
+      this.next.className = "jcarousel-control-next";
+      this.next.href = "#";
+      this.carWrap.append(this.prev);
+      this.carWrap.append(this.next);
+    }
+    this.carWrap.append(this.carousel);
+    sampleCarCallback(this);
+  }
+}
 
+// BOOTH section
+
+//global vars
+var user = null;
+var otherGig=null;
+var otherBand=null;
+var myBand=null;
+var myGig = null;
+function parseURL(url){
+  var parser = document.createElement('a'),
+       searchObject = {},
+       queries, split, i;
+   // Let the browser do the work
+   parser.href = url;
+   // Convert query string to object
+   queries = parser.search.replace(/^\?/, '').split('&');
+   for( i = 0; i < queries.length; i++ ) {
+       split = queries[i].split('=');
+       searchObject[split[0]] = split[1];
+   }
+   return {
+       protocol: parser.protocol,
+       host: parser.host,
+       hostname: parser.hostname,
+       port: parser.port,
+       pathname: parser.pathname,
+       search: parser.search,
+       searchObject: searchObject,
+       hash: parser.hash
+   };
+}
+function getUserInfo(){
+  $.get('/user', {'query':'who am i ?'}, result=>{
+    console.log("Got result for user and it is : "+JSON.stringify(result));
+    var myUser = result;
+    $.get('/getBands', {'creator':result['username']}, bandsResult0=>{
+      console.log("Got result for getting our user's bands, here it is :" + JSON.stringify(bandsResult0));
+      var myBands = bandsResult0;
+      $.get('/getGigs', {'creator':myUser['username']}, gigResult0=>{
+        console.log("Got result for getting our user's bands, here it is :" + JSON.stringify(gigResult0));
+        var myGigs = gigResult0;
+        populateDropDown(myUser, myBands, myGigs);
+      });
+    });
+  });
+}
+
+function populateDropDown(myUser, myBands, myGigs){
+  console.log(" ");
+  console.log("In pop drop down");
+  console.log(" *** ");
+  console.log("USER: "+JSON.stringify(myUser)+" BANDS: "+JSON.stringify(myBands)+"GIGS: "+JSON.stringify(myGigs));
+  console.log(" ");
+  if(myUser==null || myUser=="" || myUser==" " || myUser=="null"){
+    var selectMenu = document.getElementById('selectDrop');
+  //  var userDropTitle = document.createElement('<option value="'+myUser._id+'">'+myUser.username+'</option>');
+    var userDropTitle=document.createElement('option');
+    userDropTitle.innerHTML=myUser.username;
+    userDropTitle.setAttribute('value','user');
+    userDropTitle.setAttribute('id', 'userDropTitle');
+    selectMenu.appendChild(userDropTitle);
+    return;
+  }
+  var selectMenu = document.getElementById('selectDrop');
+//  var userDropTitle = document.createElement('<option value="'+myUser._id+'">'+myUser.username+'</option>');
+  var userDropTitle=document.createElement('option');
+  userDropTitle.innerHTML=myUser.username;
+  userDropTitle.setAttribute('value','user');
+  userDropTitle.setAttribute('id', 'userDropTitle');
+  selectMenu.appendChild(userDropTitle);
+  for (band in myBands){
+    var bandTitle=document.createElement('option');
+    bandTitle.innerHTML=myBands[band].name;
+    bandTitle.setAttribute('value','band');
+    bandTitle.setAttribute('data-objID', myBands[band]._id);
+    bandTitle.setAttribute('id', 'band'+band+'DropTitle');
+    selectMenu.appendChild(bandTitle);
+  }
+  for (gig in myGigs){
+    var gigTitle=document.createElement('option');
+    gigTitle.innerHTML=myGigs[gig].name;
+    gigTitle.setAttribute('value','gig');
+    gigTitle.setAttribute('data-objID', myGigs[gig]._id);
+    gigTitle.setAttribute('id', 'gig'+gig+'DropTitle');
+    selectMenu.appendChild(gigTitle);
+  }
+}
+
+
+// document.addEventListener('ready', init);
 
 function init(){
-
+  var urlJSON = parseURL(window.location.href);
+  var searchObject = urlJSON['searchObject'];
+  console.log('Search obj is: ' + JSON.stringify(searchObject));
+  alert('Url json is: ' + JSON.stringify(urlJSON));
+  if (searchObject['searchingAs']=='undefined' || searchObject['searchingAs']==undefined || searchObject['searchingAs']== null ){
+    console.log('seraching as username');
+    $.get('/user',{'query':'who am i'}, result=>{
+      user=result;
+      if (searchObject['mode']=='gig'){
+        $.get('/aGig', {'gigID':searchObject['id']}, result=>{
+          otherGig=result;
+          console.log('The gig is : '+JSON.stringify(otherGig));
+          buildWebPage();
+        });
+      }
+      else{
+        $.get('/aBand', {'id':searchObject['id']}, result=>{
+          otherBand=result;
+          console.log('The band is : '+JSON.stringify(otherBand));
+          buildWebPage();
+        });
+      }
+    });
+  }
+  else{
+    console.log('Searching as :' + searchObject['searchingAs']+' WHich is of type: ' + searchObject['searchingType']);
+    $.get('/user',{'query':'who am i'}, result=>{
+      user=result;
+      var type = searchObject['searchingType'];
+      var searchingAs = searchObject['searchingAs'];
+      if (searchObject['mode']=='gig'){
+        $.get('/aGig', {'gigID':searchObject['id']}, result=>{
+          otherGig=result;
+          console.log('The gig is : '+JSON.stringify(otherGig));
+          if (type=='band'){
+            $.get('/aBand', {'id':searchingAs}, res2=>{
+              myBand=res2;
+              buildWebPage();
+            });
+          }
+          else{
+            $.get('/aGig', {'gigID':searchingAs}, result=>{
+              myGig=result;
+              buildWebPage();
+            });
+          }
+        });
+      }
+      else{
+        $.get('/aBand', {'id':searchObject['id']}, result=>{
+          otherBand=result;
+          console.log('The band is : '+JSON.stringify(otherBand));
+          if (type=='band'){
+            $.get('/aBand', {'id':searchingAs}, res2=>{
+              myBand=res2;
+              buildWebPage();
+            });
+          }
+          else{
+            $.get('/aGig', {'gigID':searchingAs}, result=>{
+              myGig=result;
+              buildWebPage();
+            });
+          }
+        });
+      }
+    });
+  }
   var mainContent = document.getElementById("main-content-wrapper");
 
-  var user = {
+  var userTest = {
     "name": "booth",
     "_id": "albkjdlk48402lkas10",
     "contacts": [
@@ -108,11 +318,323 @@ function init(){
     ]
   };
 
-  globalMessageArray = user.messages;
+  globalMessageArray = userTest.messages;
 
   // messages[user._id] // gives array of messages, with body; timestamp; reciever;
-  createContacts(user.contacts, user.name);
+  createContacts(userTest.contacts, userTest.name);
 }
+
+function buildWebPage(){
+  if (myBand!=null){
+    console.log('Viewing as band: ' + JSON.stringify(myBand));
+    if (otherBand!=null){
+      console.log('Viewing a band: ' + JSON.stringify(otherBand));
+      createPageAsBand();
+    }
+    else{
+      console.log('Viewing a gig: ' + JSON.stringify(otherGig));
+      createPageAsGig();
+    }
+  }
+  else if(myGig !=null){
+    console.log('Viewing as gig: ' + JSON.stringify(myGig));
+    if (otherBand!=null){
+      console.log('Viewing a band: ' + JSON.stringify(otherBand));
+      createPageAsBand();
+    }
+    else{
+      console.log('Viewing a gig: ' + JSON.stringify(otherGig));
+      createPageAsGig();
+    }
+  }
+  else{
+    console.log('Viewing as user: ' + JSON.stringify(user));
+    if (otherBand!=null){
+      console.log('Viewing a band: ' + JSON.stringify(otherBand));
+      createPageAsBand();
+    }
+    else{
+      console.log('Viewing a gig: ' + JSON.stringify(otherGig));
+      createPageAsGig();
+    }
+  }
+}
+
+function hitApply(){
+  console.log('Hit apply');
+  if (otherGig==null){
+    alert('You can only "Apply" to events. Please go to the search page and search for gigs.');
+  }
+  if (myBand==null){
+    alert('You can only "Apply" to events as a band. Please select one from your drop down menu and hit apply again. If you have no bands you can create one on your home page.');
+  }
+
+}
+function hitBook(){
+  console.log('Hit book');
+  if (otherBand==null){
+    alert('You can only "Book" bands. Please go to the search page and search for bands.');
+  }
+  if (myGig==null){
+    alert('You can only "Book" bands as an event. Please select one from your drop down menu and hit book again. If you have no events you can create one on your home page.');
+  }
+
+}
+function hitMessage(){
+  console.log('Hit message');
+}
+
+// AB SECTION
+
+
+var box = null;
+var mainContent = null;
+var profilesList = null;
+var globalMessageArray = null;
+
+function createPageAsBand(){
+
+  // load the band name
+  var profileTitle = document.getElementById("profile-title");
+  profileTitle.innerHTML = otherBand.name;
+  var profileCreator = document.getElementById("profile-creator");
+  profileCreator.innerHTML = "created by: "+otherBand.creator;
+
+  // load the band rating into the stars
+  var newStars = document.getElementById("user-stars");
+  var star1 = document.getElementById("user-star-1");
+  var star2 = document.getElementById("user-star-2");
+  var star3 = document.getElementById("user-star-3");
+  var star4 = document.getElementById("user-star-4");
+  var star5 = document.getElementById("user-star-5");
+  var stars = [star1,star2,star3,star4,star5];
+  loadStars(otherBand.rating, stars);
+
+  // add book/message buttons
+  var controls = document.getElementById("profile-controls");
+  var newLiOne = document.createElement("li");
+  var newAOne = document.createElement("a");
+  newAOne.innerHTML = "Book";
+  newAOne.addEventListener("click",function(){
+    hitBook();
+  });
+  newLiOne.append(newAOne);
+  controls.append(newLiOne);
+  var newLiTwo = document.createElement("li");
+  var newATwo = document.createElement("a");
+  newATwo.innerHTML = "Message";
+  newATwo.addEventListener("click",function(){
+    hitMessage();
+  });
+  newLiTwo.append(newATwo);
+  controls.append(newLiTwo);
+
+  // add band image & price
+  var bandImg = document.getElementById("profile-img");
+  bandImg.src = otherBand.picture;
+  var bandFrame = document.getElementById("profile-img-frame");
+  bandFrame.src = "/assets/Home/purplebox.png";
+  var bandPriceText = document.getElementById("profile-price-text");
+  bandPriceText.innerHTML = "The asking price for this band is";
+  var bandPrice = document.getElementById("profile-price");
+  bandPrice.innerHTML = "$"+otherBand.price+"/hr";
+
+  // add band clips section
+  var bandSamplesWrapper = document.createElement("div");
+  bandSamplesWrapper.className = "wrapper";
+  new SampleCarousel(res=>{
+    bandSamplesWrapper.append(res.carWrap);
+    mainContent.append(bandSamplesWrapper);
+  });
+
+  // add band info
+  var bandInfoSection = document.createElement("div");
+  bandInfoSection.className = "band-info-section";
+  var descH = document.createElement("h2");
+  bandInfoSection.append(descH);
+  var descP = document.createElement("p");
+  descP.className = "description";
+  descP.innerHTML = otherBand.description;
+  bandInfoSection.append(descP);
+
+  // band info grid
+  var detailGrid = document.createElement("div");
+  detailGrid.className = "band-detail-grid";
+  // genres
+  var div1 = document.createElement("div");
+  var genereH = document.createElement("h2");
+  genreH.innerHTML = "genres";
+  div1.append(genereH);
+  var genereP = document.createElement("p");
+  genreP.className = "genres";
+  var genreString = "";
+  for(var genre in otherBand.genres){
+    genreString += otherBand.genres[genre];
+    if(genre < otherBand.genres.length - 1){
+      genreString += ", ";
+    }
+  }
+  genreP.innerHTML = genreString;
+  div1.append(genereP);
+  detailGrid.append(div1);
+  // insts
+  var div2 = document.createElement("div");
+  var instH = document.createElement("h2");
+  instH.innerHTML = "instruments";
+  div2.append(instH);
+  var instP = document.createElement("p");
+  instP.className = "instruments"; //insts
+  var instString = " ";
+  for(var inst in otherBand.insts){
+    instString += otherBand.insts[inst];
+    if(inst < otherBand.insts.length - 1){
+      instString += ", ";
+    }
+  }
+  instP.innerHTML = instString;
+  div2.append(instP);
+  detailGrid.append(div2);
+  // vibes
+  var div3 = document.createElement("div");
+  var vibesH = document.createElement("h2");
+  vibesH.innerHTML = "vibes";
+  div3.append(vibesH);
+  var vibesP = document.createElement("p");
+  vibesP.className = "vibes";
+  var vibesString = " ";
+  for(var vibe in otherBand.vibes){
+    vibesString += otherBand.vibes[vibe];
+    if(vibe < otherBand.vibes.length - 1){
+      vibesString += ", ";
+    }
+  }
+  vibesP.innerHTML = vibesString;
+  div3.append(vibesP);
+  detailGrid.append(div3);
+  // good for
+  var div4 = document.createElement("div");
+  var goodForH = document.createElement("h2");
+  goodForH.innerHTML = "good for these events";
+  div4.append(goodForH);
+  var goodForP = document.createElement("p");
+  goodForP.className = "good-for";
+  var goodForString = " ";
+  for(var good in otherBand.goodFor){
+    goodForString += otherBand.goodFor[good];
+    if(good < otherBand.goodFor.length - 1){
+      goodForString += ", ";
+    }
+  }
+  goodForP.innerHTML = goodForString;
+  div4.append(goodForP);
+  detailGrid.append(div4);
+
+  bandInfoSection.append(detailGrid);
+  mainContent.append(bandInfoSection);
+}
+
+function createPageAsGig(){
+
+  // load the gig name
+  var profileTitle = document.getElementById("profile-title");
+  profileTitle.innerHTML = otherGig.name;
+  var profileCreator = document.getElementById("profile-creator");
+  profileCreator.innerHTML = "created by: "+otherGig.creator;
+
+  // add apply/message buttons
+  var controls = document.getElementById("profile-controls");
+  var newLiOne = document.createElement("li");
+  var newAOne = document.createElement("a");
+  newAOne.innerHTML = "Apply";
+  newAOne.addEventListener("click",function(){
+    hitApply();
+  });
+  newLiOne.append(newAOne);
+  controls.append(newLiOne);
+  var newLiTwo = document.createElement("li");
+  var newATwo = document.createElement("a");
+  newATwo.innerHTML = "Message";
+  newATwo.addEventListener("click",function(){
+    hitMessage();
+  });
+  newLiTwo.append(newATwo);
+  controls.append(newLiTwo);
+
+  // add gig image and price
+  var gigImg = document.getElementById("profile-img");
+  gigImg.src = otherGig.picture;
+  var gigFrame = document.getElementById("profile-img-frame");
+  gigFrame.src = "/assets/Home/purplebox.png";
+  var gigPriceText = document.getElementById("profile-price-text");
+  gigPriceText.innerHTML = "The asking price for this event is";
+  var gigPrice = document.getElementById("profile-price");
+  gigPrice.innerHTML = "$"+otherGig.price+"/hr";
+
+  // add gig info
+  var gigInfoSection = document.createElement("div");
+  gigInfoSection.className = "gig-info-section";
+  var descH = document.createElement("h2");
+  descH.innerHTML = "description";
+  gigInfoSection.append(descH);
+  var descP = document.createElement("p");
+  descP.className = "description";
+  descP.innerHTML = otherGig.description;
+  gigInfoSection.append(descP);
+
+  var addressH = document.createElement("h2");
+  addressH.innerHTML = "address";
+  var addressP = document.createElement("p");
+  addressP.className = "gig-address";
+  addressP.innerHTML = otherGig.address;
+  gigInfoSection.append(addressP);
+
+  var gigDetailGrid = document.createElement("div");
+  gigDetailGrid.className = "gig-detail-grid";
+  // date
+  var div1 = document.createElement("div");
+  var dateH = document.createElement("h2");
+  dateH.innerHTML = "date";
+  div1.append(dateH);
+  var dateP = document.createElement("p");
+  dateP.className = "date":
+  dateP.innerHTML = otherGig.date;
+  div1.append(dateP);
+  gigDetailGrid.append(div1);
+  // num apps
+  var div2 = document.createElement("div");
+  var appsH = document.createElement("h2");
+  appsH.innerHTML = "number of applicants";
+  div2.append(appsH);
+  var appsP = document.createElement("p");
+  appsP.className = "num-applicants":
+  appsP.innerHTML = otherGig.applicants.length;
+  div2.append(appsP);
+  gigDetailGrid.append(div2);
+  // date
+  var div3 = document.createElement("div");
+  var startH = document.createElement("h2");
+  startH.innerHTML = "start time";
+  div3.append(startH);
+  var startP = document.createElement("p");
+  startP.className = "start-time":
+  startP.innerHTML = otherGig.startTime;
+  div3.append(startP);
+  gigDetailGrid.append(div3);
+  // date
+  var div4 = document.createElement("div");
+  var endH = document.createElement("h2");
+  endH.innerHTML = "end time";
+  div4.append(endH);
+  var endP = document.createElement("p");
+  endP.className = "end-time":
+  endP.innerHTML = otherGig.endTime;
+  div4.append(endP);
+  gigDetailGrid.append(div4);
+
+  gigInfoSection.append(gigDetailGrid);
+  mainContent.append(gigInfoSection);
+}
+
 
 function getUsername(){
   console.log("called fucntion getUsername");
@@ -152,7 +674,6 @@ function createWebPage(user){
   var star5 = "user-star-5";
   var stars = [star1,star2,star3,star4,star5];
   // update the html for profile stars
-  loadStars(user.rating, stars);
 }
 
 function loadStars(rating, stars){
@@ -600,6 +1121,76 @@ class ContactLink {
     list.append(this.contactLink);
     contactLinkCallBack(this);
   }
+}
+
+function setupAction(){
+  var jcarousel = $('.jcarousel');
+
+  jcarousel
+      .on('jcarousel:reload jcarousel:create', function () {
+          var carousel = $(this),
+              width = carousel.innerWidth();
+
+          if (width >= 600) {
+              width = width / 4;
+          } else if (width >= 350) {
+              width = width / 2;
+          }
+
+          carousel.jcarousel('items').css('width', Math.ceil(width) + 'px');
+      })
+      .jcarousel({
+          wrap: 'circular'
+      });
+
+  $('.jcarousel-control-prev')
+      .jcarouselControl({
+          target: '-=1'
+      });
+
+  $('.jcarousel-control-next')
+      .jcarouselControl({
+          target: '+=1'
+      });
+
+  $('.jcarousel-pagination')
+      .on('jcarouselpagination:active', 'a', function() {
+          $(this).addClass('active');
+      })
+      .on('jcarouselpagination:inactive', 'a', function() {
+          $(this).removeClass('active');
+      })
+      .on('click', function(e) {
+          e.preventDefault();
+      })
+      .jcarouselPagination({
+          perPage: 1,
+          item: function(page) {
+              return '<a href="#' + page + '">' + page + '</a>';
+          }
+      });
+
+  $('.carousel-img').hover(
+    //Handler In
+    function(){
+      console.log("enter-img");
+    },
+    //Handler Out
+    function(){
+      console.log("exit-img");
+    }
+  );
+
+  $('.carousel-li').hover(
+    //Handler In
+    function(){
+      console.log("enter-li");
+    },
+    //Handler Out
+    function(){
+      console.log("exit-li");
+    }
+  );
 }
 
 var contactsButton = document.getElementById('contacts-button');

@@ -28,6 +28,10 @@ a {
 radial menu
 */
 
+h1,h2{
+  color: white;
+}
+
 h1, h2, h3, h4, h5, h6, p, button, input, textarea, li{
   font-family: Industry, sans-serif;
 }
@@ -144,6 +148,12 @@ h1, h2, h3, h4, h5, h6, p, button, input, textarea, li{
   color: white;
 }
 
+.profile-creator-text{
+  font-size: 28pt;
+  color: white;
+  margin-top: -30px;
+}
+
 .title-text{
   font-size: 72pt;
   color: white;
@@ -163,7 +173,7 @@ h1, h2, h3, h4, h5, h6, p, button, input, textarea, li{
 #user-stars{
   position: absolute;
   margin-left: 65%;
-  margin-top: -5%;
+  margin-top: -6%;
   width: 100%;
 }
 
@@ -387,19 +397,19 @@ ul{
 .jcarousel-control-prev,
 .jcarousel-control-next {
     position: absolute;
-    top: 25%;
     width: 33px;
     height: 99px;
     color: #fff;
+    margin-top: 4%;
 }
 
 .jcarousel-control-prev {
-    left: -45px;
+    margin-left: -4%;
     background: url("../assets/Control-Center/arrow-left.png") left center no-repeat;
 }
 
 .jcarousel-control-next {
-    right: -30px;
+    margin-left: 64%;
     background: url("../assets/Control-Center/arrow-right.png") left center no-repeat;
 }
 
@@ -444,7 +454,7 @@ ul{
 
 #main-content-wrapper{
   margin-left: 240px;
-  margin-top: 180px;
+  margin-top: 240px;
   width: 70%;
   background-color: transparent;
 }
@@ -605,4 +615,95 @@ scrollbar
 
 ::-webkit-scrollbar-corner {
   background: rgba(0,0,0,0);
+}
+
+
+/*
+profile img elements
+*/
+
+.img-price-grid{
+  display: grid;
+  grid-template-columns: auto auto;
+  text-align: center;
+  margin: 0 auto;
+  margin-left: -80px;
+}
+
+.profile-img-container{
+  display: inline-block;
+  width: 250px;
+}
+
+.profile-img{
+  position: absolute;
+  width: 250px;
+  height: 250px;
+  border-radius: 20px;
+}
+
+.profile-img-frame{
+  z-index: 5;
+  position: absolute;
+  width: 250px;
+  height: 250px;
+}
+
+.profile-price-container{
+  display: inline-block;
+  padding-left: 50px;
+  background-color: rgba(0,0,0,0.3);
+  border-radius: 20px;
+  height: 250px;
+}
+
+.profile-price-text{
+  margin-top: 50px;
+}
+
+.profile-price{
+  margin-top: 50px;
+}
+
+/*
+ band samples stuff
+*/
+
+.wrapper {
+  max-width: 900px;
+  padding: 0px 0px 10px 0px;
+  margin: auto;
+  margin-top: 20px;
+}
+
+/*
+  description stuff
+*/
+
+.description, .gig-address{
+  width: 100%;
+  padding: 20px;
+  background-color: rgba(0,0,0,0.3);
+  border-radius: 20px;
+  color: white;
+  font-size: 14pt;
+}
+
+.band-detail-grid, .gig-detail-grid{
+  display: grid;
+  grid-template-columns: auto auto;
+  margin: 0 auto;
+}
+
+.band-detail-grid > div, .gig-detail-grid > div{
+  padding: 0px 20px;
+}
+
+.genres, .instruments, .vibes, .good-for, .date, .num-applicants, .start-time, .end-time{
+  width: 100%;
+  padding: 20px;
+  background-color: rgba(0,0,0,0.3);
+  border-radius: 20px;
+  color: white;
+  font-size: 14pt;
 }

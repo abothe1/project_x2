@@ -128,7 +128,7 @@ class OpenGig{
 
     this.gigPL = document.createElement("h3");
     this.gigPL.id = "open-gig-pay-label";
-    this.gigPL.innerHTML = "Max Pay ($/hr)";
+    this.gigPL.innerHTML = "Max Pay ($)";
     this.gigPay = document.createElement("input");
     this.gigPay.className = "max-pay-input";
     this.gigPay.onchange = 'gigPayChanged(this)';
@@ -145,7 +145,11 @@ class OpenGig{
 
     if(gig.hasOwnProperty("applications")){
       if(gig.applications != null){
-        new Carousel(gig.applications,"hosted-applications",carCallback=>{
+        var newObj = {
+          "apps":gig.applications,
+          "gigID": gig._id
+        }
+        new Carousel(newObj,"hosted-applications",carCallback=>{
           this.applicantCarousel = carCallback;
           this.carEl = this.applicantCarousel.wrapper;
           // tier 3
@@ -390,7 +394,7 @@ class GigSection{
       bookedGigs.append(bookedGigsH);
       profileGigs.append(bookedGigs);
       for(var gig in gigs){
-        if(gigs[gig].isFilled){
+        if(gigs[gig].isFilled && !(gigs[gig].confirmed)){
           new BookedGig(gigs[gig], res=>{
             bookedGigs.append(res.container);
           });
@@ -405,7 +409,7 @@ class GigSection{
       openGigs.append(openGigsH);
       profileGigs.append(openGigs);
       for(var gig in gigs){
-        if(!(gigs[gig].isFilled)){
+        if( !(gigs[gig].isFilled) && !(gigs[gig].confirmed) ){
           new OpenGig(gigs[gig], res=>{
             openGigs.append(res.titleDiv);
             setupAction();
@@ -414,6 +418,25 @@ class GigSection{
       }
       break;
       case "past-hosted":
+      var pastGigs = document.createElement("div");
+      pastGigs.className = "past-gigs";
+      var pastGigsH = document.createElement("h2");
+      pastGigsH.innerHTML = "Past Booked Bands";
+      pastGigs.append(pastGigsH);
+      profileGigs.append(pastGigs);
+      var pastGigsArr = [];
+      console.log("got in past-hosted");
+      for(var gig in gigs){
+        if(gigs[gig].confirmed && gigs[gig].isFilled){
+          pastGigsArr.push(gigs[gig]);
+        }
+      }
+      if(pastGigsArr.length > 0){
+        new Carousel(pastGigsArr, "past-hosted", res=>{
+          pastGigs.append(res.wrapper);
+          setupAction();
+        });
+      }
       break;
     }
   }
@@ -424,11 +447,7 @@ class BandSection{
      // console.log('band inc Band Section is + :' + JSON.stringify(band));
     switch(identifier){
       case "info":
-      this.title = document.createElement("p");
-      this.title.className = "title-text";
-      this.title.innerHTML = "Band Info";
       this.container = document.createElement("div");
-      this.container.append(this.title);
       this.stars = document.createElement("div");
       this.stars.className = "band-stars";
       this.star1 = document.createElement("img");
@@ -702,8 +721,9 @@ class Carousel{
       case "hosted-applications":
       // obj will contain band IDs
       // get applicant data
-      this.handleBands(obj, result=>{
+      this.handleBands(obj.apps, result=>{
         this.applicants = result;
+        this.gigID = obj.gigID;
         // create generic carousel elements
         // we can handle ID assignment later
         this.wrapper = document.createElement("div");
@@ -733,9 +753,25 @@ class Carousel{
           newOverlay.className = "result-overlay";
           var overlayID = "result-overlay-"+band;
           newOverlay.setAttribute("id",overlayID);
-          var priceText = document.createElement("p");
-          priceText.className = "result-overlay-p";
-          priceText.innerHTML = "$"+this.applicants[band].price+"/hr";
+          var viewBtn = document.createElement("input");
+          viewBtn.type = "button";
+          viewBtn.className = "car-view-button";
+          viewBtn.bandID = this.applicants[band]._id;
+          viewBtn.gigID = this.gigID;
+          viewBtn.value = "view";
+          var bookBtn = document.createElement("input");
+          bookBtn.type = "button";
+          bookBtn.className = "car-book-button";
+          bookBtn.bandID = this.applicants[band]._id;
+          bookBtn.gigID = this.gigID;
+          bookBtn.value = "book";
+          var declineBtn = document.createElement("input");
+          declineBtn.type = "button";
+          declineBtn.className = "car-decline-button";
+          declineBtn.bandID = this.applicants[band]._id;
+          declineBtn.gigID = this.gigID;
+          declineBtn.value = "decline";
+
           // nameplate
           var nameDiv = document.createElement("div");
           nameDiv.className = "result-name-div";
@@ -744,7 +780,9 @@ class Carousel{
           nameP.innerHTML = this.applicants[band].name;
           // appends
           newItem.append(newImg);
-          newOverlay.append(priceText);
+          newOverlay.append(viewBtn);
+          newOverlay.append(bookBtn);
+          newOverlay.append(declineBtn);
           newItem.appendChild(newOverlay);
           newItem.append(newFrame);
           nameDiv.append(nameP);
@@ -752,6 +790,9 @@ class Carousel{
           this.carList.append(newItem);
           //event listener data preprocessing
           newItem.newOverlay = newOverlay;
+          newItem.viewBtn = viewBtn;
+          newItem.bookBtn = bookBtn;
+          newItem.declineBtn = declineBtn;
           newItem._id = this.applicants[band]._id;
           this.AddOverlayEventListeners(newItem);
         }
@@ -773,17 +814,23 @@ class Carousel{
       });
       break;
       case "past-hosted":
-      this.handleGigs(obj, result=>{
-        this.pastGigs = result;
-        this.wrapper = document.createElement("div");
-        this.wrapper.className = "wrapper";
-        this.wrapper.style.marginLeft = "0px";
-        this.carWrap = document.createElement("div");
-        this.carWrap.className = "jcarousel-wrapper";
-        this.carousel = document.createElement("div");
-        this.carousel.className = "jcarousel";
-        this.list = document.createElement("ul");
+      this.pastGigs = obj;
+      this.wrapper = document.createElement("div");
+      this.wrapper.className = "wrapper";
+      this.wrapper.style.marginLeft = "0px";
+      this.carWrap = document.createElement("div");
+      this.carWrap.className = "jcarousel-wrapper";
+      this.carousel = document.createElement("div");
+      this.carousel.className = "jcarousel";
+      this.list = document.createElement("ul");
+      this.bandIdArr = [];
+      for(var gig in this.pastGigs){
+        this.bandIdArr.push(this.pastGigs[gig].bandFor);
+      }
+      this.handleBands(this.bandIdArr,res=>{
+        this.bandsObj = res;
         for(var gig in this.pastGigs){
+          var bandName = this.bandsObj[gig].name;
           var id = this.pastGigs[gig]._id;
           var name = this.pastGigs[gig].name;
           var newItem = document.createElement("li");
@@ -791,27 +838,41 @@ class Carousel{
           // img
           var newImg = document.createElement("img");
           newImg.className = "carousel-img";
-          newImg.src = this.pastGigs[gig].picture;
+          newImg.src = this.bandsObj[gig].picture;
           // frame
           var newFrame = document.createElement("img");
           newFrame.className = "carousel-frame";
-          newFrame.src = "../static/assets/Control-Center/orangebox.png";
+          newFrame.src = "../static/assets/Control-Center/pinkbox.png";
           // overlay
           var newOverlay = document.createElement("div");
           newOverlay.className = "result-overlay";
           var overlayID = "result-overlay-"+gig;
           newOverlay.setAttribute("id",overlayID);
-          var priceText = document.createElement("p");
-          priceText.className = "result-overlay-p";
-          priceText.innerHTML = "$"+this.pastGigs[gig].price+"/hr";
+          var rateP = document.createElement("p");
+          rateP.innerHTML = "rate " + bandName + " from 1 to 100";
+          rateP.className = "rate-p";
+          var rateInput = document.createElement("input");
+          rateInput.className = "rate-input";
+          rateInput.type = "number";
+          rateInput.min = 0;
+          rateInput.max = 100;
+          rateInput.value = 50;
+          var rateButton = document.createElement("input");
+          rateButton.type = "button";
+          rateButton.className = "rate-button";
+          rateButton.value = "give rating";
+          rateButton.bandID = this.bandsObj[gig]._id;
+          rateButton.gigID = this.pastGigs[gig]._id;
           // nameplate
           var nameDiv = document.createElement("div");
           nameDiv.className = "result-name-div";
           var nameP = document.createElement("p");
           nameP.className = "result-name-p";
-          nameP.innerHTML = this.pastGigs[gig].name;
+          nameP.innerHTML = this.bandsObj[gig].name;
           newItem.append(newImg);
-          newOverlay.append(priceText);
+          newOverlay.append(rateP);
+          newOverlay.append(rateInput);
+          newOverlay.append(rateButton);
           newItem.appendChild(newOverlay);
           newItem.append(newFrame);
           nameDiv.append(nameP);
@@ -819,6 +880,8 @@ class Carousel{
           this.list.append(newItem);
           //event listener data preprocessing
           newItem.newOverlay = newOverlay;
+          newItem.rateInput = rateInput;
+          newItem.rateButton = rateButton;
           newItem._id = this.pastGigs[gig]._id;
           this.AddOverlayEventListeners(newItem);
         }
@@ -836,10 +899,10 @@ class Carousel{
         }
         this.carWrap.append(this.carousel);
         this.wrapper.append(this.carWrap);
-        profileGigs.append(this.wrapper);
         carCallback(this);
       });
       break;
+
       // upcoming gigs
       case "upcoming":
       //get upcoming data
@@ -875,7 +938,7 @@ class Carousel{
           newOverlay.setAttribute("id",overlayID);
           var confirmP = document.createElement("p");
           confirmP.className = "result-overlay-confirm-p";
-          confirmP.innerHTML = "confirm payment of $"+this.upcomingGigs[gig].price+"/hr";
+          confirmP.innerHTML = "confirm payment of $"+this.upcomingGigs[gig].price;
           var confirmInput = document.createElement("input");
           confirmInput.className = "gig-confirm-input-upcoming";
           confirmInput.placeholder = "code from venue"
@@ -918,8 +981,9 @@ class Carousel{
       // applications
       case "applications":
       // get applied gigs info
-      this.handleGigs(obj, result=>{
-        this.appliedGigs = result;
+      this.handleAppliedGigs(obj, result=>{
+        console.log(result);
+        this.appliedGigs = result; //index 0 is a gig, index 1 is bool
         this.wrapper = document.createElement("div");
         this.wrapper.className = "wrapper";
         this.carWrap = document.createElement("div");
@@ -928,15 +992,15 @@ class Carousel{
         this.carousel.className = "jcarousel";
         this.list = document.createElement("ul");
         for(var gig in this.appliedGigs){
-          var id = this.appliedGigs[gig]._id;
-          var name = this.appliedGigs[gig].name;
+          var id = this.appliedGigs[gig][0]._id;
+          var name = this.appliedGigs[gig][0].name;
           var newItem = document.createElement("li");
           newItem.className = "carousel-li";
           // img
           var newImg = document.createElement("img");
           newImg.className = "carousel-img";
-          if(this.appliedGigs[gig].hasOwnProperty("picture")){
-            newImg.src = this.appliedGigs[gig].picture;
+          if(this.appliedGigs[gig][0].hasOwnProperty("picture")){
+            newImg.src = this.appliedGigs[gig][0].picture;
           }
           // frame
           var newFrame = document.createElement("img");
@@ -949,23 +1013,31 @@ class Carousel{
           newOverlay.setAttribute("id",overlayID);
           var priceText = document.createElement("p");
           priceText.className = "result-overlay-p";
-          priceText.innerHTML = "$"+this.appliedGigs[gig].price+"/hr";
+          priceText.innerHTML = "$"+this.appliedGigs[gig][0].price;
           // nameplate
           var nameDiv = document.createElement("div");
           nameDiv.className = "result-name-div";
           var nameP = document.createElement("p");
           nameP.className = "result-name-p";
-          nameP.innerHTML = this.appliedGigs[gig].name;
+          nameP.innerHTML = this.appliedGigs[gig][0].name;
           newItem.append(newImg);
           newOverlay.append(priceText);
           newItem.appendChild(newOverlay);
           newItem.append(newFrame);
+          console.log(this.appliedGigs[gig][1]);
+          if(this.appliedGigs[gig][1]){
+            // it's rejected
+            var newX = document.createElement("h1");
+            newX.className = "red-x";
+            newX.innerHTML = "X";
+            newItem.append(newX);
+          }
           nameDiv.append(nameP);
           newItem.append(nameDiv);
           this.list.append(newItem);
           //event listener data preprocessing
           newItem.newOverlay = newOverlay;
-          newItem._id = this.appliedGigs[gig]._id;
+          newItem._id = this.appliedGigs[gig][0]._id;
           this.AddOverlayEventListeners(newItem);
         }
         this.carousel.append(this.list);
@@ -1018,7 +1090,7 @@ class Carousel{
           newOverlay.setAttribute("id",overlayID);
           var priceText = document.createElement("p");
           priceText.className = "result-overlay-p";
-          priceText.innerHTML = "$"+gig.price+"/hr";
+          priceText.innerHTML = "$"+gig.price;
           // nameplate
           var nameDiv = document.createElement("div");
           nameDiv.className = "result-name-div";
@@ -1087,7 +1159,7 @@ class Carousel{
           newOverlay.setAttribute("id",overlayID);
           var priceText = document.createElement("p");
           priceText.className = "result-overlay-p";
-          priceText.innerHTML = "$"+this.interestedGigs[gig].price+"/hr";
+          priceText.innerHTML = "$"+this.interestedGigs[gig].price;
           // nameplate
           var nameDiv = document.createElement("div");
           nameDiv.className = "result-name-div";
@@ -1272,10 +1344,120 @@ class Carousel{
     }
   }
 
+  handleAppliedGigs(obj,cb){
+    if(obj[0][0] == "test"){
+      var gigs = [
+        [{
+          "_id":"5c44fd84003e48d1b718c327",
+          "name":"green mean machine room",
+          "address":"N27 W5230 Hamilton rd.",
+          "price":"256",
+          "picture": "../static/assets/Home/Art/6.jpeg",
+          "startDate":"2019-01-26T14:22",
+          "endDate":"",
+          "applications":null,
+          "lat":"0","lng":"0",
+          "categories":{
+            "genres":["bass","punk"],
+            "insts":["bass guitar","bass","guitar"],
+            "vibes":["bass","","","dumb"]
+          },
+          "isFilled":true,
+          "bandFor":"none"
+        },false],
+        [{
+          "_id":"5c44fd84003e48d1b718c327",
+          "name":"green man room",
+          "address":"N27 W5230 Hamilton rd.",
+          "price":"11",
+          "picture": "../static/assets/Home/Art/7.jpeg",
+          "startDate":"2019-01-26T14:22",
+          "endDate":"",
+          "applications":null,
+          "lat":"0","lng":"0",
+          "categories":{
+            "genres":["bass","punk"],
+            "insts":["bass guitar","bass","guitar"],
+            "vibes":["bass","","","dumb"]
+          },
+          "isFilled":true,
+          "bandFor":"none"
+        },false],
+        [{
+          "_id":"5c44fd84003e48d1b718c327",
+          "name":"green HAZE room",
+          "address":"N27 W5230 Hamilton rd.",
+          "price":"23",
+          "picture": "../static/assets/Home/Art/8.jpeg",
+          "startDate":"2019-01-26T14:22",
+          "endDate":"",
+          "applications":null,
+          "lat":"0","lng":"0",
+          "categories":{
+            "genres":["bass","punk"],
+            "insts":["bass guitar","bass","guitar"],
+            "vibes":["bass","","","dumb"]
+          },
+          "isFilled":true,
+          "bandFor":"none"
+        },true],
+        [{
+          "_id":"5c44fd84003e48d1b718c327",
+          "name":"green mean machine room",
+          "address":"N27 W5230 Hamilton rd.",
+          "price":"99",
+          "picture": "../static/assets/Home/Art/9.jpeg",
+          "startDate":"2019-01-26T14:22",
+          "endDate":"",
+          "applications":null,
+          "lat":"0","lng":"0",
+          "categories":{
+            "genres":["bass","punk"],
+            "insts":["bass guitar","bass","guitar"],
+            "vibes":["bass","","","dumb"]
+          },
+          "isFilled":true,
+          "bandFor":"none"
+        },false],
+        [{
+          "_id":"5c44fd84003e48d1b718c327",
+          "name":"green mean machine room",
+          "address":"N27 W5230 Hamilton rd.",
+          "price":"60",
+          "picture": "../static/assets/Home/Art/10.jpeg",
+          "startDate":"2019-01-26T14:22",
+          "endDate":"",
+          "applications":null,
+          "lat":"0","lng":"0",
+          "categories":{
+            "genres":["bass","punk"],
+            "insts":["bass guitar","bass","guitar"],
+            "vibes":["bass","","","dumb"]
+          },
+          "isFilled":true,
+          "bandFor":"none"
+        },false]
+      ];
+      cb(gigs);
+    }else{
+      var idArr = [];
+      for(var gig in obj){
+        idArr.push(obj[gig][0]);
+      }
+      this.handleGigsHelper(idArr, res=>{
+        if (res.length==idArr.length){
+          for(var gig in res){
+            obj[gig][0] = res[gig];
+          }
+          cb(obj);
+        }
+      });
+    }
+  }
+
 
   handleGigs(idArr, cb){
     // test function
-
     if(idArr[0] == "test"){
       var gigs = [
         {
@@ -1423,6 +1605,32 @@ class Carousel{
     obj.addEventListener("click",function(){
       console.log(obj._id);
     },false);
+    if(obj.hasOwnProperty("viewBtn")){
+      obj.viewBtn.addEventListener("click",function(){
+        console.log("band id: "+obj.viewBtn.bandID);
+        console.log("gig id: "+obj.viewBtn.gigID);
+      });
+    }
+    if(obj.hasOwnProperty("bookBtn")){
+      obj.bookBtn.addEventListener("click",function(){
+        console.log("band id: "+obj.bookBtn.bandID);
+        console.log("gig id: "+obj.bookBtn.gigID);
+      });
+    }
+    if(obj.hasOwnProperty("declineBtn")){
+      obj.declineBtn.addEventListener("click",function(){
+        console.log("band id: "+obj.declineBtn.bandID);
+        console.log("gig id: "+obj.declineBtn.gigID);
+      });
+    }
+    if(obj.hasOwnProperty("rateButton")){
+      obj.rateButton.addEventListener("click",function(){
+        console.log("band id: "+obj.rateButton.bandID);
+        console.log("gig id: "+obj.rateButton.gigID);
+        console.log("value is: "+obj.rateInput.value);
+      });
+    }
+
   }
 
   AddSampleEventListener(obj){
@@ -1498,12 +1706,12 @@ function buildBands(bands, buildBandsCallback){
     bandTitle.className = "title-text";
     bandTitle.innerHTML = band.name;
     bandTitle.id = band.name+"-section";
+    var bandContainer = document.createElement("div");
+    bandContainer.append(bandTitle);
     var newNav = document.createElement("li");
     var newNavA = document.createElement("a");
     newNavA.href = "#"+bandTitle.id;
     newNavA.innerHTML = band.name;
-    var bandContainer = document.createElement("div");
-    bandContainer.append(bandTitle);
     newNav.append(newNavA);
     var profilesListDiv = document.getElementById("profiles-list");
     profilesListDiv.append(newNav);
@@ -1540,7 +1748,7 @@ function buildGigs(gigs){
   }else{
     new GigSection(gigs,"booked");
     new GigSection(gigs,"open");
-    // new GigSection(gigs,"past-hosted");
+    new GigSection(gigs,"past-hosted");
     // new GigSection(gigs,"open", gigSectionCallback=>{
     //   profileGigs.append(gigSectionCallback.container);
     //   setupAction();
@@ -1758,7 +1966,7 @@ function init(){
         "rating":"89",
         "picture":"../static/assets/Home/Art/20.jpeg",
         "upcomingGigs":["test","test","test","test"],
-        "appliedGigs":["test","test","test","test"],
+        "appliedGigs":[["test",false],["test",false],["test",false],["test",false]],
         "finishedGigs":["test","test","test","test"],
         "interestedGigs":["test","test","test","test"]
       },
@@ -1768,7 +1976,7 @@ function init(){
         "rating":"43",
         "picture":"../static/assets/Home/Art/16.jpeg",
         "upcomingGigs":["test","test","test","test"],
-        "appliedGigs":["test","test","test","test"],
+        "appliedGigs":[["test",false],["test",false],["test",false],["test",false]],
         "finishedGigs":["test","test","test","test"],
         "interestedGigs":["test","test","test","test"]
       },
@@ -1778,7 +1986,7 @@ function init(){
         "rating":"89",
         "picture":"../static/assets/Home/Art/17.jpeg",
         "upcomingGigs":["test","test","test","test"],
-        "appliedGigs":["test","test","test","test"],
+        "appliedGigs":[["test",false],["test",false],["test",false],["test",false]],
         "finishedGigs":["test","test","test","test"],
         "interestedGigs":["test","test","test","test"]
       }
@@ -1801,6 +2009,7 @@ function init(){
           "vibes":["bass","","","dumb"]
         },
         "isFilled":true,
+        "confirmed":false,
         "bandFor":"test"
       },
       {
@@ -1820,6 +2029,107 @@ function init(){
           "vibes":["bass","","","dumb"]
         },
         "isFilled":false,
+        "confirmed":false,
+        "bandFor":"test"
+      },
+      {
+        "_id":"confirm1",
+        "name":"green HAZE room",
+        "address":"N27 W5230 Hamilton rd.",
+        "description":"wow ew we really need a band to fill this crazy gig out wahoo jazz it up homies bless up kendrick lamar is awesome",
+        "price":"84",
+        "picture": "../static/assets/Home/Art/11.jpeg",
+        "startDate":"2019-01-26T14:22",
+        "endDate":"",
+        "applications":["test","test","test","test","test"],
+        "lat":"0","lng":"0",
+        "categories":{
+          "genres":["bass","punk"],
+          "insts":["bass guitar","bass","guitar"],
+          "vibes":["bass","","","dumb"]
+        },
+        "isFilled":true,
+        "confirmed":true,
+        "bandFor":"test"
+      },
+      {
+        "_id":"confirm2",
+        "name":"green HAZE room",
+        "address":"N27 W5230 Hamilton rd.",
+        "description":"wow ew we really need a band to fill this crazy gig out wahoo jazz it up homies bless up kendrick lamar is awesome",
+        "price":"84",
+        "picture": "../static/assets/Home/Art/11.jpeg",
+        "startDate":"2019-01-26T14:22",
+        "endDate":"",
+        "applications":["test","test","test","test","test"],
+        "lat":"0","lng":"0",
+        "categories":{
+          "genres":["bass","punk"],
+          "insts":["bass guitar","bass","guitar"],
+          "vibes":["bass","","","dumb"]
+        },
+        "isFilled":true,
+        "confirmed":true,
+        "bandFor":"test"
+      },
+      {
+        "_id":"confirm3",
+        "name":"green HAZE room",
+        "address":"N27 W5230 Hamilton rd.",
+        "description":"wow ew we really need a band to fill this crazy gig out wahoo jazz it up homies bless up kendrick lamar is awesome",
+        "price":"84",
+        "picture": "../static/assets/Home/Art/11.jpeg",
+        "startDate":"2019-01-26T14:22",
+        "endDate":"",
+        "applications":["test","test","test","test","test"],
+        "lat":"0","lng":"0",
+        "categories":{
+          "genres":["bass","punk"],
+          "insts":["bass guitar","bass","guitar"],
+          "vibes":["bass","","","dumb"]
+        },
+        "isFilled":true,
+        "confirmed":true,
+        "bandFor":"test"
+      },
+      {
+        "_id":"confirm4",
+        "name":"green HAZE room",
+        "address":"N27 W5230 Hamilton rd.",
+        "description":"wow ew we really need a band to fill this crazy gig out wahoo jazz it up homies bless up kendrick lamar is awesome",
+        "price":"84",
+        "picture": "../static/assets/Home/Art/11.jpeg",
+        "startDate":"2019-01-26T14:22",
+        "endDate":"",
+        "applications":["test","test","test","test","test"],
+        "lat":"0","lng":"0",
+        "categories":{
+          "genres":["bass","punk"],
+          "insts":["bass guitar","bass","guitar"],
+          "vibes":["bass","","","dumb"]
+        },
+        "isFilled":true,
+        "confirmed":true,
+        "bandFor":"test"
+      },
+      {
+        "_id":"confirm5",
+        "name":"green HAZE room",
+        "address":"N27 W5230 Hamilton rd.",
+        "description":"wow ew we really need a band to fill this crazy gig out wahoo jazz it up homies bless up kendrick lamar is awesome",
+        "price":"84",
+        "picture": "../static/assets/Home/Art/11.jpeg",
+        "startDate":"2019-01-26T14:22",
+        "endDate":"",
+        "applications":["test","test","test","test","test"],
+        "lat":"0","lng":"0",
+        "categories":{
+          "genres":["bass","punk"],
+          "insts":["bass guitar","bass","guitar"],
+          "vibes":["bass","","","dumb"]
+        },
+        "isFilled":true,
+        "confirmed":true,
         "bandFor":"test"
       }
     ]
