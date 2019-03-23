@@ -76,14 +76,14 @@ class OpenGig{
     this.gigPic.src = gig.picture;
     this.gigPicFrame = document.createElement("img");
     this.gigPicFrame.className = "gig-pic-frame";
-    this.gigPicFrame.src = "/assets/Home/orangebox.png";
+    this.gigPicFrame.src = "../static/assets/Home/orangebox.png";
     this.gigDesc = document.createElement("div");
     this.gigDesc.className = "open-gig-description";
     this.gigDescH = document.createElement("h3");
     this.gigDescH.innerHTML = "Description";
     this.gigDescT = document.createElement("textarea");
     this.gigDescT.className = "open-gig-textarea";
-    this.gigDescT.onchange = gigDescriptChange(this.gigDescT);
+    // this.gigDescT.onchange = gigDescriptChange(this.gigDescT);
     this.gigDescT.innerHTML = gig.description;
     this.gigDT = document.createElement("div");
     this.gigDT.className = "open-gig-date-time";
@@ -276,7 +276,7 @@ class BookedGig {
     this.gigPic.src = gig.picture;
     this.gigPicFrame = document.createElement("img");
     this.gigPicFrame.className = "gig-pic-frame";
-    this.gigPicFrame.src = "/assets/Home/orangebox.png";
+    this.gigPicFrame.src = "../static/assets/Home/orangebox.png";
     this.gigDesc = document.createElement("div");
     this.gigDesc.className = "gig-description";
     this.gigDescP = document.createElement("p");
@@ -288,7 +288,7 @@ class BookedGig {
     this.actPic.className = "act-pic";
     this.actPicFrame = document.createElement("img");
     this.actPicFrame.className = "act-pic-frame";
-    this.actPicFrame.src = "/assets/Home/orangebox.png";
+    this.actPicFrame.src = "../static/assets/Home/orangebox.png";
     this.actNameplate = document.createElement("div");
     this.actNameplate.className = "act-nameplate";
     this.actName = document.createElement("p");
@@ -353,12 +353,28 @@ function getGigInfo(gigID, cb){
   });
 }
 function getBandInfo(bandID, cb){
-  console.log('////////////////////');
-  console.log(bandID);
-  $.get('/aBand', {'id':bandID}, result=>{
-    console.log('Got result from get a band here it is : ' + JSON.stringify(result));
-    cb(result);
-  });
+  // test function
+  if(bandID == "test"){
+    console.log("got in get band info clause");
+    var aBand = {
+      "_id": "2807893jfdskalf",
+      "name":"jimmy hendrix",
+      "rating":"89",
+      "picture":"../static/assets/Home/Art/20.jpeg",
+      "upcomingGigs":["test","test","test","test"],
+      "appliedGigs":["test","test","test","test"],
+      "finishedGigs":["test","test","test","test"],
+      "interestedGigs":["test","test","test","test"]
+    };
+    cb(aBand);
+  }else{
+    console.log('////////////////////');
+    console.log(bandID);
+    $.get('/aBand', {'id':bandID}, result=>{
+      console.log('Got result from get a band here it is : ' + JSON.stringify(result));
+      cb(result);
+    });
+  }
 }
 
 //ABS classes:
@@ -392,6 +408,7 @@ class GigSection{
         if(!(gigs[gig].isFilled)){
           new OpenGig(gigs[gig], res=>{
             openGigs.append(res.titleDiv);
+            setupAction();
           });
         }
       }
@@ -710,7 +727,7 @@ class Carousel{
           // frame
           var newFrame = document.createElement("img");
           newFrame.className = "carousel-frame";
-          newFrame.src = "/assets/Control-Center/purplebox.png";
+          newFrame.src = "../static/assets/Control-Center/purplebox.png";
           // overlay
           var newOverlay = document.createElement("div");
           newOverlay.className = "result-overlay";
@@ -778,7 +795,7 @@ class Carousel{
           // frame
           var newFrame = document.createElement("img");
           newFrame.className = "carousel-frame";
-          newFrame.src = "/assets/Control-Center/orangebox.png";
+          newFrame.src = "../static/assets/Control-Center/orangebox.png";
           // overlay
           var newOverlay = document.createElement("div");
           newOverlay.className = "result-overlay";
@@ -850,7 +867,7 @@ class Carousel{
           // frame
           var newFrame = document.createElement("img");
           newFrame.className = "carousel-frame";
-          newFrame.src = "/assets/Control-Center/purplebox.png";
+          newFrame.src = "../static/assets/Control-Center/purplebox.png";
           // overlay
           var newOverlay = document.createElement("div");
           newOverlay.className = "result-overlay";
@@ -924,7 +941,7 @@ class Carousel{
           // frame
           var newFrame = document.createElement("img");
           newFrame.className = "carousel-frame";
-          newFrame.src = "/assets/Control-Center/orangebox.png";
+          newFrame.src = "../static/assets/Control-Center/orangebox.png";
           // overlay
           var newOverlay = document.createElement("div");
           newOverlay.className = "result-overlay";
@@ -993,7 +1010,7 @@ class Carousel{
           // frame
           var newFrame = document.createElement("img");
           newFrame.className = "carousel-frame";
-          newFrame.src = "/assets/Control-Center/orangebox.png";
+          newFrame.src = "../static/assets/Control-Center/orangebox.png";
           // overlay
           var newOverlay = document.createElement("div");
           newOverlay.className = "result-overlay";
@@ -1062,7 +1079,7 @@ class Carousel{
           // frame
           var newFrame = document.createElement("img");
           newFrame.className = "carousel-frame";
-          newFrame.src = "/assets/Control-Center/orangebox.png";
+          newFrame.src = "../static/assets/Control-Center/orangebox.png";
           // overlay
           var newOverlay = document.createElement("div");
           newOverlay.className = "result-overlay";
@@ -1190,22 +1207,177 @@ class Carousel{
     }
   }
 
-  handleBands(idArr){
-    this.handleBandsHelper(idArr, res=>{
-      if (res.length==idArr.length){
-        cb(res);
-      }
-    });
+  handleBands(idArr, cb){
+    // test function
+    if(idArr[0]=="test"){
+      var bands = [
+        {
+          "_id": "2807893jfdskalf",
+          "name":"jimmy hendrix",
+          "rating":"89",
+          "picture":"../static/assets/Home/Art/20.jpeg",
+          "upcomingGigs":["test","test","test","test"],
+          "appliedGigs":["test","test","test","test"],
+          "finishedGigs":["test","test","test","test"],
+          "interestedGigs":["test","test","test","test"]
+        },
+        {
+          "_id": "ooooeiousjkl",
+          "name":"billy walls",
+          "rating":"43",
+          "picture":"../static/assets/Home/Art/16.jpeg",
+          "upcomingGigs":["test","test","test","test"],
+          "appliedGigs":["test","test","test","test"],
+          "finishedGigs":["test","test","test","test"],
+          "interestedGigs":["test","test","test","test"]
+        },
+        {
+          "_id": "fuladlsu2222",
+          "name":"TASHKII",
+          "rating":"89",
+          "picture":"../static/assets/Home/Art/17.jpeg",
+          "upcomingGigs":["test","test","test","test"],
+          "appliedGigs":["test","test","test","test"],
+          "finishedGigs":["test","test","test","test"],
+          "interestedGigs":["test","test","test","test"]
+        },
+        {
+          "_id": "ewyoieueoifwoifj",
+          "name":"Sammy DEEEZ",
+          "rating":"44",
+          "picture":"../static/assets/Home/Art/19.jpeg",
+          "upcomingGigs":["test","test","test","test"],
+          "appliedGigs":["test","test","test","test"],
+          "finishedGigs":["test","test","test","test"],
+          "interestedGigs":["test","test","test","test"]
+        },
+        {
+          "_id": "dlakdlanvlkadnvdls",
+          "name":"VVUUUURREE",
+          "rating":"02",
+          "picture":"../static/assets/Home/Art/18.jpeg",
+          "upcomingGigs":["test","test","test","test"],
+          "appliedGigs":["test","test","test","test"],
+          "finishedGigs":["test","test","test","test"],
+          "interestedGigs":["test","test","test","test"]
+        },
+      ];
+      cb(bands);
+    }else{
+      this.handleBandsHelper(idArr, res=>{
+        if (res.length==idArr.length){
+          cb(res);
+        }
+      });
+    }
   }
 
 
-  handleGigs(idArr, cb, ){
-  //  var gigProxy=[];
-    this.handleGigsHelper(idArr, res=>{
-      if (res.length==idArr.length){
-        cb(res);
-      }
-    });
+  handleGigs(idArr, cb){
+    // test function
+
+    if(idArr[0] == "test"){
+      var gigs = [
+        {
+          "_id":"5c44fd84003e48d1b718c327",
+          "name":"green mean machine room",
+          "address":"N27 W5230 Hamilton rd.",
+          "price":"256",
+          "picture": "../static/assets/Home/Art/6.jpeg",
+          "startDate":"2019-01-26T14:22",
+          "endDate":"",
+          "applications":null,
+          "lat":"0","lng":"0",
+          "categories":{
+            "genres":["bass","punk"],
+            "insts":["bass guitar","bass","guitar"],
+            "vibes":["bass","","","dumb"]
+          },
+          "isFilled":true,
+          "bandFor":"none"
+        },
+        {
+          "_id":"5c44fd84003e48d1b718c327",
+          "name":"green man room",
+          "address":"N27 W5230 Hamilton rd.",
+          "price":"11",
+          "picture": "../static/assets/Home/Art/7.jpeg",
+          "startDate":"2019-01-26T14:22",
+          "endDate":"",
+          "applications":null,
+          "lat":"0","lng":"0",
+          "categories":{
+            "genres":["bass","punk"],
+            "insts":["bass guitar","bass","guitar"],
+            "vibes":["bass","","","dumb"]
+          },
+          "isFilled":true,
+          "bandFor":"none"
+        },
+        {
+          "_id":"5c44fd84003e48d1b718c327",
+          "name":"green HAZE room",
+          "address":"N27 W5230 Hamilton rd.",
+          "price":"23",
+          "picture": "../static/assets/Home/Art/8.jpeg",
+          "startDate":"2019-01-26T14:22",
+          "endDate":"",
+          "applications":null,
+          "lat":"0","lng":"0",
+          "categories":{
+            "genres":["bass","punk"],
+            "insts":["bass guitar","bass","guitar"],
+            "vibes":["bass","","","dumb"]
+          },
+          "isFilled":true,
+          "bandFor":"none"
+        },
+        {
+          "_id":"5c44fd84003e48d1b718c327",
+          "name":"green mean machine room",
+          "address":"N27 W5230 Hamilton rd.",
+          "price":"99",
+          "picture": "../static/assets/Home/Art/9.jpeg",
+          "startDate":"2019-01-26T14:22",
+          "endDate":"",
+          "applications":null,
+          "lat":"0","lng":"0",
+          "categories":{
+            "genres":["bass","punk"],
+            "insts":["bass guitar","bass","guitar"],
+            "vibes":["bass","","","dumb"]
+          },
+          "isFilled":true,
+          "bandFor":"none"
+        },
+        {
+          "_id":"5c44fd84003e48d1b718c327",
+          "name":"green mean machine room",
+          "address":"N27 W5230 Hamilton rd.",
+          "price":"60",
+          "picture": "../static/assets/Home/Art/10.jpeg",
+          "startDate":"2019-01-26T14:22",
+          "endDate":"",
+          "applications":null,
+          "lat":"0","lng":"0",
+          "categories":{
+            "genres":["bass","punk"],
+            "insts":["bass guitar","bass","guitar"],
+            "vibes":["bass","","","dumb"]
+          },
+          "isFilled":true,
+          "bandFor":"none"
+        }
+      ];
+      cb(gigs);
+    }else{
+      var gigProxy=[];
+       this.handleGigsHelper(idArr, res=>{
+         if (res.length==idArr.length){
+           cb(res);
+         }
+       });
+    }
   }
 
   handleGigsHelper(idArr, cb){
@@ -1221,6 +1393,7 @@ class Carousel{
         }
       });
     });
+
   }
 
   handleBandsHelper(idArr, cb){
@@ -1327,32 +1500,35 @@ function buildBands(bands, buildBandsCallback){
     bandTitle.id = band.name+"-section";
     var newNav = document.createElement("li");
     var newNavA = document.createElement("a");
-    newNavA.href = "#"+band.name+"-section";
+    newNavA.href = "#"+bandTitle.id;
+    newNavA.innerHTML = band.name;
     var bandContainer = document.createElement("div");
     bandContainer.append(bandTitle);
-    //  profilesList.
+    newNav.append(newNavA);
+    var profilesListDiv = document.getElementById("profiles-list");
+    profilesListDiv.append(newNav);
     mainContent.append(bandContainer);
     new BandSection(band,"info",bandSectionCallback=>{
       bandContainer.append(bandSectionCallback.container);
       var starArr = [bandSectionCallback.star1.id,bandSectionCallback.star2.id,bandSectionCallback.star3.id,bandSectionCallback.star4.id,bandSectionCallback.star5.id];
       loadStars(band.rating,starArr);
     });
-    // new BandSection(band,"upcoming", bandSectionCallback=>{
-    //   bandContainer.append(bandSectionCallback.container);
-    //   setupAction();
-    // });
-    // new BandSection(band,"applications", bandSectionCallback=>{
-    //   bandContainer.append(bandSectionCallback.container);
-    //   setupAction();
-    // });
-    // new BandSection(band,"past", bandSectionCallback=>{
-    //   bandContainer.append(bandSectionCallback.container);
-    //   setupAction();
-    // });
-    // new BandSection(band,"interested-gigs", bandSectionCallback=>{
-    //   bandContainer.append(bandSectionCallback.container);
-    //   setupAction();
-    // });
+    new BandSection(band,"upcoming", bandSectionCallback=>{
+      bandContainer.append(bandSectionCallback.container);
+      setupAction();
+    });
+    new BandSection(band,"applications", bandSectionCallback=>{
+      bandContainer.append(bandSectionCallback.container);
+      setupAction();
+    });
+    new BandSection(band,"past", bandSectionCallback=>{
+      bandContainer.append(bandSectionCallback.container);
+      setupAction();
+    });
+    new BandSection(band,"interested-gigs", bandSectionCallback=>{
+      bandContainer.append(bandSectionCallback.container);
+      setupAction();
+    });
 
   });
   buildBandsCallback();
@@ -1532,6 +1708,8 @@ function createWebPage(user){
 */
 }
 
+var box = null;
+
 
 
 function init(){
@@ -1549,17 +1727,115 @@ function init(){
 
   var user = {
     "name": "booth",
+    "_id": "albkjdlk48402lkas10",
     "contacts": [
       {"_id": "oidfasjodisjfasd", "name":"zeee"}, {"_id": "sadfsdafsdfasdfasd", "name":"adddd"}, {"_id": "ldasjkfdsajdflsad", "name":"creee"}
+    ],
+    "messages": {
+      "oidfasjodisjfasd": [
+        {time: 32323, recieverID: 232323, senderID: "oidfasjodisjfasd", body: "Hello AB from Z"},
+        {time: 32323, recieverID: 232323, senderID: "oidfasjodisjfasd", body: "Hello AB AGAIN from Z"},
+        {time: 32323, recieverID: 232323, senderID: "oidfasjodisjfasd", body: "Hello AB AGAIN from Z"},
+        {time: 32323, recieverID: 232323, senderID: "oidfasjodisjfasd", body: "Hello AB AGAIN from Z"},
+        {time: 32323, recieverID: 232323, senderID: "oidfasjodisjfasd", body: "Hello AB AGAIN from Z"},
+        {time: 32323, recieverID: 232323, senderID: "oidfasjodisjfasd", body: "Hello AB AGAIN from Z"},
+        {time: 32323, recieverID: 232323, senderID: "oidfasjodisjfasd", body: "Hello AB AGAIN from Z"},
+        {time: 32323, recieverID: 232323, senderID: "oidfasjodisjfasd", body: "Hello AB AGAIN from Z"}
+      ],
+      "sadfsdafsdfasdfasd": [
+        {time: 32323, recieverID: 232323, senderID: "sadfsdafsdfasdfasd", body: "Hello AB from A"},
+        {time: 32323, recieverID: 232323, senderID: "sadfsdafsdfasdfasd", body: "Hello AB AGAIN from A"}
+      ],
+      "ldasjkfdsajdflsad": [
+        {time: 32323, recieverID: 232323, senderID: "ldasjkfdsajdflsad", body: "Hello AB from C"},
+        {time: 32323, recieverID: 232323, senderID: "ldasjkfdsajdflsad", body: "Hello AB AGAIN from C"}
+      ]
+    },
+    "bands": [
+      {
+        "_id": "2807893jfdskalf",
+        "name":"jimmy hendrix",
+        "rating":"89",
+        "picture":"../static/assets/Home/Art/20.jpeg",
+        "upcomingGigs":["test","test","test","test"],
+        "appliedGigs":["test","test","test","test"],
+        "finishedGigs":["test","test","test","test"],
+        "interestedGigs":["test","test","test","test"]
+      },
+      {
+        "_id": "ooooeiousjkl",
+        "name":"billy walls",
+        "rating":"43",
+        "picture":"../static/assets/Home/Art/16.jpeg",
+        "upcomingGigs":["test","test","test","test"],
+        "appliedGigs":["test","test","test","test"],
+        "finishedGigs":["test","test","test","test"],
+        "interestedGigs":["test","test","test","test"]
+      },
+      {
+        "_id": "fuladlsu2222",
+        "name":"TASHKII",
+        "rating":"89",
+        "picture":"../static/assets/Home/Art/17.jpeg",
+        "upcomingGigs":["test","test","test","test"],
+        "appliedGigs":["test","test","test","test"],
+        "finishedGigs":["test","test","test","test"],
+        "interestedGigs":["test","test","test","test"]
+      }
+    ],
+    "gigs": [
+      {
+        "_id":"baldkjafdlksjfaldksjfalsdkjfads",
+        "name":"A booked gig YEET",
+        "address":"N27 W5230 Hamilton rd.",
+        "description":"bleep blarp nardbag mc jazzy funck fusion wowkwwkw! sdo if you wanna crap eee!",
+        "price":"23",
+        "picture": "../static/assets/Home/Art/11.jpeg",
+        "startDate":"2019-01-26T14:22",
+        "endDate":"",
+        "applications":null,
+        "lat":"0","lng":"0",
+        "categories":{
+          "genres":["bass","punk"],
+          "insts":["bass guitar","bass","guitar"],
+          "vibes":["bass","","","dumb"]
+        },
+        "isFilled":true,
+        "bandFor":"test"
+      },
+      {
+        "_id":"baldkjafdlksjfaldksjfalsdkjfads",
+        "name":"green HAZE room",
+        "address":"N27 W5230 Hamilton rd.",
+        "description":"wow ew we really need a band to fill this crazy gig out wahoo jazz it up homies bless up kendrick lamar is awesome",
+        "price":"84",
+        "picture": "../static/assets/Home/Art/11.jpeg",
+        "startDate":"2019-01-26T14:22",
+        "endDate":"",
+        "applications":["test","test","test","test","test"],
+        "lat":"0","lng":"0",
+        "categories":{
+          "genres":["bass","punk"],
+          "insts":["bass guitar","bass","guitar"],
+          "vibes":["bass","","","dumb"]
+        },
+        "isFilled":false,
+        "bandFor":"test"
+      }
     ]
   };
 
+  globalMessageArray = user.messages;
 
   // messages[user._id] // gives array of messages, with body; timestamp; reciever;
   createContacts(user.contacts, user.name);
 
+  createWebPage(user);
+
 
 }
+
+var globalMessageArray = null;
 
 function createContacts(contacts, yourUsername){
   contacts.sort(function(a, b){
@@ -1618,20 +1894,40 @@ function createContacts(contacts, yourUsername){
       list.append(letterDiv);
       letters[lowercaseName.charAt(0)] = true;
     }
+
     new ContactLink(name,id,contactLinkCallBack => {
-      contactLinkCallBack.contactLink.addEventListener("click",function(){
-        var box = null;
+      contactLinkCallBack.contactLink.addEventListener("click",function(event, ui){
         if(box) {
             box.chatbox("option", "boxManager").toggleBox();
+            $(".ui-widget").remove();
+            box = null;
+            var newDiv = document.createElement("div");
+            newDiv.id = "chat-div";
+            document.body.append(newDiv);
         }
         else {
-            box = $("#chat-div").chatbox({id:contactLinkCallBack.id,
+            var recipient = contactLinkCallBack.id;
+            box = $("#chat-div").chatbox({recID: contactLinkCallBack.id,
                                           user:{ first_name: yourUsername },
                                           title : contactLinkCallBack.name,
                                           messageSent : function(id, user, msg) {
                                               // $("#log").append(id + " said: " + msg + "<br/>");
                                               $("#chat-div").chatbox("option", "boxManager").addMsg(user.first_name, msg);
+                                              sendMessage(msg,recipient);
                                           }});
+            for(var message in globalMessageArray[recipient]){
+              var e = document.createElement('div');
+              var newStringB = contactLinkCallBack.name + ": ";
+              var newNameB = document.createElement("b");
+              newNameB.innerHTML = newStringB;
+              e.append(newNameB);
+              var msgElement = document.createElement("i");
+              msgElement.innerHTML = globalMessageArray[recipient][message].body;
+              e.append(msgElement);
+              e.className = "ui-chatbox-msg";
+              $(e).css("maxWidth", $(".ui-chatbox-log").width());
+              $(".ui-chatbox-log").append(e);
+            }
         }
         console.log(contactLinkCallBack.contactLink.id);
       });
@@ -1654,14 +1950,17 @@ function createContacts(contacts, yourUsername){
                 this.boxManager.addMsg(user.first_name, msg);
             },
             boxClosed: function(id) {
-
+              $(".ui-widget").remove();
+              var newDiv = document.createElement("div");
+              newDiv.id = "chat-div";
+              document.body.append(newDiv);
+              box = null;
             }, // called when the close icon is clicked
             boxManager: {
                 // thanks to the widget factory facility
                 // similar to http://alexsexton.com/?p=51
                 init: function(elem) {
                     this.elem = elem;
-                    console.log("got in init");
                 },
                 addMsg: function(peer, msg) {
                     var self = this;
@@ -1955,24 +2254,24 @@ function setupAction(){
 
 
 
-$(document).ready(function(){
-          var box = null;
-          console.log("document ready");
-          $("#chat-a").click(function(event, ui) {
-              if(box) {
-                  box.chatbox("option", "boxManager").toggleBox();
-              }
-              else {
-                  box = $("#chat-div").chatbox({id:"chat_div",
-                                                user:{key : "value"},
-                                                title : "test chat",
-                                                messageSent : function(id, user, msg) {
-                                                    // $("#log").append(id + " said: " + msg + "<br/>");
-                                                    $("#chat-div").chatbox("option", "boxManager").addMsg(id, msg);
-                                                }});
-              }
-          });
-});
+// $(document).ready(function(){
+//           var box = null;
+//           console.log("document ready");
+//           $("#chat-a").click(function(event, ui) {
+//               if(box) {
+//                   box.chatbox("option", "boxManager").toggleBox();
+//               }
+//               else {
+//                   box = $("#chat-div").chatbox({id:"chat_div",
+//                                                 user:{key : "value"},
+//                                                 title : "test chat",
+//                                                 messageSent : function(id, user, msg) {
+//                                                     // $("#log").append(id + " said: " + msg + "<br/>");
+//                                                     $("#chat-div").chatbox("option", "boxManager").addMsg(id, msg);
+//                                                 }});
+//               }
+//           });
+// });
 
 
 var contactsButton = document.getElementById('contacts-button');
@@ -2307,11 +2606,8 @@ function sendGigToDB(lat,lng, myNewGig) {
           $.post('/gig', {'name':name, 'address':address, 'zipcode': zipcode, 'price': price, 'startDate': startDate, 'startTime':startTime, 'day':day, 'endTime': endTime, 'applications': [], 'lat': lat, 'lng': lng, 'categories':categoriesFromStr, 'isFilled':false, 'bandFor':null, 'description':description, 'picture':picPath}, result => {
               console.log("got cb from post /gig");
               alert('result is ' + JSON.stringify(result));
-
             });
       }
-
-
   });
 
 
@@ -2398,26 +2694,24 @@ function parseQueryString(str){
 //MESSAGING SECTION:
 
 var socket = io();
-function sendMessage(){
+function sendMessage(body, recID){
+  console.log("MESSAGE BODY: "+body);
+  console.log("MESSAGE RECID: "+recID);
   //set body to text from box and rec id to the inteded reciver's user ID
-  var today = new Date();
-  var date = today.getFullYear()+'-'+(today.getMonth()+1)+'-'+today.getDate();
-  var time = today.getHours() + ":" + today.getMinutes() + ":" + today.getSeconds();
-  var dateTime = date+' '+time;
-  //replace this with real id from contact menu
-  var recID = id;
-  //////
-  var body = "hello world"
-
-  var myMessage = {
-    'senderID':id,
-    'recieverID': recID,
-    'body': body,
-    'timeStamp' : dateTime
-  };
-  $.post('/messages', {'senderID':id, 'recieverID':recID, 'body':body, 'timeStamp':dateTime}, result=>{
-    console.log("got result from positn message it is :" + JSON.stringify(result));
-  });
+  // var today = new Date();
+  // var date = today.getFullYear()+'-'+(today.getMonth()+1)+'-'+today.getDate();
+  // var time = today.getHours() + ":" + today.getMinutes() + ":" + today.getSeconds();
+  // var dateTime = date+' '+time;
+  //
+  // var myMessage = {
+  //   'senderID':id,
+  //   'recieverID': recID,
+  //   'body': body,
+  //   'timeStamp' : dateTime
+  // };
+  // $.post('/messages', {'senderID':id, 'recieverID':recID, 'body':body, 'timeStamp':dateTime}, result=>{
+  //   console.log("got result from positn message it is :" + JSON.stringify(result));
+  // });
 }
 
 

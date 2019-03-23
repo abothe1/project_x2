@@ -1,0 +1,91 @@
+<!DOCTYPE html>
+<html lang="en" dir="ltr">
+  <head>
+    <meta charset="utf-8">
+    <title>Your Profile</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <!-- Fontawesome Icons -->
+		<link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.6.3/css/all.css" integrity="sha384-UHRtZLI+pbxtHCWp1t77Bi1L4ZtiqrqD80Kn4Z8NTSRyMA2Fd33n5dQ8lWUE00s/" crossorigin="anonymous">
+		<!-- Latest compiled and minified CSS -->
+		<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.1.3/css/bootstrap.min.css">
+		<!-- jQuery library -->
+		<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+    <!-- <script type="text/javascript" src="http://code.jquery.com/jquery-1.4.2.min.js"></script> -->
+    <script type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/jqueryui/1.8.2/jquery-ui.min.js"></script>
+		<!-- Popper JS -->
+		<script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.3/umd/popper.min.js"></script>
+		<!-- Latest compiled JavaScript -->
+		<script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.1.3/js/bootstrap.min.js"></script>
+    <!-- External CSS -->
+    <link rel="stylesheet" type="text/css" href="../static/css/otherProfile.css">
+    <script type="text/javascript" src="../static/jquery/jquery.jcarousel.min.js"></script>
+    <script type="text/javascript" src="jcarousel.responsive.js"></script>
+
+    <!-- Radial Menu -->
+    <script type="text/javascript">
+			(function($) {
+				$(function() {
+					$('#mainbtn').mouseover(function(){
+						$('.deg0, .deg30, .deg60, .deg90').toggleClass('open')
+					});
+				});
+			})(jQuery);
+		</script>
+  </head>
+  <body onload="init();">
+
+    <div id="body-container">
+
+      <div id="container">
+        <img id="menuBacking" src="../static/assets/Home/menu.png" />
+        <div id="corner"><a href="#"><i id="mainbtn"><img src="../static/assets/Home/banda_b.png" /></i></a>
+        </div>
+      </div>
+
+      <div class='circle-container'>
+        <a href='#' class='deg0' onclick="document.getElementById('modal-wrapper-login').style.display='block'" id="login_button"><p class="radialText">Login</p></a>
+        <a href='#' class='deg30' id="sign_in_button" onclick="document.getElementById('modal-wrapper-register').style.display='block'"><p class="radialText">Register</p></a>
+        <a href='./' class='deg60'><p class="radialText">Home</p></a>
+        <a href='#' class='deg90'><p class="radialText">About</p></a>
+      </div>
+
+      <div class="profile-header">
+        <p class="profile-header-text">Jimmy McNards</p>
+        <div id="user-stars">
+          <img class="star" id="user-star-1" src="../static/assets/Control-Center/star.png"/>
+          <img class="star" id="user-star-2" src="../static/assets/Control-Center/star.png"/>
+          <img class="star" id="user-star-3" src="../static/assets/Control-Center/star.png"/>
+          <img class="star" id="user-star-4" src="../static/assets/Control-Center/star.png"/>
+          <img class="star" id="user-star-5" src="../static/assets/Control-Center/star.png"/>
+        </div>
+      </div>
+
+      <div class="profiles-list">
+        <ul>
+          <li><a href="#" onclick="">Book</a></li>
+          <li><a href="#" onclick="">Add to Contacts</a></li>
+          <li><a href="#" onclick="">Message</a></li>
+        </ul>
+      </div>
+
+      <div class="bottom-bar">
+        <img id="ticker-img" src="../static/assets/Control-Center/bottom-bar.png" alt="ticker" />
+        <button href="#" id="contacts-button">contacts</button>
+      </div>
+
+      <div id="contacts-sidebar">
+        <img id="contacts-bg" src="../static/assets/Control-Center/contacts-bg.png" alt="contacts" />
+        <div id="contacts-content"></div>
+      </div>
+
+      <div id="main-content-wrapper">
+      </div>
+
+    </div>
+
+    <div id="chat-div">
+    </div>
+    
+  </body>
+  <script type="text/javascript" src="../static/scripts/otherProfile.js"></script>
+</html>
