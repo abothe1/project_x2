@@ -697,20 +697,6 @@ class BandSection{
         });
       }
       break;
-      case "interested-gigs":
-      if(band.interestedGigs.length > 0){
-        new Carousel(band.interestedGigs,"interested-gigs", carCallback =>{
-          this.title = document.createElement("p");
-          this.title.className = "title-text";
-          this.title.innerHTML = "Interested Gigs";
-          this.container = document.createElement("div");
-          this.container.append(this.title);
-          this.carousel = carCallback;
-          this.container.append(this.carousel.wrapper);
-          bandSectionCallback(this);
-        });
-      }
-      break;
     }
   }
 }
@@ -753,6 +739,7 @@ class Carousel{
           newOverlay.className = "result-overlay";
           var overlayID = "result-overlay-"+band;
           newOverlay.setAttribute("id",overlayID);
+
           var viewBtn = document.createElement("input");
           viewBtn.type = "button";
           viewBtn.className = "car-view-button";
@@ -1111,75 +1098,6 @@ class Carousel{
         },this);
         this.carousel.append(this.list);
         if(this.pastGigs.length > 4){
-          // only add arrow controls if the carousel has enough data
-          this.prev = document.createElement("a");
-          this.prev.className = "jcarousel-control-prev";
-          this.prev.href = "#";
-          this.next = document.createElement("a");
-          this.next.className = "jcarousel-control-next";
-          this.next.href = "#";
-          this.carWrap.append(this.prev);
-          this.carWrap.append(this.next);
-        }
-        this.carWrap.append(this.carousel);
-        this.wrapper.append(this.carWrap);
-        carCallback(this);
-      });
-      break;
-      case "interested-gigs":
-      // get past gigs info
-      this.handleGigs(obj, result=>{
-        this.interestedGigs = result;
-        this.wrapper = document.createElement("div");
-        this.wrapper.className = "wrapper";
-        this.carWrap = document.createElement("div");
-        this.carWrap.className = "jcarousel-wrapper";
-        this.carousel = document.createElement("div");
-        this.carousel.className = "jcarousel";
-        this.list = document.createElement("ul");
-        for(var gig in this.interestedGigs){
-          var id = this.interestedGigs[gig]._id;
-          var name = this.interestedGigs[gig].name;
-          var newItem = document.createElement("li");
-          newItem.className = "carousel-li";
-          // img
-          var newImg = document.createElement("img");
-          newImg.className = "carousel-img";
-          if(this.interestedGigs[gig].hasOwnProperty("picture")){
-            newImg.src = this.interestedGigs[gig].picture;
-          }
-          // frame
-          var newFrame = document.createElement("img");
-          newFrame.className = "carousel-frame";
-          newFrame.src = "../static/assets/Control-Center/orangebox.png";
-          // overlay
-          var newOverlay = document.createElement("div");
-          newOverlay.className = "result-overlay";
-          var overlayID = "result-overlay-"+gig;
-          newOverlay.setAttribute("id",overlayID);
-          var priceText = document.createElement("p");
-          priceText.className = "result-overlay-p";
-          priceText.innerHTML = "$"+this.interestedGigs[gig].price;
-          // nameplate
-          var nameDiv = document.createElement("div");
-          nameDiv.className = "result-name-div";
-          var nameP = document.createElement("p");
-          nameP.className = "result-name-p";
-          nameP.innerHTML = this.interestedGigs[gig].name;
-          newItem.append(newImg);
-          newOverlay.append(priceText);
-          newItem.appendChild(newOverlay);
-          newItem.append(newFrame);
-          nameDiv.append(nameP);
-          newItem.append(nameDiv);
-          this.list.append(newItem);
-          //event listener data preprocessing
-          newItem.newOverlay = newOverlay;
-          newItem._id = this.interestedGigs[gig]._id;
-          this.AddOverlayEventListeners(newItem);
-        }
-        this.carousel.append(this.list);
-        if(this.interestedGigs.length > 4){
           // only add arrow controls if the carousel has enough data
           this.prev = document.createElement("a");
           this.prev.className = "jcarousel-control-prev";
@@ -1730,10 +1648,6 @@ function buildBands(bands, buildBandsCallback){
       setupAction();
     });
     new BandSection(band,"past", bandSectionCallback=>{
-      bandContainer.append(bandSectionCallback.container);
-      setupAction();
-    });
-    new BandSection(band,"interested-gigs", bandSectionCallback=>{
       bandContainer.append(bandSectionCallback.container);
       setupAction();
     });
