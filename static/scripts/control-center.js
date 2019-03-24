@@ -25,6 +25,8 @@ var profilesList = null;
 var userMessages = {};
 var userContacts = [];
 
+var globalUser = null;
+
 //CHNAGE GIGS SECTION:?////////
 
 var changingGigs = {};
@@ -1891,7 +1893,8 @@ function init(){
       ],
       "sadfsdafsdfasdfasd": [
         {time: 32323, recieverID: 232323, senderID: "sadfsdafsdfasdfasd", body: "Hello AB from A"},
-        {time: 32323, recieverID: 232323, senderID: "sadfsdafsdfasdfasd", body: "Hello AB AGAIN from A"}
+        {time: 32323, recieverID: 232323, senderID: "sadfsdafsdfasdfasd", body: "Hello AB AGAIN from A"},
+        {time: 32323, recieverID: 232323, senderID: "sadfsdafsdfasdfasd", body: "yothisisanewsignalfromthingtocreateabutton-A booked gig YEET-baldkjafdlksjfaldksjfalsdkjfads"}
       ],
       "ldasjkfdsajdflsad": [
         {time: 32323, recieverID: 232323, senderID: "ldasjkfdsajdflsad", body: "Hello AB from C"},
@@ -2165,6 +2168,7 @@ function createContacts(contacts, yourUsername){
         }
         else {
             document.getElementById("select-gig-to-ad").style.visibility = "visible";
+            document.getElementById("selectDrop").idForRec = contactLinkCallBack.id;
             var recipient = contactLinkCallBack.id;
             box = $("#chat-div").chatbox({recID: contactLinkCallBack.id,
                                           user:{ first_name: yourUsername },
@@ -2175,17 +2179,43 @@ function createContacts(contacts, yourUsername){
                                               sendMessage(msg,recipient);
                                           }});
             for(var message in globalMessageArray[recipient]){
-              var e = document.createElement('div');
-              var newStringB = contactLinkCallBack.name + ": ";
-              var newNameB = document.createElement("b");
-              newNameB.innerHTML = newStringB;
-              e.append(newNameB);
-              var msgElement = document.createElement("i");
-              msgElement.innerHTML = globalMessageArray[recipient][message].body;
-              e.append(msgElement);
-              e.className = "ui-chatbox-msg";
-              $(e).css("maxWidth", $(".ui-chatbox-log").width());
-              $(".ui-chatbox-log").append(e);
+              if(globalMessageArray[recipient][message].body.includes("yothisisanewsignalfromthingtocreateabutton")){
+                // it's a link to an application!
+                var e = document.createElement('div');
+                var newStringB = contactLinkCallBack.name + ": ";
+                var newNameB = document.createElement("b");
+                newNameB.innerHTML = newStringB;
+                e.append(newNameB);
+                var bodyString = globalMessageArray[recipient][message].body;
+                var partsArray = bodyString.split('-');
+                var theGigName = partsArray[1];
+                var theGigID = partsArray[2];
+                // <a id="baldkjafdlksjfaldksjfalsdkjfads">Apply to my event: A booked gig YEET</a>
+                var newButton = document.createElement("a");
+                newButton.href = "#";
+                newButton.className = "chat-app-link";
+                newButton.gigID = theGigID;
+                newButton.innerHTML = "Apply to my event: "+theGigName;
+                newButton.addEventListener("click",function(){
+                  console.log(newButton.gigID);
+                });
+                e.append(newButton);
+                e.className = "ui-chatbox-msg";
+                $(e).css("maxWidth", $(".ui-chatbox-log").width());
+                $(".ui-chatbox-log").append(e);
+              }else{
+                var e = document.createElement('div');
+                var newStringB = contactLinkCallBack.name + ": ";
+                var newNameB = document.createElement("b");
+                newNameB.innerHTML = newStringB;
+                e.append(newNameB);
+                var msgElement = document.createElement("i");
+                msgElement.innerHTML = globalMessageArray[recipient][message].body;
+                e.append(msgElement);
+                e.className = "ui-chatbox-msg";
+                $(e).css("maxWidth", $(".ui-chatbox-log").width());
+                $(".ui-chatbox-log").append(e);
+              }
             }
         }
         console.log(contactLinkCallBack.contactLink.id);
@@ -2223,35 +2253,108 @@ function createContacts(contacts, yourUsername){
                     this.elem = elem;
                 },
                 addMsg: function(peer, msg) {
-                    var self = this;
-                    var box = self.elem.uiChatboxLog;
-                    var e = document.createElement('div');
-                    box.append(e);
-                    $(e).hide();
-
-                    var systemMessage = false;
-
-                    if (peer) {
+                    if(msg.hasOwnProperty("nameOfGig")){
+                      // you just sent someone an application link!
+                      var self = this;
+                      var box = self.elem.uiChatboxLog;
+                      var e = document.createElement('div');
+                      box.append(e);
+                      $(e).hide();
+                      var systemMessage = false;
+                      if(peer){
                         var peerName = document.createElement("b");
                         $(peerName).text(peer + ": ");
                         e.appendChild(peerName);
-                    } else {
+                      }else{
                         systemMessage = true;
+                      }
+
+                      var msgElement = document.createElement("a");
+                      msgElement.href = "#";
+                      msgElement.className = "chat-app-link";
+                      var newMsgString = "Apply to my event: "+msg.nameOfGig;
+                      $(msgElement).text(newMsgString);
+                      msgElement.id = msg.idForGig;
+                      msgElement.gigID = msg.idForGig;
+                      msgElement.addEventListener("click",function(){
+                        alert("gig ID: "+msgElement.gigID);
+                      });
+                      e.appendChild(msgElement);
+                      $(e).addClass("ui-chatbox-msg");
+                      $(e).css("maxWidth", $(box).width());
+                      $(e).fadeIn();
+                      self._scrollToBottom();
+                      var newSignalString = "yothisisanewsignalfromthingtocreateabutton-"+msg.nameOfGig+"-"+msg.idForGig;
+                      sendMessage(newSignalString,msg.idForRec);
                     }
+                    else{
+                      if(msg.body.includes("yothisisanewsignalfromthingtocreateabutton")){
+                        // recieved a button with the window open
 
-                    var msgElement = document.createElement(
-                        systemMessage ? "i" : "span");
-                    $(msgElement).text(msg);
-                    e.appendChild(msgElement);
-                    $(e).addClass("ui-chatbox-msg");
-                    $(e).css("maxWidth", $(box).width());
-                    $(e).fadeIn();
-                    self._scrollToBottom();
+                        var self = this;
+                        var box = self.elem.uiChatboxLog;
+                        var e = document.createElement('div');
+                        box.append(e);
+                        $(e).hide();
+                        var systemMessage = false;
+                        if(peer){
+                          var peerName = document.createElement("b");
+                          $(peerName).text(peer + ": ");
+                          e.appendChild(peerName);
+                        }else{
+                          systemMessage = true;
+                        }
+                        var bodyString = globalMessageArray[recipient][message].body;
+                        var partsArray = bodyString.split('-');
+                        var theGigName = partsArray[1];
+                        var theGigID = partsArray[2];
+                        // <a id="baldkjafdlksjfaldksjfalsdkjfads">Apply to my event: A booked gig YEET</a>
+                        var newButton = document.createElement("a");
+                        newButton.className = "chat-app-link";
+                        newButton.href = "#";
+                        newButton.gigID = theGigID;
+                        newButton.innerHTML = "Apply to my event: "+theGigName;
+                        newButton.addEventListener("click",function(){
+                          console.log(newButton.gigID);
+                        });
+                        e.appendChild(newButton);
+                        $(e).addClass("ui-chatbox-msg");
+                        $(e).css("maxWidth", $(box).width());
+                        $(e).fadeIn();
+                        self._scrollToBottom();
+                      }else{
+                        // just a normal message hehehhhh
+                        var self = this;
+                        var box = self.elem.uiChatboxLog;
+                        var e = document.createElement('div');
+                        box.append(e);
+                        $(e).hide();
 
-                    if (!self.elem.uiChatboxTitlebar.hasClass("ui-state-focus")
-                        && !self.highlightLock) {
-                        self.highlightLock = true;
-                        self.highlightBox();
+                        var systemMessage = false;
+
+                        if (peer) {
+                            var peerName = document.createElement("b");
+                            $(peerName).text(peer + ": ");
+                            e.appendChild(peerName);
+                        } else {
+                            systemMessage = true;
+                        }
+
+                        var msgElement = document.createElement(
+                            systemMessage ? "i" : "span");
+                        $(msgElement).text(msg);
+                        e.appendChild(msgElement);
+                        $(e).addClass("ui-chatbox-msg");
+                        $(e).css("maxWidth", $(box).width());
+                        $(e).fadeIn();
+                        self._scrollToBottom();
+
+                        if (!self.elem.uiChatboxTitlebar.hasClass("ui-state-focus")
+                            && !self.highlightLock) {
+                            self.highlightLock = true;
+                            self.highlightBox();
+                        }
+                      }
                     }
                 },
                 highlightBox: function() {
@@ -3114,7 +3217,20 @@ let selectedGig = null
 function submitGig(){
   var theSelector = document.getElementById("selectDrop");
   var id = theSelector.options[ theSelector.selectedIndex ].dataID;
-  alert(id);
+  var name = theSelector.options[theSelector.selectedIndex].innerHTML;
+
+  var buttonObj = {
+    "idForGig":id,
+    "nameOfGig":name,
+    "idForRec":theSelector.idForRec
+  };
+
+  var sampleUser = {
+    "name": "booth"
+  };
+
+  $("#chat-div").chatbox("option", "boxManager").addMsg(sampleUser.name, buttonObj);
+  document.getElementById('modal-wrapper-link-application').style.display='none'
 }
 
 

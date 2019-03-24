@@ -1539,3 +1539,13 @@ scrollbar
   margin-left: 50px;
 
 }
+
+.chat-app-link{
+  color: #56dff0;
+  text-decoration: underline;
+}
+
+.chat-app-link:hover{
+  color: white;
+  cursor: pointer;
+}
