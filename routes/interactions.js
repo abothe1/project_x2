@@ -112,19 +112,38 @@ module.exports = router => {
             });
             var newCode = creatBandConfirmCode(gigID, bandID);
             var upGig = {'gigID':gigID, 'confirmationCode':newCode};
-            var newValues2 = {
-              $push: {'upcomingGigs':upGig},
-              $pull:{'appliedGigs.$[element]': gigID}
-            };
-            db.db('bands').collection('bands').updateOne({'_id':database.objectId(bandID)}, newValues2, {arrayFilters:{element:gigID}}, (err3, result3)=>{
-              if (err3){
-                console.log('There was an error tryign to append set gig stuff, error was: ' + err3);
+
+            db.db('bands').collection('bands').findOne({'_id':database.objectId(bandID)}, (err6, result6)=>{
+              if (err6){
+                console.log('THre was an error finding band : ' + bandID +' from mongo. '+err6);
                 res.status(500).end();
                 db.close();
               }
               else{
-                console.log('got band set with the band' + bandID);
-                console.log(JSON.stringify(result));
+                var stillAppliedTo=[];
+                for (var g in result6['appliedGigs']){
+                  if(gigID==result6['appliedGigs'][g][0]){
+
+                  }
+                  else{
+                    stillAppliedTo.push(result6['appliedGigs'][g]);
+                  }
+                }
+                var newValues2 = {
+                  $push: {'upcomingGigs':upGig},
+                  $set:{'appliedGigs': stillAppliedTo}
+                };
+                db.db('bands').collection('bands').updateOne({'_id':database.objectId(bandID)}, newValues2, (err3, result3)=>{
+                  if (err3){
+                    console.log('There was an error tryign to append set band stuff, error was: ' + err3);
+                    res.status(500).end();
+                    db.close();
+                  }
+                  else{
+                    console.log('got band set with the band' + bandID);
+                    console.log(JSON.stringify(result3));
+                  }
+                });
               }
             });
             var denied = [];

@@ -381,9 +381,9 @@ function getCurrentEvents(){
 }
 
 function handleEventsWithTicker(result){
-  if(!sortedEvents){
+  /*if(!sortedEvents){
     return;
-  }
+  }*/
   console.log("Events in handle events wth ticker are " + events);
   var events = JSON.parse(JSON.stringify(result));
   $("#frontText").html("Live Booking Feed");
@@ -402,13 +402,20 @@ function handleEventsWithTicker(result){
        i = 0;
     }
     var evt = sortedEvents[i];
-
+		console.log('evt is ' + JSON.stringify(evt));
     console.log(" for x in sorted evetns evt is : " + JSON.stringify(evt));
-    var genre = evt.categories.genres[0];
-    var type = evt.categories.gigTypes[0];
-    var price = evt["price"];
-    $("#frontText").html("A(n) " + genre + " artist was just booked for a(n) " + type + ", for $" + price);
-    $("#backText").html("A(n) " + genre + " artist was just booked for a(n) " + type + ", for $" + price);
+		if (evt.categories.hasOwnProperty('genres') && evt.categories.hasOwnProperty('gigTypes')){
+    	var genre = evt.categories.genres[0];
+    	var type = evt.categories.gigTypes[0];
+    	var price = evt["price"];
+    	$("#frontText").html("A(n) " + genre + " artist was just booked for a(n) " + type + ", for $" + price);
+    	$("#backText").html("A(n) " + genre + " artist was just booked for a(n) " + type + ", for $" + price);
+		}
+		else{
+			var price = evt["price"];
+			$("#frontText").html("An artist was just booked for $" + price);
+    	$("#backText").html("An artist was just booked for $" + price);
+		}
     flipTicker();
   }, 5000);
 }

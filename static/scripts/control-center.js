@@ -495,7 +495,7 @@ class GigSection{
       console.log("got in past-hosted");
       for(var gig in gigs){
         console.log('In past hosetd: gig on is: '+ JSON.stringify(gigs[gig]))
-        if((gigs[gig].confirmed && gigs[gig].isFilled)||(gigs[gig].confirmed=='true' && gigs[gig].isFilled=='true')){
+        if((gigs[gig].confirmed && gigs[gig].isFilled && !(gigs[gig].recievedRating))||(gigs[gig].confirmed=='true' && gigs[gig].isFilled=='true' && gigs[gig].recievedRating=='false')){
           pastGigsArr.push(gigs[gig]);
         }
       }
@@ -1234,7 +1234,11 @@ class Carousel{
       // upcoming gigs
       case "upcoming":
       //get upcoming data
-      this.handleGigs(obj, result=>{
+      var idArr = [];
+      for (var g in obj){
+        idArr.push(obj[g]['gigID']);
+      }
+      this.handleGigs(idArr, result=>{
         // console.log(JSON.stringify(result));
         this.upcomingGigs = result;
         this.wrapper = document.createElement("div");
@@ -1245,6 +1249,7 @@ class Carousel{
         this.carousel.className = "jcarousel";
         this.list = document.createElement("ul");
         for(var gig in this.upcomingGigs){
+          console.log('gig in upcoming gigs: ' + JSON.stringify(this.upcomingGigs[gig]));
           var id = this.upcomingGigs[gig]._id;
           var name = this.upcomingGigs[gig].name;
           var newItem = document.createElement("li");
@@ -1734,6 +1739,9 @@ class Carousel{
         console.log("band id: "+obj.declineBtn.bandID);
         console.log("gig id: "+obj.declineBtn.gigID);
         //post decline
+        $.post('/decline', {'gigID':obj.declineBtn.gigID, 'bandID':obj.declineBtn.gigID}, res=>{
+          alert(res);
+        });
       });
     }
     if(obj.hasOwnProperty("rateButton")){
@@ -2386,32 +2394,32 @@ function sendBandToDB(lat, lng, myBand){
   var qCategories = parseQueryString(description);
   console.log('categories inc reate band is: ' + JSON.stringify(qCategories));
   if(!($("#new-band-pic")[0].files || $("#new-band-pic")[0].files[0])){
-    alert('Please enter a valid .jpeg, or .png file for bands profile picture');
+    alert('Please enter a valid .jpeg, or .png file for your profile picture');
     return;
   }
   else if($("#new-band-pic")[0].files[0].type != 'image/jpeg'){
     if ($('#new-band-pic')[0].files[0].type != 'image/png'){
-      alert('Please enter a valid .jpeg, or .png file for bands sample picture');
+      alert('Please enter a valid .jpeg, or .png file for your avatar picture');
       return;
     }
   }
   if(!($("#new-band-clip-pic")[0].files || $("#new-band-clip-pic")[0].files[0])){
-    alert('Please enter a valid .jpeg, or .png file for bands profile picture');
+    alert('Please enter a valid .jpeg, or .png file for your audio sample picture');
     return;
   }
   else if($("#new-band-clip-pic")[0].files[0].type != 'image/jpeg'){
     if ($("#new-band-clip-pic")[0].files[0].type != 'image/png'){
-      alert('Please enter a valid .jpeg, or .png file for bands sample picture');
+      alert('Please enter a valid .jpeg, or .png file for your audio sample picture');
       return;
     }
   }
   if(!($("#new-band-clip")[0].files || $("#new-band-clip")[0].files[0])){
-    alert('Please enter a valid .wav, or .mp3 file for bands profile picture');
+    alert('Please enter a valid .wav, or .mp3 file for your soundbyte');
     return;
   }
   else if($("#new-band-clip")[0].files[0].type != 'audio/wav'){
     if ($("#new-band-clip")[0].files[0].type != 'audio/mp3'){
-      alert('Please enter a valid .jpeg, or .png file for bands sample picture');
+      alert('Please enter a valid .mp3, or .wav file for your soundbyte');
       return;
     }
   }
@@ -2428,7 +2436,6 @@ function sendBandToDB(lat, lng, myBand){
       processData: false,
       type: 'POST',
       'success':function(data){
-          alert(data);
           bandAvatarPath=data;
           var sound = $("#new-band-clip")[0].files[0];
           formdata = new FormData();
@@ -2440,7 +2447,6 @@ function sendBandToDB(lat, lng, myBand){
               processData: false,
               type: 'POST',
               'success':function(data){
-                  alert(data);
                   bandSoundPath=data;
                   var samplePic = $('#new-band-clip-pic')[0].files[0];
                   formdata = new FormData();
@@ -2455,7 +2461,7 @@ function sendBandToDB(lat, lng, myBand){
                         bandSamplePicPath=data;
                         var sample = {'audio':bandSoundPath, 'picture':bandSamplePicPath};
                         $.post('/band', {'name':name, 'zipcode':zipcode, 'maxDist':maxDist, 'price':price, 'picture':bandAvatarPath, 'sample':sample,'description':description, 'openDates':openDates, 'categories':qCategories, 'lat':lat, 'lng':lng}, result=>{
-                          alert(result);
+                          alert("Congratulations, you added " + name + 'to Banda! You can now search for events as, ' + name+ ' to start accelerating your music career! Refresh this page to see your new act/edit it.');
                         });
                       }
                   });
@@ -2584,12 +2590,10 @@ function sendGigToDB(lat,lng, myNewGig) {
       processData: false,
       type: 'POST',
       'success':function(data){
-          alert(data);
           picPath=data;
           $.post('/gig', {'name':name, 'address':address, 'date':startDate, 'zipcode': zipcode, 'price': price, 'startDate': startDate, 'startTime':startTime, 'day':day, 'endTime': endTime, 'applications': [], 'lat': lat, 'lng': lng, 'categories':categoriesFromStr, 'isFilled':false, 'bandFor':null, 'description':description, 'picture':picPath}, result => {
               console.log("got cb from post /gig");
-              alert('result is ' + JSON.stringify(result));
-
+              alert('Congratulations, you have posted the event ' + name + ' to Banda! Band applications will be coming in soon. You can close the form abd refresh the page to see/edit your event. Check/refresh your home page regularly to see new applicants. You can also search for bands as this event now and use our "Ask user to apply..." allow an artist to apply directly to your gig.');
             });
       }
 

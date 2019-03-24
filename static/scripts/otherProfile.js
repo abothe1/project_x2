@@ -261,7 +261,9 @@ function hitApply(){
     alert('You can only "Apply" to events as a band. Please select one from your drop down menu and hit apply again. If you have no bands you can create one on your home page.');
   }
   else{
-
+    $.post('/apply', {'gigID':otherGig['_id'], 'bandID':myBand['_id']}, result=>{
+      alert('Congratulations, you have applied to the gig ' +otherGig['name'] + ' as ' +myBand['name'] + '! Hit home on the Banda "b" to go to search and then again to go to your home page. Check your home page regularly to see if the event has moved to your upcoming gigs section.');
+    });
   }
 
 }
