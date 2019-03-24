@@ -1,2 +1,2 @@
 #!/bin/bash
-mongod --config mongod.conf --dbpath database
+mongod --config mongod.conf --dbpath database 

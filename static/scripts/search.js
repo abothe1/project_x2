@@ -181,6 +181,11 @@ function doesContainID(id, arr){
 }
 var theGird = null;
 function performSearch(json){
+  theGrid = document.getElementById("grid-container");
+  while(theGrid.hasChildNodes()){
+    console.log("removing children");
+    theGrid.removeChild(theGrid.lastChild);
+  }
 
   console.log('In PERFORM SEARCH and json is : ' + JSON.stringify(json));
   var mode = json['searchObject']['mode'];
@@ -486,17 +491,30 @@ class BandCell {
     this.id = id;
     this.bandID = band._id;
     this.newDiv = document.createElement("div");
-    this.newDiv.style.backgroundImage = "url(/assets/Home/Art/"+band.picture+")";
+    this.newDiv.style.backgroundImage = "url("+band.picture+")";
     // overlay
     this.newOverlay = document.createElement("div");
     this.newOverlay.className = "result-overlay";
     this.overlayID = "result-overlay-"+id;
+    this.newOverlay.name = band['_id'];
+    this.newOverlay.addEventListener('click', function(){
+      if ($('#selectDrop option:selected')){
+        var searchAsName = $('#selectDrop option:selected').data();
+        searchAsName=searchAsName['objid']
+        var searchAsType = $('#selectDrop option:selected').val();
+        window.location.href='otherProfile?id='+this.name+'&mode=band&searchingAs='+searchAsName+'&searchingType='+searchAsType;
+      }
+      else{
+        alert('You must sign in to view profiles.');
+      }
+    });
     this.newOverlay.setAttribute("id",this.overlayID);
     this.priceText = document.createElement("p");
     this.priceText.innerHTML = "$"+band.price+"/hr";
     // audio
     this.newDiv.audio = new Audio();
-    this.newDiv.audio.src = "/assets/Home/transvertion.mp3";
+    var audioSample = band['audioSamples'][0]['audio'];
+    this.newDiv.audio.src = audioSample;
     this.newDiv.audio.type='audio/mp3';
     // frame
     this.newFrame = document.createElement("img");
@@ -551,7 +569,7 @@ class GigCell{
     this.newDiv = document.createElement("div");
     console.log("pic: "+gig.picture);
 
-    this.newDiv.style.backgroundImage = "url(/assets/Home/Art/"+gig.picture+")";
+    this.newDiv.style.backgroundImage = 'url('+gig.picture+')';
     // overlay
     this.newOverlay = document.createElement("div");
     this.newOverlay.className = "result-overlay";
@@ -571,6 +589,19 @@ class GigCell{
     this.nameP.innerHTML = gig.name;
     // appends
     this.newOverlay.appendChild(this.priceText);
+    this.newOverlay.name = gig['_id'];
+    this.newOverlay.addEventListener('click', function(){
+      if($('#selectDrop option:selected')){
+        var searchAsName = $('#selectDrop option:selected').data();
+        searchAsName=searchAsName['objid']
+        var searchAsType = $('#selectDrop option:selected').val();
+        window.location.href='otherProfile?id='+this.name+'&mode=gig&searchingAs='+searchAsName+'&searchingType='+searchAsType;
+      }
+      else{
+        alert('You must sign in to view profiles.');
+      }
+
+    });
     this.newDiv.appendChild(this.newOverlay);
     this.newDiv.appendChild(this.newFrame);
     this.nameDiv.appendChild(this.nameP);

@@ -31,25 +31,6 @@ var categories = {};
 var debugLayout = false;
 var isLoggedIn=false;
 //setInterval(getCurrentEvents, 60000);
-$.getScript('assets/banks.js', function(data, status)
-{
-  console.log("dtata from loading banks is : " + data);
-  //banks = data.BANKS;
-  if (BANKS){
-    console.log(BANKS);
-    for (var key in BANKS){
-      console.log(key);
-        console.log("banks are " + BANKS[key]);
-        categories[key]={'wordBank' : BANKS[key]};
-      //  categoires[key]={'fromQueryStr' : []};
-    }
-  }
-  else{
-    console.log("banks from the script was null");
-  }
-
-});
-
 // AB document stuff//
 function init(){
 
@@ -68,8 +49,16 @@ function init(){
 	});
 
   if(!debugLayout){
-    rainTimer = setInterval(addDrop, 1600);
-  	setInterval(animate, 40);
+    $.get('/samples', function(data){
+    	var bands = data;
+      for (var band in bands){
+        var bandSamples = bands[band]['audioSamples'];
+        var aSample = bandSamples[0];
+        samples.push(aSample);
+      }
+      rainTimer = setInterval(addDrop, 1600);
+    	setInterval(animate, 40);
+    });
   }
 }
 
@@ -96,8 +85,11 @@ function Update(){
 }
 
 var stepper = 0;
-
+var dropOn=0;
 function addDrop(){
+  if(dropOn>=samples.length){
+    dropOn = 0;
+  }
 	if (drops.length == maxDrops){
 		// do nothing
 	}else{
@@ -130,7 +122,7 @@ class Drop {
     this.theImg.style.borderRadius = "4px"
     this.theImg.style.backgroundColor = "white";
     var img = RandImg();
-    this.theImg.src = "/assets/Home/Art/" + img;
+    this.theImg.src = img;
 
     switch(stepper){
       case 0:
@@ -173,7 +165,7 @@ class Drop {
 		this.theDiv.paused = false;
 		this.theDiv.dropRef = this;
 		this.audio = new Audio();
-		this.audio.src = "/assets/Home/transvertion.mp3";
+		this.audio.src = samples[dropOn]['audio'];
 		this.audio.type='audio/mp3';
 		// this.theButton = document.createElement("p");
 		// this.theButton.innerHTML = "text";
@@ -185,6 +177,7 @@ class Drop {
 
     this.theDiv.appendChild(this.theImg);
 		rain.appendChild(this.theDiv);
+    dropOn += 1;
 		this.AddClickToDiv();
 	}
 
@@ -307,31 +300,17 @@ var imgIndex = 0;
 var images = ["1.jpg","2.jpeg","3.jpeg","4.jpeg","5.jpeg","6.jpeg","7.jpeg","8.jpeg","9.jpeg","10.jpeg","11.jpeg","12.jpeg","13.jpeg","14.jpeg","15.jpeg","16.jpeg","17.jpeg","18.jpeg","19.jpeg","20.jpeg"];
 
 function RandImg(){
-  if(imgIndex == 0){
-    var array = images;
-    // Shuffle the array via Fisher–Yates Shuffle
-    var currentIndex = array.length, temporaryValue, randomIndex;
-
-    // While there remain elements to shuffle...
-    while (0 !== currentIndex) {
-
-      // Pick a remaining element...
-      randomIndex = Math.floor(Math.random() * currentIndex);
-      currentIndex -= 1;
-
-      // And swap it with the current element.
-      temporaryValue = array[currentIndex];
-      array[currentIndex] = array[randomIndex];
-      array[randomIndex] = temporaryValue;
-    }
-    images = array;
+  if(!samples){
+    return;
   }
-  var img = images[imgIndex];
-  if(imgIndex < 19){
-    imgIndex++;
-  }else{
-    imgIndex = 0;
+  if(! samples[dropOn]){
+    return;
   }
+  var img = samples[dropOn]['picture'];
+  if (!img) {
+    return;
+  }
+
   return img;
 }
 
@@ -344,14 +323,6 @@ function RandImg(){
 })(jQuery);
 
 //classes
-
-class Sample{
-	constructor(pic,audio){
-		this.pic=pic;
-		this.audio=audio;
-	}
-}
-
 
 
 //global vars
@@ -370,18 +341,8 @@ function signInHit(){
 //sessions go here
 
 // this is the code for getting our bands, then converitng them into music blocks
-$.get('/bands', function(data){
-	$.each(data, function(key,val){
-		samples.push(val['samples']);
-	});
-});
-for (var s in samples){
-	var musicBlock = {
-	 pic:s["pic"],
-	 audio:s["audio"]
- };
-	musicBlocks.push(musicBlock);
-}
+
+
 
 
 function search_musicians() {
@@ -411,26 +372,6 @@ function showPosition(position) {
 	console.log("curr lng is: " + currLng);
 }
 
-function parseQueryString(str){
-  var categoriesFromStr={};
-  var lowerCased = str.toLowerCase();
-  console.log("in parse q str the lower cased str is "+str);
-  for (key in categories){
-    categoriesFromStr[key]=[];
-    console.log("key is " + key);
-    console.log("banks are " + categories[key]['wordBank']);
-    for (word in categories[key]['wordBank']){
-      console.log("word is : " + categories[key]['wordBank'][word]);
-      if (lowerCased.includes(categories[key]['wordBank'][word])){
-        console.log("word is in if : " + categories[key]['wordBank'][word]);
-        categoriesFromStr[key].push(categories[key]['wordBank'][word]);
-      }
-    }
-  }
-  console.log("in parse from str, the categories from str are now" + categoriesFromStr);
-  return categoriesFromStr;
-}
-
 // current events stuff//
 function getCurrentEvents(){
   $.get('/current_events', {}, result => {
@@ -440,6 +381,9 @@ function getCurrentEvents(){
 }
 
 function handleEventsWithTicker(result){
+  if(!sortedEvents){
+    return;
+  }
   console.log("Events in handle events wth ticker are " + events);
   var events = JSON.parse(JSON.stringify(result));
   $("#frontText").html("Live Booking Feed");
@@ -458,6 +402,7 @@ function handleEventsWithTicker(result){
        i = 0;
     }
     var evt = sortedEvents[i];
+
     console.log(" for x in sorted evetns evt is : " + JSON.stringify(evt));
     var genre = evt.categories.genres[0];
     var type = evt.categories.gigTypes[0];

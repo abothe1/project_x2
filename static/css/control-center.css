@@ -312,6 +312,16 @@ user gigs
   text-align: center;
 }
 
+.gig-confirm-input-upcoming{
+  color: white;
+  background-color: #333d44;
+  border-radius: 8px;
+  border: none;
+  height: 60px;
+  text-align: center;
+  margin-left: 14px;
+}
+
 .gig-confirm-a{
   color: rgba(86,223,240,1.0);
   font-family: 'Industry',sans-serif;
@@ -326,6 +336,10 @@ user gigs
 /*
 open gig Elements
 */
+
+.gig-title{
+
+}
 
 .open-gig-image, .open-gig-description, .open-gig-date-time
 ,.open-gig-loc-pay{
@@ -453,31 +467,6 @@ open gig Elements
   z-index: 100;
 }
 
-#contacts-button{
-  width: 300px;
-  height: 100%;
-  text-align: center;
-  background-color: transparent;
-  position: absolute;
-  right: 0px;
-  color: white;
-  border: none;
-  font-size: 20pt;
-  z-index: 100;
-}
-
-#contacts-sidebar{
-  z-index: 99;
-  width: 300px;
-  right: 0;
-  height: 100%;
-  top: 0;
-  position: fixed;
-  background-color: rgba(0,0,0,0.9);
-  overflow: scroll;
-  display: none;
-}
-
 /*
   modal elements
 */
@@ -492,6 +481,19 @@ open gig Elements
   height: 100%;
   overflow: auto;
   background-color: rgba(0,0,0,0.4);
+}
+
+#contacts-button{
+  width: 300px;
+  height: 100%;
+  text-align: center;
+  background-color: transparent;
+  position: absolute;
+  right: 0px;
+  color: white;
+  border: none;
+  font-size: 20pt;
+  z-index: 100;
 }
 
 /* Modal Content Box */
@@ -934,6 +936,7 @@ upcoming carousel
   margin-top: 10%;
   font-size: 2vw;
   text-align: center;
+  color: white;
 }
 
 /** Carousel Controls **/
@@ -1043,4 +1046,362 @@ scrollbar
 
 ::-webkit-scrollbar-corner {
   background: rgba(0,0,0,0);
+}
+
+.bottomSpacer{
+  width: 100px;
+  height: 800px !important;
+}
+
+.bottomSpacer br{
+  height: 800px;
+}
+
+/*
+  edit band elements
+  // AB EDIT
+*/
+/*
+chat boxes
+ */
+.ui-chatbox {
+    position: fixed;
+    bottom:0;
+    background:  #CCCCCC;
+    z-index: 109;
+    background-color: rgba(0,0,0,0.3);
+}
+
+.ui-chatbox-titlebar {
+    padding: 3px;
+    height: 20px;
+    cursor: pointer;
+}
+
+.ui-chatbox-content {
+    padding: 0px;
+    margin: 0px;
+    border: 0px;
+}
+
+.ui-chatbox-log {
+    padding: 3px;
+    height: 250px;
+    overflow-y: auto;
+    overflow-x: hidden;
+    background: #FFFFFF;
+}
+
+.ui-chatbox-input {
+    padding: 0px;
+    border-left: 2px solid rgba(86,223,240,0.5);
+    border-right: 2px solid rgba(86,223,240,0.5);
+    overflow: hidden;
+    height: 45px;
+    width: 300px;
+    background-color: transparent;
+}
+
+.ui-chatbox-input-box {
+    height: 45px;
+    background-color: transparent;
+    border: none;
+    color: white;
+    resize: none;
+    margin-top: -2px;
+    font-size: 12pt;
+    padding-left: 20px;
+}
+
+.ui-chatbox-input-box::-webkit-scrollbar{
+  width: 4px;
+}
+
+.ui-chatbox-icon {
+    float: right;
+}
+
+.ui-chatbox-input-focus {
+    border-color: #6699FF;
+}
+
+.ui-chatbox-msg {
+    margin-top: 10px;
+    float: left;
+    clear: both;
+    /* Source: http://snipplr.com/view/10979/css-cross-browser-word-wrap */
+    white-space: pre-wrap;      /* CSS3 */
+    white-space: -moz-pre-wrap; /* Firefox */
+    white-space: -pre-wrap;     /* Opera <7 */
+    white-space: -o-pre-wrap;   /* Opera 7 */
+    word-wrap: break-word;      /* IE */
+    font-family: Industry, sans-serif;
+    margin-left: 15px;
+}
+
+.ui-widget-header{
+  height: 47px;
+  border-left: 2px solid rgba(86,223,240,0.5);
+  border-right: 2px solid rgba(86,223,240,0.5);
+  border-top: 2px solid rgba(86,223,240,0.5);
+  padding: 0;
+  color: white;
+  font-family: Industry, sans-serif;
+}
+
+.ui-chatbox-icon{
+  color: white;
+}
+
+.ui-chatbox-icon:hover{
+  text-decoration: none;
+  color: #56dff0;
+}
+
+.ui-chatbox-log{
+  padding: 0;
+  background-color: transparent;
+  border-right: 2px solid rgba(86,223,240,0.5);
+  border-left: 2px solid rgba(86,223,240,0.5);
+  border-top: 2px dotted rgba(86,223,240,0.5);
+  color: white;
+}
+
+#chat_title{
+  font-size: 22pt;
+  margin-left: 15px;
+}
+
+#chat_closer{
+  font-size: 22pt;
+  margin-right: 15px;
+}
+
+#modal-wrapper-current-band{
+  z-index: 50;
+}
+
+#current-band-content > input{
+  height: 50px;
+  text-indent: 20px;
+  font-family: Industry, sans-serif;
+  font-size: 16pt;
+}
+
+#current-band-title{
+  width: 60%;
+  top: 25px;
+  position: absolute;
+  margin-left: 320px;
+}
+
+#current-band-zip{
+  width: 150px;
+  margin-right: 20px;
+}
+
+#current-band-dist,#current-band-pay{
+  width: 100px;
+}
+
+#current-band-dist{
+  margin-right: 20px;
+}
+
+#current-band-schedule-label{
+  margin-top: 12px;
+}
+
+#current-band-schedule{
+  text-align: center;
+  font-family: Industry,sans-serif;
+  font-size: 18pt;
+  width: 75%;
+}
+
+.current-band-schedule-select,.current-band-schedule-start-time, .current-band-schedule-end-time{
+  height: 50px;
+  font-family: Industry, sans-serif;
+  font-size: 16pt;
+  width: 150px;
+  color: white;
+  background-color: #333d44;
+  border-radius: 8px;
+  border: none !important;
+  text-indent: 8px;
+}
+
+.current-band-schedule-remove,.current-band-schedule-add{
+  color: #56dff0;
+  font-family: Industry, sans-serif;
+  font-size: 14pt;
+  background-color: transparent;
+  border: none;
+}
+
+.current-band-schedule-remove:hover,.current-band-schedule-add:hover{
+  color: white;
+  text-decoration: none;
+  cursor:pointer;
+}
+
+#current-band-description-label{
+  margin-top: 12px;
+  vertical-align:top;
+}
+
+#current-band-description{
+  margin-top: 12px;
+  width: 80%;
+  height: 35%;
+  border: none;
+  border-radius: 14px;
+  background-color: #333d44;
+  color: white;
+  resize: none;
+  font-size: 16pt;
+}
+
+#current-band-pic, #current-band-clip, #current-band-clip-pic{
+  margin-top: 24px;
+  margin-right: 12px;
+  width: 400px;
+  line-height: 40px;
+  text-align: left;
+}
+
+#current-band-pic::-webkit-file-upload-button, #current-band-clip::-webkit-file-upload-button, #current-band-clip-pic::-webkit-file-upload-button {
+  visibility: hidden;
+}
+
+#current-band-pic-preview, #current-band-clip-preview{
+  height: 124px;
+  width: 124px;
+  margin-top: 0px;
+  border: none !important;
+  border-radius: 8px;
+  background-color: #333d44;
+}
+
+#current-band-clip-preview{
+  margin-top: -76px;
+}
+
+#current-band-create{
+  font-size: 48pt;
+  margin-top: 24px;
+}
+
+#contacts-sidebar{
+  z-index: 99;
+  width: 300px;
+  right: 0;
+  height: 66%;
+  position: fixed;
+  background-color: rgba(0,0,0,0.3);
+  bottom: 6%;
+  display: none;
+  overflow: hidden;
+}
+#contacts-content{
+  z-index: 100;
+  width: 80%;
+  margin-left: 40px;
+  margin-top: 10px;
+  overflow: scroll;
+  height: 95%;
+  position: absolute;
+}
+#contacts-bg{
+  z-index: 99;
+  height: 100%;
+  width: 100%;
+  position: absolute;
+}
+.contacts-divider{
+}
+.contacts-letter{
+  color: white;
+  display: inline-block;
+  margin-right: 20px;
+}
+.contacts-line{
+  height: 2px;
+  width: 160px;
+  background-color: white;
+  display: inline-block;
+  vertical-align: middle;
+  margin-bottom: 10px;
+}
+.contacts-link{
+  color: white;
+  font-family: Industry, sans-serif;
+  font-size: 18pt;
+  display: block;
+  margin-left: 20px;
+}
+.contacts-link:hover{
+  color: #56dff0;
+  text-decoration: none;
+}
+
+.car-view-button, .car-book-button, .car-decline-button{
+  margin-left: 10%;
+  width: 80%;
+  background-color: rgba(0,0,0,0.8);
+  border-radius: 10px;
+  height: 32px;
+  margin-top: 8%;
+}
+.car-view-button,.car-book-button{
+  color: #56dff0;
+  border-color: #56dff0;
+}
+.car-decline-button{
+  color: #ba141a;
+  border-color: #ba141a;
+}
+.edit-band-button{
+  background-color: rgba(0,0,0,0.8);
+  border-radius: 10px;
+  height: 40px;
+  color: #56dff0;
+  border-color: #56dff0;
+  margin-top: 10px;
+}
+.rate-p, .rate-input, .rate-button{
+  margin-top: 10px;
+  width: 60%;
+  margin-left: 20%;
+}
+.rate-p{
+  color: white;
+  font-size: 10pt;
+  text-align: center;
+}
+.rate-input{
+  color: white;
+  background-color: rgba(0,0,0,0.8);
+  border-color: #56dff0;
+  height: 40px;
+  border-radius: 10px;
+  text-align: center;
+}
+.rate-button{
+  color: white;
+  background-color: rgba(0,0,0,0.8);
+  border-color: #56dff0;
+  height: 40px;
+  border-radius: 10px;
+}
+.rate-button:hover{
+  cursor: pointer;
+}
+.red-x{
+  position: absolute;
+  color: red;
+  z-index: 8;
+  font-size: 120pt;
+  margin-top: -10px;
+  margin-left: 50px;
 }

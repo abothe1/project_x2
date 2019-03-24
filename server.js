@@ -54,7 +54,7 @@ app.use(session({
 		host: REDIS_HOST,
 		port: REDIS_PORT,
 		client: client,
-		ttl: 260
+		ttl: 100000
 	}),
 	saveUninitialized: false,
 	resave: false,
@@ -92,6 +92,8 @@ require('./routes/navigation.js')(router, app); // for navigating the website
 require('./routes/sessionInfo.js')(router, app); // for getting info in and out of sessions
 require('./routes/interactions.js')(router, app); // for allowing bands and gigs to interact
 require('./routes/delete.js')(router, app); // for ressetting everythingegt rid of htis
+require('./routes/messaging.js')(router, app); //for getting messages out of monog
+require('./routes/samples.js')(router, app); //for getting sampples
 
 //for routing messaing and emiting the message:
 
@@ -108,6 +110,7 @@ router.post('/messages', (req, res)=>{
       if (err2){
         consoel.log("There was an error adding the message from " + senderID + "Error was: " + err2);
         res.status(500).end();
+        db.close();
       }
       else{
         console.log("Message with body: "+ body +"was instered into db");

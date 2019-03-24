@@ -28,10 +28,12 @@ router.get('/search', (req, res) => {
 					res.status(500).end();
 				}, data => {
 					res.status(200).json({ success: true, data: data });
+          db.close();
 				});
 			}, err => {
 				console.error('[auth][database] Database connection whilst logging in failed');
 				res.status(500).end()
+        db.close();
 			})
 			break;
 		case 'findBands':
@@ -43,10 +45,12 @@ router.get('/search', (req, res) => {
 					res.status(500).end();
 				}, data => {
 					res.status(200).json({ success: true, data: data });
+          db.close();
 				});
 			}, err => {
 				console.error('[auth][database] Database connection whilst logging in failed');
 				res.status(500).end()
+        db.close();
 			});
 			break;
 		default:
@@ -83,7 +87,7 @@ router.get('/current_events', (req, res) => {
 router.get('/getBands', (req, res)=>{
   if (! req.body){
     console.log("No req body sent, in get bands And Gigs for user");
-    res.status(200).send('No req body sent');
+    res.status(400).send('No req body sent');
   }
   var {creator} = req.query;
   console.log('in get bands and creator is: ' + creator);
@@ -93,12 +97,13 @@ router.get('/getBands', (req, res)=>{
     bands.find(bandquery).toArray(function(err, result) {
      if (err){
        console.log("Error in get Bands and Gigs For User: " + err);
-       req.status(200).end();
+       req.status(500).end();
+       db.close();
      }
      else{
        res.status(200).send(result);
+       db.close();
      }
-     db.close();
     });
   }, err =>{
     console.warn("Couldn't connect to database: " + err);
@@ -113,7 +118,7 @@ router.get('/getGigs', (req, res)=>{
   console.log('in get gigs and creator is: ' + creator);
   if (! req.body){
     console.log("No req body sent, in get bands And Gigs for user");
-    res.status(200).send('No req body sent');
+    res.status(400).send('No req body sent');
   }
   database.connect( db => {
     let gigs = db.db('gigs').collection('gigs');
@@ -121,12 +126,13 @@ router.get('/getGigs', (req, res)=>{
     gigs.find(gigQuery).toArray(function(err, result) {
      if (err){
        console.log("Error in get Bands and Gigs For User: " + err);
-       req.status(200).end();
+       req.status(500).end();
+       db.close();
      }
      else{
        res.status(200).send(result);
+       db.close();
      }
-     db.close();
     });
   }, err =>{
     console.warn("Couldn't connect to database: " + err);
@@ -156,6 +162,7 @@ router.get('/searchNoName', (req, res) => {
 					res.status(500).end();
 				}, data => {
 					res.status(200).json({ success: true, data: data });
+          db.close();
 				});
 			}, err => {
 				console.error('[auth][database] Database connection whilst logging in failed');
@@ -171,10 +178,12 @@ router.get('/searchNoName', (req, res) => {
 					res.status(500).end();
 				}, data => {
 					res.status(200).json({ success: true, data: data });
+          db.close();
 				});
 			}, err => {
 				console.error('[auth][database] Database connection whilst logging in failed');
 				res.status(500).end()
+        db.close();
 			});
 			break;
 		default:
@@ -187,10 +196,12 @@ router.get('/bandsForDrops', (req, res)=>{
     if (err){
       console.log('there was an error trying to get audio and picture for bands err is :' + err);
       res.status(500).end();
+      db.close();
     }
     else{
       console.log('Got audio and pictures out of bands here is result: ' + JSON.stringify(result));
       res.status(200).send(result);
+      db.close();
     }
   });
 });
@@ -210,16 +221,18 @@ router.get('/aGig', (req, res)=>{
       if (err2) {
         console.log('There was an erro rtrying to get gig with id ' + gigID + " ERROR: " + err2);
         res.status(500).end();
-
+        db.close();
       }
       else{
         console.log("IN find a gig result is " + result2);
         res.status(200).send(result2);
+        db.close();
       }
     });
   }, err=>{
     console.log('There was an error connect to db: ' + err);
     res.status(500).end();
+
   });
 });
 
@@ -239,10 +252,12 @@ router.get('/aBand', (req, res)=>{
       if (err2){
         console.log('There was an erro rtrying to get band with id ' + id + " ERROR: " + err2);
         res.status(500).end();
+       db.close();
       }
       else{
         console.log("IN find a band result is " + result2);
         res.status(200).send(result2);
+        db.close();
       }
 
     });
@@ -252,6 +267,32 @@ router.get('/aBand', (req, res)=>{
   });
 });
 
-
+router.get('/aUser', (req, res)=>{
+  if (!req.session.key){
+    console.log('Non-logged in user tried to download');
+    res.status(403).end();
+  }
+  if (!req.query){
+    console.log('no query sent for a user');
+    res.status(400).end();
+  }
+  else{
+    var {id} = req.query;
+    database.connect(db=>{
+      db.db('users').collection('users').findOne({'_id':database.objectId(id)},{'password':0, 'username':1}, (err2, result2)=>{
+        if(err2){
+          console.log('There was an error getting user: ' + id + 'out of mongo, error: ' + err2);
+          res.status(500).end();
+        }
+        else{
+          console.log('Got a user : ' + JSON.stringify(result));
+          res.status(200).send(result2);
+        }
+      })
+    }, err=>{
+      console.log('There was an error connecting to mongo db error: was : ' + err);
+    })
+  }
+});
 
 }

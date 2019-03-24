@@ -10,11 +10,21 @@ module.exports = router => {
   });
 
   router.get('/otherProfile', (req,res)=>{
-    res.render('otherProfile.html');
+    if(!req.session.key){
+      console.log('A user tried to view profiles without loggin in');
+      res.status(200).send('Sorry, you must login to view profiles.')
+    }
+    if(!req.query){
+      console.log("No query sent with request in other profile router page.");
+      res.status(400).end();
+    }
+    else{
+      res.render('otherProfile.html');
+    }
+
   });
 
   router.get('/search_page', (req,res) => {
     res.render('search.html');
   });
-
 }

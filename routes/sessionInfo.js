@@ -12,8 +12,8 @@ module.exports = router => {
       db.db('users').collection('users').findOne({'username': userkey}, function(err2, result){
         if (err2){
           console.log('There was an error trying to find user with id: '+userkey+ " error: "+ err2);
-          db.close();
           res.status(500).end();
+          db.close();
         }
         else{
           res.status(200).send(result);
@@ -23,6 +23,7 @@ module.exports = router => {
     }, err=>{
       console.error('couldnt connect to database: ' + err);
       res.status(500).end();
+
     });
 
   }, error=>{
