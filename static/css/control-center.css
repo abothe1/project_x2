@@ -468,6 +468,20 @@ open gig Elements
   z-index: 100;
 }
 
+#select-gig-to-ad{
+  width: 300px;
+  height: 100%;
+  text-align: center;
+  background-color: transparent;
+  position: absolute;
+  right: 550px;
+  color: white;
+  border: none;
+  font-size: 10pt;
+  z-index: 100;
+  visibility: hidden;
+}
+
 #contacts-sidebar{
   z-index: 99;
   width: 300px;
@@ -544,6 +558,19 @@ open gig Elements
   background-color: rgba(0,0,0,0.4);
 }
 
+.modal2 {
+  display:none;
+  position: fixed;
+  z-index: 3;
+  left: 100%;
+  top: 100%;
+  width: 100%;
+  height: 240px;
+  overflow: auto;
+  background-color: rgba(0,0,0,0.4);
+  text-align:center;
+}
+
 /* Modal Content Box */
 .modal-content {
   background-image: url("../assets/Control-Center/new-gig-bg.png");
@@ -558,6 +585,34 @@ open gig Elements
   margin-left: 200px;
   padding-bottom: 80px;
   color: white;
+}
+
+.modal-content2 {
+/*  background-image: url("../assets/Control-Center/new-gig-bg.png");
+*/  background-color: transparent;
+  background-size: contain;
+  background-clip: border-box;
+  background-repeat: no-repeat;
+  text-align: center;
+  width: 100%;
+  height: 240px;
+  color: white;
+}
+
+#modal-wrapper-link-application{
+  display:none;
+  position: fixed;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  width: 50%;
+  height: 240px;
+  overflow: auto;
+  background-color: rgba(0,0,0,0.8);
+  border-radius: 10px;
+  text-align: center;
+  z-index: 110;
+  overflow: hidden;
 }
 
 .modal-input{

@@ -22,6 +22,9 @@ var pastHostedGigs = null;
 var mainContent = null;
 var profilesList = null;
 
+var userMessages = {};
+var userContacts = [];
+
 //CHNAGE GIGS SECTION:?////////
 
 var changingGigs = {};
@@ -432,6 +435,7 @@ class GigSection{
         }
       }
       if(pastGigsArr.length > 0){
+
         new Carousel(pastGigsArr, "past-hosted", res=>{
           pastGigs.append(res.wrapper);
           setupAction();
@@ -836,13 +840,13 @@ class Carousel{
           var overlayID = "result-overlay-"+gig;
           newOverlay.setAttribute("id",overlayID);
           var rateP = document.createElement("p");
-          rateP.innerHTML = "rate " + bandName + " from 1 to 100";
+          rateP.innerHTML = "rate " + bandName + " from 0 to 100";
           rateP.className = "rate-p";
           var rateInput = document.createElement("input");
           rateInput.className = "rate-input";
           rateInput.type = "number";
-          rateInput.min = 0;
-          rateInput.max = 100;
+          rateInput.max = "100";
+          rateInput.min = "0";
           rateInput.value = 50;
           var rateButton = document.createElement("input");
           rateButton.type = "button";
@@ -969,7 +973,6 @@ class Carousel{
       case "applications":
       // get applied gigs info
       this.handleAppliedGigs(obj, result=>{
-        console.log(result);
         this.appliedGigs = result; //index 0 is a gig, index 1 is bool
         this.wrapper = document.createElement("div");
         this.wrapper.className = "wrapper";
@@ -1547,8 +1550,15 @@ class Carousel{
         console.log("gig id: "+obj.rateButton.gigID);
         console.log("value is: "+obj.rateInput.value);
       });
+      obj.rateInput.addEventListener("change",function(){
+        if(obj.rateInput.value < 0){
+          obj.rateInput.value = 0;
+        }
+        if(obj.rateInput.value > 100){
+          obj.rateInput.value = 100;
+        }
+      });
     }
-
   }
 
   AddSampleEventListener(obj){
@@ -1577,10 +1587,22 @@ function getUsername(){
   $.get('/user', {query:'nada'}, res=>{
     alert(JSON.stringify(res));
     var user = res;
+    userContacts = user.contacts;
+    userMessages = user.messages;
     id = user['_id'];
     $('#userNameHeader').html(user['username']);
     socket.on(id, (msg)=>{
       alert('recieved message here it is: ' + JSON.stringify(msg));
+      userMessages.push(msg);
+      if(box != null){
+        var newName = "";
+        for(var contact in userContacts){
+          if(userContacts[contact].id == msg.recID){
+            newName = userContacts[contact].name;
+          }
+        }
+        $("#chat-div").chatbox("option", "boxManager").addMsg(newName, msg.body);
+      }
     });
     getUserInfo(user);
   });
@@ -1657,9 +1679,6 @@ function buildBands(bands, buildBandsCallback){
 }
 
 function buildGigs(gigs){
-  if(gigs.hasOwnProperty("isConfirmed")){
-    //handle
-  }else{
     new GigSection(gigs,"booked");
     new GigSection(gigs,"open");
     new GigSection(gigs,"past-hosted");
@@ -1667,7 +1686,6 @@ function buildGigs(gigs){
     //   profileGigs.append(gigSectionCallback.container);
     //   setupAction();
     // });
-  }
 }
 
 
@@ -1788,6 +1806,7 @@ function createWebPage(user){
     mainContent.append(bottomSpacer);
   });
   buildGigs(allGigs);
+  populateDropDown(allGigs);
 
 
   //// IF a profile has booked gigs,
@@ -1835,6 +1854,12 @@ var box = null;
 
 
 function init(){
+
+  var about = document.getElementById("about-btn");
+  about.addEventListener("click",function(){
+    console.log(" box is.... : "+box);
+  })
+
   //loadBands(user);
   // getUsername();
   var star1 = "user-star-1";
@@ -2121,7 +2146,16 @@ function createContacts(contacts, yourUsername){
 
     new ContactLink(name,id,contactLinkCallBack => {
       contactLinkCallBack.contactLink.addEventListener("click",function(event, ui){
+
+        // if(document.getElementById("select-gig-to-ad").style.visibility == "visible"){
+        //       document.getElementById("select-gig-to-ad").style.visibility = "hidden"
+        //    }
+        // else if(document.getElementById("select-gig-to-ad").style.visibility == "hidden"){
+        //     document.getElementById("select-gig-to-ad").style.visibility = "visible"
+        //  }
+
         if(box) {
+            document.getElementById("select-gig-to-ad").style.visibility = "hidden";
             box.chatbox("option", "boxManager").toggleBox();
             $(".ui-widget").remove();
             box = null;
@@ -2130,6 +2164,7 @@ function createContacts(contacts, yourUsername){
             document.body.append(newDiv);
         }
         else {
+            document.getElementById("select-gig-to-ad").style.visibility = "visible";
             var recipient = contactLinkCallBack.id;
             box = $("#chat-div").chatbox({recID: contactLinkCallBack.id,
                                           user:{ first_name: yourUsername },
@@ -2174,6 +2209,7 @@ function createContacts(contacts, yourUsername){
                 this.boxManager.addMsg(user.first_name, msg);
             },
             boxClosed: function(id) {
+              document.getElementById("select-gig-to-ad").style.visibility = "hidden";
               $(".ui-widget").remove();
               var newDiv = document.createElement("div");
               newDiv.id = "chat-div";
@@ -3052,6 +3088,34 @@ function readURLForB2(input) {
 $("#new-band-clip-pic").change(function(){
     readURLForB2(this);
 });
+
+function populateDropDown(myGigs){
+ console.log("GIGS: "+JSON.stringify(myGigs));
+ console.log(" ");
+
+ var selectMenu = document.getElementById("selectDrop");
+//  var userDropTitle = document.createElement("<option value=“"+myUser._id+"“>"+myUser.username+"</option>");
+let selectedGig = null
+ for (gig in myGigs){
+   var gigTitle=document.createElement("option");
+   gigTitle.innerHTML=myGigs[gig].name;
+   gigTitle.setAttribute("value","gig");
+   gigTitle.dataID = myGigs[gig]._id;
+   gigTitle.setAttribute("id", "gig"+gig+"DropTitle");
+   selectMenu.appendChild(gigTitle);
+ }
+
+ // document.getElementById("link-applicaiton-button").addEventListener("click", function(){
+ //   // console.log(selectedGig.data-objID);
+ //   alert("fuck shit")
+ // })
+}
+
+function submitGig(){
+  var theSelector = document.getElementById("selectDrop");
+  var id = theSelector.options[ theSelector.selectedIndex ].dataID;
+  alert(id);
+}
 
 
 // function to create file from base64 encoded string

@@ -34,6 +34,21 @@
   </head>
   <body onload="init();">
 
+    <div id="modal-wrapper-link-application" class="modal2">
+      <div class="imgcontainer">
+        <span onclick="document.getElementById('modal-wrapper-link-application').style.display='none'" class="close" title="Close PopUp">&times;</span>
+        <h1 style="text-align:center; font-size: 50pt; color:white">new gig</h1>
+      </div>
+
+      <form id="link-application-form" class="modal-content2 animate" method="post" action="#" >
+        <div id="dropdown-container" style="text-align:center">
+          <p id="searching-as-link-app" style="text-align:center; font-size: 30pt;">Book Artist For Your Gig:</p>
+          <select id='selectDrop' class="modal-input"></select>
+          <input type="button" id="link-applicaiton-button" value="Book Gig" onclick="submitGig()" class="modal-input"/>
+        </div>
+      </form>
+    </div>
+
     <div id="modal-wrapper-new-gig" class="modal">
       <form id="new-gig-form" class="modal-content animate" enctype="multipart/form-data" method="post" action="#">
 
@@ -212,7 +227,7 @@
         <a href='#' class='deg0' onclick="document.getElementById('modal-wrapper-login').style.display='block'" id="login_button"><p class="radialText">Login</p></a>
         <a href='#' class='deg30' id="sign_in_button" onclick="document.getElementById('modal-wrapper-register').style.display='block'"><p class="radialText">Register</p></a>
         <a href='./' class='deg60'><p class="radialText">Home</p></a>
-        <a href='#' class='deg90'><p class="radialText">About</p></a>
+        <a href='#' class='deg90'><p class="radialText" id="about-btn">About</p></a>
       </div>
 
       <div class="profile-header">
@@ -238,6 +253,7 @@
 
       <div class="bottom-bar">
         <img id="ticker-img" src="../static/assets/Control-Center/bottom-bar.png" alt="ticker" />
+        <button href="#" id="select-gig-to-ad" onclick="document.getElementById('modal-wrapper-link-application').style.display='block'">Ask user to apply to event...</button>
         <button href="#" id="contacts-button">contacts</button>
       </div>
 
