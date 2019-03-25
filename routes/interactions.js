@@ -155,11 +155,43 @@ module.exports = router => {
                 denied.push({'_id':database.objectId(theGig['applications'][ap])});
               }
             }
-            var newValues3={$set:{'appliedGigs.$[element].$[element2]':true}};
-            var filters3 = {arrayFilters:[{element:gigID}, {element2:1}]}
-            db.db('bands').collection('bands').update({$or:denied}, newValues3, filters3, (err4, result4)=>{
-              console.log('Updated bands : ' + JSON.stringify(denied)+' to have the gig: '+gigID+' be denied = true');
+            if (denied.length==0){
               res.status(200).end();
+              db.close();
+              return;
+            }
+            db.db('bands').collection('bands').find({$or:denied}).toArray((err4, result4)=>{
+              if (err4){
+                console.log('Faild to get the batch of denied bands ' +err4);
+                res.status(500).end();
+              }
+              var on = 0;
+              result4.forEach(bandOn=>{
+                on+=1;
+                var nonDeniedGigs=[];
+                for (var gigAppliedTo in bandOn['appliedGigs']){
+                  if (bandOn['appliedGigs'][gigAppliedTo][0]==gigID){
+                    nonDeniedGigs.push(bandOn['appliedGigs'][gigAppliedTo]);
+                  }
+                  else{
+                    bandOn['appliedGigs'][gigAppliedTo][1]=true;
+                    nonDeniedGigs.push(bandOn['appliedGigs'][gigAppliedTo]);
+                  }
+                }
+                var newValues7 = {$set:{'appliedGigs':nonDeniedGigs}};
+                db.db('bands').collection('bands').updateOne({'_id':database.objectId(bandOn['_id'])}, newValues7, (err7, res7)=>{
+                  if (err7){
+                    console.log('THere was an error updating one of the denied bands: ' + bandOn['_id']+' Error: '+err7);
+                    res.status(500).end();
+                  }
+                  else{
+                    if (on>result4.length){
+                      res.status(200).end();
+                      db.close();
+                    }
+                  }
+                });
+              });
             });
           }
         }
@@ -178,7 +210,7 @@ module.exports = router => {
       res.status(401).send('No body sent').end();
       console.log('user tried to apply without being logged in');
     }
-    var {contactID} = req.body;
+    var {contactName} = req.body;
     var ourUser=null;
     var newContact = null;
     database.connect(db=>{
@@ -191,26 +223,26 @@ module.exports = router => {
           }
           else{
             var contactExists=false;
-            for (var key in result['contacts']){
-              if(result['contacts'][key][id]==contactID){
+            for (var key in result2['contacts']){
+              if(result2['contacts'][key]['name']==contactName){
                 contactExists=true;
               }
             }
             if(contactExists){
-              console.log('A user: ' + req.session.key + 'tried to add a user to contacts with id: ' + contactID);
-              res.status(400).send('That contact is already in this users');
+              console.log('A user: ' + req.session.key + 'tried to add a user to contacts with id: ' + contactName);
+              res.status(200).send('That contact is already in this users');
               db.close();
             }
             else{
-              db.db('users').collection("users").findOne({'_id':database.objectId(contactID)}, (err4, result4)=>{
+              db.db('users').collection("users").findOne({'username':contactName}, (err4, result4)=>{
                 if (err4){
-                  console.log('Ran into an error getting the new contact with id: ' + contactID+" Out of the db, "+err4);
+                  console.log('Ran into an error getting the new contact with id: ' + contactName+" Out of the db, "+err4);
                   res.status(500).end();
                   db.close();
                 }
                 else{
                   newContact=result4;
-                  var newvalues = {$push:{'contacts':{'id':contactID, 'name':newContact['username']}}};
+                  var newvalues = {$push:{'contacts':{'id':newContact['_id'], 'name':contactName}}};
                   db.db('users').collection('users').updateOne({'username':req.session.key}, newValues, (err3, result3)=>{
                     if (err3){
                       console.log('There was an error tryign to append contact, error was: ' + err3);
@@ -218,7 +250,7 @@ module.exports = router => {
                       db.close();
                     }
                     else{
-                      console.log('got user set with the contact' + contactID);
+                      console.log('got user set with the contact' + contactName);
                       console.log(JSON.stringify(result));
                       res.status(200).end();
                       db.close();
@@ -366,8 +398,8 @@ module.exports = router => {
                 }
                 else{
                   console.log('Gig id sent with confrim code in gig send confirm code does not match any upcoming gig in bandID sent');
+                  res.status(200).send('This gig is not in your upcoming.');
                   db.close();
-                  res.status(200).send('Gig id does not match any off the bands upcoming gigs');
                 }
               }
             });
@@ -385,15 +417,15 @@ module.exports = router => {
       console.log('A non logged in user tried to decline an applied band...what?');
       res.status(403).end();
     }
-    if (!req.query){
+    if (!req.body){
       console.log('A non logged in user tried to decline an applied band...what?');
       res.status(400).end();
     }
     else{
-      var {gigID, bandID} = req.query;
+      var {gigID, bandID} = req.body;
 
       database.connect(db=>{
-        db.db('gigs').collection('gigs').findOne({'_id':objectId(gigID)}, (err2, result2)=>{
+        db.db('gigs').collection('gigs').findOne({'_id':database.objectId(gigID)}, (err2, result2)=>{
           if (err2){
             console.log('There was an error getting gig with: ' + gigID + ' error: '+err2);
             res.status(500).end();
@@ -402,6 +434,9 @@ module.exports = router => {
           else{
             var gigApplications=[];
             var appExists = false;
+            console.log('gig is : ' + JSON.stringify(result2));
+            console.log('gigID : ' + gigID);
+            console.log('bandID: ' + bandID);
             for (var key in result2['applications']){
               if (result2['applications'][key]==bandID){
                 appExists=true;
@@ -411,8 +446,8 @@ module.exports = router => {
               }
             }
             if (appExists){
-              var newValues = {set:{'applications':gigApplications}};
-              db.db('gigs').collection('gigs').updateOne({'_id':database.objectId(gigID)}, newvalues, (err3, result3)=>{
+              var newValues = {$set:{'applications':gigApplications}};
+              db.db('gigs').collection('gigs').updateOne({'_id':database.objectId(gigID)}, newValues, (err3, result3)=>{
                 if (err3){
                   console.log('There was an error trying to add band: ' + bandID+' to gigs applications: '+gigID+' error: ' + err3);
                   res.status(500).end();
@@ -422,18 +457,36 @@ module.exports = router => {
                   console.log('Removed band: ' + bandID + 'from gig with id: ' + gigID);
                 }
               });
-              var newValues3={$set:{'appliedGigs.$[element].$[element2]':true}};
-              var filters3 = {arrayFilters:[{element:gigID}, {element2:1}]};
-              db.db('bands').collection('bands').updateOne({'_id':database.objectId(bandID)}, newValues3, filters3, (err4, result4)=>{
-                if (err4){
-                  console.log('THere was an error updating appliedGigs denied for gig id: ' + gigID + 'and band id: ' + bandID+' the error: ' +err4);
+              db.db('bands').collection('bands').findOne({'_id':database.objectId(bandID)}, (err6, result6)=>{
+                if(err6){
+                  console.log('There was an error getting band: ' + bandID +' out of mongo, ' + err6);
                   res.status(500).end();
                   db.close();
                 }
                 else{
-                  console.log('Chnaged upcoming gig: ' + gigID+ ' in band: ' + bandID+' to true in the second array postion, indicates its denied');
-                  res.status(200).end();
-                  db.close();
+                  var gigsApped = [];
+                  for (var theG in result6['appliedGigs']){
+                    if(result6['appliedGigs'][theG][0]==gigID){
+                      result6['appliedGigs'][theG][1]=true;
+                      gigsApped.push(result6['appliedGigs'][theG]);
+                    }
+                    else{
+                      gigsApped.push(result6['appliedGigs'][theG]);
+                    }
+                  }
+                  var newValues3={$set:{'appliedGigs':gigsApped}};
+                  db.db('bands').collection('bands').updateOne({'_id':database.objectId(bandID)}, newValues3, (err4, result4)=>{
+                    if (err4){
+                      console.log('THere was an error updating appliedGigs denied for gig id: ' + gigID + 'and band id: ' + bandID+' the error: ' +err4);
+                      res.status(500).end();
+                      db.close();
+                    }
+                    else{
+                      console.log('Chnaged upcoming gig: ' + gigID+ ' in band: ' + bandID+' to true in the second array postion, indicates its denied');
+                      res.status(200).end();
+                      db.close();
+                    }
+                  });
                 }
               });
             }

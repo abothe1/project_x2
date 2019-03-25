@@ -50,21 +50,6 @@
 			})(jQuery);
 		</script>
 
-		<script type="text/javascript">
-			var isMusic = false;
-
-			function toggle_musician_reg(){
-				console.log("TOGGLIN");
-				var musician_div = document.getElementById("reg_2");
-				if(isMusic){
-					musician_div.style.display = "none"
-				}else{
-					musician_div.style.display = "block"
-				}
-				isMusic = !isMusic;
-			}
-		</script>
-
 		<script type="text/javascript" src="/scripts/index.js"></script>
 
 		<link rel="stylesheet" type="text/css" href="/css/index.css">
@@ -85,10 +70,10 @@
 					</div>
 
 					<div class='circle-container'>
-						<a href='#' class='deg0' onclick="document.getElementById('modal-wrapper-login').style.display='block'" id="login_button"><p class="radialText">Login</p></a>
-						<a href='#' class='deg30' id="sign_in_button" onclick="document.getElementById('modal-wrapper-register').style.display='block'"><p class="radialText">Register</p></a>
-						<a href='control-center' class='deg60'><p class="radialText">Home</p></a>
-						<a href='#' class='deg90'><p class="radialText">About</p></a>
+						<a href='control-center' class='deg0'><p class="radialText">Home</p></a>
+						<a href='#' class='deg30'><p class="radialText">About</p></a>
+						<a href='#' class='deg60' onclick="document.getElementById('modal-wrapper-login').style.display='block'" id="login_button"><p class="radialText">Login</p></a>
+						<a href='#' class='deg90' id="sign_in_button" onclick="document.getElementById('modal-wrapper-register').style.display='block'"><p class="radialText">Register</p></a>
 					</div>
 
 					<div class="search">
@@ -110,18 +95,39 @@
 
 					    <div class="imgcontainer">
 					      <span onclick="document.getElementById('modal-wrapper-login').style.display='none'" class="close" title="Close PopUp">&times;</span>
-					      <h1 style="text-align:center">Account Login</h1>
+					      <h1 style="text-align:left; padding-left: 20px; font-size: 50pt;">account login</h1>
 					    </div>
 
 					    <div class="container">
-					      <input type="text" placeholder="Enter Username" name="uname" id="loginUsername">
-					      <input type="password" placeholder="Enter Password" name="psw" id=loginPassword>
+					      <input class="modal-input" type="text" placeholder="Enter Username" name="uname" id="loginUsername">
+					      <input class="modal-input" type="password" placeholder="Enter Password" name="psw" id=loginPassword>
 					      <button class="popUpButtons" type="submit" onclick="login()">Login</button>
-					      <input type="checkbox" style="margin:26px 30px;"> Remember me
-					      <a href="#" style="text-decoration:none; float:right; margin-right:34px; margin-top:26px;">Forgot Password ?</a>
-					    </div>
-
+								<a href="#" class="modal-button" style="text-decoration:none; float:left; margin-left:25px; margin-top:102px;">forgot password?</a>
+								<a href="#" class="modal-button" onclick="loginToReg()" style="text-decoration:none; float:right; margin-right:34px; margin-top:102px;">don't have an account? sign up</a>
+							</div>
 					  </form>
+
+					</div>
+
+					<div id="modal-wrapper-register" class="modal">
+
+						<div id="reg_form" class="modal-content animate">
+
+							<div class="imgcontainer">
+						   <span onclick="document.getElementById('modal-wrapper-register').style.display='none'" class="close" title="Close PopUp">&times;</span>
+						   <h1 style="text-align:left; padding-left: 20px; font-size: 50pt;">register</h1>
+						  </div>
+
+							<div id="reg_1" class="container">
+								<input class="modal-input" id="reg_username" type="text" placeholder="username">
+								<input class="modal-input" id="reg_email" type="text" placeholder="email address">
+								<input class="modal-input" id="reg_password" type="password" placeholder="password">
+								<input class="modal-input" id="reg_confirm" type="password" placeholder="confirm password">
+								<button class="popUpButtons" id="reg_submit" onclick="register()">Register</button>
+								<a href="#" class="modal-button" onclick="regToLogin()" style="text-decoration:none; float:right; margin-right:34px; margin-top:70px;">already have an account? log in</a>
+							</div>
+
+						</div>
 
 					</div>
 
@@ -155,33 +161,6 @@
 					  </div>
 					</div>
 
-					<div id="modal-wrapper-register" class="modal">
-
-
-						<span onclick="document.getElementById('modal-wrapper-register').style.display='none'" class="close" title="Close PopUp">&times;</span>
-						<button id="reg_music" onclick="toggle_musician_reg()">Musicians</button>
-
-						<div id="reg_form" class="modal-content animate">
-							<div id="reg_1" class="container">
-								<input id="reg_username" placeholder="username">
-								<input id="reg_password" type="password" placeholder="password">
-								<input id="reg_email" placeholder="email address">
-								<input id="reg_mailing" placeholder="mailing (yes or no)">
-								<input id="reg_confirm" type="password" placeholder="confirm password">
-								<div id="reg_2" class="container" style="display: none;">
-									<h6>Location</h6>
-									<input type="text" placeholder="City, State" name="reg_location" id="reg_location_input">
-									<h6>Asking Price</h6>
-									<input type="number" min="1" step="any" id="reg_price_input">
-								</div>
-								<button id="reg_submit" onclick="register()">Register</button>
-							</div>
-
-
-						</div>
-
-					</div>
-
 					<div class="flip-box" alt = "ticker" id="flip-box0">
 					  <div class="flip-box-inner" id="flip-box-inner0">
 					    <div class="front">
@@ -193,6 +172,9 @@
 					  </div>
 					</div>
 
+					<div class="flip-box-bg">
+						<img id="flip-box-img" src="/assets/Home/tickerop.png" />
+					</div>
 
 				</div>
 			</div>

@@ -134,7 +134,7 @@ module.exports = router => {
     });
   });
 
-  router.post('updateAUser', (req, res)=>{
+  router.post('/updateAUser', (req, res)=>{
     if (!req.body){
       console.log('No body sent!');
       res.status(400).end();
@@ -146,8 +146,11 @@ module.exports = router => {
     else{
       var {id, query} = req.body;
       database.connect(db=>{
-        db.db('users').collection('users').updateOne({'_id':ObjectId(id)}, query, result=>{
-          console.log('Result is: ' + JSON.stringify(result));
+        db.db('users').collection('users').updateOne({'_id':ObjectId(id)}, query, (err2,result)=>{
+          if(err2){
+            console.log('Error updating user with:' +id +' :' + err2)
+          }
+        //  console.log('Result is: ' + JSON.stringify(result));
           console.log('Updated user with id: ' + id );
           res.status(200).end()
           db.close();

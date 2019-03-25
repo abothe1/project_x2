@@ -21,6 +21,7 @@ var pastHostedGigs = null;
 var username = null;
 var mainContent = null;
 var profilesList = null;
+var box = null;
 var changingGigInfo={};
 var userContacts = {};
 var userMessages={};
@@ -1730,7 +1731,7 @@ class Carousel{
         //accept post
         //
         $.post('/accept', {'gigID':obj.bookBtn.gigID, 'bandID':obj.bookBtn.bandID}, res=>{
-          alert(res);
+          alert('Congratulations, you have accepted the application for this band. Be sure to check the email asscoaited with your account regulary to recieve the confirmation code which you will exchange with the artist at the time of the event.')
         });
       });
     }
@@ -1739,7 +1740,7 @@ class Carousel{
         console.log("band id: "+obj.declineBtn.bandID);
         console.log("gig id: "+obj.declineBtn.gigID);
         //post decline
-        $.post('/decline', {'gigID':obj.declineBtn.gigID, 'bandID':obj.declineBtn.gigID}, res=>{
+        $.post('/decline', {'gigID':obj.declineBtn.gigID, 'bandID':obj.declineBtn.bandID}, res=>{
           alert(res);
         });
       });
@@ -1791,10 +1792,18 @@ function getUsername(){
     var user = res;
     username = user['username'];
     id = user['_id'];
+    console.log('USER ID: ' + id);
     userContacts = user['contacts'];
     $('#userNameHeader').html(user['username']);
-    socket.on(id, (msg)=>{
-      alert('Recieved message from: ' + msg.displayName + 'Message: ' +msg.body);
+    socket.on(user['_id'], (msg)=>{
+      console.log('socket.on ////////////////');
+      var senderName = null;
+      for (var c in userContacts){
+        if (userContacts[c]['id']==msg.senderID){
+          senderName=userContacts[c]['name'];
+        }
+      }
+      alert('Recieved message from: ' + senderName + ' Message: ' +msg.body);
       if(userMessages.hasOwnProperty(msg.senderID)){
         userMessages[msg.senderID].push(msg);
       }
@@ -1802,7 +1811,16 @@ function getUsername(){
         userMessages[msg.senderID]=[];
         userMessages[msg.senderID].push(msg);
       }
-      handleNewMessage(msg);
+      if(box != null){
+        var newName = "";
+        for(var contact in userContacts){
+          if(userContacts[contact].id == msg.recieverID){
+            console.log("wow found a name");
+            newName = userContacts[contact].name;
+          }
+        }
+        $("#chat-div").chatbox("option", "boxManager").addMsg(newName, msg.body);
+      }
     });
     $.get('messages', {'recieverID':id}, result=>{
       userMessages=result;
@@ -1811,11 +1829,7 @@ function getUsername(){
     });
   });
 }
-function handleNewMessage(msg){
-  if(box!=null){
-    $("#chat-div").chatbox("option", "boxManager").addMsg(msg.displayName, msg.body);
-  }
-}
+
 function getUserInfo(user){
   console.log('in get info and username is ' + user['username']);
   var username = user['username'];
@@ -1852,7 +1866,7 @@ function buildBands(bands, buildBandsCallback){
 
     mainContent.append(bandContainer);
     new BandSection(band,"info",bandSectionCallback=>{
-      mainContent.append(bandSectionCallback.container);
+      bandContainer.append(bandSectionCallback.container);
       var starArr = [bandSectionCallback.star1.id,bandSectionCallback.star2.id,bandSectionCallback.star3.id,bandSectionCallback.star4.id,bandSectionCallback.star5.id];
       loadStars(band.rating,starArr);
     });
@@ -1905,7 +1919,9 @@ function createWebPage(user){
     mainContent.append(bottomSpacer);
   });
   buildGigs(allGigs);
-
+  populateEventsDropDown(allGigs);
+  populateBandsDropDown(allBands);
+  createContacts(user['contacts'], user.username);
 
   //// IF a profile has booked gigs,
   /*
@@ -2636,6 +2652,7 @@ class ContactLink {
                 this.boxManager.addMsg(user.first_name, msg);
             },
             boxClosed: function(id) {
+              document.getElementById("select-gig-to-ad").style.visibility = "hidden";
               $(".ui-widget").remove();
               var newDiv = document.createElement("div");
               newDiv.id = "chat-div";
@@ -2649,35 +2666,108 @@ class ContactLink {
                     this.elem = elem;
                 },
                 addMsg: function(peer, msg) {
-                    var self = this;
-                    var box = self.elem.uiChatboxLog;
-                    var e = document.createElement('div');
-                    box.append(e);
-                    $(e).hide();
-
-                    var systemMessage = false;
-
-                    if (peer) {
+                    if(msg.hasOwnProperty("nameOfGig")){
+                      // you just sent someone an application link!
+                      var self = this;
+                      var box = self.elem.uiChatboxLog;
+                      var e = document.createElement('div');
+                      box.append(e);
+                      $(e).hide();
+                      var systemMessage = false;
+                      if(peer){
                         var peerName = document.createElement("b");
                         $(peerName).text(peer + ": ");
                         e.appendChild(peerName);
-                    } else {
+                      }else{
                         systemMessage = true;
+                      }
+
+                      var msgElement = document.createElement("a");
+                      msgElement.href = "#";
+                      msgElement.className = "chat-app-link";
+                      var newMsgString = "Apply to my event: "+msg.nameOfGig;
+                      $(msgElement).text(newMsgString);
+                      msgElement.id = msg.idForGig;
+                      msgElement.gigID = msg.idForGig;
+                      msgElement.addEventListener("click",function(){
+                        presentApplicationModal(msgElement.gigID);
+                      });
+                      e.appendChild(msgElement);
+                      $(e).addClass("ui-chatbox-msg");
+                      $(e).css("maxWidth", $(box).width());
+                      $(e).fadeIn();
+                      self._scrollToBottom();
+                      var newSignalString = "yothisisanewsignalfromthingtocreateabutton-"+msg.nameOfGig+"-"+msg.idForGig;
+                      sendMessage(newSignalString,msg.idForRec);
                     }
+                    else{
+                      if(msg.includes("yothisisanewsignalfromthingtocreateabutton")){
+                        // recieved a button with the window open
 
-                    var msgElement = document.createElement(
-                        systemMessage ? "i" : "span");
-                    $(msgElement).text(msg);
-                    e.appendChild(msgElement);
-                    $(e).addClass("ui-chatbox-msg");
-                    $(e).css("maxWidth", $(box).width());
-                    $(e).fadeIn();
-                    self._scrollToBottom();
+                        var self = this;
+                        var box = self.elem.uiChatboxLog;
+                        var e = document.createElement('div');
+                        box.append(e);
+                        $(e).hide();
+                        var systemMessage = false;
+                        if(peer){
+                          var peerName = document.createElement("b");
+                          $(peerName).text(peer + ": ");
+                          e.appendChild(peerName);
+                        }else{
+                          systemMessage = true;
+                        }
+                        var bodyString = msg;
+                        var partsArray = bodyString.split('-');
+                        var theGigName = partsArray[1];
+                        var theGigID = partsArray[2];
+                        // <a id="baldkjafdlksjfaldksjfalsdkjfads">Apply to my event: A booked gig YEET</a>
+                        var newButton = document.createElement("a");
+                        newButton.className = "chat-app-link";
+                        newButton.href = "#";
+                        newButton.gigID = theGigID;
+                        newButton.innerHTML = "Apply to my event: "+theGigName;
+                        newButton.addEventListener("click",function(){
+                          presentApplicationModal(newButton.gigID);
+                        });
+                        e.appendChild(newButton);
+                        $(e).addClass("ui-chatbox-msg");
+                        $(e).css("maxWidth", $(box).width());
+                        $(e).fadeIn();
+                        self._scrollToBottom();
+                      }else{
+                        // just a normal message hehehhhh
+                        var self = this;
+                        var box = self.elem.uiChatboxLog;
+                        var e = document.createElement('div');
+                        box.append(e);
+                        $(e).hide();
 
-                    if (!self.elem.uiChatboxTitlebar.hasClass("ui-state-focus")
-                        && !self.highlightLock) {
-                        self.highlightLock = true;
-                        self.highlightBox();
+                        var systemMessage = false;
+
+                        if (peer) {
+                            var peerName = document.createElement("b");
+                            $(peerName).text(peer + ": ");
+                            e.appendChild(peerName);
+                        } else {
+                            systemMessage = true;
+                        }
+
+                        var msgElement = document.createElement(
+                            systemMessage ? "i" : "span");
+                        $(msgElement).text(msg);
+                        e.appendChild(msgElement);
+                        $(e).addClass("ui-chatbox-msg");
+                        $(e).css("maxWidth", $(box).width());
+                        $(e).fadeIn();
+                        self._scrollToBottom();
+
+                        if (!self.elem.uiChatboxTitlebar.hasClass("ui-state-focus")
+                            && !self.highlightLock) {
+                            self.highlightLock = true;
+                            self.highlightBox();
+                        }
+                      }
                     }
                 },
                 highlightBox: function() {
@@ -2891,7 +2981,7 @@ function createContacts(contacts, yourUsername){
   };
 
   for(var person in contacts){
-    var id = contacts[person]._id;
+    var id = contacts[person].id;
     var name = contacts[person].name;
     var lowercaseName = name.toLowerCase();
     if(!letters[lowercaseName.charAt(0)]){
@@ -2909,9 +2999,19 @@ function createContacts(contacts, yourUsername){
       list.append(letterDiv);
       letters[lowercaseName.charAt(0)] = true;
     }
-new ContactLink(name,id,contactLinkCallBack => {
+
+    new ContactLink(name,id,contactLinkCallBack => {
       contactLinkCallBack.contactLink.addEventListener("click",function(event, ui){
+
+        // if(document.getElementById("select-gig-to-ad").style.visibility == "visible"){
+        //       document.getElementById("select-gig-to-ad").style.visibility = "hidden"
+        //    }
+        // else if(document.getElementById("select-gig-to-ad").style.visibility == "hidden"){
+        //     document.getElementById("select-gig-to-ad").style.visibility = "visible"
+        //  }
+
         if(box) {
+            document.getElementById("select-gig-to-ad").style.visibility = "hidden";
             box.chatbox("option", "boxManager").toggleBox();
             $(".ui-widget").remove();
             box = null;
@@ -2920,7 +3020,10 @@ new ContactLink(name,id,contactLinkCallBack => {
             document.body.append(newDiv);
         }
         else {
+            document.getElementById("select-gig-to-ad").style.visibility = "visible";
+            document.getElementById("selectDrop").idForRec = contactLinkCallBack.id;
             var recipient = contactLinkCallBack.id;
+            console.log('recipient id is '+recipient);
             box = $("#chat-div").chatbox({recID: contactLinkCallBack.id,
                                           user:{ first_name: yourUsername },
                                           title : contactLinkCallBack.name,
@@ -2930,17 +3033,43 @@ new ContactLink(name,id,contactLinkCallBack => {
                                               sendMessage(msg,recipient);
                                           }});
             for(var message in userMessages[recipient]){
-              var e = document.createElement('div');
-              var newStringB = contactLinkCallBack.name + ": ";
-              var newNameB = document.createElement("b");
-              newNameB.innerHTML = newStringB;
-              e.append(newNameB);
-              var msgElement = document.createElement("i");
-              msgElement.innerHTML = userMessages[recipient][message].body;
-              e.append(msgElement);
-              e.className = "ui-chatbox-msg";
-              $(e).css("maxWidth", $(".ui-chatbox-log").width());
-              $(".ui-chatbox-log").append(e);
+              if(userMessages[recipient][message].body.includes("yothisisanewsignalfromthingtocreateabutton")){
+                // it's a link to an application!
+                var e = document.createElement('div');
+                var newStringB = contactLinkCallBack.name + ": ";
+                var newNameB = document.createElement("b");
+                newNameB.innerHTML = newStringB;
+                e.append(newNameB);
+                var bodyString = userMessages[recipient][message].body;
+                var partsArray = bodyString.split('-');
+                var theGigName = partsArray[1];
+                var theGigID = partsArray[2];
+                // <a id="baldkjafdlksjfaldksjfalsdkjfads">Apply to my event: A booked gig YEET</a>
+                var newButton = document.createElement("a");
+                newButton.href = "#";
+                newButton.className = "chat-app-link";
+                newButton.gigID = theGigID;
+                newButton.innerHTML = "Apply to my event: "+theGigName;
+                newButton.addEventListener("click",function(){
+                  presentApplicationModal(newButton.gigID);
+                });
+                e.append(newButton);
+                e.className = "ui-chatbox-msg";
+                $(e).css("maxWidth", $(".ui-chatbox-log").width());
+                $(".ui-chatbox-log").append(e);
+              }else{
+                var e = document.createElement('div');
+                var newStringB = contactLinkCallBack.name + ": ";
+                var newNameB = document.createElement("b");
+                newNameB.innerHTML = newStringB;
+                e.append(newNameB);
+                var msgElement = document.createElement("i");
+                msgElement.innerHTML = userMessages[recipient][message].body;
+                e.append(msgElement);
+                e.className = "ui-chatbox-msg";
+                $(e).css("maxWidth", $(".ui-chatbox-log").width());
+                $(".ui-chatbox-log").append(e);
+              }
             }
         }
         console.log(contactLinkCallBack.contactLink.id);
@@ -3049,20 +3178,101 @@ function sendMessage(body, recID){
   var dateTime = date+' '+time;
   //replace this with real id from contact menu
   //////
-  var body = "hello world"
 
   var myMessage = {
     'senderID':id,
     'recieverID': recID,
     'body': body,
-    'timeStamp' : dateTime,
-    'name': user.username
+    'timeStamp' : dateTime
   };
+  if(userMessages.hasOwnProperty(recID)){
+    userMessages[recID].push(myMessage);
+  }
+  else{
+    userMessages[recID]=[];
+    userMessages[recID].push(myMessage);
+  }
+
   $.post('/messages', {'senderID':id, 'recieverID':recID, 'body':body, 'timeStamp':dateTime}, result=>{
     console.log("got result from positn message it is :" + JSON.stringify(result));
   });
 }
 
+function populateEventsDropDown(myGigs){
+ console.log("GIGS: "+JSON.stringify(myGigs));
+ console.log(" ");
+
+ var selectMenu = document.getElementById("selectDrop");
+//  var userDropTitle = document.createElement("<option value=“"+myUser._id+"“>"+myUser.username+"</option>");
+let selectedGig = null
+ for (gig in myGigs){
+   var gigTitle=document.createElement("option");
+   gigTitle.innerHTML=myGigs[gig].name;
+   gigTitle.setAttribute("value","gig");
+   gigTitle.dataID = myGigs[gig]._id;
+   gigTitle.setAttribute("id", "gig"+gig+"DropTitle");
+   selectMenu.appendChild(gigTitle);
+ }
+
+ // document.getElementById("link-applicaiton-button").addEventListener("click", function(){
+ //   // console.log(selectedGig.data-objID);
+ //   alert("fuck shit")
+ // })
+}
+
+function presentApplicationModal(gigID){
+  document.getElementById('modal-wrapper-choose-band-for-app').style.display='block';
+  var selectMenu = document.getElementById("selectDropBand");
+  selectMenu.gigID = gigID;
+}
+
+function populateBandsDropDown(myBands){
+  console.log("Bands: "+JSON.stringify(myBands));
+  console.log(" ");
+  var selectMenu = document.getElementById("selectDropBand");
+ //  var userDropTitle = document.createElement("<option value=“"+myUser._id+"“>"+myUser.username+"</option>");
+ let selectedGig = null
+  for (band in myBands){
+    var bandTitle=document.createElement("option");
+    bandTitle.innerHTML=myBands[band].name;
+    bandTitle.setAttribute("value","gig");
+    bandTitle.dataID = myBands[band]._id;
+    bandTitle.setAttribute("id", "band"+band+"DropTitle");
+    selectMenu.appendChild(bandTitle);
+  }
+}
+
+function submitBand(){
+  console.log('submit band')
+  var theSelector = document.getElementById("selectDropBand");
+  var bandID = theSelector.options[ theSelector.selectedIndex ].dataID;
+  var name = theSelector.options[theSelector.selectedIndex].innerHTML;
+  var gigID = theSelector.gigID;
+  //alert(gigID);
+  $.post('/apply', {'bandID':bandID, 'gigID':gigID}, result=>{
+    alert(result);
+  });
+  document.getElementById('modal-wrapper-choose-band-for-app').style.display='none'
+}
+
+function viewGigPage(){
+  // handle
+}
+
+function submitGig(){
+  var theSelector = document.getElementById("selectDrop");
+  var id = theSelector.options[ theSelector.selectedIndex ].dataID;
+  var name = theSelector.options[theSelector.selectedIndex].innerHTML;
+
+  var buttonObj = {
+    "idForGig":id,
+    "nameOfGig":name,
+    "idForRec":theSelector.idForRec
+  };
+
+  $("#chat-div").chatbox("option", "boxManager").addMsg(username, buttonObj);
+  document.getElementById('modal-wrapper-link-application').style.display='none'
+}
 
 //WORD BANK//
 var categories=['genres','insts','gigTypes','vibes'];
@@ -3284,6 +3494,11 @@ function loadStars(rating, stars){
   }
 }
 
+function updateUser(id, query){
+  $.post('/updateAUser', {'id':id, 'query':query}, res=>{
+    alert(res);
+  });
+}
 
 
 // function to create file from base64 encoded string

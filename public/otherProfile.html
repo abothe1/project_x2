@@ -27,14 +27,60 @@
             (function($) {
                 $(function() {
                     $('#mainbtn').mouseover(function(){
-                        $('.deg0, .deg30, .deg60, .deg90').toggleClass('open')
-                    });
+                      $('.deg0, .deg30, .deg60, .deg90').toggleClass('open')                    });
                 });
             })(jQuery);
         </script>
   </head>
   <!-- <body onload="init();"> -->
   <body onload="javascript:init();">
+    <div id="modal-wrapper-support" class="modal">
+
+      <form class="modal-content animate">
+
+        <div class="imgcontainer">
+          <span onclick="document.getElementById('modal-wrapper-support').style.display='none'" class="close" title="Close PopUp">&times;</span>
+          <h1 style="text-align:left; padding-left: 20px; font-size: 50pt;">account support</h1>
+        </div>
+
+        <div class="container">
+          <p class="support-text">Having any issues? Let us know!</p>
+          <textarea class="modal-textarea"></textarea>
+          <button class="popUpButtons" type="submit" onclick="login()">Make Request</button>
+        </div>
+      </form>
+
+    </div>
+    <div id="modal-wrapper-link-application" class="modal2">
+      <div class="imgcontainer">
+        <span onclick="document.getElementById('modal-wrapper-link-application').style.display='none'" class="close" title="Close PopUp">&times;</span>
+        <h1 style="text-align:center; font-size: 50pt; color:white">share event</h1>
+      </div>
+      <form id="link-application-form" class="modal-content2 animate" method="post" action="#" >
+        <div id="dropdown-container" style="text-align:center">
+          <p id="searching-as-link-app" style="text-align:center; font-size: 30pt;">Send user event application link:</p>
+          <select id='selectDropEvent' class="modal-input-select"></select>
+          <input type="button" id="link-applicaiton-button" value="Book Gig" onclick="submitGig()" class="modal-input"/>
+        </div>
+      </form>
+    </div>
+    <div id="modal-wrapper-choose-band-for-app" class="modal3">
+      <div class="imgcontainer">
+        <span onclick="document.getElementById('modal-wrapper-choose-band-for-app').style.display='none'" class="close" title="Close PopUp">&times;</span>
+        <h1 style="text-align:center; font-size: 50pt; color:white">confirm application</h1>
+      </div>
+      <form id="link-application-form" class="modal-content3 animate" method="post" action="#" >
+        <div id="dropdown-container" style="text-align:center">
+          <p id="band-select-p" style="text-align:center; font-size: 30pt;">select a band:</p>
+          <br>
+          <select id='selectDropBand' class="modal-input-select"></select>
+          <br>
+          <input type="button" id="choose-band-button" value="apply" onclick="submitBand()" class="modal-input"/>
+          <br>
+          <input type="button" id="view-event-details-button" value="view event page" onclick="viewGigPage()" class="modal-input"/>
+        </div>
+      </form>
+    </div>
     <div id="body-container">
       <div id="container">
         <img id="menuBacking" src="/assets/Home/menu.png" />
@@ -42,10 +88,10 @@
         </div>
       </div>
       <div class='circle-container'>
-        <a href='#' class='deg0' onclick="document.getElementById('modal-wrapper-login').style.display='block'" id="login_button"><p class="radialText">Login</p></a>
-        <a href='#' class='deg30' id="sign_in_button" onclick="document.getElementById('modal-wrapper-register').style.display='block'"><p class="radialText">Register</p></a>
-        <a href='./' class='deg60'><p class="radialText">Home</p></a>
-        <a href='#' class='deg90'><p class="radialText">About</p></a>
+        <a href='control-center' class='deg0'><p class="radialText">Home</p></a>
+        <a href='#' class='deg30'><p class="radialText">About</p></a>
+        <a href='index' class='deg60'><p class="radialText">Landing</p></a>
+        <a href='#' class='deg90' onclick="document.getElementById('modal-wrapper-support').style.display='block'"><p class="radialText">Support</p></a>
       </div>
       <div class="profile-header" id="profile-header">
         <p class="profile-header-text" id="profile-title">Jimmy McNards</p>
@@ -59,10 +105,16 @@
         </div>
       </div>
       <div class="profiles-list">
-        <ul id="profile-controls"></ul>
+        <ul id="profile-controls">
+          <li>
+            <p>Viewing profile as: </p>
+            <select id="selectDrop" class="modal-input-select"></select>
+          </li>
+        </ul>
       </div>
       <div class="bottom-bar">
         <img id="ticker-img" src="/assets/Control-Center/bottom-bar.png" alt="ticker" />
+        <button href="#" id="select-gig-to-ad" onclick="document.getElementById('modal-wrapper-link-application').style.display='block'">Ask user to apply to event...</button>
         <button href="#" id="contacts-button">contacts</button>
       </div>
       <div id="contacts-sidebar">

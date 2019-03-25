@@ -132,30 +132,120 @@ p{
   transition: all 0.5s ease-out; 		z-index: 2;}
 .deg90 { transform: rotate(-25deg) translate(13em) rotate(-90deg);  -webkit-transition: all 0.5s ease-out;
   -moz-transition: all 0.5s ease-out;
-  transition: all 0.5s ease-out; 		z-index: 2;
+  transition: all 0.5s ease-out; 		z-index: 2;}
+
+.open.deg0 { transform: rotate(8deg) translate(11.5em) rotate(-8deg); }
+.open.deg30 { transform: rotate(27deg) translate(12.5em) rotate(-27deg); }
+.open.deg60 { transform: rotate(50deg) translate(12.5em) rotate(-50deg); }
+.open.deg90 { transform: rotate(80deg) translate(13em) rotate(-80deg);}
+
+/*
+support modal
+*/
+
+#modal-wrapper-support{
+  z-index: 5;
 }
 
-.fa-home:hover {color:tan;}
-.fa-cog:hover {color:gray;}
-.fa-comments:hover {color:teal;}
-.fa-heart:hover {color:red;}
-
-.open.deg0 { transform: rotate(10deg) translate(11em) rotate(-10deg); }
-.open.deg30 { transform: rotate(34deg) translate(12em) rotate(-34deg); }
-.open.deg60 { transform: rotate(54deg) translate(13em) rotate(-54deg); }
-.open.deg90 { transform: rotate(80deg) translate(13em) rotate(-80deg);
+/* The Modal (background) */
+.modal {
+  display:none;
+  position: fixed;
+  z-index: 1;
+  left: 0;
+  top: 0;
+  width: 100%;
+  height: 100%;
+  overflow: auto;
+  background-color: rgba(0,0,0,0.4);
 }
 
-#author {
-  font-family:'Squada One';
-  top: calc(50% + 50px);
-  left: calc(50% - 225px);
+/* Modal Content Box */
+.modal-content {
+  background-image: url("/assets/Home/modalbg.png");
+  background-color: transparent;
+  background-size: contain;
+  background-clip: border-box;
+  background-repeat: no-repeat;
+  margin: 4% auto 15% auto;
+  width: 40%;
+  height: 80%;
+  padding-bottom: 80px;
+  color: white;
+}
 
-  font-size:40px;
-  text-decoration:none;
-  display: block;
-  position: absolute;
-  text-align:center;
+.imgcontainer {
+    text-align: center;
+    margin: 24px 0 12px 0;
+    position: relative;
+}
+
+.support-text{
+  text-align: center;
+  font-size: 18pt;
+  margin-bottom: 20px;
+}
+
+.modal-textarea{
+  color: white;
+  background-color: #333d44;
+  border-radius: 8px;
+  padding: 10px;
+  width: 80%;
+  height: 300px;
+  border: none !important;
+  margin-left: 10%;
+  resize: none;
+}
+
+.modal-button{
+  color: white;
+  font-family: Industry, sans-serif;
+  font-size: 14pt;
+}
+
+.modal-button:hover{
+  color: #56dff0;
+}
+
+/* Set a style for all buttons */
+.popUpButtons {
+  background-color: transparent;
+  color: #56dff0;
+  padding: 14px 20px;
+  margin: 8px 26px;
+  border: none;
+  cursor: pointer;
+  width: 90%;
+  font-size: 32px;
+}
+.popUpButtons:hover {
+    opacity: 0.8;
+}
+
+/* The Close Button (x) */
+.close {
+    position: absolute;
+    right: 20px;
+    top: 0;
+    color: #fff;
+    font-size: 35px;
+    font-weight: bold;
+}
+.close:hover,.close:focus {
+    alpha: 0.6;
+    cursor: pointer;
+}
+
+
+/* Add Zoom Animation */
+.animate {
+    animation: zoom 0.6s
+}
+
+@keyframes zoom {
+    from {transform: scale(0)}
+    to {transform: scale(1)}
 }
 
 /*
@@ -188,7 +278,7 @@ search bar
   background-color: rgba(0,0,0,0.0);
   border: 0;
   font-size: 36px;
-  color: black;
+  color: white;
 }
 
 /*

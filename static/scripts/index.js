@@ -62,6 +62,20 @@ function init(){
   }
 }
 
+function regToLogin(){
+	var login = document.getElementById("modal-wrapper-login");
+	var register = document.getElementById("modal-wrapper-register");
+	register.style.display = "none";
+	login.style.display = "block";
+}
+
+function loginToReg(){
+	var login = document.getElementById("modal-wrapper-login");
+	var register = document.getElementById("modal-wrapper-register");
+	register.style.display = "block";
+	login.style.display = "none";
+}
+
 function animate() {
 		Update();
 }
