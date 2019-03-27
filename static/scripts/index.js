@@ -502,7 +502,7 @@ function diff_minutes(dt2, dt1) {
     };
 
     $.post('/register', content, res=>{
-      alert(JSON.stringify(res));
+
     });
   }
   function stringToDate(str){

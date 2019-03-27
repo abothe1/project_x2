@@ -442,7 +442,7 @@ flip box containe;;;; got rid of it cuz im using flipp */
 
 /* Style the back side */
 .back {
-    background-color: dodgerblue;
+  /*  background-color: dodgerblue;*/
     color: white;
     transform: rotateX(180deg);
 }

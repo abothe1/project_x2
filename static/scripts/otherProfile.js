@@ -191,7 +191,7 @@ function submitBand(){
   console.log('IN SUBMIT GIG ID IS :' + gigID);
 
   $.post('/apply', {'bandID':bandID, 'gigID':gigID}, result=>{
-    alert(result);
+    alert('Congratulations you have applied to this event. Check your home page regularly to see whether they accepted your application.');
   });
   document.getElementById('modal-wrapper-choose-band-for-app').style.display='none'
 }
@@ -220,7 +220,6 @@ function init(){
   var urlJSON = parseURL(window.location.href);
   var searchObject = urlJSON['searchObject'];
   console.log('Search obj is: ' + JSON.stringify(searchObject));
-  alert('Url json is: ' + JSON.stringify(urlJSON));
   getUserInfo(searchObject);
 
 
@@ -308,7 +307,7 @@ function hitBook(){
   }
   else{
     $.post('/accept', {'gigID':myGig, 'bandID':otherBand._id}, result=>{
-      alert(result);
+      alert('Congratulations! You have booked this artist to play at your event. Feel free to notify them with your decision via our built in messaging feature. Check your account-associated email for the confirmation code to give to the aritst in at the time of the event.');
     });
   }
   }
@@ -317,7 +316,7 @@ function hitMessage(){
   console.log('Hit message');
   if (otherBand!=null){
     $.post('/addContact', {'contactName':otherBand['creator']}, result=>{
-      alert('We have added the creator of this band to your contacts list (click the button in bottom right corner). You can also send them a request to apply to your event, which you can then accept.')
+      alert('We have added the creator of this band to your contacts list (click the button in bottom right corner). You can also send them a request to apply to your event via Banda messaging, which you can then accept.')
     });
   }
   else{
@@ -523,7 +522,7 @@ function createPageAsGig(){
   var gigFrame = document.getElementById("profile-img-frame");
   gigFrame.src = "/assets/Home/purplebox.png";
   var gigPriceText = document.getElementById("profile-price-text");
-  gigPriceText.innerHTML = "The asking price for this event is";
+  gigPriceText.innerHTML = "The pay for this event is";
   var gigPrice = document.getElementById("profile-price");
   gigPrice.innerHTML = "$"+otherGig.price;
 
@@ -606,7 +605,6 @@ function getUserInfo(searchObject){
      userContacts = user['contacts'];
      $.get('messages', {'recieverID':user._id}, result=>{
        userMessages=result;
-       alert('Messages are: ' + JSON.stringify(userMessages));
      });
      $.get('/getBands', {'creator':username}, result => {
        console.log("bands from db are: " + JSON.stringify(result));
@@ -632,7 +630,13 @@ function getUserInfo(searchObject){
                    senderName=userContacts[c]['name'];
                  }
                }
-               alert('Recieved message from: ' + senderName + ' Message: ' +msg.body);
+
+               if (msg.body.includes('<')&&msg.body.includes('>')&&msg.body.includes('button')){
+                 alert( 'Congratulations! '+senderName + ' has asked you to apply to one of his/her events. Open your contacts list and select '+senderName+' to see the link. Click it, then select one of your acts to automatically apply.');
+               }
+               else{
+                 alert('You recieved a message from: ' + senderName + ' Message: ' +msg.body);
+               }
                if(userMessages.hasOwnProperty(msg.senderID)){
                  userMessages[msg.senderID].push(msg);
                }

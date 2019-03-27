@@ -102,8 +102,9 @@ module.exports = router => {
             db.db('gigs').collection('gigs').updateOne({'_id':database.objectId(gigID)}, newValues, (err2, result)=>{
               if (err2){
                 console.log('There was an error tryign to append set gig stuff, error was: ' + err2);
-                db.close();
                 res.status(500).end();
+                db.close();
+
               }
               else{
                 console.log('got gig set with the band' + bandID);
@@ -142,56 +143,56 @@ module.exports = router => {
                   else{
                     console.log('got band set with the band' + bandID);
                     console.log(JSON.stringify(result3));
-                  }
-                });
-              }
-            });
-            var denied = [];
-            for (var ap in theGig['applications']){
-              if (theGig['applications'][ap]==bandID){
+                    var denied = [];
+                    for (var ap in theGig['applications']){
+                      if (theGig['applications'][ap]==bandID){
 
-              }
-              else{
-                denied.push({'_id':database.objectId(theGig['applications'][ap])});
-              }
-            }
-            if (denied.length==0){
-              res.status(200).end();
-              db.close();
-              return;
-            }
-            db.db('bands').collection('bands').find({$or:denied}).toArray((err4, result4)=>{
-              if (err4){
-                console.log('Faild to get the batch of denied bands ' +err4);
-                res.status(500).end();
-              }
-              var on = 0;
-              result4.forEach(bandOn=>{
-                on+=1;
-                var nonDeniedGigs=[];
-                for (var gigAppliedTo in bandOn['appliedGigs']){
-                  if (bandOn['appliedGigs'][gigAppliedTo][0]==gigID){
-                    nonDeniedGigs.push(bandOn['appliedGigs'][gigAppliedTo]);
-                  }
-                  else{
-                    bandOn['appliedGigs'][gigAppliedTo][1]=true;
-                    nonDeniedGigs.push(bandOn['appliedGigs'][gigAppliedTo]);
-                  }
-                }
-                var newValues7 = {$set:{'appliedGigs':nonDeniedGigs}};
-                db.db('bands').collection('bands').updateOne({'_id':database.objectId(bandOn['_id'])}, newValues7, (err7, res7)=>{
-                  if (err7){
-                    console.log('THere was an error updating one of the denied bands: ' + bandOn['_id']+' Error: '+err7);
-                    res.status(500).end();
-                  }
-                  else{
-                    if (on>result4.length){
+                      }
+                      else{
+                        denied.push({'_id':database.objectId(theGig['applications'][ap])});
+                      }
+                    }
+                    if (denied.length==0){
                       res.status(200).end();
                       db.close();
+                      return;
                     }
+                    db.db('bands').collection('bands').find({$or:denied}).toArray((err4, result4)=>{
+                      if (err4){
+                        console.log('Faild to get the batch of denied bands ' +err4);
+                        res.status(500).end();
+                      }
+                      var on = 0;
+                      result4.forEach(bandOn=>{
+                        on+=1;
+                        var nonDeniedGigs=[];
+                        for (var gigAppliedTo in bandOn['appliedGigs']){
+                          if (bandOn['appliedGigs'][gigAppliedTo][0]==gigID){
+                            nonDeniedGigs.push(bandOn['appliedGigs'][gigAppliedTo]);
+                          }
+                          else{
+                            bandOn['appliedGigs'][gigAppliedTo][1]=true;
+                            nonDeniedGigs.push(bandOn['appliedGigs'][gigAppliedTo]);
+                          }
+                        }
+                        var newValues7 = {$set:{'appliedGigs':nonDeniedGigs}};
+                        db.db('bands').collection('bands').updateOne({'_id':database.objectId(bandOn['_id'])}, newValues7, (err7, res7)=>{
+                          if (err7){
+                            console.log('THere was an error updating one of the denied bands: ' + bandOn['_id']+' Error: '+err7);
+                            res.status(500).end();
+                          }
+                          else{
+                            if (on>result4.length){
+                              res.status(200).end();
+                              db.close();
+                            }
+                          }
+                        });
+                      });
+                    });
                   }
                 });
-              });
+              }
             });
           }
         }

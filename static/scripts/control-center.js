@@ -1273,9 +1273,11 @@ class Carousel{
           newOverlay.name = this.upcomingGigs[gig]._id
           newOverlay.value = forObj._id;
           newOverlay.addEventListener('click', function(){
+            /*
             console.log('Clicked on upcoming gig for band: ' + this.value);
             console.log('Clicked on upcoming gig name is: ' + this.name);
             window.location.href='/otherProfile?id='+this.name+'&mode=gig&searchingAs'+this.value+'&searchingType=band';
+            */
           });
           var confirmP = document.createElement("p");
           confirmP.className = "result-overlay-confirm-p";
@@ -1741,7 +1743,7 @@ class Carousel{
         console.log("gig id: "+obj.declineBtn.gigID);
         //post decline
         $.post('/decline', {'gigID':obj.declineBtn.gigID, 'bandID':obj.declineBtn.bandID}, res=>{
-          alert(res);
+          alert('You have declined this artist, we will notify them for you. Refresh this page to visually remove this applicant from your page.')
         });
       });
     }
@@ -1776,19 +1778,18 @@ var callbackStepper = 0;
 
 function updateBand(id, query){
   $.post('/updateBand', {'id':id, 'query':query}, result =>{
-    alert(JSON.stringify(result));
+    alert('Changes Saved');
   });
 }
 
 function updateGig(id, query){
   $.post('/updateGig', {'id':id, 'query':query}, result =>{
-    alert(JSON.stringify(result));
+    alert('Changes Saved');
   });
 }
 function getUsername(){
   console.log("called fucntion getUsername");
   $.get('/user', {query:'nada'}, res=>{
-    alert(JSON.stringify(res));
     var user = res;
     username = user['username'];
     id = user['_id'];
@@ -1803,7 +1804,13 @@ function getUsername(){
           senderName=userContacts[c]['name'];
         }
       }
-      alert('Recieved message from: ' + senderName + ' Message: ' +msg.body);
+      if (msg.body.includes('<')&&msg.body.includes('>')&&msg.body.includes('button')){
+        alert( 'Congratulations! '+senderName + ' has asked you to apply to one of his/her events. Open your contacts list and select '+senderName+' to see the link. Click it, then select one of your acts to automatically apply.');
+      }
+      else{
+        alert('You recieved a message from: ' + senderName + ' Message: ' +msg.body);
+      }
+
       if(userMessages.hasOwnProperty(msg.senderID)){
         userMessages[msg.senderID].push(msg);
       }
@@ -1824,7 +1831,6 @@ function getUsername(){
     });
     $.get('messages', {'recieverID':id}, result=>{
       userMessages=result;
-      alert('Messages are: ' + JSON.stringify(userMessages));
       getUserInfo(user);
     });
   });
@@ -3496,7 +3502,6 @@ function loadStars(rating, stars){
 
 function updateUser(id, query){
   $.post('/updateAUser', {'id':id, 'query':query}, res=>{
-    alert(res);
   });
 }
 
