@@ -216,115 +216,12 @@ function init(){
       }
     });
   }
-  var mainContent = document.getElementById("main-content-wrapper");
-
-  var userTest = {
-    "name": "booth",
-    "_id": "albkjdlk48402lkas10",
-    "contacts": [
-      {"_id": "oidfasjodisjfasd", "name":"zeee"}, {"_id": "sadfsdafsdfasdfasd", "name":"adddd"}, {"_id": "ldasjkfdsajdflsad", "name":"creee"}
-    ],
-    "messages": {
-      "oidfasjodisjfasd": [
-        {time: 32323, recieverID: 232323, senderID: "oidfasjodisjfasd", body: "Hello AB from Z"},
-        {time: 32323, recieverID: 232323, senderID: "oidfasjodisjfasd", body: "Hello AB AGAIN from Z"},
-        {time: 32323, recieverID: 232323, senderID: "oidfasjodisjfasd", body: "Hello AB AGAIN from Z"},
-        {time: 32323, recieverID: 232323, senderID: "oidfasjodisjfasd", body: "Hello AB AGAIN from Z"},
-        {time: 32323, recieverID: 232323, senderID: "oidfasjodisjfasd", body: "Hello AB AGAIN from Z"},
-        {time: 32323, recieverID: 232323, senderID: "oidfasjodisjfasd", body: "Hello AB AGAIN from Z"},
-        {time: 32323, recieverID: 232323, senderID: "oidfasjodisjfasd", body: "Hello AB AGAIN from Z"},
-        {time: 32323, recieverID: 232323, senderID: "oidfasjodisjfasd", body: "Hello AB AGAIN from Z"}
-      ],
-      "sadfsdafsdfasdfasd": [
-        {time: 32323, recieverID: 232323, senderID: "sadfsdafsdfasdfasd", body: "Hello AB from A"},
-        {time: 32323, recieverID: 232323, senderID: "sadfsdafsdfasdfasd", body: "Hello AB AGAIN from A"}
-      ],
-      "ldasjkfdsajdflsad": [
-        {time: 32323, recieverID: 232323, senderID: "ldasjkfdsajdflsad", body: "Hello AB from C"},
-        {time: 32323, recieverID: 232323, senderID: "ldasjkfdsajdflsad", body: "Hello AB AGAIN from C"}
-      ]
-    },
-    "bands": [
-      {
-        "_id": "2807893jfdskalf",
-        "name":"jimmy hendrix",
-        "rating":"89",
-        "picture":"../static/assets/Home/Art/20.jpeg",
-        "upcomingGigs":["test","test","test","test"],
-        "appliedGigs":["test","test","test","test"],
-        "finishedGigs":["test","test","test","test"],
-        "interestedGigs":["test","test","test","test"]
-      },
-      {
-        "_id": "ooooeiousjkl",
-        "name":"billy walls",
-        "rating":"43",
-        "picture":"../static/assets/Home/Art/16.jpeg",
-        "upcomingGigs":["test","test","test","test"],
-        "appliedGigs":["test","test","test","test"],
-        "finishedGigs":["test","test","test","test"],
-        "interestedGigs":["test","test","test","test"]
-      },
-      {
-        "_id": "fuladlsu2222",
-        "name":"TASHKII",
-        "rating":"89",
-        "picture":"../static/assets/Home/Art/17.jpeg",
-        "upcomingGigs":["test","test","test","test"],
-        "appliedGigs":["test","test","test","test"],
-        "finishedGigs":["test","test","test","test"],
-        "interestedGigs":["test","test","test","test"]
-      }
-    ],
-    "gigs": [
-      {
-        "_id":"baldkjafdlksjfaldksjfalsdkjfads",
-        "name":"A booked gig YEET",
-        "address":"N27 W5230 Hamilton rd.",
-        "description":"bleep blarp nardbag mc jazzy funck fusion wowkwwkw! sdo if you wanna crap eee!",
-        "price":"23",
-        "picture": "../static/assets/Home/Art/11.jpeg",
-        "startDate":"2019-01-26T14:22",
-        "endDate":"",
-        "applications":null,
-        "lat":"0","lng":"0",
-        "categories":{
-          "genres":["bass","punk"],
-          "insts":["bass guitar","bass","guitar"],
-          "vibes":["bass","","","dumb"]
-        },
-        "isFilled":true,
-        "bandFor":"test"
-      },
-      {
-        "_id":"baldkjafdlksjfaldksjfalsdkjfads",
-        "name":"green HAZE room",
-        "address":"N27 W5230 Hamilton rd.",
-        "description":"wow ew we really need a band to fill this crazy gig out wahoo jazz it up homies bless up kendrick lamar is awesome",
-        "price":"84",
-        "picture": "../static/assets/Home/Art/11.jpeg",
-        "startDate":"2019-01-26T14:22",
-        "endDate":"",
-        "applications":["test","test","test","test","test"],
-        "lat":"0","lng":"0",
-        "categories":{
-          "genres":["bass","punk"],
-          "insts":["bass guitar","bass","guitar"],
-          "vibes":["bass","","","dumb"]
-        },
-        "isFilled":false,
-        "bandFor":"test"
-      }
-    ]
-  };
-
-  globalMessageArray = userTest.messages;
-
-  // messages[user._id] // gives array of messages, with body; timestamp; reciever;
-  createContacts(userTest.contacts, userTest.name);
 }
 
 function buildWebPage(){
+  createContacts(user.contacts, user.username);
+
+
   if (myBand!=null){
     console.log('Viewing as band: ' + JSON.stringify(myBand));
     if (otherBand!=null){
@@ -596,7 +493,7 @@ function createPageAsGig(){
   dateH.innerHTML = "date";
   div1.append(dateH);
   var dateP = document.createElement("p");
-  dateP.className = "date":
+  dateP.className = "date";
   dateP.innerHTML = otherGig.date;
   div1.append(dateP);
   gigDetailGrid.append(div1);
@@ -606,7 +503,7 @@ function createPageAsGig(){
   appsH.innerHTML = "number of applicants";
   div2.append(appsH);
   var appsP = document.createElement("p");
-  appsP.className = "num-applicants":
+  appsP.className = "num-applicants";
   appsP.innerHTML = otherGig.applicants.length;
   div2.append(appsP);
   gigDetailGrid.append(div2);
@@ -616,7 +513,7 @@ function createPageAsGig(){
   startH.innerHTML = "start time";
   div3.append(startH);
   var startP = document.createElement("p");
-  startP.className = "start-time":
+  startP.className = "start-time";
   startP.innerHTML = otherGig.startTime;
   div3.append(startP);
   gigDetailGrid.append(div3);
@@ -626,7 +523,7 @@ function createPageAsGig(){
   endH.innerHTML = "end time";
   div4.append(endH);
   var endP = document.createElement("p");
-  endP.className = "end-time":
+  endP.className = "end-time";
   endP.innerHTML = otherGig.endTime;
   div4.append(endP);
   gigDetailGrid.append(div4);
@@ -640,7 +537,7 @@ function getUsername(){
   console.log("called fucntion getUsername");
   $.get('/user', {query:'nada'}, res=>{
     alert(JSON.stringify(res));
-    var user = res;
+    user = res;
     id = user['_id'];
     $('#userNameHeader').html(user['username']);
     socket.on(id, (msg)=>{

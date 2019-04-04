@@ -707,3 +707,12 @@ profile img elements
   color: white;
   font-size: 14pt;
 }
+
+.modal-input{
+  color: white;
+  background-color: #333d44;
+  border-radius: 8px;
+  border: none !important;
+  width: 160px;
+  height: 40px;
+}

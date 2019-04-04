@@ -3,7 +3,8 @@
   <head>
     <meta charset="utf-8">
     <title>Your Profile</title>
-    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+
     <!-- Fontawesome Icons -->
 		<link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.6.3/css/all.css" integrity="sha384-UHRtZLI+pbxtHCWp1t77Bi1L4ZtiqrqD80Kn4Z8NTSRyMA2Fd33n5dQ8lWUE00s/" crossorigin="anonymous">
 		<!-- Latest compiled and minified CSS -->
@@ -20,6 +21,8 @@
     <link rel="stylesheet" type="text/css" href="../static/css/control-center.css">
     <script type="text/javascript" src="../static/jquery/jquery.jcarousel.min.js"></script>
     <script type="text/javascript" src="jcarousel.responsive.js"></script>
+    <script src="https://js.stripe.com/v3/"></script>
+
 
     <!-- Radial Menu -->
     <script type="text/javascript">
@@ -33,6 +36,25 @@
 		</script>
   </head>
   <body onload="init();">
+
+    <div id="modal-wrapper-credit-card" class="modal-card">
+      <span onclick="document.getElementById('modal-wrapper-credit-card').style.display='none'" class="close-stripe" title="Close PopUp">&times;</span>
+
+      <form action="/charge" method="post" id="payment-form" class="animate">
+        <div class="form-row">
+          <p class="stripe-header">Add credit or debit card through Stripe</p>
+          <div id="card-element">
+            <!-- A Stripe Element will be inserted here. -->
+          </div>
+
+          <!-- Used to display form errors. -->
+          <div id="card-errors" role="alert"></div>
+        </div>
+
+        <button class="stripe-button">Submit Payment</button>
+      </form>
+      <p class="stripe-footer">Secure payment processing powered by Stripe. Banda, Inc. does not store your credit card information.</p>
+    </div>
 
     <div id="modal-wrapper-link-application" class="modal2">
       <div class="imgcontainer">
@@ -213,8 +235,6 @@
       </form>
     </div>
 
-
-
     <div id="body-container">
 
       <div id="container">
@@ -243,8 +263,8 @@
 
       <div class="profiles-list">
         <ul id="profiles-list">
-          <li><a href="#" onclick="document.getElementById('modal-wrapper-new-band').style.display='block'">+ Create a Band</a></li>
-          <li><a href="#" onclick="document.getElementById('modal-wrapper-new-gig').style.display='block'">+ Post an Event</a></li>
+          <li><a href="#" onclick="handleNewBand()">+ Create a Band</a></li>
+          <li><a href="#" onclick="handleNewEvent()">+ Post an Event</a></li>
         </ul>
       </div>
 

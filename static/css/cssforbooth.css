@@ -23,7 +23,7 @@
 Globals
 */
 
-@font-face { font-family: Industry; src: url('../assets/Industry.otf'); }
+@font-face { font-family: Industry; src: url('/assets/Industry.otf'); }
 
 article, aside, figure, footer, header, hgroup,
 menu, nav, section { display: block; }
@@ -145,7 +145,7 @@ h1, h2, h3, h4, h5, h6, p, button, input, textarea, li{
   height: 100%;
   position: absolute;
   background: black;
-  background-image: url('../assets/Home/background.png');
+  background-image: url('/assets/Home/background.png');
   background-size: 100%;
   background-attachment: fixed;
   overflow-y: scroll;
@@ -558,18 +558,6 @@ open gig Elements
   background-color: rgba(0,0,0,0.4);
 }
 
-.modal-card{
-  display:none;
-  position: fixed;
-  z-index: 1;
-  left: 0;
-  top: 0;
-  width: 100%;
-  height: 100%;
-  overflow: auto;
-  background-color: rgba(0,0,0,0.4);
-}
-
 .modal2 {
   display:none;
   position: fixed;
@@ -585,7 +573,7 @@ open gig Elements
 
 /* Modal Content Box */
 .modal-content {
-  background-image: url("../assets/Control-Center/new-gig-bg.png");
+  background-image: url("/assets/Control-Center/new-gig-bg.png");
   background-color: transparent;
   background-size: contain;
   background-clip: border-box;
@@ -600,7 +588,7 @@ open gig Elements
 }
 
 .modal-content2 {
-/*  background-image: url("../assets/Control-Center/new-gig-bg.png");
+/*  background-image: url("/assets/Control-Center/new-gig-bg.png");
 */  background-color: transparent;
   background-size: contain;
   background-clip: border-box;
@@ -625,22 +613,6 @@ open gig Elements
   text-align: center;
   z-index: 110;
   overflow: hidden;
-}
-
-#modal-wrapper-credit-card{
-  display:none;
-  position: fixed;
-  top: 50%;
-  left: 50%;
-  transform: translate(-50%, -50%);
-  width: 50%;
-  height: 230px;
-  overflow: hidden;
-  background-color: rgba(240,240,240,1.0);
-  border-radius: 10px;
-  z-index: 110;
-  text-align: center;
-  padding: 20px;
 }
 
 .modal-input{
@@ -702,21 +674,6 @@ open gig Elements
     cursor: pointer;
 }
 
-.close-stripe {
-    position: absolute;
-    right: 40px;
-    top: 0;
-    color: #000;
-    opacity: 0.6;
-    font-size: 35px;
-    font-weight: bold;
-    z-index: 3;
-}
-.close-stripe:hover,.close-stripe:focus {
-    opacity: 0.5;
-    cursor: pointer;
-}
-
 /* Add Zoom Animation */
 .animate {
     animation: zoom 0.6s
@@ -732,7 +689,7 @@ open gig Elements
 */
 
 .modal-content-sample{
-  background-image: url("../assets/Home/modalbg.png");
+  background-image: url("/assets/Home/modalbg.png");
   background-color: transparent;
   background-size: contain;
   background-clip: border-box;
@@ -1198,7 +1155,7 @@ ul{
     float: left;
     margin-left: 0px;
     padding: 5px;
-    /* background-image: url("../assets/Control-Center/redbox.png");
+    /* background-image: url("/assets/Control-Center/redbox.png");
     background-size: contain; */
     /* -moz-box-sizing: border-box;
     -webkit-box-sizing: border-box;
@@ -1237,15 +1194,13 @@ ul{
   padding: 0;
 }
 
-.result-overlay-p{ /* new css for booth */
+.result-overlay-p{
   width: 75%;
   word-wrap: break-word;
   margin: 0 auto;
   margin-top: 34%;
   font-size: 2vw;
   text-align: center;
-  color: white;
-  text-shadow: 2px 2px #000;
 }
 
 .result-name-div {
@@ -1279,15 +1234,13 @@ ul{
 upcoming carousel
 */
 
-.result-overlay-confirm-p{ /* new css for booth*/
+.result-overlay-confirm-p{
   width: 75%;
   word-wrap: break-word;
   margin: 0 auto;
   margin-top: 10%;
   font-size: 2vw;
   text-align: center;
-  color: white;
-  text-shadow: 2px 2px #000;
 }
 
 /** Carousel Controls **/
@@ -1303,12 +1256,12 @@ upcoming carousel
 
 .jcarousel-control-prev {
     left: -45px;
-    background: url("../assets/Control-Center/arrow-left.png") left center no-repeat;
+    background: url("/assets/Control-Center/arrow-left.png") left center no-repeat;
 }
 
 .jcarousel-control-next {
     right: -30px;
-    background: url("../assets/Control-Center/arrow-right.png") left center no-repeat;
+    background: url("/assets/Control-Center/arrow-right.png") left center no-repeat;
 }
 
 /** Carousel Pagination **/
@@ -1595,91 +1548,4 @@ scrollbar
 .chat-app-link:hover{
   color: white;
   cursor: pointer;
-}
-
-/*stripe css*/
-
-/**
- * The CSS shown here will not be introduced in the Quickstart guide, but shows
- * how you can use CSS to style your Element's container.
- */
-.StripeElement {
-  box-sizing: border-box;
-  width: 75%;
-  height: 40px;
-  margin-left: 12.5%;
-
-  padding: 10px 12px;
-
-  border: 1px solid transparent;
-  border-radius: 4px;
-  background-color: white;
-
-  box-shadow: 0 1px 3px 0 #e6ebf1;
-  -webkit-transition: box-shadow 150ms ease;
-  transition: box-shadow 150ms ease;
-}
-
-.StripeElement--focus {
-  box-shadow: 0 1px 3px 0 #cfd7df;
-}
-
-.StripeElement--invalid {
-  border-color: #fa755a;
-}
-
-.StripeElement--webkit-autofill {
-  background-color: #fefde5 !important;
-}
-
-.stripe-button{
-  border: none;
-  border-radius: 4px;
-  outline: none;
-  text-decoration: none;
-  color: #fff;
-  background: #32325d;
-  white-space: nowrap;
-  display: inline-block;
-  width: 75%;
-  height: 40px;
-  line-height: 40px;
-  padding: 0 14px;
-  box-shadow: 0 4px 6px rgba(50, 50, 93, .11), 0 1px 3px rgba(0, 0, 0, .08);
-  border-radius: 4px;
-  font-size: 15px;
-  font-weight: 600;
-  letter-spacing: 0.025em;
-  text-decoration: none;
-  -webkit-transition: all 150ms ease;
-  transition: all 150ms ease;
-  float: left;
-  margin-left:12.5%;
-  margin-top: 8px;
-}
-
-.stripe-header{
-  width: 100%;
-  text-align: center;
-  font-size: 18pt;
-  color: black;
-  opacity: 0.8;
-}
-
-.stripe-footer{
-  position: relative;
-  margin-top: 55px;
-  width: 100%;
-  text-align: center;
-  font-size: 8pt;
-  color: black;
-  opacity: 0.6;
-}
-
-#card-errors{
-  width: 75%;
-  margin-left: 12.5%;
-  font-family: Industry, sans-serif;
-  text-align: center;
-  margin-top: 8px;
 }
