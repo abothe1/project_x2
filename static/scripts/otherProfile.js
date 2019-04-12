@@ -340,6 +340,15 @@ function createPageAsBand(){
   profileTitle.innerHTML = otherBand.name;
   var profileCreator = document.getElementById("profile-creator");
   profileCreator.innerHTML = "created by: "+otherBand.creator;
+  var hasReliability = null;
+  if(otherBand.showsUp != null){
+    hasReliability = true;
+    var reliability = document.getElementById("reliability");
+    reliability.style.display = "block";
+    reliability.innerHTML = "reliability: "+otherBand.showsUp*100+"%";
+  }else{
+    hasReliability = false;
+  }
 
   // load the band rating into the stars
   var newStars = document.getElementById("user-stars");
@@ -369,9 +378,20 @@ function createPageAsBand(){
   var bandFrame = document.getElementById("profile-img-frame");
   bandFrame.src = "/assets/Home/purplebox.png";
   var bandPriceText = document.getElementById("profile-price-text");
-  bandPriceText.innerHTML = "The asking price for this band is";
-  var bandPrice = document.getElementById("profile-price");
-  bandPrice.innerHTML = "$"+otherBand.price;
+
+  if(hasReliability){
+    bandPriceText.innerHTML = "The asking price for this band is";
+    bandPriceText.className = "profile-price-text";
+    var bandPrice = document.getElementById("profile-price");
+    bandPrice.innerHTML = "$"+otherBand.price+"/hr";
+    bandPrice.className ="profile-price";
+  }else{
+    bandPriceText.innerHTML = "This band has yet to perform any gigs through Banda! The asking price for this band is";
+    bandPriceText.className = "profile-price-text-new";
+    var bandPrice = document.getElementById("profile-price");
+    bandPrice.innerHTML = "$"+otherBand.price+"/hr";
+    bandPrice.className = "profile-price-new";
+  }
 
   // add band clips section
   if(otherBand.hasOwnProperty("audioSamples")){
@@ -749,7 +769,7 @@ function loadStars(rating, stars){
     star2.style.display = "inline-block";
     star3.style.display = "inline-block";
     star4.style.display = "inline-block";
-    star5.src = "../static/assets/Control-Center/half-star.png";
+    star5.src = "/assets/Control-Center/half-star.png";
     star5.className = "half-star";
     star5.style.display = "inline-block";
   }
@@ -764,7 +784,7 @@ function loadStars(rating, stars){
     star1.style.display = "inline-block";
     star2.style.display = "inline-block";
     star3.style.display = "inline-block";
-    star4.src = "../static/assets/Control-Center/half-star.png";
+    star4.src = "/assets/Control-Center/half-star.png";
     star4.className = "half-star";
     star4.style.display = "inline-block";
     star5.style.display = "none";
@@ -779,7 +799,7 @@ function loadStars(rating, stars){
   else if(starVal < 3.0 && starVal >= 2.5){
     star1.style.display = "inline-block";
     star2.style.display = "inline-block";
-    star3.src = "../static/assets/Control-Center/half-star.png";
+    star3.src = "/assets/Control-Center/half-star.png";
     star3.className = "half-star";
     star3.style.display = "inline-block";
     star4.style.display = "none";
@@ -794,7 +814,7 @@ function loadStars(rating, stars){
   }
   else if(starVal < 2.0 && starVal >= 1.5){
     star1.style.display = "inline-block";
-    star2.src = "../static/assets/Control-Center/half-star.png";
+    star2.src = "/assets/Control-Center/half-star.png";
     star2.className = "half-star";
     star2.style.display = "inline-block";
     star3.style.display = "none";
@@ -809,7 +829,7 @@ function loadStars(rating, stars){
     star5.style.display = "none";
   }
   else if(starVal < 1.0 && starVal >= 0.5){
-    star1.src = "../static/assets/Control-Center/half-star.png";
+    star1.src = "/assets/Control-Center/half-star.png";
     star1.className = "half-star";
     star1.style.display = "inline-block";
     star2.style.display = "none";

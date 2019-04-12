@@ -23,6 +23,8 @@
 
     <script type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/jqueryui/1.8.2/jquery-ui.min.js"></script>
 
+    <script src="https://js.stripe.com/v3/"></script>
+
     <!-- Radial Menu -->
     <script type="text/javascript">
 			(function($) {
@@ -52,6 +54,15 @@
       </form>
 
     </div>
+
+    <div id="modal-wrapper-cancel">
+      <div  id="cancel-content" class="modal-content-cancel animate">
+        <span onclick="document.getElementById('modal-wrapper-cancel').style.display='none'" class="cancel-close" title="Close PopUp">&times;</span>
+        <p id="cancel-text"></p>
+        <input type="button" id="confirm-cancel" />
+      </div>
+    </div>
+
     <div id="modal-wrapper-link-application" class="modal2">
       <div class="imgcontainer">
         <span onclick="document.getElementById('modal-wrapper-link-application').style.display='none'" class="close" title="Close PopUp">&times;</span>
@@ -163,7 +174,7 @@
           </table>
           <br>
           <label id="new-band-description-label" for="new-band-description" >description</label>
-          <textarea id="new-band-description" class="modal-textarea" ></textarea>
+          <textarea id="new-band-description" class="modal-textarea" placeholder='Enter some genres and instruments you play. As well as some "vibes" or feelings your music creates. Also, add some types of events you are interested in playing.'></textarea>
           <h3>avatar</h3>
           <label for"new-band-pic">upload image</label>
           <input id="new-band-pic" class="modal-input" name="avatar" type="file"required ></input>
@@ -180,6 +191,84 @@
           <button type='button' class="popUpButtons" id="new-band-create" onclick="createBand()" >create</button>
         </div>
       </form>
+    </div>
+    <div id="modal-wrapper-credit" class="modal-card">
+      <span onclick="document.getElementById('modal-wrapper-credit').style.display='none'" class="close-stripe" title="Close PopUp">&times;</span>
+      <div id="payment-form">
+        <input type="hidden" name="gigID" id="payment-gigID"/>
+        <input type="hidden" name="bandID" id="payment-bandID"/>
+        <div class="form-row">
+         <label for="card-element">
+           Credit or debit card
+         </label>
+         <div id="card-element">
+           <!-- A Stripe Element will be inserted here. -->
+         </div>
+         <!-- Used to display form errors. -->
+         <div id="card-errors" role="alert"></div>
+        </div>
+       <button class="stripe-button" style="display: block" onclick="attemptCreditSubmission()">Submit Payment</button>
+       <p class="stripe-footer">We use the secure payment platform <a href="https://stripe.com/" class="stripe-link">Stripe</a>
+         to guarantee swift and easy compensation of the artists that you book.</p>
+     </div>
+    </div>
+    <div id="modal-wrapper-bank">
+      <div id="bank-content">
+        <div id="bank-grid">
+          <div class="grid-item">
+            <label class="bank-modal-label" for="bank-form-first-name">
+              Legal First Name
+            </label>
+            <input id="bank-form-first-name" name="firstName" placeholder="enter name..." required>
+          </div>
+          <div class="grid-item">
+            <label class="bank-modal-label" for="bank-form-last-name">
+              Legal Last Name
+            </label>
+            <input id="bank-form-last-name" name="lastName" placeholder="enter name..." required>
+          </div>
+          <div class="grid-item">
+            <label class="bank-modal-label" for="bank-form-dob">
+              Date Of Birth
+            </label>
+            <input id="bank-form-dob" name="dateOfBrith" type="date" required>
+          </div>
+          <div class="grid-item">
+            <label class="bank-modal-label" for"bank-form-routing-number">
+              Bank Routing Number
+            </label>
+            <input id="bank-form-routing-number" class="num-without" name="routing_number" type="number" placeholder="0" max="999999999" min="0" required>
+          </div>
+          <div class="grid-item">
+            <label class="bank-modal-label" for"bank-form-acct-num">
+              Bank Account Number
+            </label>
+            <input id="bank-form-acct-num" class="num-without" name="acct_number" type="number" placeholder="0" max="999999999" min="0" required>
+          </div>
+          <div class="grid-item">
+            <label class="bank-modal-label" for"bank-form-holder">
+              Full Account Holder Name
+            </label>
+            <input id="bank-form-holder" name="holder_name" required>
+          </div>
+        </div>
+        <button class="stripe-button" onclick='attemptBankSubmission()'>Connect Account</button>
+        <!-- Used to display form errors. -->
+        <div id="error-message" role="alert"></div>
+        <!-- Display mandate acceptance text. -->
+        <div id="mandate-acceptance">
+          <p>
+            We use <a href="https://stripe.com/" class="stripe-link">Stripe</a>, a
+            secure payment platform, to ensure that you always get what you earn.
+            Banda does not store your credit card or bank account
+            information. We use this information to make
+            deposits in your account on behalf of an event host.
+            Banda handles artist compensation so that you can
+            focus on making art and expanding your music career.
+          </p>
+        </div>
+        <img alt="stripe"src="/assets/Control-Center/stripelogo.png" class="stripe-logo" />
+      </div>
     </div>
     <div id="modal-wrapper-current-band" class="modal">
       <form id="current-band-form" class="modal-content animate" enctype="multipart/form-data" method="post" action="#">

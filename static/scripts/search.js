@@ -99,7 +99,14 @@ function parseURL(url){
    };
 
 }
+
+var hasCreditCard = false;
+
 function init(){
+  /*
+  if the user has a credit card
+    hasCreditCard = true;
+  */
   var urlJSON = parseURL(window.location.href);
   getUserInfo();
   console.log(JSON.stringify(urlJSON));
@@ -586,7 +593,14 @@ class GigCell{
     this.nameDiv = document.createElement("div");
     this.nameDiv.className = "result-name-div";
     this.nameP = document.createElement("p");
-    this.nameP.innerHTML = gig.name;
+    if(hasCreditCard){
+      this.nameP.innerHTML = gig.name;
+      console.log("not blurring");
+    }else{
+      console.log("blurring it");
+      this.nameP.innerHTML = this.GenerateString(gig.name.length);
+      this.nameP.className = "result-p-blurred";
+    }
     // appends
     this.newOverlay.appendChild(this.priceText);
     this.newOverlay.name = gig['_id'];
@@ -608,6 +622,16 @@ class GigCell{
     this.newDiv.appendChild(this.nameDiv);
     theGrid.appendChild(this.newDiv);
     this.AddEventListeners(this);
+  }
+
+  GenerateString(length){
+    var text = "";
+    var possible = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789";
+
+    for (var i = 0; i < length; i++)
+      text += possible.charAt(Math.floor(Math.random() * possible.length));
+
+    return text;
   }
 
   AddEventListeners(obj){

@@ -58,7 +58,7 @@ module.exports = router => {
   		 res.status(400).send('No body sent').end();
   	}
 
-    var {id, newRating, gigID} = req.body;
+    var {id, newRating, gigID, showedUp} = req.body;
     console.log('new rating is : ' + newRating)
 
     database.connect(db=>{
@@ -70,13 +70,35 @@ module.exports = router => {
         else{
           console.log("Result from find one band in rating post is: "+JSON.stringify(result));
           var myBand = result;
+          var noShows = parseInt(result['noShows']);
+          if (noShows == null){
+            if (!showedUp){
+              noShows = 1;
+            }
+            else{
+              noShows = 0;
+            }
+          }
+          else{
+            if (!showedUp){
+              noShows += 1;
+            }
+          }
           var rating = result['rating'];
           var numRatings = result['numRatings'];
           console.log('Num ratings: ' + numRatings);
           console.log('var rating =' + rating );
           if (numRatings==null || numRatings==0  ||numRatings=='0' || numRatings==""){
             numRatings=1;
-            var query = {'rating':newRating, 'numRatings':1};
+            var timesShowed = 1;
+            if (showedUp){
+              timesShowed=1;
+            }
+            else{
+               timesShowed = 0;
+            }
+            var percentShows = timesShowed;
+            var query = {'rating':newRating, 'numRatings':1, 'noShows':noShows, 'showsUp':percentShows};
             var newvalues = {$set: query};
             console.log('about to set rating with: ' + JSON.stringify(newvalues));
               db.db('bands').collection("bands").updateOne({'_id':ObjectId(id)}, newvalues, res4=>{
@@ -98,7 +120,8 @@ module.exports = router => {
               });
           }
           else{
-
+            var timesShown = parseInt(numRatings) - noShows;
+            var perectShown = timesShown/parseInt(numRatings);
             var totalScore = parseInt(numRatings)*rating;
             console.log('totalScore: '+ totalScore);
             console.log('new rating is ' + newRating);
@@ -107,7 +130,7 @@ module.exports = router => {
             numRatings = parseInt(numRatings)+1;
             var rating2 = totalScore/numRatings;
             console.log('rating2: '+ rating2);
-            var query = {'rating':rating2, 'numRatings':numRatings};
+            var query = {'rating':rating2, 'numRatings':numRatings, 'noShows':noShows, 'showsUp':perectShown};
             var newvalues = {$set: query};
               db.db('bands').collection("bands").updateOne({'_id':ObjectId(id)}, newvalues, res2=>{
                 console.log("updated band " + id);

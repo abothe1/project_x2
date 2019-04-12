@@ -26,7 +26,8 @@ drops = [],
 rainTimer = null,
 maxDrops = 15;
 getLocation();
-getCurrentEvents();
+setInterval(getCurrentEvents(), 1000*60*15);
+
 var categories = {};
 var debugLayout = false;
 var isLoggedIn=false;
@@ -390,6 +391,9 @@ function showPosition(position) {
 function getCurrentEvents(){
   $.get('/current_events', {}, result => {
     console.log("events from db are: " + JSON.stringify(result));
+		if (result.length==0){
+			return;
+		}
     handleEventsWithTicker(result);
 	});
 }
@@ -415,6 +419,7 @@ function handleEventsWithTicker(result){
     if (i >= sortedEvents.length) {
        i = 0;
     }
+
     var evt = sortedEvents[i];
 		console.log('evt is ' + JSON.stringify(evt));
     console.log(" for x in sorted evetns evt is : " + JSON.stringify(evt));

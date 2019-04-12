@@ -451,7 +451,7 @@ module.exports = router => {
               db.db('gigs').collection('gigs').updateOne({'_id':database.objectId(gigID)}, newValues, (err3, result3)=>{
                 if (err3){
                   console.log('There was an error trying to add band: ' + bandID+' to gigs applications: '+gigID+' error: ' + err3);
-                  res.status(500).end();
+                  res.status(500).send();
                   db.close();
                 }
                 else{
@@ -461,7 +461,7 @@ module.exports = router => {
               db.db('bands').collection('bands').findOne({'_id':database.objectId(bandID)}, (err6, result6)=>{
                 if(err6){
                   console.log('There was an error getting band: ' + bandID +' out of mongo, ' + err6);
-                  res.status(500).end();
+                  res.status(500).send();
                   db.close();
                 }
                 else{
@@ -479,12 +479,12 @@ module.exports = router => {
                   db.db('bands').collection('bands').updateOne({'_id':database.objectId(bandID)}, newValues3, (err4, result4)=>{
                     if (err4){
                       console.log('THere was an error updating appliedGigs denied for gig id: ' + gigID + 'and band id: ' + bandID+' the error: ' +err4);
-                      res.status(500).end();
+                      res.status(500).send();
                       db.close();
                     }
                     else{
                       console.log('Chnaged upcoming gig: ' + gigID+ ' in band: ' + bandID+' to true in the second array postion, indicates its denied');
-                      res.status(200).end();
+                      res.status(200).send();
                       db.close();
                     }
                   });
@@ -500,13 +500,257 @@ module.exports = router => {
         });
       }, err=>{
         console.log('THere was error trying to connect to mongo, error: '+err);
+        res.status(500).send();
+      });
+    }
+  });
+
+
+  router.post('/cancel', (req, res)=>{
+    if (!req.session.id){
+      console.log('No logged in user tried to post to cancel');
+      res.status(403).send();
+    }
+    if (!req.body){
+      res.status(400).send();
+    }
+    else{
+      database.connect(db=>{
+        var {bandID, gigID, whoCanceled} = req.body;
+        db.db('bands').collection('bands').findOne({'_id':database.objectId(bandID)}, (err2, result2)=>{
+          if (err2){
+            console.log('There was an error getting band with ID' + bandID + ' put of the mongo');
+            res.status(500).send();
+            db.close();
+          }
+          else{
+            var myBand = result2;
+            var gigExists = false;
+            for (var g in myBand.upcomingGigs){
+              if (myBand.upcomingGigs[g]['gigID']==gigID){
+                gigExists=true;
+              }
+            }
+            if (!gigExists){
+              console.log('in cancel, band with id: '+bandID+' does not have the gig with id : '+gigID+' in its upcomingGigs');
+              res.status(403).send();
+              db.close();
+            }
+            else{
+              db.db('gigs').collection('gigs').findOne({'_id':database.objectId(gigID)}, (err3, result3)=>{
+                if (err3){
+                  console.log('THere was an error getting gig with id: ' +gigID+' out of mongo. ' + err3);
+                  res.status(500).send();
+                  db.close();
+                }
+                else{
+                  var myGig = result3;
+                  console.log('myGig is : '+ JSON.stringify(myGig));
+                  if (!(myGig['bandFor']==bandID)){
+                    console.log('In cancel, the gig with id: ' +gigID+ ' did not have band with id: ' + bandID+' as its band for.');
+                    res.status(403).send();
+                    db.close();
+                  }
+                  else{
+                    // do eveything
+                    var now = new Date();
+                    var gigStartDate = myGig['date'];
+                    console.log('gigStartDate is : ' + gigStartDate);
+                    var gigStartTime = myGig['startTime'];
+                    console.log('gigStartTime is : ' + gigStartTime);
+                    var dateArr = gigStartDate.split('-');
+                    var timeArr = gigStartTime.split(':');
+                    var gigDate = new Date(dateArr[0], dateArr[1], dateArr[2],timeArr[0], timeArr[1]);
+                    //"startTime":"03:22","price":"222","date":"2019-04-25"
+                    var timeDiff = diff_hours(now, gigDate)
+                    var cancelFee=null
+                    if (timeDiff>=24){
+                      cancelFee=false;
+                    }
+                    else{
+                      cancelFee=true;
+                    }
+                    console.log('Cancel fee is : ' + cancelFee);
+                    var newValues = {$set:{'isFilled':false, 'bandFor':'none'}};
+                    var applicants = [];
+                    var appsWithOutMyBand = [];
+                    for (var ap in myGig['applications']){
+                      applicants.push({'_id':database.objectId(myGig['applications'][ap])});
+                      if (myGig['applications'][ap]==bandID){
+                        continue;
+                      }
+                      else{
+                        appsWithOutMyBand.push(myGig['applications'][ap]);
+                      }
+                    }
+                    if (whoCanceled=='band'){
+                      newValues = {$set:{'isFilled':false, 'bandFor':'none', 'applications':appsWithOutMyBand}};
+                    }
+                    db.db('gigs').collection('gigs').updateOne({'_id':database.objectId(gigID)}, newValues, (err4, result4)=>{
+                      if (err4){
+                        console.log('THere was an error resetting the gig with id : ' + gigID+' to be open. Error: '+ err4);
+                        res.status(500).send();
+                        db.close();
+                      }
+                      else{
+                        for (var upGig in myBand.upcomingGigs){
+                          if (myBand.upcomingGigs[upGig]['gigID']==gigID){
+                              myBand.upcomingGigs[upGig]['canceled']=true;
+                            }
+                          }
+                          var newValues2 = null;
+                          if (whoCanceled=='band' && cancelFee){
+                            var noShows = 0;
+                            var numRatings = parseInt(myBand['numRatings']);
+                            if (myBand['noShows']==null || myBand['noShows']==0){
+                              noShows=1;
+                            }
+                            else{
+                              noShows=parseInt(myBand['noShows'])+1;
+                            }
+                            if (myBand['numRatings']==null || myBand['numRatings']==0){
+                              numRatings=1;
+                            }
+                            else{
+                              numRatings=parseInt(myBand['numRatings'])+1;
+                            }
+                            var showedUp = numRatings-noShows;
+                            var perShowsUp = showedUp/numRatings;
+                            newValues2 = {$set:{'upcomingGigs':myBand.upcomingGigs, 'noShows':noShows, 'showsUp':perShowsUp}};
+                          }
+                          else{
+                            newValues2 = {$set:{'upcomingGigs':myBand.upcomingGigs}};
+                          }
+
+                          db.db('bands').collection('bands').updateOne({'_id':database.objectId(bandID)}, newValues2, (err5, result5)=>{
+                            if (err5){
+                              console.log('There was an error updating band with id: ' + bandID+' to have gig with ID : ' + gigID+' be canceled.' + err5);
+                              res.status(500).send("Internal server error.");
+                              db.close();
+                            }
+                            if (applicants.length==0 || applicants==null){
+                              console.log('There were no other applicants to update for gig with id: ' + gigID);
+                            }
+                            else{
+                              db.db('bands').collection('bands').find({$or:applicants}).toArray((err7, result7)=>{
+                                if (err7){
+                                  console.log('Faild to get the batch of denied bands ' +err7);
+                                  res.status(500).end();
+                                  db.close();
+                                }
+                                var on = 0;
+                                if (result7.length<=0){
+                                  console.log('Applicants had positive legnth but mongo got none out with the supplied ids: ' + JSON.stringify(applicants));
+                                  res.status(500).end();
+                                  db.close();
+                                }
+                                else{
+                                result7.forEach(bandOn=>{
+                                  on+=1;
+                                  var nonDeniedGigs=[];
+                                  for (var gigAppliedTo in bandOn['appliedGigs']){
+                                    if (bandOn['appliedGigs'][gigAppliedTo][0]==gigID){
+                                      bandOn['appliedGigs'][gigAppliedTo][1]=false;
+                                      nonDeniedGigs.push(bandOn['appliedGigs'][gigAppliedTo]);
+                                    }
+                                    else{
+                                      nonDeniedGigs.push(bandOn['appliedGigs'][gigAppliedTo]);
+                                    }
+                                  }
+                                  var newValues7 = {$set:{'appliedGigs':nonDeniedGigs}};
+                                  db.db('bands').collection('bands').updateOne({'_id':database.objectId(bandOn['_id'])}, newValues7, (err8, res8)=>{
+                                    if (err8){
+                                      console.log('THere was an error updating one of the denied bands: ' + bandOn['_id']+' Error: '+err8);
+                                      res.status(500).end();
+                                      db.close();
+                                    }
+                                    else{
+                                      console.log('On is...' + on);
+                                      if (on>=result7.length){
+                                        if (whoCanceled=='gig'){
+                                          if (cancelFee){
+                                            console.log('Charging fee ($5) to gig with id : ' + gigID + ' becuase cancel came late and was on beahlf of the gig.');
+                                            //stripe charge account asscoiated with gig $5 + stripe fee + our fee
+                                          }
+                                          else{
+                                            console.log('Gig canceled and there was no fee or errors.')
+                                            res.status(200).end();
+                                            db.close();
+                                          }
+                                        }
+                                        if (whoCanceled=='band'){
+                                          console.log('Band canceled inside of applicant for each loop');
+                                          res.status(200).send('You canceled on this band with no penalty, please notify them with our messaging feature.');
+                                          db.close();
+                                        }
+                                        if (whoCanceled != 'band' && whoCanceled != 'gig'){
+                                          console.log('Who canceled was not band or gig, error.');
+                                          res.status(400).end();
+                                          db.close();
+                                        }
+                                      }
+                                    }
+                                  });
+                                });
+                              }
+                              });
+                            }
+                            /*
+                            if (whoCanceled=='gig'){
+                              if (cancelFee){
+                                console.log('Charging fee ($5) to gig with id : ' + gigID + ' becuase cancel came late and was on beahlf of the gig.');
+                                //stripe charge account asscoiated with gig $5 + stripe fee + our fee
+
+                                // for now:
+                                res.status(200).send('You canceled this gig within 24 hours of its start time and date. The card associated with this account was charged {fee}');
+                              //  db.close();
+                              }
+                              else{
+                                console.log('Gig canceled and there was no fee or errors.')
+                                res.status(200).send('You canceled the event with no penality.');
+                              //  db.close();
+                              }
+                            }
+                            if (whoCanceled=='band'){
+                              res.status(200).send('You canceled on this band with no penalty, please notify them with our messaging feature.');
+                            //  db.close();
+                            }
+                            if (whoCanceled != 'band' && whoCanceled != 'gig'){
+                              console.log('Who canceled was not band or gig, error.');
+                              res.status(400).end();
+                              //db.close();
+                            }
+                            */
+                          });
+                        }
+                      });
+                  }
+                }
+              });
+            }
+          }
+        });
+      }, err=>{
+        console.log('There was an error connecting to mongo Error: ' + err);
         res.status(500).end();
       });
+
     }
   });
 
 function creatBandConfirmCode(gigID, bandID){
   return gigID+bandID;
 }
+
+function diff_hours(dt1, dt2) {
+  //var dt1 = new Date(dt1Str);
+//  var dt2 = new Date(dt2Str);
+  console.log("in diff mins on alg page and dt2 is : " + dt2 + "and dt1 is : " + dt1);
+  var diff =(dt2.getTime() - dt1.getTime()) / 1000;
+  console.log("diff is : " + diff);
+  diff /= 3600;
+  console.log("diff is : " + diff);
+  return Math.abs(Math.round(diff));
+ }
 
 }

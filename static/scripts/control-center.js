@@ -365,6 +365,17 @@ class BookedGig {
     this.gigPicFrame = document.createElement("img");
     this.gigPicFrame.className = "gig-pic-frame";
     this.gigPicFrame.src = "/assets/Home/orangebox.png";
+    // overlay
+    this.newOverlay = document.createElement("div");
+    this.newOverlay.className = "artist-overlay";
+    this.viewBtn = document.createElement("input");
+    this.viewBtn.type = "button";
+    this.viewBtn.className = "car-view-button";
+    this.viewBtn.value = "view";
+    this.cancelBtn = document.createElement("input");
+    this.cancelBtn.type = "button";
+    this.cancelBtn.className = "car-decline-button";
+    this.cancelBtn.value = "cancel";
     this.gigDesc = document.createElement("div");
     this.gigDesc.className = "gig-description";
     this.gigDescP = document.createElement("p");
@@ -372,6 +383,11 @@ class BookedGig {
     this.gigDescP.innerHTML = gig.description;
     this.gigAct = document.createElement("div");
     this.gigAct.className = "gig-act";
+    this.gigAct.cancelBtn = this.cancelBtn;
+    this.gigAct.viewBtn = this.viewBtn;
+    this.gigAct.newOverlay = this.newOverlay;
+    this.gigAct.bandID = gig.bandFor;
+    this.gigAct.gigID = gig._id;
     this.actPic = document.createElement("img");
     this.actPic.className = "act-pic";
     this.actPicFrame = document.createElement("img");
@@ -410,6 +426,9 @@ class BookedGig {
           this.gigAct.append(this.actPic);
           this.gigAct.append(this.actPicFrame);
           this.gigAct.append(this.actNameplate);
+          this.newOverlay.append(this.viewBtn);
+          this.newOverlay.append(this.cancelBtn);
+          this.gigAct.append(this.newOverlay);
 
           this.gigConfirm.append(this.gigConfirmP);
           this.gigConfirm.append(this.gigConfirmInput);
@@ -425,10 +444,67 @@ class BookedGig {
           this.container.append(this.gigContent);
       // tier 0
           // bookedGigs.append(this.container);
+          this.AddOverlayEventListeners(this.gigAct);
           bookedGigCallback(this);
     });
 
 
+  }
+  AddOverlayEventListeners(obj){
+    obj.addEventListener("mouseover",function(){
+      obj.newOverlay.style.zIndex = "8";
+      obj.newOverlay.style.opacity = "1.0";
+    },false);
+    obj.addEventListener("mouseout",function(){
+      obj.newOverlay.style.zIndex = "-8";
+      obj.newOverlay.style.opacity = "0";
+    },false);
+    obj.viewBtn.addEventListener("click",function(){
+      console.log(obj.bandID);
+    });
+    obj.cancelBtn.addEventListener("click",function(){
+      console.log(obj.bandID);
+      console.log(obj.gigID);
+      presentCancelModal("BookedGig",obj.bandID,obj.gigID);
+    });
+  }
+}
+
+function presentCancelModal(state, bandID, gigID){
+  switch(state){
+    case "BookedGig":
+      var modal = document.getElementById("modal-wrapper-cancel");
+      var text = document.getElementById("cancel-text");
+      text.innerHTML = "Are you sure you want to cancel this event? If you cancel within two days of the event, the card associated with this event will be charged a cancellation fee of $5.00.";
+      var confirmInput = document.getElementById("confirm-cancel");
+      confirmInput.value = "Yes, I want to cancel this event."
+      confirmInput.addEventListener("click",function(){
+        console.log("bandID is "+bandID);
+        console.log("gigID is"+gigID);
+        $.post('/cancel', {'bandID':bandID, 'gigID':gigID, 'whoCanceled':'gig'}, res=>{
+          alert('Canceled event.');
+          modal.style.display = "none";
+        })
+
+      });
+      modal.style.display = "block";
+      break;
+    case "UpcomingGig":
+      var modal = document.getElementById("modal-wrapper-cancel");
+      var text = document.getElementById("cancel-text");
+      text.innerHTML = "Are you sure you want to cancel your booking? If you cancel within two days of the event, it will count as a 'flaked' event and will harm your reliability rating.";
+      var confirmInput = document.getElementById("confirm-cancel");
+      confirmInput.value = "Yes, I want to cancel this booking."
+      confirmInput.addEventListener("click",function(){
+        console.log("bandID is "+bandID);
+        console.log("gigID is"+gigID);
+        $.post('/cancel', {'bandID':bandID, 'gigID':gigID, 'whoCanceled':'band'}, res=>{
+          alert('Canceled on event.');
+          modal.style.display = "none";
+        })
+      });
+      modal.style.display = "block";
+      break;
   }
 }
 
@@ -1149,6 +1225,7 @@ class Carousel{
       this.wrapper.style.marginLeft = "0px";
       this.carWrap = document.createElement("div");
       this.carWrap.className = "jcarousel-wrapper";
+      this.carWrap.lengthTracker = 0;
       this.carousel = document.createElement("div");
       this.carousel.className = "jcarousel";
       this.list = document.createElement("ul");
@@ -1178,6 +1255,19 @@ class Carousel{
           newOverlay.className = "result-overlay";
           var overlayID = "result-overlay-"+gig;
           newOverlay.setAttribute("id",overlayID);
+
+          var flakeP = document.createElement("p");
+          flakeP.innerHTML = "did " + bandName + " show up?"
+          flakeP.className = "flake-p";
+          var flakeInput = document.createElement("select");
+          flakeInput.className = "flake-input";
+          var optionYes = document.createElement("option");
+          optionYes.innerHTML = "yes";
+          var optionNo = document.createElement("option");
+          optionNo.innerHTML = "no";
+          flakeInput.append(optionYes);
+          flakeInput.append(optionNo);
+
           var rateP = document.createElement("p");
           rateP.innerHTML = "rate " + bandName + " from 1 to 100";
           rateP.className = "rate-p";
@@ -1190,7 +1280,7 @@ class Carousel{
           var rateButton = document.createElement("input");
           rateButton.type = "button";
           rateButton.className = "rate-button";
-          rateButton.value = "give rating";
+          rateButton.value = "rate";
           rateButton.bandID = this.bandsObj[gig]._id;
           rateButton.gigID = this.pastGigs[gig]._id;
           // nameplate
@@ -1200,6 +1290,8 @@ class Carousel{
           nameP.className = "result-name-p";
           nameP.innerHTML = this.bandsObj[gig].name;
           newItem.append(newImg);
+          newOverlay.append(flakeP);
+          newOverlay.append(flakeInput);
           newOverlay.append(rateP);
           newOverlay.append(rateInput);
           newOverlay.append(rateButton);
@@ -1208,10 +1300,13 @@ class Carousel{
           nameDiv.append(nameP);
           newItem.append(nameDiv);
           this.list.append(newItem);
+          newItem.carWrap=this.carWrap;
+          this.carWrap.lengthTracker+=1;
           //event listener data preprocessing
           newItem.newOverlay = newOverlay;
           newItem.rateInput = rateInput;
           newItem.rateButton = rateButton;
+          newItem.flakeInput = flakeInput;
           newItem._id = this.pastGigs[gig]._id;
           this.AddOverlayEventListeners(newItem);
         }
@@ -1226,6 +1321,8 @@ class Carousel{
           this.next.href = "#";
           this.carWrap.append(this.prev);
           this.carWrap.append(this.next);
+          this.carWrap.next=this.next;
+          this.carWrap.prev=this.prev;
         }
         this.carWrap.append(this.carousel);
         this.wrapper.append(this.carWrap);
@@ -1239,6 +1336,7 @@ class Carousel{
       for (var g in obj){
         idArr.push(obj[g]['gigID']);
       }
+      this.bandID = forObj._id;
       this.handleGigs(idArr, result=>{
         // console.log(JSON.stringify(result));
         this.upcomingGigs = result;
@@ -1270,21 +1368,20 @@ class Carousel{
           newOverlay.className = "result-overlay";
           var overlayID = "result-overlay-"+gig;
           newOverlay.setAttribute("id",overlayID);
-          newOverlay.name = this.upcomingGigs[gig]._id
-          newOverlay.value = forObj._id;
-          newOverlay.addEventListener('click', function(){
-            /*
-            console.log('Clicked on upcoming gig for band: ' + this.value);
-            console.log('Clicked on upcoming gig name is: ' + this.name);
-            window.location.href='/otherProfile?id='+this.name+'&mode=gig&searchingAs'+this.value+'&searchingType=band';
-            */
-          });
           var confirmP = document.createElement("p");
           confirmP.className = "result-overlay-confirm-p";
-          confirmP.innerHTML = "enter code to recieve $"+this.upcomingGigs[gig].price;
+          confirmP.innerHTML = "confirm payment of $"+this.upcomingGigs[gig].price;
           var confirmInput = document.createElement("input");
           confirmInput.className = "gig-confirm-input-upcoming";
           confirmInput.placeholder = "code from venue"
+          var confirmA = document.createElement("input");
+          confirmA.type = "button";
+          confirmA.className = "gig-confirm-button-upcoming";
+          confirmA.value = "confirm";
+          var cancelA = document.createElement("a");
+          cancelA.href = "#";
+          cancelA.className = "cancel-button-for-band";
+          cancelA.innerHTML = "cancel this gig...";
           // nameplate
           var nameDiv = document.createElement("div");
           nameDiv.className = "result-name-div";
@@ -1294,15 +1391,35 @@ class Carousel{
           newItem.append(newImg);
           newOverlay.append(confirmP);
           newOverlay.append(confirmInput);
+          newOverlay.append(confirmA);
+          newOverlay.append(cancelA);
           newItem.appendChild(newOverlay);
           newItem.append(newFrame);
-          nameDiv.append(nameP);
-          newItem.append(nameDiv);
-          this.list.append(newItem);
-          //event listener data preprocessing
-          newItem.newOverlay = newOverlay;
-          newItem._id = this.upcomingGigs[gig]._id;
-          this.AddOverlayEventListeners(newItem);
+          console.log("PRE AB PRINT");
+
+          if(obj[gig].canceled){
+            console.log("DETECT CANCEL");
+            // it's rejected
+            var newX = document.createElement("h1");
+            newX.className = "red-x";
+            newX.innerHTML = "X";
+            newItem.append(newX);
+            nameDiv.append(nameP);
+            newItem.append(nameDiv);
+            this.list.append(newItem);
+          }
+          else{
+            nameDiv.append(nameP);
+            newItem.append(nameDiv);
+            this.list.append(newItem);
+            //event listener data preprocessing
+            newItem.newOverlay = newOverlay;
+            newItem.gigID = this.upcomingGigs[gig]._id;
+            newItem.bandID = this.bandID;
+            newItem.confirmButton = confirmA;
+            newItem.cancelButton = cancelA;
+            this.AddOverlayEventListeners(newItem);
+          }
         }
         this.carousel.append(this.list);
         if(this.upcomingGigs.length > 4){
@@ -1753,14 +1870,46 @@ class Carousel{
         console.log("band id: "+obj.rateButton.bandID);
         console.log("gig id: "+obj.rateButton.gigID);
         console.log("value is: "+obj.rateInput.value);
+        console.log("flake value is: "+obj.flakeInput.value);
+        var showedUp = null;
+        if (obj.flakeInput.value=='yes'){
+          showedUp = true;
+        }
+        else{
+          showedUp = false;
+        }
         if(obj.rateInput.value<0 || obj.rateInput.value>100){
           alert('Sorry, all ratings must be between 0 and 100.');
           return;
         }
-        $.post('/bandRating', {'id':obj.rateButton.bandID, 'newRating':obj.rateInput.value, 'gigID':obj.rateButton.gigID}, result=>{
-          //remove html element
+    //    if
+        $.post('/bandRating', {'id':obj.rateButton.bandID, 'newRating':obj.rateInput.value, 'gigID':obj.rateButton.gigID, 'showedUp':showedUp}, result=>{
+          obj.parentNode.removeChild(obj);
+          obj.carWrap.lengthTracker--;
+          if(obj.carWrap.lengthTracker < 5){
+            if(obj.carWrap.hasOwnProperty("next")){
+              if(obj.carWrap.next != null){
+                obj.carWrap.removeChild(obj.carWrap.next);
+                obj.carWrap.removeChild(obj.carWrap.prev);
+                obj.carWrap.next = null;
+                obj.carWrap.prev = null;
+              }
+            }
+          }
+          alert('Added your feedback!');
         });
         //post rating
+      });
+    }
+    if(obj.hasOwnProperty("confirmButton")){
+      obj.confirmButton.addEventListener("click",function(){
+        console.log("gig id: "+ obj.gigID);
+        console.log("band id: "+ obj.bandID);
+      });
+      obj.cancelButton.addEventListener("click",function(){
+        console.log("gig id: "+ obj.gigID);
+        console.log("band id: "+ obj.bandID);
+        presentCancelModal("UpcomingGig",obj.bandID,obj.gigID);
       });
     }
   }
@@ -2484,6 +2633,7 @@ function sendBandToDB(lat, lng, myBand){
                         var sample = {'audio':bandSoundPath, 'picture':bandSamplePicPath};
                         $.post('/band', {'name':name, 'zipcode':zipcode, 'maxDist':maxDist, 'price':price, 'picture':bandAvatarPath, 'sample':sample,'description':description, 'openDates':openDates, 'categories':qCategories, 'lat':lat, 'lng':lng}, result=>{
                           alert("Congratulations, you added " + name + 'to Banda! You can now search for events as, ' + name+ ' to start accelerating your music career! Refresh this page to see your new act/edit it.');
+                          document.getElementById('modal-wrapper-bank').style.display='block';
                         });
                       }
                   });
@@ -3506,4 +3656,120 @@ function updateUser(id, query){
 }
 
 
-// function to create file from base64 encoded string
+//STRIPE SECTION:
+//https://dashboard.stripe.com/test/dashboard -> dashboard
+//https://simpleprogrammer.com/stripe-connect-ultimate-guide/ -> tutorial for connect
+//https://stripe.com/docs/connect -> doc for connection
+
+var stripe = Stripe('pk_test_ZDSEcXSIaHCCNQQFwikWyDad0053mxeMlz');
+
+// Create an instance of Elements.
+var elements = stripe.elements();
+
+// Custom styling can be passed to options when creating an Element.
+// (Note that this demo uses a wider set of styles than the guide below.)
+var style = {
+ base: {
+   color: '#32325d',
+   fontFamily: '"Helvetica Neue", Helvetica, sans-serif',
+   fontSmoothing: 'antialiased',
+   fontSize: '16px',
+   '::placeholder': {
+     color: '#aab7c4'
+   }
+ },
+ invalid: {
+   color: '#fa755a',
+   iconColor: '#fa755a'
+ }
+};
+
+// Create an instance of the card Element.
+var card = elements.create('card', {style: style});
+
+// Add an instance of the card Element into the `card-element` <div>.
+card.mount('#card-element');
+
+// Handle real-time validation errors from the card Element.
+card.addEventListener('change', function(event) {
+ var displayError = document.getElementById('card-errors');
+ if (event.error) {
+   displayError.textContent = event.error.message;
+ } else {
+   displayError.textContent = '';
+ }
+});
+
+// Handle form submission.
+/*
+var form = document.getElementById('payment-form');
+form.addEventListener('submit', function(event) {
+ event.preventDefault();
+
+ stripe.createToken(card).then(function(result) {
+   if (result.error) {
+     // Inform the user if there was an error.
+     var errorElement = document.getElementById('card-errors');
+     errorElement.textContent = result.error.message;
+   } else {
+     // Send the token to your server.
+     stripeTokenHandler(result.token);
+   }
+ });
+});
+*/
+// Submit the form with the token ID.
+function stripeTokenHandler(token) {
+ // Insert the token ID into the form so it gets submitted to the server
+ var form = document.getElementById('payment-form');
+ var hiddenInput = document.createElement('input');
+ hiddenInput.setAttribute('type', 'hidden');
+ hiddenInput.setAttribute('name', 'stripeToken');
+ hiddenInput.setAttribute('value', token.id);
+ form.appendChild(hiddenInput);
+
+ // Submit the form
+ form.submit();
+}
+
+function attemptBankSubmission(){
+  var firstName = document.getElementById("bank-form-first-name").value;
+  var lastName = document.getElementById("bank-form-last-name").value;
+  var dob = document.getElementById("bank-form-dob").value;
+  var routingNum = document.getElementById("bank-form-routing-number").value;
+  var acctNum = document.getElementById("bank-form-acct-num").value;
+  var holder = document.getElementById("bank-form-holder").value;
+
+  console.log("first name: "+firstName);
+  console.log("last name: "+lastName);
+  console.log("date of birth: "+dob);
+  console.log("routing: "+routingNum);
+  console.log("account: "+acctNum);
+  console.log("holder: "+holder);
+  //var {dateOfBrith, firstName, lastName, acct_number, routing_number, holder_name }
+  stripe.createToken('bank_account', {
+    country: 'US',
+    currency: 'usd',
+    routing_number: routingNum,
+    account_number: acctNum,
+    account_holder_name: holder,
+    account_holder_type: 'individual',
+  }).then(function(result_bank) {
+      console.log('Result from tokenazation of bank info: ' + JSON.stringify(result_bank));
+        if (result_bank.error){
+          console.log('There was an error converting bank info to a token. Stripe error: ' + result_bank.error.message);
+          alert('Sorry that bank account is invalid. Please try again.')
+        }
+        else{
+          var accountToken = result_bank['token'];
+          $.post('/newConnectedAccount', {'firstName':firstName, 'lastName':lastName, 'dateOfBrith':dob, external_account_token:accountToken }, res=>{
+            alert('Congratulations, you will recieve money in this account within 30 minutes from when your band completes its first gig! Note: when you earn more than $3,000 from your gigs, we may need addtional information to verify your identity.')
+          });
+        }
+      });
+}
+
+function attemptCreditSubmission(){
+  var creditNum = document.getElementById("card-elem").value;
+  console.log(creditNum);
+}

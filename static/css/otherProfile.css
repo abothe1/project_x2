@@ -755,9 +755,23 @@ profile img elements
 .profile-price-text{
   margin-top: 50px;
 }
-
 .profile-price{
   margin-top: 50px;
+}
+.profile-price-text-new, .profile-price-new{
+  margin-top: 20px;
+  max-width: 70%;
+  margin-left: 15%;
+  text-align: left;
+}
+
+.band-reliability{
+  display: block;
+  color: white;
+  font-size: 14pt;
+  position: absolute;
+  margin-left: 87%;
+  margin-top: -54px;
 }
 
 /*
