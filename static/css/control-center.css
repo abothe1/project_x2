@@ -1788,7 +1788,7 @@ bank modal
 }
 
 #modal-wrapper-credit{
-  display:block;
+  display:none;
   position: fixed;
   top: 50%;
   left: 50%;
@@ -1890,6 +1890,20 @@ bank modal
     z-index: 3;
 }
 .close-stripe:hover,.close-stripe:focus {
+    opacity: 0.5;
+    cursor: pointer;
+}
+.close-bank {
+    position: absolute;
+    margin-left: 460px;
+    margin-top: -20px;
+    color: #000;
+    opacity: 0.6;
+    font-size: 35px;
+    font-weight: bold;
+    z-index: 99;
+}
+.close-bank:hover,.close-bank:focus {
     opacity: 0.5;
     cursor: pointer;
 }

@@ -25,7 +25,7 @@ var box = null;
 var changingGigInfo={};
 var userContacts = {};
 var userMessages={};
-
+var user_email = null;
 //CHNAGE GIGS SECTION:?////////
 
 
@@ -1942,6 +1942,7 @@ function getUsername(){
     var user = res;
     username = user['username'];
     id = user['_id'];
+    user_email = user['email'];
     console.log('USER ID: ' + id);
     userContacts = user['contacts'];
     $('#userNameHeader').html(user['username']);
@@ -2528,6 +2529,7 @@ function endTimeChange(time){
   console.log("Weekly Sched is :" + JSON.stringify(weeklySched));
 }
 function createBand(){
+
   var myNewBand = {
     'name': $('#new-band-title').val(),
     'zipcode':$('#new-band-zip').val(),
@@ -2633,7 +2635,6 @@ function sendBandToDB(lat, lng, myBand){
                         var sample = {'audio':bandSoundPath, 'picture':bandSamplePicPath};
                         $.post('/band', {'name':name, 'zipcode':zipcode, 'maxDist':maxDist, 'price':price, 'picture':bandAvatarPath, 'sample':sample,'description':description, 'openDates':openDates, 'categories':qCategories, 'lat':lat, 'lng':lng}, result=>{
                           alert("Congratulations, you added " + name + 'to Banda! You can now search for events as, ' + name+ ' to start accelerating your music career! Refresh this page to see your new act/edit it.');
-                          document.getElementById('modal-wrapper-bank').style.display='block';
                         });
                       }
                   });
@@ -3656,80 +3657,83 @@ function updateUser(id, query){
 }
 
 
-//STRIPE SECTION:
-//https://dashboard.stripe.com/test/dashboard -> dashboard
-//https://simpleprogrammer.com/stripe-connect-ultimate-guide/ -> tutorial for connect
-//https://stripe.com/docs/connect -> doc for connection
+function prepareCardElement(){
+  document.getElementById('modal-wrapper-credit').style.display='block';
+  //STRIPE SECTION:
+  //https://dashboard.stripe.com/test/dashboard -> dashboard
+  //https://simpleprogrammer.com/stripe-connect-ultimate-guide/ -> tutorial for connect
+  //https://stripe.com/docs/connect -> doc for connection
 
-var stripe = Stripe('pk_test_ZDSEcXSIaHCCNQQFwikWyDad0053mxeMlz');
+  var stripe = Stripe('pk_test_ZDSEcXSIaHCCNQQFwikWyDad0053mxeMlz');
 
-// Create an instance of Elements.
-var elements = stripe.elements();
+  // Create an instance of Elements.
+  var elements = stripe.elements();
 
-// Custom styling can be passed to options when creating an Element.
-// (Note that this demo uses a wider set of styles than the guide below.)
-var style = {
- base: {
-   color: '#32325d',
-   fontFamily: '"Helvetica Neue", Helvetica, sans-serif',
-   fontSmoothing: 'antialiased',
-   fontSize: '16px',
-   '::placeholder': {
-     color: '#aab7c4'
+  // Custom styling can be passed to options when creating an Element.
+  // (Note that this demo uses a wider set of styles than the guide below.)
+  var style = {
+   base: {
+     color: '#32325d',
+     fontFamily: '"Helvetica Neue", Helvetica, sans-serif',
+     fontSmoothing: 'antialiased',
+     fontSize: '16px',
+     '::placeholder': {
+       color: '#aab7c4'
+     }
+   },
+   invalid: {
+     color: '#fa755a',
+     iconColor: '#fa755a'
    }
- },
- invalid: {
-   color: '#fa755a',
-   iconColor: '#fa755a'
- }
-};
+  };
 
-// Create an instance of the card Element.
-var card = elements.create('card', {style: style});
+  // Create an instance of the card Element.
+  var card = elements.create('card', {style: style});
 
-// Add an instance of the card Element into the `card-element` <div>.
-card.mount('#card-element');
+  // Add an instance of the card Element into the `card-element` <div>.
+  card.mount('#card-element');
 
-// Handle real-time validation errors from the card Element.
-card.addEventListener('change', function(event) {
- var displayError = document.getElementById('card-errors');
- if (event.error) {
-   displayError.textContent = event.error.message;
- } else {
-   displayError.textContent = '';
- }
-});
-
-// Handle form submission.
-/*
-var form = document.getElementById('payment-form');
-form.addEventListener('submit', function(event) {
- event.preventDefault();
-
- stripe.createToken(card).then(function(result) {
-   if (result.error) {
-     // Inform the user if there was an error.
-     var errorElement = document.getElementById('card-errors');
-     errorElement.textContent = result.error.message;
+  // Handle real-time validation errors from the card Element.
+  card.addEventListener('change', function(event) {
+   var displayError = document.getElementById('card-errors');
+   if (event.error) {
+     displayError.textContent = event.error.message;
    } else {
-     // Send the token to your server.
-     stripeTokenHandler(result.token);
+     displayError.textContent = '';
    }
- });
-});
-*/
-// Submit the form with the token ID.
-function stripeTokenHandler(token) {
- // Insert the token ID into the form so it gets submitted to the server
- var form = document.getElementById('payment-form');
- var hiddenInput = document.createElement('input');
- hiddenInput.setAttribute('type', 'hidden');
- hiddenInput.setAttribute('name', 'stripeToken');
- hiddenInput.setAttribute('value', token.id);
- form.appendChild(hiddenInput);
+  });
 
- // Submit the form
- form.submit();
+  // Handle form submission.
+  var form = document.getElementById('payment-form');
+  form.addEventListener('submit', function(event) {
+   event.preventDefault();
+
+   stripe.createToken(card).then(function(result) {
+     if (result.error) {
+       // Inform the user if there was an error.
+       var errorElement = document.getElementById('card-errors');
+       errorElement.textContent = result.error.message;
+     } else {
+       // Send the token to your server.
+       console.log(' TOKENNNNNN : ' + JSON.stringify(result));
+       stripeTokenHandler(result.token);
+     }
+   });
+  });
+
+  // Submit the form with the token ID.
+  function stripeTokenHandler(token) {
+   // Insert the token ID into the form so it gets submitted to the server
+   var form = document.getElementById('payment-form');
+   var hiddenInput = document.createElement('input');
+   hiddenInput.setAttribute('type', 'hidden');
+   hiddenInput.setAttribute('name', 'stripeToken');
+   hiddenInput.setAttribute('value', token.id);
+   form.appendChild(hiddenInput);
+   attemptCreditSubmission(token.id);
+   // Submit the form
+//   form.submit();
+  }
 }
 
 function attemptBankSubmission(){
@@ -3762,14 +3766,23 @@ function attemptBankSubmission(){
         }
         else{
           var accountToken = result_bank['token'];
-          $.post('/newConnectedAccount', {'firstName':firstName, 'lastName':lastName, 'dateOfBrith':dob, external_account_token:accountToken }, res=>{
-            alert('Congratulations, you will recieve money in this account within 30 minutes from when your band completes its first gig! Note: when you earn more than $3,000 from your gigs, we may need addtional information to verify your identity.')
+          $.post('/newConnectedAccount', {'firstName':firstName, 'lastName':lastName, 'dateOfBrith':dob, external_account_token:accountToken['id'] }, res=>{
+            alert('Congratulations, you will recieve money in this account within 30 minutes from when your band completes its first gig! Note: when you earn more than $3,000 from your gigs, we may need addtional information to verify your identity.');
+            document.getElementById('modal-wrapper-bank').style.display='none';
+            document.getElementById('modal-wrapper-new-band').style.display='block';
           });
         }
       });
 }
 
-function attemptCreditSubmission(){
-  var creditNum = document.getElementById("card-elem").value;
-  console.log(creditNum);
+function attemptCreditSubmission(token_id){
+  //var creditNum = document.getElementById("card-elem").value;
+  $.post('/createStripeCustomer', {card_token:token_id, email:user_email},res=>{
+    alert('res');
+    document.getElementById("modal-wrapper-credit").style.display = 'none';
+    document.getElementById("modal-wrapper-new-gig").style.display = 'block';
+  });
+  //var card_number =
+
+//  console.log(creditNum);
 }

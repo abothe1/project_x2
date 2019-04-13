@@ -35,8 +35,8 @@ module.exports = router =>{
       console.log('session: ' + req.connection.remoteAddress);
       tos_acceptance.ip=req.connection.remoteAddress;
       tos_acceptance.date=today
+      console.log("TOKEN " + JSON.stringify(external_account_token));
 
-      var external_account_token = result_bank.token;
       console.log('Indie is: ' + JSON.stringify(indie));
       stripe.accounts.create({
         country: country,

@@ -94,7 +94,8 @@ require('./routes/interactions.js')(router, app); // for allowing bands and gigs
 require('./routes/delete.js')(router, app); // for ressetting everythingegt rid of htis
 require('./routes/messaging.js')(router, app); //for getting messages out of monog
 require('./routes/samples.js')(router, app); //for getting sampples
-require('./routes/newAccount.js')(router, app); //for creating stripe connected account (events)
+require('./routes/newAccount.js')(router, app); //for creating stripe connected account (bands)
+require('./routes/newCustomer.js')(router, app); // for creating chareable customers  (gigs) 
 
 //for routing messaing and emiting the message:
 
