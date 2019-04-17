@@ -1,5 +1,8 @@
 module.exports = router => {
   const database = require('../database.js');
+  stripe_private_key = 'sk_test_t6hlsKu6iehEdJhV9KzITmxm00flbTdrG5';
+  var stripe = require('stripe')(stripe_private_key);
+  const BANDA_CUT = 0.05;
   router.post('/apply', (req, res)=>{
     if (!req.body) {
   		 res.status(400).send('No body sent').end();
@@ -109,6 +112,11 @@ module.exports = router => {
               else{
                 console.log('got gig set with the band' + bandID);
                 console.log(JSON.stringify(result));
+                chargeUser(req, theGig.price, (ourError)=>{
+                  if(ourError){
+                    console.log('We had an error chraging customer: ' + ourError);
+                  }
+                });
               }
             });
             var newCode = creatBandConfirmCode(gigID, bandID);
@@ -155,12 +163,12 @@ module.exports = router => {
                     if (denied.length==0){
                       res.status(200).end();
                       db.close();
-                      return;
                     }
                     db.db('bands').collection('bands').find({$or:denied}).toArray((err4, result4)=>{
                       if (err4){
                         console.log('Faild to get the batch of denied bands ' +err4);
                         res.status(500).end();
+                        db.close();
                       }
                       var on = 0;
                       result4.forEach(bandOn=>{
@@ -202,6 +210,40 @@ module.exports = router => {
       res.status(500).end();
     });
   });
+
+  function chargeUser(req, price, cb){
+    var username = req.session.key;
+    var chargeAmount = BANDA_CUT*price;
+    database.connect(db=>{
+      db.db('users').collection('stripe_customers').findOne({'username':username}, (stripe_user, err9)=>{
+        stripe.charges.create({
+          amount: chargeAmount,
+          currency: 'dollars',
+          customer: stripe_user.cus_id,
+          source: stripe_user.src_id,
+        }, function(stripe_error, charge) {
+            if(stripe_error){
+              console.log('There was an error createing chage with stripe: ' + stripe_error.message);
+              cb(stripe_error);
+            }
+            else{
+              db.db('users').collection('stripe_customers').updateOne({'username':username}, {$push:{'charges':charge}}, (result11, err11)=>{
+                if (err11){
+                  console.log('There was an error adding the charge to user: '+username+' charges array.');
+                  cb(err11);
+                }
+                else{
+                  console.log('Added charge to db and charge was successful. We charged user: ' +username+' '+chargeAmount);
+                  cb();
+                }
+              })
+            }
+          });
+      });
+    }, err=>{
+      cb(err)
+    });
+  }
 
   router.post('/addContact', (req, res)=>{
     if (!req.body) {
@@ -668,15 +710,15 @@ module.exports = router => {
                                       console.log('On is...' + on);
                                       if (on>=result7.length){
                                         if (whoCanceled=='gig'){
-                                          if (cancelFee){
-                                            console.log('Charging fee ($5) to gig with id : ' + gigID + ' becuase cancel came late and was on beahlf of the gig.');
+                                          if (!cancelFee){
+                                        //    console.log('Charging fee ($5) to gig with id : ' + gigID + ' becuase cancel came late and was on beahlf of the gig.');
                                             //stripe charge account asscoiated with gig $5 + stripe fee + our fee
-                                          }
-                                          else{
-                                            console.log('Gig canceled and there was no fee or errors.')
-                                            res.status(200).end();
+                                            //refund
+                                            console.log('Will give gig with id: ' + gigID + 'refund becuse they cancelled within')
+                                            res.status(200).send('You have been issued a refund for this event! You will see the full amount in your bank account within one week.')
                                             db.close();
                                           }
+
                                         }
                                         if (whoCanceled=='band'){
                                           console.log('Band canceled inside of applicant for each loop');

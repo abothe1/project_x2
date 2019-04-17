@@ -349,6 +349,13 @@ function showResults(mode, bands, gigs){
       console.log("appended");
       */
     }
+    var bodyContainer = document.getElementById("body-container");
+    var newDiv = document.createElement("div");
+    var newBR = document.createElement("br");
+    newDiv.append(newBR);
+    newDiv.append(newBR);
+    newDiv.append(newBR);
+    bodyContainer.append(newDiv);
   }
 
 }
@@ -517,7 +524,7 @@ class BandCell {
     });
     this.newOverlay.setAttribute("id",this.overlayID);
     this.priceText = document.createElement("p");
-    this.priceText.innerHTML = "$"+band.price+"/hr";
+    this.priceText.innerHTML = "$"+band.price;
     // audio
     this.newDiv.audio = new Audio();
     var audioSample = band['audioSamples'][0]['audio'];
@@ -583,7 +590,7 @@ class GigCell{
     this.overlayID = "result-overlay-"+id;
     this.newOverlay.setAttribute("id",this.overlayID);
     this.priceText = document.createElement("p");
-    this.priceText.innerHTML = "$"+gig.price+"/hr";
+    this.priceText.innerHTML = "$"+gig.price;
     // frame
     this.newFrame = document.createElement("img");
     this.newFrame.className = "result-frame";

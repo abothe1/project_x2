@@ -35,8 +35,12 @@ button:focus {
     outline: none;
 }
 
+img{
+  object-fit: cover;
+}
+
 html{
-  background-color: white;
+  background-color: black;
 }
 
 body{
@@ -260,7 +264,7 @@ search bar
 #searchbar-container{
   top: 24px;
   left: 25%;
-  position: fixed;
+  position: absolute;
   z-index: 4;
   text-align: left;
 }
@@ -318,7 +322,7 @@ search filters
 #filters{
   top: 260px;
   left: 0px;
-  position: fixed;
+  position: absolute;
   z-index: 4;
   text-align: center;
 }
@@ -359,7 +363,7 @@ body elements
   background-image: url('/assets/Home/background.png');
   background-size: 100%;
   background-attachment: fixed;
-  overflow: hidden;
+  overflow: scroll;
 }
 
 .grid-container {
@@ -371,7 +375,8 @@ body elements
   grid-gap: 10px;
   background-color: transparent;
   padding: 10px;
-  overflow: scroll;
+  overflow:visible;
+  margin-bottom: 200px;
 }
 
 .grid-container > div {
@@ -396,6 +401,10 @@ body elements
   position: absolute;
   margin-top: -20px;
   padding: 0;
+}
+
+.result-overlay:hover{
+  cursor: pointer;
 }
 
 .result-overlay p{
@@ -443,4 +452,8 @@ body elements
   -ms-user-select: none;
   -o-user-select: none;
   user-select: none;
+}
+
+.bottom-spacer{
+  margin-top: 100px;
 }

@@ -383,13 +383,13 @@ function createPageAsBand(){
     bandPriceText.innerHTML = "The asking price for this band is";
     bandPriceText.className = "profile-price-text";
     var bandPrice = document.getElementById("profile-price");
-    bandPrice.innerHTML = "$"+otherBand.price+"/hr";
+    bandPrice.innerHTML = "$"+otherBand.price;
     bandPrice.className ="profile-price";
   }else{
     bandPriceText.innerHTML = "This band has yet to perform any gigs through Banda! The asking price for this band is";
     bandPriceText.className = "profile-price-text-new";
     var bandPrice = document.getElementById("profile-price");
-    bandPrice.innerHTML = "$"+otherBand.price+"/hr";
+    bandPrice.innerHTML = "$"+otherBand.price;
     bandPrice.className = "profile-price-new";
   }
 
@@ -560,6 +560,7 @@ function createPageAsGig(){
   var addressH = document.createElement("h2");
   addressH.innerHTML = "address";
   var addressP = document.createElement("p");
+  gigInfoSection.append(addressH);
   addressP.className = "gig-address";
   addressP.innerHTML = otherGig.address;
   gigInfoSection.append(addressP);

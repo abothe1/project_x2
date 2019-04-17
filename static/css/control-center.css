@@ -211,7 +211,7 @@ h1, h2, h3, h4, h5, h6, p, button, input, textarea, li{
 }
 
 .profile-header-text{
-  font-size: 92pt;
+  font-size: 7vw;
   color: white;
 }
 
@@ -288,6 +288,7 @@ user gigs
   height: 200px;
   width: 200px;
   border-radius: 10px;
+  object-fit: cover;
 }
 
 .gig-pic-frame{
@@ -335,6 +336,7 @@ user gigs
   height: 200px;
   width: 200px;
   border-radius: 10px;
+  object-fit: cover;
 }
 
 .act-pic-frame{
@@ -427,6 +429,10 @@ open gig Elements
   padding: 2px;
 }
 
+.open-gig{
+  margin-bottom: 40px;
+}
+
 .open-gig-textarea::-webkit-scrollbar{
   width: 4px;
 }
@@ -504,10 +510,20 @@ open gig Elements
 */
 
 .profiles-list{
+  margin-left: -20px;
   z-index: 3;
   position: fixed;
   margin-top: 250px;
   color: white;
+}
+
+#profiles-list{
+  overflow: scroll;
+  height: 500px;
+}
+
+#profiles-list::-webkit-scrollbar{
+  width: 2px;
 }
 
 .profiles-list li{
@@ -558,6 +574,10 @@ open gig Elements
   border: none;
   font-size: 20pt;
   z-index: 100;
+}
+
+#contacts-button:hover{
+  cursor: pointer;
 }
 
 /* Modal Content Box */
@@ -643,6 +663,7 @@ label{
 
 #modal-wrapper-new-gig{
   z-index: 50;
+  display: none;
 }
 
 #new-gig-content > input{
@@ -654,7 +675,7 @@ label{
 
 #new-gig-title{
   width: 65%;
-  top: 25px;
+  top: 55px;
   position: absolute;
   margin-left: 260px;
 }
@@ -679,12 +700,17 @@ label{
   width: 82.5%;
 }
 
+#new-gig-zip{
+  margin-right: 10px;
+}
+
 #new-gig-pay{
   margin-top: 24px;
   width: 30%;
 }
 
 #new-gig-pic-preview{
+  object-fit: cover;
   height: 124px;
   width: 124px;
   margin-top: 24px;
@@ -715,9 +741,7 @@ label{
 }
 
 #new-gig-description-label{
-  position: absolute;
-  left: 16px;
-  bottom: 32%;
+  margin-top: 40px;
 }
 
 #new-gig-description{
@@ -738,6 +762,7 @@ label{
   margin-top: -6px;
   padding: 0;
   font-size: 32pt;
+  margin-bottom: 20px;
 }
 
 /*
@@ -842,6 +867,7 @@ label{
 }
 
 #new-band-pic-preview, #new-band-clip-preview{
+  object-fit: cover;
   height: 124px;
   width: 124px;
   margin-top: 0px;
@@ -944,6 +970,7 @@ ul{
   margin-top: 3px;
   border-radius: 4px;
   position: absolute;
+  object-fit: cover;
 }
 
 .carousel-frame{
@@ -973,6 +1000,7 @@ ul{
   margin-top: 34%;
   font-size: 2vw;
   text-align: center;
+  color: white;
 }
 
 .result-name-div {
@@ -1104,7 +1132,7 @@ upcoming carousel
 }
 
 #main-content-wrapper{
-  margin-left: 240px;
+  margin-left: 20%;
   margin-top: 180px;
   width: 70%;
   background-color: transparent;
@@ -1385,6 +1413,7 @@ chat boxes
   border: none !important;
   border-radius: 8px;
   background-color: #333d44;
+  object-fit: cover;
 }
 
 #current-band-clip-preview{
@@ -1685,7 +1714,37 @@ margin-top: 100px;
   width: 80%;
   margin-left: 10%;
 }
-#confirm-cancel{
+.modal-p{
+  margin-top: 50px;
+  text-align: center;
+  font-size: 18pt;
+  width: 80%;
+  margin-left: 10%;
+}
+
+#modal-wrapper-report-absent-band{
+  display: none;
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  z-index: 110;
+  background-color: rgba(0,0,0,0.4);
+}
+
+#modal-wrapper-confirm-booking{
+  display: none;
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  z-index: 110;
+  background-color: rgba(0,0,0,0.4);
+}
+
+#confirm-cancel, #report-band{
   margin-top: 40px;
   width: 80%;
   height: 60px;
@@ -1696,7 +1755,7 @@ margin-top: 100px;
   color: red;
   background-color: rgba(0,0,0,0.8);
 }
-#confirm-cancel:hover{
+#confirm-cancel:hover, #report-band:hover{
   cursor: pointer;
   opacity: 0.6;
 }
@@ -1895,7 +1954,7 @@ bank modal
 }
 .close-bank {
     position: absolute;
-    margin-left: 460px;
+    margin-left: 500px;
     margin-top: -20px;
     color: #000;
     opacity: 0.6;
@@ -1906,4 +1965,55 @@ bank modal
 .close-bank:hover,.close-bank:focus {
     opacity: 0.5;
     cursor: pointer;
+}
+
+.report-band-btn{
+  color: red;
+  opacity: 0.8;
+  border: none;
+  background-color: transparent;
+}
+
+.report-band-btn:hover{
+  cursor: pointer;
+}
+
+#modal-wrapper-confirmation-code{
+  display: none;
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  z-index: 110;
+  background-color: rgba(0,0,0,0.4);
+}
+
+.confirm-modal-btn{
+  margin-top: 40px;
+  width: 80%;
+  height: 60px;
+  margin-left: 10%;
+  border: 2px solid #56dff0;
+  border-radius: 10px;
+  text-align: center;
+  color: #56dff0;
+  background-color: rgba(0,0,0,0.8);
+}
+
+.confirm-modal-btn:hover{
+  cursor: pointer;
+  opacity: 0.6;
+}
+
+#confirmation-code-input{
+  width: 60%;
+  height: 60px;
+  padding: 8px;
+  text-align: center;
+  margin-left: 20%;
+  border: none;
+  background-color: rgba(0,0,0,0.8);
+  border-radius: 10px;
+  color: white;
 }

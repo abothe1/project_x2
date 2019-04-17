@@ -33,7 +33,7 @@ module.exports = router =>{
           var cus_id = customer['id'];
 
           database.connect(db=>{
-            db.db('users').collection('stripe_customers').insertOne({'username':username, 'stripe_id':cus_id}, (res4)=>{
+            db.db('users').collection('stripe_customers').insertOne({'username':username, 'stripe_id':cus_id, 'charges':[], 'src_id':card_token}, (res4)=>{
               console.log('Added user ' + username+ 'to stripe_customers woth cus_id: ' + cus_id);
               res.status(200).end();
               db.close();

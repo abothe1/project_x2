@@ -54,7 +54,14 @@
       </form>
 
     </div>
-
+    <div id="modal-wrapper-confirmation-code">
+      <div  id="cancel-content" class="modal-content-cancel animate">
+        <span onclick="document.getElementById('modal-wrapper-confirmation-code').style.display='none'" class="cancel-close" title="Close PopUp">&times;</span>
+        <p class="modal-p">Enter the confirmation code provided by the event host upon completion of this event. After both parties submit their confirmation codes, we will issue a payment to the account associated with this band profile.</p>
+        <input type="text" id="confirmation-code-input"/>
+        <input type="button" class="confirm-modal-btn" id="submit-confirmation-code" value="submit confirmation code"/>
+      </div>
+    </div>
     <div id="modal-wrapper-cancel">
       <div  id="cancel-content" class="modal-content-cancel animate">
         <span onclick="document.getElementById('modal-wrapper-cancel').style.display='none'" class="cancel-close" title="Close PopUp">&times;</span>
@@ -62,7 +69,28 @@
         <input type="button" id="confirm-cancel" />
       </div>
     </div>
-
+    <div id="modal-wrapper-confirm-booking">
+      <div  id="cancel-content" class="modal-content-cancel animate">
+        <input type="hidden" name="bandID" />
+        <input type="hidden" name="gigID" />
+        <span onclick="document.getElementById('modal-wrapper-confirm-booking').style.display='none'" class="cancel-close" title="Close PopUp">&times;</span>
+        <p id="confirm-booking-text" class="modal-p"></p>
+        <input type="button" class="confirm-modal-btn" id="confirm-booking" value="confirm"/>
+      </div>
+    </div>
+    <div id="modal-wrapper-report-absent-band">
+      <div  id="cancel-content" class="modal-content-cancel animate">
+        <input type="hidden" name="bandID" />
+        <input type="hidden" name="gigID" />
+        <span onclick="document.getElementById('modal-wrapper-report-absent-band').style.display='none'" class="cancel-close" title="Close PopUp">&times;</span>
+        <p id="report-band-text" class="modal-p">
+          By filing this report, the band you booked for this event will receive a
+          negative mark on their reliability record. Your payment to this band will be refunded
+          to you only if we can confirm that neither party submitted a confirmation code.
+        </p>
+        <input type="button" id="report-band" value="submit report"/>
+      </div>
+    </div>
     <div id="modal-wrapper-link-application" class="modal2">
       <div class="imgcontainer">
         <span onclick="document.getElementById('modal-wrapper-link-application').style.display='none'" class="close" title="Close PopUp">&times;</span>
@@ -113,10 +141,11 @@
           <input id="new-gig-zip" class="modal-input" type="number" required></input>
           <label for="new-gig-pay">pay rate ($/event)</label>
           <input id="new-gig-pay" class="modal-input" type="number" required></input>
-          <img id="new-gig-pic-preview"/>
-          <div id="new-gig-spacer"></div>
+          <br>
           <label for="new-gig-pic">upload image</label>
           <input id="new-gig-pic" class="modal-input" type="file" required></input>
+          <img id="new-gig-pic-preview"/>
+          <br>
           <label id="new-gig-description-label" for="new-gig-description" required>description</label>
           <textarea id="new-gig-description" class="modal-textarea" required></textarea>
           <button type='button' class="popUpButtons" id="new-gig-post" onclick="postGig()">post</button>
@@ -317,7 +346,7 @@
       </div>
 
       <div class='circle-container'>
-        <a href='#' class='deg30'><p class="radialText">About</p></a>
+        <a href='about' class='deg30'><p class="radialText">About</p></a>
         <a href='index' class='deg60'><p class="radialText">Landing</p></a>
         <a href='#' class='deg90' onclick="document.getElementById('modal-wrapper-support').style.display='block'"><p class="radialText">Support</p></a>
       </div>
@@ -326,8 +355,8 @@
         <p class="profile-header-text" id='userNameHeader'></p>
       </div>
 
-      <div id='profiles-list' class="profiles-list">
-        <ul>
+      <div class="profiles-list">
+        <ul id='profiles-list'>
           <li><a href="#" onclick="document.getElementById('modal-wrapper-bank').style.display='block'">+ Create a Band</a></li>
           <li><a href="#" onclick="prepareCardElement()">+ Post an Event</a></li>
         </ul>

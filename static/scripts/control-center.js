@@ -26,6 +26,7 @@ var changingGigInfo={};
 var userContacts = {};
 var userMessages={};
 var user_email = null;
+globalGigs = [];
 //CHNAGE GIGS SECTION:?////////
 
 
@@ -162,7 +163,7 @@ class OpenGig{
 
     this.gigPL = document.createElement("h3");
     this.gigPL.id = "open-gig-pay-label";
-    this.gigPL.innerHTML = "Max Pay ($/hr)";
+    this.gigPL.innerHTML = "Max Pay ($)";
     this.gigPay = document.createElement("input");
     this.gigPay.className = "max-pay-input";
     this.gigPay.name=gig._id;
@@ -220,7 +221,6 @@ class OpenGig{
       else{
         return;
       }
-
     });
     this.gigConfirm.className = "open-gig-confirm";
     this.gigConfirm.innerHTML = "confirm changes";
@@ -230,9 +230,12 @@ class OpenGig{
     if(gig.hasOwnProperty("applications")){
         var newObj = {
           "apps":gig.applications,
-          "gigID": gig._id
-        }
+          "gigID": gig._id,
+          "theGig": gig
+        };
       if(gig.applications.length > 0){
+        // disable edit price
+        this.gigPay.disabled = true;
         new Carousel(newObj,newObj,"hosted-applications",carCallback=>{
           this.applicantCarousel = carCallback;
           this.carEl = this.applicantCarousel.wrapper;
@@ -408,6 +411,13 @@ class BookedGig {
     this.gigConfirmA.className = "gig-confirm-a";
     this.gigConfirmA.href = "#"; // can be changed to a javascript function for code submission
     this.gigConfirmA.innerHTML = "confirm";
+    if(this.GigIsPastStartDate(gig)){
+      console.log('Got In IF for gig being past end Time.')
+      this.reportBand = document.createElement("input");
+      this.reportBand.type = "button";
+      this.reportBand.value = "report absent band...";
+      this.reportBand.className = "report-band-btn";
+    }
     //async
     getBandInfo(gig.bandFor, res=>{
       this.band = res;
@@ -433,6 +443,7 @@ class BookedGig {
           this.gigConfirm.append(this.gigConfirmP);
           this.gigConfirm.append(this.gigConfirmInput);
           this.gigConfirm.append(this.gigConfirmA);
+          this.gigConfirm.append(this.reportBand);
       // tier 2
           this.gigContent.append(this.gigImg);
           this.gigContent.append(this.gigDesc);
@@ -461,6 +472,8 @@ class BookedGig {
     },false);
     obj.viewBtn.addEventListener("click",function(){
       console.log(obj.bandID);
+      console.log(obj.gigID);
+      window.location.href='/otherProfile?id='+obj.bandID+'&mode=band&searchingAs'+obj.gigID+'&searchingType=gig';
     });
     obj.cancelBtn.addEventListener("click",function(){
       console.log(obj.bandID);
@@ -468,7 +481,35 @@ class BookedGig {
       presentCancelModal("BookedGig",obj.bandID,obj.gigID);
     });
   }
+  GigIsPastStartDate(myGig){
+    var now = new Date();
+    var gigStartDate = myGig['date'];
+    console.log('gigStartDate is : ' + gigStartDate);
+    var gigEndTime = myGig['endTime'];
+    console.log('gigStartTime is : ' + gigEndTime);
+    var dateArr = gigStartDate.split('-');
+    var timeArr = gigEndTime.split(':');
+    var gigDate = new Date(dateArr[0], dateArr[1], dateArr[2],timeArr[0], timeArr[1]);
+    var difference = diff_hours(gigDate, now)
+    console.log()
+    if (difference>=0){
+      return true;
+    }
+    else{
+      return false;
+    }
+  }
 }
+function diff_hours(dt1, dt2) {
+  //var dt1 = new Date(dt1Str);
+//  var dt2 = new Date(dt2Str);
+  console.log("in diff mins on alg page and dt2 is : " + dt2 + "and dt1 is : " + dt1);
+  var diff =(dt2.getTime() - dt1.getTime()) / 1000;
+  console.log("diff is : " + diff);
+  diff /= 3600;
+  console.log("diff is : " + diff);
+  return Math.round(diff);
+ }
 
 function presentCancelModal(state, bandID, gigID){
   switch(state){
@@ -537,12 +578,20 @@ class GigSection{
       bookedGigsH.innerHTML = "Booked Events";
       bookedGigs.append(bookedGigsH);
       profileGigs.append(bookedGigs);
+      var noGigs = true;
       for(var gig in gigs){
         if((gigs[gig].isFilled && !(gigs[gig].confirmed)) || (gigs[gig].isFilled=='true' && gigs[gig].confirmed=='false')){
+          noGigs = false;
           new BookedGig(gigs[gig], res=>{
             bookedGigs.append(res.container);
           });
         }
+      }
+      if(noGigs){
+        var noneP = document.createElement("p");
+        noneP.innerHTML = "none";
+        bookedGigs.append(noneP);
+        break;
       }
       break;
       case "open":
@@ -552,13 +601,22 @@ class GigSection{
       openGigsH.innerHTML = "Open Events";
       openGigs.append(openGigsH);
       profileGigs.append(openGigs);
+      var noGigs = true;
       for(var gig in gigs){
         if((!(gigs[gig].isFilled) && !(gigs[gig].confirmed)) || (gigs[gig].isFilled=='false'&& gigs[gig].confirmed=='false')){
+          noGigs = false;
           new OpenGig(gigs[gig], res=>{
+
             console.log('In callback for open gig : html is: ' + res.titleDiv);
             openGigs.append(res.titleDiv);
           });
         }
+      }
+      if(noGigs){
+        var noneP = document.createElement("p");
+        noneP.innerHTML = "none";
+        openGigs.append(noneP);
+        break;
       }
       break;
       case "past-hosted":
@@ -583,6 +641,11 @@ class GigSection{
           pastGigs.append(res.wrapper);
           setupAction();
         });
+      }else{
+        var noneP = document.createElement("p");
+        noneP.innerHTML = "none";
+        pastGigs.append(noneP);
+        break;
       }
       break;
     }
@@ -1170,6 +1233,8 @@ class Carousel{
           bookBtn.className = "car-book-button";
           bookBtn.bandID = this.applicants[band]._id;
           bookBtn.gigID = this.gigID;
+          bookBtn.bandName = this.applicants[band].name;
+          bookBtn.theGig = obj.theGig;
           bookBtn.value = "book";
           var declineBtn = document.createElement("input");
           declineBtn.type = "button";
@@ -1351,6 +1416,7 @@ class Carousel{
           console.log('gig in upcoming gigs: ' + JSON.stringify(this.upcomingGigs[gig]));
           var id = this.upcomingGigs[gig]._id;
           var name = this.upcomingGigs[gig].name;
+          var bandID = this.upcomingGigs[gig].bandFor;
           var newItem = document.createElement("li");
           newItem.className = "carousel-li";
           // img
@@ -1368,20 +1434,38 @@ class Carousel{
           newOverlay.className = "result-overlay";
           var overlayID = "result-overlay-"+gig;
           newOverlay.setAttribute("id",overlayID);
-          var confirmP = document.createElement("p");
-          confirmP.className = "result-overlay-confirm-p";
-          confirmP.innerHTML = "confirm payment of $"+this.upcomingGigs[gig].price;
-          var confirmInput = document.createElement("input");
-          confirmInput.className = "gig-confirm-input-upcoming";
-          confirmInput.placeholder = "code from venue"
-          var confirmA = document.createElement("input");
-          confirmA.type = "button";
-          confirmA.className = "gig-confirm-button-upcoming";
-          confirmA.value = "confirm";
-          var cancelA = document.createElement("a");
-          cancelA.href = "#";
-          cancelA.className = "cancel-button-for-band";
-          cancelA.innerHTML = "cancel this gig...";
+          // var confirmP = document.createElement("p");
+          // confirmP.className = "result-overlay-confirm-p";
+          // confirmP.innerHTML = "confirm payment of $"+this.upcomingGigs[gig].price;
+          // var confirmInput = document.createElement("input");
+          // confirmInput.className = "gig-confirm-input-upcoming";
+          // confirmInput.placeholder = "code from venue"
+          // var confirmA = document.createElement("input");
+          // confirmA.type = "button";
+          // confirmA.className = "gig-confirm-button-upcoming";
+          // confirmA.value = "confirm";
+          // var cancelA = document.createElement("a");
+          // cancelA.href = "#";
+          // cancelA.className = "cancel-button-for-band";
+          // cancelA.innerHTML = "cancel this gig...";
+          var viewBtn = document.createElement("input");
+          viewBtn.type = "button";
+          viewBtn.className = "car-view-button";
+          viewBtn.bandID = bandID;
+          viewBtn.gigID = id;
+          viewBtn.value = "view";
+          var confirmBtn = document.createElement("input");
+          confirmBtn.type = "button";
+          confirmBtn.className = "car-book-button";
+          confirmBtn.bandID = bandID;
+          confirmBtn.gigID = id;
+          confirmBtn.value = "confirm";
+          var cancelBtn = document.createElement("input");
+          cancelBtn.type = "button";
+          cancelBtn.className = "car-decline-button";
+          cancelBtn.bandID = bandID;
+          cancelBtn.gigID = id;
+          cancelBtn.value = "cancel";
           // nameplate
           var nameDiv = document.createElement("div");
           nameDiv.className = "result-name-div";
@@ -1389,14 +1473,16 @@ class Carousel{
           nameP.className = "result-name-p";
           nameP.innerHTML = this.upcomingGigs[gig].name;
           newItem.append(newImg);
-          newOverlay.append(confirmP);
-          newOverlay.append(confirmInput);
-          newOverlay.append(confirmA);
-          newOverlay.append(cancelA);
+          // newOverlay.append(confirmP);
+          // newOverlay.append(confirmInput);
+          // newOverlay.append(confirmA);
+          // newOverlay.append(cancelA);
+          newOverlay.append(viewBtn);
+          newOverlay.append(confirmBtn);
+          newOverlay.append(cancelBtn);
           newItem.appendChild(newOverlay);
           newItem.append(newFrame);
           console.log("PRE AB PRINT");
-
           if(obj[gig].canceled){
             console.log("DETECT CANCEL");
             // it's rejected
@@ -1416,8 +1502,11 @@ class Carousel{
             newItem.newOverlay = newOverlay;
             newItem.gigID = this.upcomingGigs[gig]._id;
             newItem.bandID = this.bandID;
-            newItem.confirmButton = confirmA;
-            newItem.cancelButton = cancelA;
+            // newItem.confirmButton = confirmA;
+            // newItem.cancelButton = cancelA;
+            newItem.confirmButton = confirmBtn;
+            newItem.cancelButton = cancelBtn;
+            newItem.viewButton = viewBtn;
             this.AddOverlayEventListeners(newItem);
           }
         }
@@ -1641,7 +1730,7 @@ class Carousel{
           });
           var priceText = document.createElement("p");
           priceText.className = "result-overlay-p";
-          priceText.innerHTML = "$"+this.interestedGigs[gig].price+"/hr";
+          priceText.innerHTML = "$"+this.interestedGigs[gig].price;
           // nameplate
           var nameDiv = document.createElement("div");
           nameDiv.className = "result-name-div";
@@ -1847,11 +1936,11 @@ class Carousel{
       obj.bookBtn.addEventListener("click",function(){
         console.log("band id: "+obj.bookBtn.bandID);
         console.log("gig id: "+obj.bookBtn.gigID);
+        console.log("theGig: "+obj.bookBtn.theGig);
         //accept post
         //
-        $.post('/accept', {'gigID':obj.bookBtn.gigID, 'bandID':obj.bookBtn.bandID}, res=>{
-          alert('Congratulations, you have accepted the application for this band. Be sure to check the email asscoaited with your account regulary to recieve the confirmation code which you will exchange with the artist at the time of the event.')
-        });
+        presentConfirmBookingModal(obj.bookBtn.bandName,obj.bookBtn.bandID,obj.bookBtn.gigID,obj.bookBtn.theGig);
+
       });
     }
     if(obj.hasOwnProperty("declineBtn")){
@@ -1902,14 +1991,21 @@ class Carousel{
       });
     }
     if(obj.hasOwnProperty("confirmButton")){
+      // upcoming gigs overlay
       obj.confirmButton.addEventListener("click",function(){
         console.log("gig id: "+ obj.gigID);
         console.log("band id: "+ obj.bandID);
+        presentConfirmationCodeModal(obj.gigID,obj.bandID);
       });
       obj.cancelButton.addEventListener("click",function(){
         console.log("gig id: "+ obj.gigID);
         console.log("band id: "+ obj.bandID);
         presentCancelModal("UpcomingGig",obj.bandID,obj.gigID);
+      });
+      obj.viewButton.addEventListener("click",function(){
+        console.log("band id: "+obj.viewButton.bandID);
+        console.log("gig id: "+obj.viewButton.gigID);
+          window.location.href='/otherProfile?id='+obj.viewButton.gigID+'&mode=gig&searchingAs'+obj.viewButton.bandID+'&searchingType=band';
       });
     }
   }
@@ -1920,6 +2016,25 @@ class Carousel{
     });
 
   }
+}
+
+function presentConfirmBookingModal(bandName, bandID, gigID, theGig){
+  var modal = document.getElementById("modal-wrapper-confirm-booking");
+  modal.style.display = "block";
+  var bookText = document.getElementById("confirm-booking-text");
+  bookText.innerHTML = "Are you sure you want to book "+bandName+" for this event? You will be charged ";
+  var bookBtn = document.getElementById("confirm-booking");
+  bookBtn.addEventListener("click",function(){
+    $.post('/accept', {'gigID':gigID, 'bandID':bandID}, res=>{
+      var modal = document.getElementById("modal-wrapper-confirm-booking");
+      modal.style.display = "none";
+      alert('Congratulations, you have accepted the application for this band. Be sure to check the email asscoaited with your account regulary to recieve the confirmation code which you will exchange with the artist at the time of the event.')
+    });
+  });
+}
+
+function presentConfirmationCodeModal(gigID,bandID){
+  document.getElementById("modal-wrapper-confirmation-code").style.display = "block";
 }
 
 var callbackStepper = 0;
@@ -1995,8 +2110,8 @@ function getUserInfo(user){
     user['bands']=bands;
     $.get('/getGigs', {'creator':username}, result => {
       console.log("gigs from db are: " + JSON.stringify(result));
-      var gigs = JSON.parse(JSON.stringify(result));
-      user['gigs']=gigs;
+      globalGigs = JSON.parse(JSON.stringify(result));
+      user['gigs']=globalGigs;
       document.getElementById('userNameHeader').innerHTML=user['username'];
       createWebPage(user);
   	});
@@ -2658,7 +2773,7 @@ function postGig(){
 <input id="new-gig-end-time" class="modal-input" type="time"></input>
 <label for="new-gig-loc">location</label>
 <input id="new-gig-loc" class="modal-input" type="text"></input>
-<label for="new-gig-pay">pay rate ($/hr)</label>
+<label for="new-gig-pay">pay rate ($)</label>
 <input id="new-gig-pay" class="modal-input" type="text"></input>
 <img id="new-gig-pic-preview"/>
 <div id="new-gig-spacer"></div>
@@ -2767,6 +2882,7 @@ function sendGigToDB(lat,lng, myNewGig) {
           $.post('/gig', {'name':name, 'address':address, 'date':startDate, 'zipcode': zipcode, 'price': price, 'startDate': startDate, 'startTime':startTime, 'day':day, 'endTime': endTime, 'applications': [], 'lat': lat, 'lng': lng, 'categories':categoriesFromStr, 'isFilled':false, 'bandFor':null, 'description':description, 'picture':picPath}, result => {
               console.log("got cb from post /gig");
               alert('Congratulations, you have posted the event ' + name + ' to Banda! Band applications will be coming in soon. You can close the form abd refresh the page to see/edit your event. Check/refresh your home page regularly to see new applicants. You can also search for bands as this event now and use our "Ask user to apply..." allow an artist to apply directly to your gig.');
+              document.getElementById("modal-wrapper-new-gig").style.display = "none";
             });
       }
 
@@ -3658,6 +3774,10 @@ function updateUser(id, query){
 
 
 function prepareCardElement(){
+  if (globalGigs.length>0){
+    document.getElementById("modal-wrapper-new-gig").style.display = 'block';
+    return;
+  }
   document.getElementById('modal-wrapper-credit').style.display='block';
   //STRIPE SECTION:
   //https://dashboard.stripe.com/test/dashboard -> dashboard

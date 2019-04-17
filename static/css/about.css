@@ -1,32 +1,7 @@
-/*************************************************************************
- *
- * BANDA CONFIDENTIAL
- * __________________
- *
- *  Copyright (C) 2019
- *  Banda Incorporated
- *  All Rights Reserved.
- *
- * NOTICE:  All information contained herein is, and remains
- * the property of Banda Incorporated and its suppliers,
- * if any.  The intellectual and technical concepts contained
- * herein are proprietary to Banda Incorporated
- * and its suppliers and may be covered by U.S. and Foreign Patents,
- * patents in process, and are protected by trade secret or copyright law.
- * Dissemination of this information or reproduction of this material
- * is strictly forbidden unless prior written permission is obtained
- * from Banda Incorporated.
- *
-*************************************************************************/
-
-/*
-Radial Menu Stuff
-*/
-
 @font-face { font-family: Industry; src: url('/assets/Industry.otf'); }
-
-h1, h4, h6, p, button, input, textarea{
+h1, h2, h4, h6, p, button, input, textarea, li, ul{
   font-family: Industry, sans-serif;
+  color: white;
 }
 
 .radialText{
@@ -106,23 +81,12 @@ h1, h4, h6, p, button, input, textarea{
 .fa-comments:hover {color:teal;}
 .fa-heart:hover {color:red;}
 
-.open.deg0 { transform: rotate(8deg) translate(11em) rotate(-8deg); }
-.open.deg30 { transform: rotate(28deg) translate(12em) rotate(-28deg); }
-.open.deg60 { transform: rotate(48deg) translate(13em) rotate(-48deg); }
+.open.deg0 { transform: rotate(10deg) translate(11em) rotate(-10deg); }
+.open.deg30 { transform: rotate(34deg) translate(12em) rotate(-34deg); }
+.open.deg60 { transform: rotate(54deg) translate(13em) rotate(-54deg); }
 .open.deg90 { transform: rotate(80deg) translate(13em) rotate(-80deg);
 }
 
-#author {
-  font-family:'Squada One';
-  top: calc(50% + 50px);
-  left: calc(50% - 225px);
-
-  font-size:40px;
-  text-decoration:none;
-  display: block;
-  position: absolute;
-  text-align:center;
-}
 
 /*
 Globals
@@ -152,17 +116,6 @@ a {
   color:black;
 }
 
-/*
-Body elements
-*/
-
-#container2 {
-  width: 100%;
-  height: 100%;
-  position: absolute;
-  background: white;
-}
-
 #rain{
   width: 100%;
   height: 100%;
@@ -172,85 +125,6 @@ Body elements
   background-size: cover;
   overflow: hidden;
 }
-
-.rainDrop{
-  position: absolute;
-  margin: 0;
-  padding: 0;
-  z-index: 0;
-  /* border-radius: 6px; */
-}
-
-.search{
-  position: absolute;
-  z-index: 4;
-  top: 41%;
-  left: 48%;
-  margin-top: -40px;
-  margin-left: -300px;
-  width: 600px;
-  height: 100px;
-  /* background-color: red; */
-}
-
-.options{
-  position: relative;
-  z-index: 4;
-  top: 185%;
-  left: 90%;
-  margin-top: -55px;
-  margin-left: -300px;
-  width: 600px;
-  height: 20px;
-  float: right;
-}
-
-.options-buttons{
-  background-color: transparent;
-  border: none;
-  color: white;
-}
-
-.options-buttons:hover{
-  color: rgba(86,223,240,1.0);
-}
-
-#dot{
-  max-height: 1px;
-  max-width: 1px;
-}
-
-/*
-Search Bar elements
-*/
-
-#barImg{
-  position: absolute;
-  margin: 0;
-  padding: 0;
-  width: 740px;
-  height: 134px;
-}
-
-#search_input{
-  position: absolute;
-  margin: auto;
-  top: 52%;
-  left: 50%;
-  padding: 0;
-  margin-top: -45px;
-  margin-left: -250px;
-  width: 600px;
-  height: 120px;
-  background-color: rgba(0,0,0,0.0);
-  border: 0;
-  font-size: 48px;
-  color: white;
-}
-
-/*
-Login Popup Elements
-*/
 
 /*style for the pop up goes here*/
 /* Full-width input fields */
@@ -278,7 +152,6 @@ input[type=text], input[type=password], input[type=number], input[type=datetime-
 .popUpButtons:hover {
     opacity: 0.8;
 }
-
 
 /* Center the image and position the close button */
 .imgcontainer {
@@ -316,8 +189,6 @@ input[type=text], input[type=password], input[type=number], input[type=datetime-
   overflow: auto;
   background-color: rgba(0,0,0,0.4);
 }
-
-
 
 /* Modal Content Box */
 .modal-content {
@@ -364,7 +235,6 @@ input[type=text], input[type=password], input[type=number], input[type=datetime-
     cursor: pointer;
 }
 
-
 /* Add Zoom Animation */
 .animate {
     animation: zoom 0.6s
@@ -385,12 +255,25 @@ Ticker elements
     position: absolute;
     margin: auto;
     width: 100%;
-    height: 100px;
-    top:75%;
-    bottom: 0;
+    height: 46px;
+    bottom: 0px;;
     border-color: transparent;
     overflow-y: visible;
     perspective: 1000px; /* Remove this if you don’t want the 3D effect */
+}
+
+.flip-box-bg{
+  z-index: 3;
+  /* background-color: red; */
+  position: absolute;
+  margin: auto;
+  width: 100%;
+  height: 60px;
+  top:96%;
+  bottom: 0;
+  border-color: transparent;
+  overflow-y: visible;
+  perspective: 1000px; /* Remove this if you don’t want the 3D effect */
 }
 
 /* This container is needed to position the front and back side */
@@ -400,19 +283,12 @@ Ticker elements
     width: 100%;
     margin: auto;
     height: 100%;
-    padding-top: 6px;
     text-align: center;
     overflow-y: visible;
     transition: transform 0.8s;
     transform-style: preserve-3d;
     /* background-color: rgba(0,0,0,0.9); */
   }
-
-
-
-
-
-
 
   #flip-box-img{
     position: absolute;
@@ -432,8 +308,8 @@ flip box containe;;;; got rid of it cuz im using flipp */
     height: 100%;
     overflow-y: visible;
     backface-visibility: hidden;
-    /* background-size: contain; */
-    /* background: url('/assets/Home/tickerop.png'); */
+    background-size: contain;
+    /* background: url('/assets/Home/ticker.png'); */
 }
 
 /* Style the front side */
@@ -443,7 +319,7 @@ flip box containe;;;; got rid of it cuz im using flipp */
 
 /* Style the back side */
 .back {
-  /*  background-color: dodgerblue;*/
+    background-color: dodgerblue;
     color: white;
     transform: rotateX(180deg);
 }
@@ -462,22 +338,6 @@ flip box containe;;;; got rid of it cuz im using flipp */
   color: white;
   letter-spacing: .4em;
 }
-#backText{
-  z-index: 4;
-  position: absolute;
-  display: block;
-  margin-top: .6%;
-  width: 100%;
-  text-align: center;
-  /* background: -webkit-linear-gradient(left, #5969ff 0%,#ff0061 80%); /* Chrome10-25,Safari5.1-6 */ */
-  /* -webkit-background-clip: text;
-  -webkit-text-fill-color: transparent; */
-  font-size: 14pt;
-  color: white;
-  letter-spacing: .4em;
-}
-
-
 
 #ticker-bg{
   position: absolute;
@@ -489,43 +349,182 @@ flip box containe;;;; got rid of it cuz im using flipp */
   left: 0;
 }
 
-/* This container is needed to position the front and back side */
-.flip-box-inner {
-    position: absolute;
-    top:98%;
-    width: 100%;
-    margin: auto;
-    height: 100%;
-    text-align: center;
-    overflow-y: visible;
-    transition: transform 0.8s;
-    transform-style: preserve-3d;
-    /* background-color: rgba(0,0,0,0.9); */
-  }
+/* main content css */
 
-.flip-box-bg{
-  z-index: 3;
-  /* background-color: red; */
-  position: absolute;
-  margin: auto;
+.main-content{
   width: 100%;
-  height: 60px;
-  top:96%;
-  bottom: 0;
-  border-color: transparent;
-  overflow-y: visible;
-  perspective: 1000px; /* Remove this if you don’t want the 3D effect */
+  height: 100%;
+  overflow: scroll;
 }
 
-#flip-box-img{
-  position: absolute;
-  height: 60px;
-  width: 100%;
+#about-title{
+  margin-top: 20%;
 }
 
-/* Permalink - use to edit and share this gradient: http://colorzilla.com/gradient-editor/#5969ff+0,ff0061+100 */
-/* background: #5969ff; /* Old browsers */
-/* background: -moz-linear-gradient(left, #5969ff 0%, #ff0061 100%); /* FF3.6-15 */
-/* background: -webkit-linear-gradient(left, #5969ff 0%,#ff0061 100%); /* Chrome10-25,Safari5.1-6 */
-/* background: linear-gradient(to right, #5969ff 0%,#ff0061 100%); /* W3C, IE10+, FF16+, Chrome26+, Opera12+, Safari7+ */
-/* filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#5969ff', endColorstr='#ff0061',GradientType=1 ); /* IE6-9 */
+.large-text{
+  font-size: 48pt;
+  text-align: center;
+}
+
+#about-content{
+  text-align: center;
+  width: 44%;
+  margin-top: 10px;
+  margin-left: 28%;
+  font-size: 14pt;
+  margin-bottom: 80px;
+}
+.text-shadow {
+   color: white;
+   text-shadow: 1 2 5px rgba(255,255,255,0.5);
+}
+.golden-ratio{
+  width: 40%;
+  margin-left: 30%;
+  border-bottom: 1px solid rgba(86,223,240,0.5);
+  font-size: 32pt;
+  text-align: center;
+  padding-bottom: 10px;
+}
+
+strong{
+  color: rgba(86,223,240,1.0);
+  font-weight: bolder;
+  font-size: 16pt;
+  font-language-override;
+  padding-bottom: 4px;
+  border-bottom: 1px solid rgba(86,223,240,0.5);
+}
+
+strong:hover{
+  -webkit-transition: all 0.5s ease-out;
+  text-shadow: 0px 30px 10px rgba(255,255,255,0.2);
+  cursor: pointer;
+}
+
+.mission-p{
+  text-align: center;
+  width: 60%;
+  margin-left: 20%;
+  line-height: 50px;
+  font-size: 14pt;
+}
+
+.mission-title{
+  color: rgba(86,223,240,1.0);
+  width: 40%;
+  margin-left: 30%;
+  border-bottom: 1px solid rgba(86,223,240,0.5);
+  font-size: 32pt;
+  text-align: center;
+  padding-bottom: 10px;
+}
+
+.mission-content{
+  margin-top: 100px;
+}
+
+#band-together{
+  margin-top: 100px;
+  margin-bottom: 100px;
+}
+
+.read-more-state {
+  display: none;
+}
+
+.read-more-state-2 {
+  display: none;
+}
+
+.read-more-target {
+  opacity: 0;
+  max-height: 0;
+  font-size: 0;
+  transition: .25s ease;
+  width: 82%;
+  margin-left: 9%;
+  text-align: center;
+  line-height: 50px;
+  font-size: 16pt;
+}
+
+.read-more-target-2 {
+  opacity: 0;
+  max-height: 0;
+  font-size: 0;
+  transition: .25s ease;
+  width: 82%;
+  margin-left: 9%;
+  text-align: center;
+  line-height: 50px;
+  font-size: 16pt;
+}
+
+.read-more-state:checked ~ .read-more-wrap .read-more-target {
+  opacity: 1;
+  font-size: inherit;
+  max-height: 999em;
+}
+
+
+.read-more-state-2:checked ~ .read-more-wrap-2 .read-more-target-2 {
+  opacity: 1;
+  font-size: inherit;
+  max-height: 999em;
+}
+
+.read-more-trigger {
+  cursor: pointer;
+  color: #666;
+  font-size: .9em;
+  line-height: 2;
+  border: 1px solid rgba(86,223,240,1.0);
+  background-color: rgba(3,16,26,1.0);
+  border-radius: .25em;
+  width: 80%;
+  margin-left: 10%;
+  text-align: center;
+  font-size: 18pt;
+  font-family: Industry, sans-serif;
+  color: white;
+}
+
+
+.read-more-trigger-2 {
+  cursor: pointer;
+  color: #666;
+  font-size: .9em;
+  line-height: 2;
+  border: 1px solid rgba(86,223,240,1.0);
+  background-color: rgba(3,16,26,1.0);
+  border-radius: .25em;
+  width: 80%;
+  margin-left: 10%;
+  text-align: center;
+  font-size: 18pt;
+  font-family: Industry, sans-serif;
+  color: white;
+}
+
+.bottom-p{
+  margin-top: 300px;
+}
+
+#vibe-title{
+  margin-top: 100px;
+}
+
+#features-list{
+  padding: 0;
+  list-style-type: none;
+}
+
+.grid{
+  display: grid;
+  grid-template-columns: 50% 50%;
+}
+
+.remove-bottom{
+  margin-bottom: 0;
+}

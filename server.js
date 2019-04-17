@@ -82,6 +82,7 @@ var router = express.Router();
 // display index
 router.get('/', (_, res) => res.redirect('/index'));
 router.get('/index', (_, res) => { res.render('index.html'); });
+router.get('/about',(_,res)=> {res.render('about.html');});
 
 require('./routes/auth.js')(router, app); // login, register, logout
 require('./routes/upload2.js')(router, app); // uploads and downlaods data
@@ -95,7 +96,7 @@ require('./routes/delete.js')(router, app); // for ressetting everythingegt rid 
 require('./routes/messaging.js')(router, app); //for getting messages out of monog
 require('./routes/samples.js')(router, app); //for getting sampples
 require('./routes/newAccount.js')(router, app); //for creating stripe connected account (bands)
-require('./routes/newCustomer.js')(router, app); // for creating chareable customers  (gigs) 
+require('./routes/newCustomer.js')(router, app); // for creating chareable customers  (gigs)
 
 //for routing messaing and emiting the message:
 

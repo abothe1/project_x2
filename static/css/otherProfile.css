@@ -239,7 +239,7 @@ h1, h2, h3, h4, h5, h6, p, button, input, textarea, li{
 }
 
 .profile-header-text{
-  font-size: 92pt;
+  font-size: 7vw;
   color: white;
 }
 
@@ -310,7 +310,7 @@ h1, h2, h3, h4, h5, h6, p, button, input, textarea, li{
   width: 100%;
   position: fixed;
   height: 6%;
-  z-index: 100;
+  z-index: 105;
 }
 
 #contacts-button{
@@ -429,6 +429,7 @@ ul{
   margin-top: 3px;
   border-radius: 4px;
   position: absolute;
+  object-fit: cover;
 }
 
 .carousel-frame{
@@ -458,6 +459,7 @@ ul{
   margin-top: 34%;
   font-size: 2vw;
   text-align: center;
+  color: white;
 }
 
 .result-name-div {
@@ -735,6 +737,7 @@ profile img elements
   width: 250px;
   height: 250px;
   border-radius: 20px;
+  object-fit: cover;
 }
 
 .profile-img-frame{
