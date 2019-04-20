@@ -112,7 +112,7 @@ module.exports = router => {
               else{
                 console.log('got gig set with the band' + bandID);
                 console.log(JSON.stringify(result));
-                chargeUser(req, theGig.price, (ourError)=>{
+                chargeUser(req, theGig.price, theGig._id, (ourError)=>{
                   if(ourError){
                     console.log('We had an error chraging customer: ' + ourError);
                   }
@@ -163,6 +163,7 @@ module.exports = router => {
                     if (denied.length==0){
                       res.status(200).end();
                       db.close();
+                      return;
                     }
                     db.db('bands').collection('bands').find({$or:denied}).toArray((err4, result4)=>{
                       if (err4){
@@ -211,30 +212,44 @@ module.exports = router => {
     });
   });
 
-  function chargeUser(req, price, cb){
+  function chargeUser(req, price, gigID, cb){
+    console.log('PRICE IN CHARGE: ' + price);
     var username = req.session.key;
-    var chargeAmount = BANDA_CUT*price;
+    var chargeAmount = Math.trunc(100*BANDA_CUT*price); // this puts it into cents.
+
+    console.log('BANDA CASH: ' + chargeAmount);
     database.connect(db=>{
-      db.db('users').collection('stripe_customers').findOne({'username':username}, (stripe_user, err9)=>{
+      db.db('users').collection('stripe_customers').findOne({'username':username}, (err9, stripe_user)=>{
+        if(err9){
+          console.log('There was an error finding username: ' + username + ' in the stripe_customers' + err9);
+          cb(err9);
+          return;
+        }
+        console.log('stripe_user is: ' + JSON.stringify(stripe_user));
+
         stripe.charges.create({
           amount: chargeAmount,
-          currency: 'dollars',
-          customer: stripe_user.cus_id,
-          source: stripe_user.src_id,
+          currency: 'usd',
+          customer: stripe_user.stripe_id,
+          description: "For a band from Banda, for your event.",
         }, function(stripe_error, charge) {
             if(stripe_error){
               console.log('There was an error createing chage with stripe: ' + stripe_error.message);
               cb(stripe_error);
             }
             else{
-              db.db('users').collection('stripe_customers').updateOne({'username':username}, {$push:{'charges':charge}}, (result11, err11)=>{
+              console.log('THe charge is: ' + JSON.stringify(charge));
+              var chageForDB={'charge_id':charge.id, 'amount':charge.amount, 'gigID':gigID, 'transfer':false};
+              db.db('users').collection('stripe_customers').updateOne({'username':username}, {$push:{'charges':chageForDB}}, (result11, err11)=>{
                 if (err11){
                   console.log('There was an error adding the charge to user: '+username+' charges array.');
                   cb(err11);
+                  db.close();
                 }
                 else{
                   console.log('Added charge to db and charge was successful. We charged user: ' +username+' '+chargeAmount);
                   cb();
+                  db.close();
                 }
               })
             }
@@ -328,6 +343,7 @@ module.exports = router => {
               res.status(500).end();
             }
             else{
+              var theGig = result2;
               console.log("Result2 from confirmCode band (find gig) is " + result2);
               if(!(result2['bandFor']==bandID)){
                 console.log('band sent a confirm code for a gig they are not booked for');
@@ -353,9 +369,79 @@ module.exports = router => {
                     db.close();
                   }
                   else{
+
                     console.log('Result for setting confirmed to true for gig was : ' + result3);
-                    res.status(200).send('Updated gigs and it all went through');
-                    db.close();
+                    db.db('bands').collection('bands').findOne({'_id':database.objectId(bandID)}, (err4, theBand)=>{
+                      if (err4){
+                        console.log('There was an error finding band with id: ' + bandID+" "+err4);
+                        res.status(500).end();
+                        db.close();
+                      }
+                      else{
+                        var allUpGigs =[];
+                        for (var upGig in theBand.upcomigGigs){
+                            if (!(upGig.gigID==gigID)){
+                              allUpGigs.push(theBand.upcomigGigs[upGig]);
+                            }
+                        }
+                        db.db('bands').collection('bands').updateOne({'_id':database.objectId(bandID)}, {$set:{'upcomingGigs':allUpGigs}, $push:{'finishedGigs':{'gigID':gigID, 'paid':true, 'flaked':false}}}, (err5, res5)=>{
+                          if(err5){
+                            console.log('There was an error updating band: ' + bandID+' error: ' + err5);
+                            res.status(500).end();
+                            db.close();
+                          }
+                          else{
+                            db.db('users').collection('stripe_customers').findOne({'username':req.session.key}, (err6, stripe_customer)=>{
+                              if (err6){
+                                console.log('There was an error getting the stripe_customer: '+req.session.key+' out. ' + err6);
+                                res.status(500).end();
+                                db.close();
+                              }
+                              else{
+                                db.db('users').collection('stripe_users').findOne({'username':theBand.creator}, (err7, stripe_account)=>{
+                                  if (err7){
+                                    console.log('There was an error getting connected account out of mongo for user: ' +username+' Error: '+err7);
+                                    res.status(500).end();
+                                    db.close();
+                                  }
+                                  else{
+                                    var account = stripe_account.stripe_connected_account_id;
+                                    var total_amount = Math.trunc(theGig.price*100);
+                                    var stripe_amount = (total_amount*0.029)+30;
+                                    var dest_amount = total_amount-stripe_amount
+                                    var card_src = stripe_customer.src_id;
+                                    var descript = 'Payment for artist: '+theBand.name+' for your event: ' +theGig.name+' on ' +theGig.date;
+                                    stripe.charges.create({
+                                      amount: total_amount,
+                                      currency: "usd",
+                                      cusotmer: stripe_customer.stripe_id,
+                                      description: descript,
+                                      transfer_data: {
+                                        amount:dest_amount,
+                                        destination: account,
+                                      },
+                                    }).then(function(charge) {
+                                      var chageForDB={'charge_id':charge.id, 'amount':charge.amount, 'gigID':gigID, 'transfer':true};
+                                      db.db('users').collection('stripe_customers').updateOne({'username':req.session.key}, {$push:{'charges':chageForDB}}, (err8, res8)=>{
+                                        if (err8){
+                                          console.log('There was an error updating stripe_customer: '+req.session.key+' error: ' +err8);
+                                          res.status(500).end();
+                                          db.close();
+                                        }
+                                        else{
+                                          res.status(200).send('You will recieve $'+dest_amount+' in the bank account you provided within 48 hours. Great work!');
+                                          db.close();
+                                        }
+                                      });
+                                    });
+                                  }
+                                });
+                              }
+                            });
+                          }
+                        });
+                      }
+                    });
                     //moved db bands moving arrays around func
                   }
                 });
@@ -601,6 +687,7 @@ module.exports = router => {
                     var gigStartTime = myGig['startTime'];
                     console.log('gigStartTime is : ' + gigStartTime);
                     var dateArr = gigStartDate.split('-');
+                    dateArr[1]=parseInt(dateArr[1])-1;
                     var timeArr = gigStartTime.split(':');
                     var gigDate = new Date(dateArr[0], dateArr[1], dateArr[2],timeArr[0], timeArr[1]);
                     //"startTime":"03:22","price":"222","date":"2019-04-25"
@@ -672,6 +759,66 @@ module.exports = router => {
                             }
                             if (applicants.length==0 || applicants==null){
                               console.log('There were no other applicants to update for gig with id: ' + gigID);
+                              if (!cancelFeel){
+                                db.db('users').collection('stripe_customers').findOne({'username':req.session.key}, (mongo_customer_error, stripe_customer)=>{
+                                  if (mongo_customer_error){
+                                    console.log('There was an error in the refund proccess, canceling.')
+                                    console.log('mongo_customer_error: ' + mongo_customer_error);
+                                    res.status(500).end();
+                                  }
+                                  else{
+                                    var theCharge=null;
+                                    console.log('the stripe customer is: ' + JSON.stringify(stripe_customer));
+                                    console.log('ThE gigID from req is: ' + gigID);
+                                    var otherCharges=[];
+                                    for (var charge in stripe_customer.charges){
+                                      if (stripe_customer.charges[charge].gigID == gigID){
+                                          console.log('On charge with gigID: '+ stripe_customer.charges[charge].gigID);
+                                          theCharge=stripe_customer.charges[charge]
+                                      }
+                                      else{
+                                        otherCharges.push(stripe_customer.charges[charge]);
+                                      }
+                                    }
+                                    if (theCharge){
+                                      console.log('The charge is : ' + JSON.stringify(theCharge));
+                                      if (theCharge.refunded){
+                                        res.status(200).send('You cannot refund a charge that has already been refunded');
+                                        db.close();
+                                      }
+                                      else{
+                                        console.log('Will give gig with id: ' + gigID + 'refund becuse they cancelled within')
+                                        theCharge.refunded=true;
+                                        otherCharges.push(theCharge);
+                                        stripe.refunds.create({
+                                          charge:theCharge.charge_id,
+                                          amount: theCharge.amount,
+                                        }).then(function(refund){
+                                          console.log("REFUND");
+                                          console.log('Gave refund to username: ' + req.session.key + ' for amount: '+theCharge.amount);
+
+                                          db.db('users').collection('stripe_customers').updateOne({'username':req.session.key}, {$set:{'charges':otherCharges}}, (update_charges_error, result15)=>{
+                                            if (update_charges_error){
+                                              console.log('There was an error trying to update stripe user: ' + req.session.key + ' to have charge: '+ theCharge.charge_id + ' be refunded. ' + update_charges_error)
+                                              res.status(500).end();
+                                              db.close();
+                                            }
+                                            else{
+                                              res.status(200).send('You have been issued a refund for this event! You will see the full amount in your bank account within one week.')
+                                              db.close();
+                                            }
+                                          });
+
+                                        });
+                                      }
+                                    }
+                                    else{
+                                      res.status(200).send('There was no charge for that gig recorded');
+                                      db.close();
+                                    }
+                                  }
+                                });
+                              }
                             }
                             else{
                               db.db('bands').collection('bands').find({$or:applicants}).toArray((err7, result7)=>{
@@ -714,9 +861,67 @@ module.exports = router => {
                                         //    console.log('Charging fee ($5) to gig with id : ' + gigID + ' becuase cancel came late and was on beahlf of the gig.');
                                             //stripe charge account asscoiated with gig $5 + stripe fee + our fee
                                             //refund
-                                            console.log('Will give gig with id: ' + gigID + 'refund becuse they cancelled within')
-                                            res.status(200).send('You have been issued a refund for this event! You will see the full amount in your bank account within one week.')
-                                            db.close();
+                                            db.db('users').collection('stripe_customers').findOne({'username':req.session.key}, (mongo_customer_error, stripe_customer)=>{
+                                              if (mongo_customer_error){
+                                                console.log('There was an error in the refund proccess, canceling.')
+                                                console.log('mongo_customer_error: ' + mongo_customer_error);
+                                                res.status(500).end();
+                                              }
+                                              else{
+                                                var theCharge=null;
+                                                console.log('the stripe customer is: ' + JSON.stringify(stripe_customer));
+                                                console.log('ThE gigID from req is: ' + gigID);
+                                                var otherCharges=[];
+                                                for (var charge in stripe_customer.charges){
+                                                  if (stripe_customer.charges[charge].gigID == gigID){
+                                                      console.log('On charge with gigID: '+ stripe_customer.charges[charge].gigID);
+                                                      theCharge=stripe_customer.charges[charge]
+                                                  }
+                                                  else{
+                                                    otherCharges.push(stripe_customer.charges[charge]);
+                                                  }
+                                                }
+                                                if (theCharge){
+                                                  console.log('The charge is : ' + JSON.stringify(theCharge));
+                                                  if (theCharge.refunded){
+                                                    res.status(200).send('You cannot refund a charge that has already been refunded');
+                                                    db.close();
+                                                  }
+                                                  else{
+                                                    console.log('Will give gig with id: ' + gigID + 'refund becuse they cancelled within 2 days.');
+                                                    theCharge.refunded=true;
+                                                    otherCharges.push(theCharge);
+                                                    stripe.refunds.create({
+                                                      charge:theCharge.charge_id,
+                                                      amount: theCharge.amount,
+                                                    }).then(function(refund){
+                                                      console.log("REFUND");
+                                                      console.log('Gave refund to username: ' + req.session.key + ' for amount: '+theCharge.amount);
+                                                      db.db('users').collection('stripe_customers').updateOne({'username':req.session.key}, {$set:{'charges':otherCharges}}, (update_charges_error, result15)=>{
+                                                        if (update_charges_error){
+                                                          console.log('There was an error trying to update stripe user: ' + req.session.key + ' to have charge: '+ theCharge.charge_id + ' be refunded. ' + update_charges_error)
+                                                          res.status(500).end();
+                                                          db.close();
+                                                        }
+                                                        else{
+                                                          res.status(200).send('You have been issued a refund for this event! You will see the full amount in your bank account within one week.')
+                                                          db.close();
+                                                        }
+                                                      });
+                                                    });
+                                                  }
+                                                }
+                                                else{
+                                                  res.status(200).send('There was no charge for that gig recorded');
+                                                  db.close();
+                                                }
+
+
+
+                                              }
+
+                                            })
+
                                           }
 
                                         }
@@ -780,6 +985,218 @@ module.exports = router => {
     }
   });
 
+router.post('/flake', (req, res)=>{
+  if (!req.body){
+    console.log('Recieved empty req at flake.')
+    res.stataus(401).end();
+  }
+  if (!req.session.key){
+    console.log('No logged in user tried to say a band flaked.')
+    res.status(404).end();
+  }
+  else{
+    var {gigID, bandID} = req.body;
+    database.connect(db=>{
+      db.db('gigs').collection('gigs').findOne({'_id':database.objectId(gigID)}, (err2, theGig)=>{
+        if (err2){
+          console.log('There was an error findng gig with id: ' + gigID);
+          res.status(500).end();
+          db.close();
+        }
+        else{
+          if (!theGig.isFilled){
+            console.log('Gig tried to say it flaked but was not filled. gigID: ' + gigID);
+            res.status(200).send('you cannot say a band flaked if the event was unfilled.');
+            db.close();
+          }
+          if (!(theGig.bandFor==bandID)){
+            console.log('Gig tried to say band: '+bandID+' flaked but was not this band was not matched with this gig. gigID: ' + gigID);
+            res.status(200).send('Sorry, that band could not have flaked as it was not matched with that event.');
+            db.close();
+          }
+          var now = new Date();
+          var gigDateStr = theGig.date;
+          var gigEndTime = theGig.endTime;
+          var dateArr = gigDateStr.split('-');
+          dateArr[1]=parseInt(dateArr[1])-1;
+          var timeArr = gigEndTime.split(':');
+          var gigDate = new Date(dateArr[0], dateArr[1], dateArr[2],timeArr[0], timeArr[1]);
+          if (diff_hours(now, gigDate)<0){
+            console.log('Gig attempted to say a band flaked but the gig has no ended yet.');
+            res.status(200).send('Sorry, a band can only "flake" once the event has ended.');
+            db.close();
+          }
+          else{
+            db.db('bands').collection('bands').findOne({'_id':database.objectId(bandID)}, (err3, theBand)=>{
+              if (err3){
+                console.log("There was an error getting abnd with id: " + bandID + ' Out of mongo. ' + err3);
+                res.status(500).end();
+                db.close();
+              }
+              else{
+                var gigExistsInBand = false;
+                var bandSentConfirm = false;
+                var allUpGigs = [];
+                for (var upGig in theBand.upcomingGigs){
+                  if(theBand.upcomingGigs[upGig].gigID==gigID){
+                    if (theBand.upcomingGigs[upGig].confirmed){
+                      bandSentConfirm=true;
+                    }
+                    gigExistsInBand=true;
+                  }
+                  else{
+                    allUpGigs.push(theBand.upcomingGigs[upGig]);
+                  }
+                }
+                if (!gigExistsInBand){
+                  console.log('The band:'+bandID+' did not have this gig: '+gigID+' in its array. ');
+                  res.status(200).send('Sorry, this band was not aware of your event.');
+                  db.close();
+                }
+                else{
+                  if(bandSentConfirm){
+                    if(theGig.confirmed){
+                      console.log('both sent confrims but gig: '+gigID+' said the band: '+bandID+'flaked, gig is lying or they trying to scam us. No refund, should have transfered.')
+                      res.status(200).send('Recived confirms codes, band could not have flaked if our system was followed. Sorry, we will not be giving a refund. Will be proceeding with money transfer of: ' +theGig.price+ 'to the band: ' + theBand.name);
+                      db.close();
+                    }
+                    else{
+                      //the band sent its confirm, gig didnt = gig sketch
+                      console.log('the band: '+bandID+' sent its confirm, gig: '+gigID+' didnt. Will not being giving refund, should have transfered cash already to band.');
+                      res.status(200).send('The band: '+theBand.name+' sent the confirmation code we sent you. They could have only gotten this from you, so we will not be giving s refund. Sorry, do not send bands your confirmation code until they show up for the event.')
+                      db.close();
+                    }
+
+                  }
+                  else{
+                    if(theGig.confirmed){
+                      //the gig sent band's code but band has not-- band sketch
+                      console.log('the gig: '+gigID+' sent its confirm, band: '+bandID+' didnt. Will not being giving refund, will not transfer funds to band.');
+                      var noShows = parseInt(theBand.noShows)+1.0;
+                      var numRatings = parseInt(theBand.numRatings)+1.0;
+                      var percentShows = (numRatings-noShows)/numRatings;
+
+                      var newValues = {$set:{'noShows':noShows, 'numRatings':numRatings, 'upcomingGigs': allUpGigs}, $push:{'finishedGigs':{'gigID':gigID, 'flaked':true, 'paid':false}}};
+
+                      db.db('bands').collection('bands').updateOne({'_id':database.objectId(bandID)},newValues, (err6, res6)=>{
+                        if (err6){
+                          console.log('There was an error updating band with id: ' + bandID + ' error was: ' + err6);
+                          res.status(500).end();
+                          db.close();
+                        }
+                        else{
+                          db.db('gigs').collection('gigs').updateOne({'_id':database.objectId(gigID)}, {$set:{'confirmed':true}}, (err7, res7)=>{
+                            if(err7){
+                              console.log('Failed to update gigs: '+gigID);
+                              res.status(500).end();
+                              db.close();
+                            }
+                            else{
+                              console.log('Updated band and gig, no refund.');
+                              res.status(200).send('We have adjusted the bands relability rating accordingly with your report. Thank you.');
+                              db.close();
+                            }
+                          });
+                        }
+                      });
+
+                    }
+                    else{
+                      //niether sent confirms -- band flaked.
+                      //stripe refund
+                      //updateBand as flaked
+                      console.log('Niether confirmed. Band: '+bandID+' flaked. Will give refund.');
+                      db.db('users').collection('stripe_customers').findOne({'username':req.session.key}, (err4, stripe_customer)=>{
+                        if (err4){
+                          console.log('There was an error finding stripe customer with username: '+req.session.key+ err4);
+                          res.status(500).end();
+                          db.close();
+                        }
+                        else{
+                          var theCharge = null;
+                          var allCharges = [];
+                          for (var charge in stripe_customer.charges){
+                            if (stripe_customer.charges[charge].gigID == gigID){
+                              if (!stripe_customer.charges[charge].refunded){
+                                theCharge=stripe_customer.charges[charge];
+                                theCharge.refunded=true;
+                                allCharges.push(theCharge);
+                              }
+                              else{
+                                allCharges.push(stripe_customer.charges[charge]);
+                              }
+                            }
+                          }
+                          if (!theCharge){
+                            console.log('we coudl not find the charge');
+                            res.status(500).end();
+                            db.close();
+                          }
+                          else{
+                            stripe.refunds.create({
+                              charge:theCharge.charge_id,
+                              amount: theCharge.amount,
+                            }).then(refund=>{
+                              console.log('Gave refund to user: ' + req.session.key);
+                              db.db('users').collection('stripe_users').updateOne({'username':req.session.key}, {$set:{'charges':allCharges}}, (err5, res5)=>{
+                                if (err5){
+                                  console.log('There was an error updating stripe_user: '+req.session.key+err5);
+                                  res.status(500).end();
+                                  db.close();
+                                }
+                                else{
+                                  //flake on band
+                                  var noShows = parseInt(theBand.noShows)+1.0;
+                                  var numRatings = parseInt(theBand.numRatings)+1.0;
+                                  var percentShows = (numRatings-noShows)/numRatings;
+
+                                  var newValues = {$set:{'noShows':noShows, 'numRatings':numRatings, 'upcomingGigs': allUpGigs}, $push:{'finishedGigs':gigID}};
+
+                                  db.db('bands').collection('bands').updateOne({'_id':database.objectId(bandID)},newValues, (err6, res6)=>{
+                                    if (err6){
+                                      console.log('There was an error updating band with id: ' + bandID + ' error was: ' + err6);
+                                      res.status(500).end();
+                                      db.close();
+                                    }
+                                    else{
+                                      db.db('gigs').collection('gigs').updateOne({'_id':database.objectId(gigID)}, {$set:{'confirmed':true}}, (err7, res7)=>{
+                                        if(err7){
+                                          console.log('Failed to update gigs: '+gigID);
+                                          res.status(500).end();
+                                          db.close();
+                                        }
+                                        else{
+                                          console.log('Updated band and gig, gave refund.');
+                                          res.status(200).send('We have refunded you: ' + theCharge.amount + ' and adjusted the bands relability rating accordingly with your report. Thank you.');
+                                          db.close();
+                                        }
+                                      });
+                                    }
+                                  });
+                                }
+                              });
+                            });
+                          }
+                        }
+                      });
+
+                    }
+                  }
+                }
+              }
+            });
+          }
+
+
+        }
+      });
+
+    }, err=>{
+      console.log('THere was an error connecting to db: ' + err);
+      res.status(500).end();
+    });
+  }
+})
 function creatBandConfirmCode(gigID, bandID){
   return gigID+bandID;
 }

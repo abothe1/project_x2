@@ -457,3 +457,16 @@ body elements
 .bottom-spacer{
   margin-top: 100px;
 }
+
+.no-results-p{
+  display: none;
+  width: 60%;
+  margin-left: 20%;
+  text-align: center;
+  font-size: 32pt;
+  margin-top: 150px;
+}
+
+.font32{
+  font-size: 32pt;
+}

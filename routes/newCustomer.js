@@ -15,6 +15,7 @@ module.exports = router =>{
     else{
       console.log('REQ body:' + JSON.stringify(req.body));
       var {card_token, email} = req.body;
+      console.log('card token: ' + card_token);
       var username = req.session.key;
       var description = 'Event owner with username:  ' + username;
       console.log('CUSTOMER EMAIL: '+ email);
@@ -31,15 +32,16 @@ module.exports = router =>{
         else{
           console.log(' Craeeted customer: ' + JSON.stringify(customer));
           var cus_id = customer['id'];
-
+          console.log('Default source is: ' + customer.default_source);
           database.connect(db=>{
             db.db('users').collection('stripe_customers').insertOne({'username':username, 'stripe_id':cus_id, 'charges':[], 'src_id':card_token}, (res4)=>{
               console.log('Added user ' + username+ 'to stripe_customers woth cus_id: ' + cus_id);
-              res.status(200).end();
+              res.status(200).send('Congratulations, '+username+'you are now ready to find talent for your gig, Just click "bands" on our search page.');
               db.close();
             })
           }, err3=>{
             console.log('There was an error conencting to mongo: ' + err3);
+            res.status(500).end();
           });
 
         }

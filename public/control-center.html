@@ -80,15 +80,15 @@
     </div>
     <div id="modal-wrapper-report-absent-band">
       <div  id="cancel-content" class="modal-content-cancel animate">
-        <input type="hidden" name="bandID" />
-        <input type="hidden" name="gigID" />
+        <input type="hidden" name="bandID" id="report-absent-band-bandID"/>
+        <input type="hidden" name="gigID" id="report-absent-band-gigID"/>
         <span onclick="document.getElementById('modal-wrapper-report-absent-band').style.display='none'" class="cancel-close" title="Close PopUp">&times;</span>
         <p id="report-band-text" class="modal-p">
           By filing this report, the band you booked for this event will receive a
           negative mark on their reliability record. Your payment to this band will be refunded
           to you only if we can confirm that neither party submitted a confirmation code.
         </p>
-        <input type="button" id="report-band" value="submit report"/>
+        <input type="button" id="report-band" value="submit report" onclick="handleReportFormSubmission()"/>
       </div>
     </div>
     <div id="modal-wrapper-link-application" class="modal2">
@@ -237,7 +237,7 @@
           <!-- Used to display form errors. -->
           <div id="card-errors" role="alert"></div>
         </div>
-        <button class="stripe-button" style="display: block" onclick="attemptCreditSubmission()">Submit Payment</button>
+        <button class="stripe-button" style="display: block" >Submit Payment</button>
         <p class="stripe-footer">We use the secure payment platform <a href="https://stripe.com/" class="stripe-link">Stripe</a>
           to guarantee swift and easy compensation of the artists that you book.</p>
       </form>

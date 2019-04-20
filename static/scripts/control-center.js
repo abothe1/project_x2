@@ -443,7 +443,10 @@ class BookedGig {
           this.gigConfirm.append(this.gigConfirmP);
           this.gigConfirm.append(this.gigConfirmInput);
           this.gigConfirm.append(this.gigConfirmA);
-          this.gigConfirm.append(this.reportBand);
+          if(this.GigIsPastStartDate(gig)){
+            this.gigConfirm.append(this.reportBand);
+            this.gigAct.reportBandBtn = this.reportBand;
+          }
       // tier 2
           this.gigContent.append(this.gigImg);
           this.gigContent.append(this.gigDesc);
@@ -480,6 +483,13 @@ class BookedGig {
       console.log(obj.gigID);
       presentCancelModal("BookedGig",obj.bandID,obj.gigID);
     });
+    if(obj.hasOwnProperty("reportBandBtn")){
+      obj.reportBandBtn.addEventListener("click",function(){
+        console.log(obj.bandID);
+        console.log(obj.gigID);
+        presentReportModal(obj.bandID, obj.gigID);
+      });
+    }
   }
   GigIsPastStartDate(myGig){
     var now = new Date();
@@ -489,6 +499,7 @@ class BookedGig {
     console.log('gigStartTime is : ' + gigEndTime);
     var dateArr = gigStartDate.split('-');
     var timeArr = gigEndTime.split(':');
+    dateArr[1]=parseInt(dateArr[1])-1;
     var gigDate = new Date(dateArr[0], dateArr[1], dateArr[2],timeArr[0], timeArr[1]);
     var difference = diff_hours(gigDate, now)
     console.log()
@@ -510,6 +521,25 @@ function diff_hours(dt1, dt2) {
   console.log("diff is : " + diff);
   return Math.round(diff);
  }
+function presentReportModal(bandID,gigID){
+  var modal = document.getElementById("modal-wrapper-report-absent-band");
+  modal.style.display = "block";
+  console.log("BandID: "+bandID);
+  console.log("GigID: "+gigID);
+  var inputForBandID = document.getElementById("report-absent-band-bandID");
+  inputForBandID.value = bandID;
+  var inputForGigID = document.getElementById("report-absent-band-gigID");
+  inputForGigID.value = gigID;
+}
+
+function handleReportFormSubmission(){
+  var inputForBandID = document.getElementById("report-absent-band-bandID").value;
+  var inputForGigID = document.getElementById("report-absent-band-gigID").value;
+  $.post('/flake', {'bandID':inputForBandID, 'gigID':inputForGigID}, res=>{
+  //  console.log('Got callback back from flake.');
+    alert(res);
+  });
+}
 
 function presentCancelModal(state, bandID, gigID){
   switch(state){
@@ -1180,7 +1210,7 @@ class BandSection{
 }
 
 class Carousel{
-  constructor(forObj, obj,indicator,carCallback){
+  constructor(forObj, obj, indicator, carCallback){
     switch(indicator){
       case "hosted-applications":
       // obj will contain band IDs
@@ -1616,7 +1646,18 @@ class Carousel{
       break;
       case "past":
       // get past gigs info
-      this.handleGigs(obj, result=>{
+      this.gigIDArr = [];
+      for(var gig in obj){
+        this.gigIDArr.push(obj[gig].gigID);
+      }
+
+      this.gigFlakeArr = [];
+      for(var gig in obj){
+        this.gigFlakeArr.push(obj[gig].flaked);
+        console.log("AB NOTE: "+obj[gig].flaked);
+
+      }
+      this.handleGigs(this.gigIDArr, result=>{
         this.pastGigs = result;
         this.wrapper = document.createElement("div");
         this.wrapper.className = "wrapper";
@@ -1625,6 +1666,7 @@ class Carousel{
         this.carousel = document.createElement("div");
         this.carousel.className = "jcarousel";
         this.list = document.createElement("ul");
+        var index = 0;
         this.pastGigs.forEach(function(gig){
           var id = gig._id;
           var name = gig.name;
@@ -1653,7 +1695,11 @@ class Carousel{
           });
           var priceText = document.createElement("p");
           priceText.className = "result-overlay-p";
-          priceText.innerHTML = "$"+gig.price;
+          if(this.gigFlakeArr[index]){
+            priceText.innerHTML = "Sorry, it seems you did not show up to this event.";
+          }else{
+            priceText.innerHTML = "$"+gig.price;
+          }
           // nameplate
           var nameDiv = document.createElement("div");
           nameDiv.className = "result-name-div";
@@ -1671,6 +1717,7 @@ class Carousel{
           newItem.newOverlay = newOverlay;
           newItem._id = gig._id;
           this.AddOverlayEventListeners(newItem);
+          index++;
         },this);
         this.carousel.append(this.list);
         if(this.pastGigs.length > 4){
@@ -3844,12 +3891,14 @@ function prepareCardElement(){
   // Submit the form with the token ID.
   function stripeTokenHandler(token) {
    // Insert the token ID into the form so it gets submitted to the server
+   /*
    var form = document.getElementById('payment-form');
    var hiddenInput = document.createElement('input');
    hiddenInput.setAttribute('type', 'hidden');
    hiddenInput.setAttribute('name', 'stripeToken');
    hiddenInput.setAttribute('value', token.id);
    form.appendChild(hiddenInput);
+   */
    attemptCreditSubmission(token.id);
    // Submit the form
 //   form.submit();
@@ -3857,6 +3906,7 @@ function prepareCardElement(){
 }
 
 function attemptBankSubmission(){
+  var stripe = Stripe('pk_test_ZDSEcXSIaHCCNQQFwikWyDad0053mxeMlz');
   var firstName = document.getElementById("bank-form-first-name").value;
   var lastName = document.getElementById("bank-form-last-name").value;
   var dob = document.getElementById("bank-form-dob").value;
@@ -3897,6 +3947,8 @@ function attemptBankSubmission(){
 
 function attemptCreditSubmission(token_id){
   //var creditNum = document.getElementById("card-elem").value;
+  console.log();
+  console.log('TOKEN ID for card is: ' + token_id);
   $.post('/createStripeCustomer', {card_token:token_id, email:user_email},res=>{
     alert('res');
     document.getElementById("modal-wrapper-credit").style.display = 'none';

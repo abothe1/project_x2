@@ -54,7 +54,7 @@ module.exports = router =>{
             var requirements = res2['requirements'];
             console.log('Requirments to verify account are: ' + JSON.stringify(requirements));
             database.connect(db=>{
-                db.db('users').collection('stripe_users').insertOne({'username':req.session.key, 'stripe_connected_account_id':stripe_id}, (res4)=>{
+                db.db('users').collection('stripe_users').insertOne({'username':req.session.key, 'stripe_connected_account_id':stripe_id, 'payouts':[]}, (res4)=>{
                     res.status(200).send('Good job!');
                     db.close();
                 });

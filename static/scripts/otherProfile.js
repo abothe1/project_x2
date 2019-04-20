@@ -203,9 +203,8 @@ function viewGigPage(){
 function submitGig(){
   var theSelector = document.getElementById("selectDropEvent");
   var id = theSelector.options[ theSelector.selectedIndex ].dataID;
-
   var name = theSelector.options[theSelector.selectedIndex].innerHTML;
-
+  console.log("IN SUBMIT GIG ID IS: "+id);
   var buttonObj = {
     "idForGig":id,
     "nameOfGig":name,
@@ -333,11 +332,20 @@ var mainContent = null;
 var profilesList = null;
 var globalMessageArray = null;
 
+function getTitleFontSize(name){
+  if(name.length <= 20){
+    return "font76";
+  }else{
+    return "font48";
+  }
+}
+
 function createPageAsBand(){
   var mainContent = document.getElementById("main-content-wrapper");
   // load the band name
   var profileTitle = document.getElementById("profile-title");
   profileTitle.innerHTML = otherBand.name;
+  profileTitle.className = "profile-header-text "+getTitleFontSize(otherBand.name);
   var profileCreator = document.getElementById("profile-creator");
   profileCreator.innerHTML = "created by: "+otherBand.creator;
   var hasReliability = null;
@@ -512,6 +520,7 @@ function createPageAsGig(){
   // load the gig name
   var profileTitle = document.getElementById("profile-title");
   profileTitle.innerHTML = otherGig.name;
+  profileTitle.className = "profile-header-text "+getTitleFontSize(otherGig.name);
   var profileCreator = document.getElementById("profile-creator");
   profileCreator.innerHTML = "created by: "+otherGig.creator;
 

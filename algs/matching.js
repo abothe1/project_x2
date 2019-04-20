@@ -104,7 +104,7 @@ module.exports = {
         console.log("The my badn find one method in algs returned: " + myBand);
 
 
-         db.db('gigs').collection('gigs').find({}).toArray(function (err,result){
+         db.db('gigs').collection('gigs').find({'isFilled':{$eq: false}}).toArray(function (err,result){
           if (err){
             console.log("There was error getting gigs from db:" + err);
             errCb(err);
@@ -334,7 +334,7 @@ module.exports = {
     var categories={"genres":[genreBank,genresFromStr,genreMult], "insts":[instBank,instsFromStr,instMult],"vibes":[vibeBank,vibesFromStr,vibeMult],"gigTypes":[gigTypeBank,gigTypesFromStr,typeMult]};
     var cats = parseQueryString(queryStr, categories);
     let allGigs = db.db('gigs').collection('gigs');
-    allGigs.find({}).toArray(function(err, result){
+    allGigs.find({'isFilled':{$eq: false}}).toArray(function(err, result){
       if (err){
         errCb("Internal server error");
         db.close();

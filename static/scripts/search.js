@@ -261,6 +261,15 @@ function showResults(mode, bands, gigs){
   ******************8\*******************************************************************************************
   AB
   */
+  // check for no results
+  var noResP = document.getElementById("no-res-p");
+
+  if(gigs['data']['queryMatchers'].length == 0 && gigs['data']['overallMatchers'].length == 0){
+    noResP.innerHTML = "Sorry, we could not find any results. Try searching again with different keywords, or searching as one of your bands or events. For example, 'band with guitar for a birthday party' as an event.";
+    noResP.style.display = "block";
+  }else{
+    noResP.style.display = "none";
+  }
 
   if(bands==null){
     var mixedGigArr=[];

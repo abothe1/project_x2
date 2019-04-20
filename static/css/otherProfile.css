@@ -239,7 +239,6 @@ h1, h2, h3, h4, h5, h6, p, button, input, textarea, li{
 }
 
 .profile-header-text{
-  font-size: 7vw;
   color: white;
 }
 
@@ -952,4 +951,12 @@ margin-top: 100px;
   border: none !important;
   width: 160px;
   height: 40px;
+}
+
+.font76{
+  font-size: 76pt;
+}
+
+.font48{
+  font-size: 48pt;
 }
