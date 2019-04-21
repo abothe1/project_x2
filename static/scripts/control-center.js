@@ -412,8 +412,10 @@ class BookedGig {
     this.gigConfirmInput.className = "gig-confirm-input";
     this.gigConfirmA = document.createElement("a");
     this.gigConfirmA.className = "gig-confirm-a";
-    this.gigConfirmA.href = "#"; // can be changed to a javascript function for code submission
+    this.gigConfirmA.href = "#";
     this.gigConfirmA.innerHTML = "confirm";
+    this.gigAct.confirmBtn = this.gigConfirmA;
+    this.gigAct.confirmInput = this.gigConfirmInput;
     if(this.GigIsPastStartDate(gig)){
       console.log('Got In IF for gig being past end Time.')
       this.reportBand = document.createElement("input");
@@ -492,6 +494,16 @@ class BookedGig {
         console.log(obj.gigID);
         presentReportModal(obj.bandID, obj.gigID);
       });
+    }
+    if(obj.hasOwnProperty("confirmBtn")){
+      obj.confirmBtn.addEventListener("click",function(){
+        console.log(obj.bandID);
+        console.log(obj.gigID);
+        console.log(obj.confirmInput.value);
+        $.post('/confirmationCodeGig', {'gigID':obj.gigID, 'bandID':obj.bandID, 'confirmationCode':obj.confirmInput.value}, res=>{
+          alert(res);
+        });
+      })
     }
   }
   GigIsPastStartDate(myGig){
@@ -2090,6 +2102,18 @@ function presentConfirmBookingModal(bandName, bandID, gigID, theGig){
 
 function presentConfirmationCodeModal(gigID,bandID){
   document.getElementById("modal-wrapper-confirmation-code").style.display = "block";
+  var codeInput = document.getElementById("confirmation-code-input");
+  var code = codeInput.value;
+  var obj = document.getElementById("submit-confirmation-code");
+  obj.codeInput = codeInput;
+  obj.addEventListener("click",function(){
+    var codeVal = obj.codeInput.value
+    console.log('Code is: ' + codeVal);
+    $.post('/confirmationCodeBand', {'confirmationCode':codeVal,'gigID':gigID, 'bandID':bandID}, res=>{
+      alert(res);
+      document.getElementById("modal-wrapper-confirmation-code").style.display = "none";
+    });
+  });
 }
 
 var callbackStepper = 0;

@@ -220,13 +220,13 @@ function performSearch(json){
      if(bandName==null || bandName=='null'){
        console.log('got in first if gig for search');
        $.get("/searchNoName", { 'mode': "findGigs", 'query': searchTxt}, result => {
-   		    alert(`result is ${JSON.stringify(result)}`);
-           showResults(mode, null, result);
+   		    // alert(`result is ${JSON.stringify(result)}`);
+          showResults(mode, null, result);
    	    });
      }
      else{
        $.get("/search", { 'mode': "findGigs", 'query': searchTxt, 'bandName': bandName }, result => {
-     		  alert(`result is ${JSON.stringify(result)}`);
+     		  // alert(`result is ${JSON.stringify(result)}`);
            showResults(mode, null, result);
      	  });
      }
@@ -234,13 +234,13 @@ function performSearch(json){
    else{
      if(gigName==null || gigName=='null'){
        $.get("/searchNoName", { 'mode': "findBands", 'query': searchTxt}, result => {
-           alert(`result is ${JSON.stringify(result)}`);
+           // alert(`result is ${JSON.stringify(result)}`);
            showResults(mode, result, null);
         });
      }
      else{
        $.get("/search", { 'mode': "findBands", 'query': searchTxt, 'gigName': gigName}, result => {
-       		alert(`result is ${JSON.stringify(result)}`);
+       		// alert(`result is ${JSON.stringify(result)}`);
            showResults(mode, result, null);
        	});
      }

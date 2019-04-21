@@ -91,7 +91,7 @@ function regToLogin(){
 
 function loginToReg(){
 	var login = document.getElementById("modal-wrapper-login");
-	var register = document.getElementById("modal-wrapper-register");
+	var register = document.getElementById("modal-wrapper-tos");
 	register.style.display = "block";
 	login.style.display = "none";
 }
@@ -509,6 +509,7 @@ function diff_minutes(dt2, dt1) {
       console.log("Got res from login herre it is: " + JSON.stringify(res));
       if(res.success){
         isLoggedIn=true;
+				document.getElementById("modal-wrapper-login").style.display = "none";
       }
       else{
         isLoggedIn=false;
@@ -526,7 +527,7 @@ function diff_minutes(dt2, dt1) {
     };
 
     $.post('/register', content, res=>{
-
+			document.getElementById("modal-wrapper-register").style.display = "none";
     });
   }
   function stringToDate(str){

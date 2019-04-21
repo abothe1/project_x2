@@ -3,7 +3,7 @@ module.exports = router => {
   stripe_private_key = 'sk_test_t6hlsKu6iehEdJhV9KzITmxm00flbTdrG5';
   var stripe = require('stripe')(stripe_private_key);
   const BANDA_CUT = 0.05;
-  const OUR_ADDRESS = 'xxxx@xxx';
+  const OUR_ADDRESS = "banda.confirmation@gmail.com";
   router.post('/apply', (req, res)=>{
     if (!req.body) {
   		 res.status(400).send('No body sent').end();
@@ -122,7 +122,6 @@ module.exports = router => {
             });
             var newCode = createBandConfirmCode(gigID, bandID);
             var upGig = {'gigID':gigID, 'confirmationCode':newCode};
-
             db.db('bands').collection('bands').findOne({'_id':database.objectId(bandID)}, (err6, result6)=>{
               if (err6){
                 console.log('THre was an error finding band : ' + bandID +' from mongo. '+err6);
@@ -130,75 +129,86 @@ module.exports = router => {
                 db.close();
               }
               else{
-                var stillAppliedTo=[];
-                for (var g in result6['appliedGigs']){
-                  if(gigID==result6['appliedGigs'][g][0]){
-
-                  }
-                  else{
-                    stillAppliedTo.push(result6['appliedGigs'][g]);
-                  }
-                }
-                var newValues2 = {
-                  $push: {'upcomingGigs':upGig},
-                  $set:{'appliedGigs': stillAppliedTo}
-                };
-                db.db('bands').collection('bands').updateOne({'_id':database.objectId(bandID)}, newValues2, (err3, result3)=>{
-                  if (err3){
-                    console.log('There was an error tryign to append set band stuff, error was: ' + err3);
+                sendConfirmEmails(db, result6, result5.confirmationCode, result5, newCode, req, email_error=>{
+                  if (email_error){
+                    console.log('There was an error sending confirm emails: ' + email_error);
                     res.status(500).end();
                     db.close();
+                    return;
                   }
                   else{
-                    console.log('got band set with the band' + bandID);
-                    console.log(JSON.stringify(result3));
-                    var denied = [];
-                    for (var ap in theGig['applications']){
-                      if (theGig['applications'][ap]==bandID){
+                    console.log('Sent codes to users');
+                    var stillAppliedTo=[];
+                    for (var g in result6['appliedGigs']){
+                      if(gigID==result6['appliedGigs'][g][0]){
 
                       }
                       else{
-                        denied.push({'_id':database.objectId(theGig['applications'][ap])});
+                        stillAppliedTo.push(result6['appliedGigs'][g]);
                       }
                     }
-                    if (denied.length==0){
-                      res.status(200).end();
-                      db.close();
-                      return;
-                    }
-                    db.db('bands').collection('bands').find({$or:denied}).toArray((err4, result4)=>{
-                      if (err4){
-                        console.log('Faild to get the batch of denied bands ' +err4);
+                    var newValues2 = {
+                      $push: {'upcomingGigs':upGig},
+                      $set:{'appliedGigs': stillAppliedTo}
+                    };
+                    db.db('bands').collection('bands').updateOne({'_id':database.objectId(bandID)}, newValues2, (err3, result3)=>{
+                      if (err3){
+                        console.log('There was an error tryign to append set band stuff, error was: ' + err3);
                         res.status(500).end();
                         db.close();
                       }
-                      var on = 0;
-                      result4.forEach(bandOn=>{
-                        on+=1;
-                        var nonDeniedGigs=[];
-                        for (var gigAppliedTo in bandOn['appliedGigs']){
-                          if (bandOn['appliedGigs'][gigAppliedTo][0]==gigID){
-                            nonDeniedGigs.push(bandOn['appliedGigs'][gigAppliedTo]);
+                      else{
+                        console.log('got band set with the band' + bandID);
+                        console.log(JSON.stringify(result3));
+                        var denied = [];
+                        for (var ap in theGig['applications']){
+                          if (theGig['applications'][ap]==bandID){
+
                           }
                           else{
-                            bandOn['appliedGigs'][gigAppliedTo][1]=true;
-                            nonDeniedGigs.push(bandOn['appliedGigs'][gigAppliedTo]);
+                            denied.push({'_id':database.objectId(theGig['applications'][ap])});
                           }
                         }
-                        var newValues7 = {$set:{'appliedGigs':nonDeniedGigs}};
-                        db.db('bands').collection('bands').updateOne({'_id':database.objectId(bandOn['_id'])}, newValues7, (err7, res7)=>{
-                          if (err7){
-                            console.log('THere was an error updating one of the denied bands: ' + bandOn['_id']+' Error: '+err7);
+                        if (denied.length==0){
+                          res.status(200).end();
+                          db.close();
+                          return;
+                        }
+                        db.db('bands').collection('bands').find({$or:denied}).toArray((err4, result4)=>{
+                          if (err4){
+                            console.log('Faild to get the batch of denied bands ' +err4);
                             res.status(500).end();
+                            db.close();
                           }
-                          else{
-                            if (on>result4.length){
-                              res.status(200).end();
-                              db.close();
+                          var on = 0;
+                          result4.forEach(bandOn=>{
+                            on+=1;
+                            var nonDeniedGigs=[];
+                            for (var gigAppliedTo in bandOn['appliedGigs']){
+                              if (bandOn['appliedGigs'][gigAppliedTo][0]==gigID){
+                                nonDeniedGigs.push(bandOn['appliedGigs'][gigAppliedTo]);
+                              }
+                              else{
+                                bandOn['appliedGigs'][gigAppliedTo][1]=true;
+                                nonDeniedGigs.push(bandOn['appliedGigs'][gigAppliedTo]);
+                              }
                             }
-                          }
+                            var newValues7 = {$set:{'appliedGigs':nonDeniedGigs}};
+                            db.db('bands').collection('bands').updateOne({'_id':database.objectId(bandOn['_id'])}, newValues7, (err7, res7)=>{
+                              if (err7){
+                                console.log('THere was an error updating one of the denied bands: ' + bandOn['_id']+' Error: '+err7);
+                                res.status(500).end();
+                              }
+                              else{
+                                if (on>result4.length){
+                                  res.status(200).end();
+                                  db.close();
+                                }
+                              }
+                            });
+                          });
                         });
-                      });
+                      }
                     });
                   }
                 });
@@ -335,9 +345,11 @@ module.exports = router => {
       console.log('user tried to send confirm code without being logged in');
     }
     else{
-      var {confirmCode, gigID, bandID} = req.body;
+      var {confirmationCode, gigID, bandID} = req.body;
+      console.log('GIGID: ' +gigID);
+      console.log('bandID: ' +bandID);
       database.connect(db=>{
-        db.db('gigs').collection('gigs').findOne({'_id':database.objectId('gigID')}, (err2, result2)=>{
+        db.db('gigs').collection('gigs').findOne({'_id':database.objectId(gigID)}, (err2, result2)=>{
             if (err2){
               console.log('There was an error tryign to find gig, error was: ' + err2);
               db.close();
@@ -345,6 +357,8 @@ module.exports = router => {
             }
             else{
               var theGig = result2;
+              console.log("sent code: " + confirmationCode);
+              console.log('code should be: ' + theGig.confirmationCode);
               console.log("Result2 from confirmCode band (find gig) is " + result2);
               if(!(result2['bandFor']==bandID)){
                 console.log('band sent a confirm code for a gig they are not booked for');
@@ -356,13 +370,14 @@ module.exports = router => {
                 res.status(400).end();
                 db.close();
               }
-              else if (!(result2['confirmationCode']==confirmCode)){
+
+              else if (!(result2['confirmationCode']==confirmationCode)){
                 console.log("Band sent an incorrect confirmation code");
                 res.status(200).send('Sorry, the code you sent did not match the code we have on record for that gig. Please try again.');
                 db.close();
               }
               else{
-                console.log("Band with id: " + bandID + "sent a correct confirmation code: " + confirmCode + "for gig: " + gigID);
+                console.log("Band with id: " + bandID + "sent a correct confirmation code: " + confirmationCode + "for gig: " + gigID);
                 //var newValues = {$set:{'confirmed':true}}
                     db.db('bands').collection('bands').findOne({'_id':database.objectId(bandID)}, (err4, theBand)=>{
                       if (err4){
@@ -384,14 +399,16 @@ module.exports = router => {
                             db.close();
                           }
                           else{
-                            db.db('users').collection('stripe_customers').findOne({'username':req.session.key}, (err6, stripe_customer)=>{
+                            db.db('users').collection('stripe_customers').findOne({'username':theGig.creator}, (err6, stripe_customer)=>{
                               if (err6){
-                                console.log('There was an error getting the stripe_customer: '+req.session.key+' out. ' + err6);
+                                console.log('There was an error getting the stripe_customer: '+theGig.creator+' out. ' + err6);
                                 res.status(500).end();
                                 db.close();
                               }
                               else{
-                                db.db('users').collection('stripe_users').findOne({'username':theBand.creator}, (err7, stripe_account)=>{
+                                console.log('The band creator is: ' + req.session.key);
+                                console.log('Cusotmer is: '+ JSON.stringify(stripe_customer));
+                                db.db('users').collection('stripe_users').findOne({'username':req.session.key}, (err7, stripe_account)=>{
                                   if (err7){
                                     console.log('There was an error getting connected account out of mongo for user: ' +username+' Error: '+err7);
                                     res.status(500).end();
@@ -401,13 +418,13 @@ module.exports = router => {
                                     var account = stripe_account.stripe_connected_account_id;
                                     var total_amount = Math.trunc(theGig.price*100);
                                     var stripe_amount = (total_amount*0.029)+30;
-                                    var dest_amount = total_amount-stripe_amount
+                                    var dest_amount = Math.trunc(total_amount-stripe_amount);
                                     var card_src = stripe_customer.src_id;
                                     var descript = 'Payment for artist: '+theBand.name+' for your event: ' +theGig.name+' on ' +theGig.date;
                                     stripe.charges.create({
                                       amount: total_amount,
                                       currency: "usd",
-                                      cusotmer: stripe_customer.stripe_id,
+                                      customer: stripe_customer.stripe_id,
                                       description: descript,
                                       transfer_data: {
                                         amount:dest_amount,
@@ -422,10 +439,14 @@ module.exports = router => {
                                           db.close();
                                         }
                                         else{
-                                          res.status(200).send('You will recieve $'+dest_amount+' in the bank account you provided within 48 hours. Great work!');
+                                          res.status(200).send('You will recieve $'+dest_amount/100+' in the bank account you provided within 48 hours. Great work!');
                                           db.close();
                                         }
                                       });
+                                    }).catch(function(stripe_error2){
+                                      console.log('Stripe error for transfer: ' + stripe_error2);
+                                      res.status(200).send(stripe_error2);
+                                      db.close();
                                     });
                                   }
                                 });
@@ -454,7 +475,7 @@ module.exports = router => {
       res.status(401).send('No body sent').end();
       console.log('user tried to send confirm code without being logged in');
     }
-    var {gigID, bandID, confirmGig} = req.body;
+    var {gigID, bandID, confirmationCode} = req.body;
     database.connect(db=>{
       db.db('gigs').collection('gigs').findOne({'_id':database.objectId(gigID)}, (err2, result2)=>{
         if (err2){
@@ -496,7 +517,7 @@ module.exports = router => {
                   }
                 }
                 if(gigMatches){
-                  if(!(theUpGig.confirmCode==confirmCode)){
+                  if(!(theUpGig.confirmationCode==confirmationCode)){
                     console.log('Confirm code did not match the one we were looking for in gig send code');
                     res.status(200).send("Sorry, the code your provided did not match the one we were looking for, please try again.");
                     db.close();
@@ -519,8 +540,17 @@ module.exports = router => {
                 }
                 else{
                   console.log('Gig id sent with confrim code in gig send confirm code does not match any upcoming gig in bandID sent');
-                  res.status(200).send('Sorry, this band seems to not be matched with you.');
-                  db.close();
+                  db.db('gigs').collection('gigs').updateOne({'_id':database.objectId(gigID)}, {$set:{'confirmed':true}}, (err15, res15)=>{
+                    if (err15){
+                      console.log('There was an error setting confirmed to true');
+                      res.status(500).end();
+                      db.close();
+                    }
+                    else{
+                      res.status(200).send('Great we will now move this event into your past events.');
+                      db.close();
+                    }
+                  });
                 }
               }
             });
@@ -1177,8 +1207,6 @@ router.post('/flake', (req, res)=>{
               }
             });
           }
-
-
         }
       });
 
@@ -1226,17 +1254,17 @@ function diff_hours(dt1, dt2) {
          else{
            var acceptor_email = accept_user.email;
            var applier_email = applier_user.email;
-           sendAConfirmEmail(acceptor_email, true, sendind_error=>{
-             if (sendind_error){
+           sendAConfirmEmail(req, acceptor_email, true, bandCodeToGig, gig, sending_error=>{
+             if (sending_error){
                console.log('Got callback error from send a confrim: ' + sending_error);
-               cb(sendind_error)
+               cb(sending_error)
              }
              else{
                console.log('A confirm email was sent to: ' + acceptor_email+ ' about to send second email to applier');
-               sendAConfirmEmail(applier_email, false, sendind_error2=>{
-                 if (sendind_error2){
+               sendAConfirmEmail(req, applier_email, false, gigCodeToBand, gig, sending_error2=>{
+                 if (sending_error2){
                    console.log('Got callback error from send a confrim (second call): ' + sending_error2);
-                   cb(sendind_error2)
+                   cb(sending_error2)
                  }
                  else{
                    console.log('A confirm email was sent to: ' + acceptor_email+ ' about to send second email to applier');
@@ -1250,15 +1278,15 @@ function diff_hours(dt1, dt2) {
      }
    });
  }
-  function sendAConfirmEmail(address, acceptor, cb){
+  function sendAConfirmEmail(req, address, acceptor, code, theGig, cb){
      console.log('In sendAConfirmEmail and address is:  ' +address);
      let transporter = nodeMailer.createTransport({
-         host: 'smtpout.secureserver.net', // go daddy email host port
+         host: 'smtp.gmail.com', // go daddy email host port
          port: 465, // could be 993
          secure: true,
          auth: {
-             user: 'xxx@xx.com',
-             pass: 'xxxxx'
+             user: 'banda.confirmation@gmail.com',
+             pass: 'N5gdakxq9!'
          }
      });
      let mailOptions = {};
@@ -1266,16 +1294,16 @@ function diff_hours(dt1, dt2) {
         mailOptions = {
            from: OUR_ADDRESS, // our address
            to: address, // who we sending to
-           subject: req.body.subject, // Subject line
-           text: req.body.body, // plain text body
-           html: '<b>TEST TEST TEST</b>' // html body
+           subject: "Confirmation Code From Banda For "+theGig.name+"", // Subject line
+           text: "Hello, "+req.session.key+". Here is your confirmation code for the event "+theGig.name+"      -----                 "+code+"                 -----               Give this code to the arist at the time of the event in person. They should submit this code on their home page. Also be sure to submit the code the artist gives you on your home page. DO NOT SEND THIS CODE TO ANYONE. You should exchange codes in person at the time of the event. We do this to ensure fair transactions between our customers. Once both codes have been sent we will securly charge you and transfer the artist "+theGig.price+ " for you. If you have any questions at all simply reply to this email. Enjoy the music and thank you for using Banda. —Your team at Banda.", // plain text body
+           html: '' // html body
        };
        transporter.sendMail(mailOptions, (error, info) => {
            if (error) {
               console.log('There was an error sending the email: ' + error);
               cb(error);
            }
-           console.log('Message %s sent: %s', info.messageId, info.response);
+           console.log('Message sent: ' + info);
               cb();
          });
      }
@@ -1283,16 +1311,16 @@ function diff_hours(dt1, dt2) {
         mailOptions = {
            from: OUR_ADDRESS, // our address
            to: address, // who we sending to
-           subject: req.body.subject, // Subject line
-           text: req.body.body, // plain text body
-           html: '<b>TEST TEST TEST</b>' // html body
+           subject: "Confirmation Code From Banda For "+theGig.name+"", // Subject line
+           text: "Hello, "+req.session.key+". Here is your confirmation code for the event "+theGig.name+"         -----                 "+code+"                -----               Give this code to the event manager at the time of the event. They should submit this code on their home page. Also, be sure to submit the code the event manager gives you on your home page (this is how we make sure you get paid). DO NOT SEND THIS CODE TO ANYONE. You should exchange codes in person at the time of the event. We do this to ensure fair transactions between our customers. Once both codes have been sent we will securly charge the event and deposit $"+theGig.price+" in your associated bank account. If you have any questions at all simply reply to this email. Enjoy the music and thank you for using Banda. —Your team at Banda.", // plain text body
+           html: '' // html body
        };
        transporter.sendMail(mailOptions, (error, info) => {
            if (error) {
               console.log('There was an error sending the email: ' + error);
               cb(error);
            }
-           console.log('Message %s sent: %s', info.messageId, info.response);
+           console.log('Message sent: ' + info);
               cb();
         });
      }
