@@ -176,7 +176,6 @@ let selectedGig = null
 
  // document.getElementById("link-applicaiton-button").addEventListener("click", function(){
  //   // console.log(selectedGig.data-objID);
- //   alert("fuck shit")
  // })
 }
 
@@ -191,7 +190,7 @@ function submitBand(){
   console.log('IN SUBMIT GIG ID IS :' + gigID);
 
   $.post('/apply', {'bandID':bandID, 'gigID':gigID}, result=>{
-    alert('Congratulations you have applied to this event. Check your home page regularly to see whether they accepted your application.');
+    alert('Congratulations! You have applied to this event. Check your home page regularly to see whether they accepted your application.');
   });
   document.getElementById('modal-wrapper-choose-band-for-app').style.display='none'
 }
@@ -268,7 +267,7 @@ function hitApply(){
     var myBand = dataFromDrop['objid']
     var kind = $('#selectDrop option:selected').val();
     if(kind != 'band'){
-      alert('You can only "Apply" to events as a band. Please select one from your drop down menu and hit apply again. If you have no bands you can create one on your home page.');
+      alert('You can only "Apply" to events as a band. Please select one from the drop down menu and hit apply again. If you have no bands, you can create one on your home page.');
       return;
     }
   }
@@ -277,12 +276,12 @@ function hitApply(){
     return;
   }
   if (myBand==null){
-    alert('You can only "Apply" to events as a band. Please select one from your drop down menu and hit apply again. If you have no bands you can create one on your home page.');
+    alert('You can only "Apply" to events as a band. Please select one from your drop down menu and hit apply again. If you have no bands, you can create one on your home page.');
     return;
   }
   else{
     $.post('/apply', {'gigID':otherGig['_id'], 'bandID':myBand}, result=>{
-      alert('Congratulations, you have applied to the gig ' +otherGig['name'] + ' as ' +myBand['name'] + '! Hit home on the Banda "b" to go to search and then again to go to your home page. Check your home page regularly to see if the event has moved to your upcoming gigs section. If they accept be sure to check your email associated with this account before the start event for the confirmation code to give to the event manager at the time of the event.');
+      alert('Congratulations! You have applied to the gig ' +otherGig['name'] + ' as ' +myBand['name'] + '! Hit "home" on the Banda "b" to go to your home page. Check/refresh your home page regularly to see if the event has moved to your upcoming gigs section. If they accept, be sure to check your email associated with this account before the start of the event for the confirmation code. You should give this code to the event manager at the time of the event. You should also recieve a code from him/her at the event, which you should then enter in your upcoming gigs confirmation code field. Make sure you follow our instructions with confirmation codes so that you can get paid. Do NOT share this code with ANYONE before you arrive at the event.');
     });
   }
 }
@@ -293,7 +292,7 @@ function hitBook(){
     myGig = dataFromDrop['objid']
     var kind = $('#selectDrop option:selected').val();
     if(kind != 'gig'){
-      alert('You can only "Book" bands as an event. Please select one from your drop down menu and hit book again. If you have no events you can create one on your home page.');
+      alert('You can only "Book" bands as an event. Please select one from the drop down menu, and hit book again. If you have no events, you can create one on your home page.');
       return;
     }
   if (otherBand==null){
@@ -301,12 +300,12 @@ function hitBook(){
     return;
   }
   if (myGig==null){
-    alert('You can only "Book" bands as an event. Please select one from your drop down menu and hit book again. If you have no events you can create one on your home page.');
+    alert('You can only "Book" bands as an event. Please select one from the drop down menu, and hit book again. If you have no events, you can create one on your home page.');
     return;
   }
   else{
     $.post('/accept', {'gigID':myGig, 'bandID':otherBand._id}, result=>{
-      alert('Congratulations! You have booked this artist to play at your event. Feel free to notify them with your decision via our built in messaging feature. Check your account-associated email for the confirmation code to give to the aritst in at the time of the event.');
+      alert('Congratulations! You have booked this artist to play at your event. Feel free to notify them with your decision via our built-in messaging feature. Check your account-associated email for the confirmation code to give to the aritst when they arrive at the event. Make sure you recieve a code from them at the event. Do NOT share this code with ANYONE before the artist arrives at the event.');
     });
   }
   }
@@ -315,11 +314,11 @@ function hitMessage(){
   console.log('Hit message');
   if (otherBand!=null){
     $.post('/addContact', {'contactName':otherBand['creator']}, result=>{
-      alert('We have added the creator of this band to your contacts list (click the button in bottom right corner). You can also send them a request to apply to your event via Banda messaging, which you can then accept.')
+      alert('We have added the creator of this band to your contacts list (click the button in the bottom right corner). You can also send them a request to apply to your event via Banda messaging.')
     });
   }
   else{
-    alert('Sorry, the owner of this event must message you first. We do this to avoid overwhelming the event owner with messages from artists. Feel free to apply as one of your bands.')
+    alert('Sorry, the owner of this event must message you first. We do this to avoid overwhelming the event manager with messages from artists. Feel free to apply as one of your bands for now.')
   }
 
 
@@ -661,8 +660,8 @@ function getUserInfo(searchObject){
                  }
                }
 
-               if (msg.body.includes('<')&&msg.body.includes('>')&&msg.body.includes('button')){
-                 alert( 'Congratulations! '+senderName + ' has asked you to apply to one of his/her events. Open your contacts list and select '+senderName+' to see the link. Click it, then select one of your acts to automatically apply.');
+               if (msg.body.includes('button')){
+                 alert( 'Congratulations! '+senderName + ' has asked you to apply to one of his/her events. Open your contacts list and select '+senderName+' to see the link. Click it, then select one of your artist profiles to automatically apply.');
                }
                else{
                  alert('You recieved a message from: ' + senderName + ' Message: ' +msg.body);

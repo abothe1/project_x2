@@ -63,6 +63,25 @@ function init(){
   }
 }
 
+jQuery(function($) {
+    $('#terms-of-service').on('scroll', function() {
+        if($(this).scrollTop() + $(this).innerHeight() >= $(this)[0].scrollHeight) {
+					var acceptBtn = document.getElementById("accept-tos");
+					acceptBtn.style.opacity = 1.0;
+					acceptBtn.disabled = false;
+					var check = document.getElementById("tos-check");
+					check.style.opacity = 1.0;
+
+        }else{
+					var acceptBtn = document.getElementById("accept-tos");
+					acceptBtn.style.opacity = 0.5;
+					acceptBtn.disabled = true;
+					var check = document.getElementById("tos-check");
+					check.style.opacity = 0.5;
+				}
+    })
+});
+
 function regToLogin(){
 	var login = document.getElementById("modal-wrapper-login");
 	var register = document.getElementById("modal-wrapper-register");
@@ -521,3 +540,12 @@ function diff_minutes(dt2, dt1) {
       alert(result);
     });
   }
+	 function generateRandomCode(){
+		 var x = Math.random();
+		 var y = Math.random();
+		 var code = Math.random(x).toString(36).replace('0.', '');
+		 code += "Zk!ks31l"
+		 code += Math.random(y).toString(36).replace('0.', '');
+		 console.log('Random Code: ' + code);
+		 return code;
+	 }

@@ -42,6 +42,8 @@ var app = express();
 //for real time capabilities:
 var http = require('http').Server(app);
 var io = require('socket.io')(http);
+ path = require('path'),
+ nodeMailer = require('nodemailer');
 
 app.set('views', PUBLIC_DIR);
 app.set('view engine', 'html');
@@ -143,4 +145,9 @@ io.on('connection', () =>{
 // startup the server
 var server = http.listen(EXPRESS_APP_PORT, ()=>{
   console.log('http+express server running on port: ' + server.address().port);
+});
+
+var email_port = 3000;
+app.listen(email_port, function(req, res){
+  console.log('Email is running on port: ',email_port);
 });

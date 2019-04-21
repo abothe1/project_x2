@@ -207,16 +207,16 @@ h1, h2, h3, h4, h5, h6, p, button, input, textarea, li{
   margin-left: 20%;
   margin-top: 0px;
   width: 75%;
-
 }
 
 .profile-header-text{
-  font-size: 7vw;
+  font-size: 76pt;
   color: white;
 }
 
 .title-text{
   font-size: 72pt;
+  width: 100%;
   color: white;
 }
 
@@ -257,7 +257,7 @@ user gigs
 */
 .profile-gigs{
   color: white;
-  margin-top: 250px;
+  margin-top: 150px;
   width: 80%;
   margin-left: 20%;
 }
@@ -687,7 +687,7 @@ label{
 }
 
 #new-gig-start-time, #new-gig-end-time{
-  width: 15%;
+  width: 17%;
   margin-top: 10px;
 }
 
@@ -765,12 +765,54 @@ label{
   margin-bottom: 20px;
 }
 
+#loader-new-gig{
+  margin-top: 90px;
+  display: none;
+  position: absolute;
+}
+
+#loader-new-band{
+  margin-top: 140px;
+  margin-left: -10%;
+  display: none;
+  position: absolute;
+}
+
+#loader-new-bank{
+  margin-top: -20px;
+  margin-left: 17%;
+  display: none;
+  position: absolute;
+}
+
+#loader-new-card{
+  display: none;
+  position: absolute;
+  margin-top: 4px;
+  margin-left: -10px;
+}
+
+#loader-book{
+  display: none;
+  position: absolute;
+  margin-top: 150px;
+  margin-left: -255px;
+}
+
+#loader-cancel-booked-event{
+  display: none;
+  position: absolute;
+  margin-top: 150px;
+  margin-left: -255px;
+}
+
 /*
   new band modal elements
 */
 
 #modal-wrapper-new-band{
   z-index: 50;
+  display: none;
 }
 
 #new-band-content > input{
@@ -999,6 +1041,16 @@ ul{
   margin: 0 auto;
   margin-top: 34%;
   font-size: 2vw;
+  text-align: center;
+  color: white;
+}
+
+.flake-notification-p{
+  width: 85%;
+  word-wrap: break-word;
+  margin: 0 auto;
+  margin-top: 40px;
+  font-size: 1.5vw;
   text-align: center;
   color: white;
 }
@@ -2016,4 +2068,30 @@ bank modal
   background-color: rgba(0,0,0,0.8);
   border-radius: 10px;
   color: white;
+}
+
+#loader-page{
+  position: absolute;
+  z-index: 12;
+  margin-left: 50%;
+  margin-top: 100px;
+}
+
+.loader {
+  border: 8px solid #000;
+  border-radius: 50%;
+  border-top: 8px solid #56dff0;
+  width: 50px;
+  height: 50px;
+  -webkit-animation: spin 2s linear infinite; /* Safari */
+  animation: spin 1s linear infinite;
+}
+/* Safari */
+@-webkit-keyframes spin {
+  0% { -webkit-transform: rotate(0deg); }
+  100% { -webkit-transform: rotate(360deg); }
+}
+@keyframes spin {
+  0% { transform: rotate(0deg); }
+  100% { transform: rotate(360deg); }
 }

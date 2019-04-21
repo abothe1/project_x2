@@ -27,7 +27,7 @@ module.exports = router =>{
         if (err2){
           console.log('There was an error creating the customer for username: ' + username);
           console.log('STRIPE ERROR WAS: ' + err2);
-          res.status(500).end();
+          res.status(200).send(err2);
         }
         else{
           console.log(' Craeeted customer: ' + JSON.stringify(customer));
@@ -36,8 +36,18 @@ module.exports = router =>{
           database.connect(db=>{
             db.db('users').collection('stripe_customers').insertOne({'username':username, 'stripe_id':cus_id, 'charges':[], 'src_id':card_token}, (res4)=>{
               console.log('Added user ' + username+ 'to stripe_customers woth cus_id: ' + cus_id);
-              res.status(200).send('Congratulations, '+username+'you are now ready to find talent for your gig, Just click "bands" on our search page.');
-              db.close();
+              db.db('users').collection('users').updateOne({'username':req.session.key}, {$set:{'isCustomer':true}}, (err4, res4)=>{
+                if (err4){
+                  console.log('There was an error trying to set isCustomer to true: ' +err4);
+                  res.status(500).end();
+                  db.close();
+                }
+                else{
+                  res.status(200).send('Congratulations, '+username+'you are now ready to find talent for your gig, Just click "bands" on our search page.');
+                  db.close();
+                }
+              });
+
             })
           }, err3=>{
             console.log('There was an error conencting to mongo: ' + err3);

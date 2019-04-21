@@ -26,6 +26,9 @@ var changingGigInfo={};
 var userContacts = {};
 var userMessages={};
 var user_email = null;
+var hasAccount = false;
+var isCustomer = false;
+
 globalGigs = [];
 //CHNAGE GIGS SECTION:?////////
 
@@ -550,10 +553,12 @@ function presentCancelModal(state, bandID, gigID){
       var confirmInput = document.getElementById("confirm-cancel");
       confirmInput.value = "Yes, I want to cancel this event."
       confirmInput.addEventListener("click",function(){
+        document.getElementById("loader-cancel-booked-event").style.display = "inline";
         console.log("bandID is "+bandID);
         console.log("gigID is"+gigID);
         $.post('/cancel', {'bandID':bandID, 'gigID':gigID, 'whoCanceled':'gig'}, res=>{
-          alert('Canceled event.');
+          alert('This event has been successfully canceled.');
+          document.getElementById("loader-cancel-booked-event").style.display = "none";
           modal.style.display = "none";
         })
 
@@ -570,7 +575,7 @@ function presentCancelModal(state, bandID, gigID){
         console.log("bandID is "+bandID);
         console.log("gigID is"+gigID);
         $.post('/cancel', {'bandID':bandID, 'gigID':gigID, 'whoCanceled':'band'}, res=>{
-          alert('Canceled on event.');
+          alert('You are no longer booked for this event.');
           modal.style.display = "none";
         })
       });
@@ -1109,7 +1114,7 @@ class BandSection{
             }
             if (bandPictureChanged){
               if(!($("#current-band-pic")[0].files || $("#current-band-pic")[0].files[0])){
-                alert('Please enter a valid .jpeg, or .png file for bands profile picture if you would like to change it');
+                alert('Please enter a valid .jpeg, or .png file for the profile picture if you would like to change it');
                 return;
               }
               else{
@@ -1697,6 +1702,7 @@ class Carousel{
           priceText.className = "result-overlay-p";
           if(this.gigFlakeArr[index]){
             priceText.innerHTML = "Sorry, it seems you did not show up to this event.";
+            priceText.className = "flake-notification-p";
           }else{
             priceText.innerHTML = "$"+gig.price;
           }
@@ -1996,7 +2002,7 @@ class Carousel{
         console.log("gig id: "+obj.declineBtn.gigID);
         //post decline
         $.post('/decline', {'gigID':obj.declineBtn.gigID, 'bandID':obj.declineBtn.bandID}, res=>{
-          alert('You have declined this artist, we will notify them for you. Refresh this page to visually remove this applicant from your page.')
+          alert('You have declined this artist. We will notify them for you. Refresh this page to reflect this change.')
         });
       });
     }
@@ -2032,7 +2038,7 @@ class Carousel{
               }
             }
           }
-          alert('Added your feedback!');
+          alert('Added your feedback! Thanks!');
         });
         //post rating
       });
@@ -2072,10 +2078,12 @@ function presentConfirmBookingModal(bandName, bandID, gigID, theGig){
   bookText.innerHTML = "Are you sure you want to book "+bandName+" for this event? You will be charged ";
   var bookBtn = document.getElementById("confirm-booking");
   bookBtn.addEventListener("click",function(){
+    document.getElementById("loader-book").style.display = "inline";
     $.post('/accept', {'gigID':gigID, 'bandID':bandID}, res=>{
+      alert('Congratulations! You have accepted the application for this band. Be sure to check the email associated with your account regulary to recieve the confirmation code. You should exchange this code with the artist at the time of the event.');
       var modal = document.getElementById("modal-wrapper-confirm-booking");
       modal.style.display = "none";
-      alert('Congratulations, you have accepted the application for this band. Be sure to check the email asscoaited with your account regulary to recieve the confirmation code which you will exchange with the artist at the time of the event.')
+      document.getElementById("loader-book").style.display = "none";
     });
   });
 }
@@ -2101,10 +2109,17 @@ function updateGig(id, query){
 function getUsername(){
   console.log("called fucntion getUsername");
   $.get('/user', {query:'nada'}, res=>{
+    console.log('USER IS: ' + JSON.stringify(res));
     var user = res;
     username = user['username'];
     id = user['_id'];
     user_email = user['email'];
+    if(user.hasOwnProperty('hasAccount')){
+      hasAccount=user.hasAccount;
+    }
+    if (user.hasOwnProperty('isCustomer')){
+      isCustomer=user.isCustomer;
+    }
     console.log('USER ID: ' + id);
     userContacts = user['contacts'];
     $('#userNameHeader').html(user['username']);
@@ -2116,7 +2131,7 @@ function getUsername(){
           senderName=userContacts[c]['name'];
         }
       }
-      if (msg.body.includes('<')&&msg.body.includes('>')&&msg.body.includes('button')){
+      if (msg.body.includes('button')){
         alert( 'Congratulations! '+senderName + ' has asked you to apply to one of his/her events. Open your contacts list and select '+senderName+' to see the link. Click it, then select one of your acts to automatically apply.');
       }
       else{
@@ -2219,6 +2234,8 @@ function buildGigs(gigs){
 }
 
 function createWebPage(user){
+  var loaderPage = document.getElementById("loader-page");
+  loaderPage.style.display = "none";
   console.log(JSON.stringify(user));
   var allBands = user['bands'];
   var allGigs = user['gigs'];
@@ -2691,7 +2708,8 @@ function endTimeChange(time){
   console.log("Weekly Sched is :" + JSON.stringify(weeklySched));
 }
 function createBand(){
-
+  var loaderBand = document.getElementById("loader-new-band");
+  loaderBand.style.display = "inline";
   var myNewBand = {
     'name': $('#new-band-title').val(),
     'zipcode':$('#new-band-zip').val(),
@@ -2707,8 +2725,8 @@ function createBand(){
     console.log(myNewBand[key]);
     console.log(key);
     if (myNewBand[key]==null || myNewBand[key]==" " || myNewBand[key]==""){
-
       alert("Sorry, you must fill out the enitre form with non-empty values");
+      loaderBand.style.display = "none";
       return;
     }
   }
@@ -2726,35 +2744,42 @@ function sendBandToDB(lat, lng, myBand){
   var audioPic = myBand['audioPic'];
   var description = myBand['description'];
   var openDates = myBand['openDates'];
+  var loaderBand = document.getElementById("loader-new-band");
   var qCategories = parseQueryString(description);
   console.log('categories inc reate band is: ' + JSON.stringify(qCategories));
   if(!($("#new-band-pic")[0].files || $("#new-band-pic")[0].files[0])){
-    alert('Please enter a valid .jpeg, or .png file for your profile picture');
+    alert('Please enter a valid .jpeg, or .png file for your profile picture.');
+    loaderBand.style.display = "none";
     return;
   }
   else if($("#new-band-pic")[0].files[0].type != 'image/jpeg'){
     if ($('#new-band-pic')[0].files[0].type != 'image/png'){
-      alert('Please enter a valid .jpeg, or .png file for your avatar picture');
+      alert('Please enter a valid .jpeg, or .png file for your avatar picture.');
+      loaderBand.style.display = "none";
       return;
     }
   }
   if(!($("#new-band-clip-pic")[0].files || $("#new-band-clip-pic")[0].files[0])){
-    alert('Please enter a valid .jpeg, or .png file for your audio sample picture');
+    alert('Please enter a valid .jpeg, or .png file for your audio sample picture.');
+    loaderBand.style.display = "none";
     return;
   }
   else if($("#new-band-clip-pic")[0].files[0].type != 'image/jpeg'){
     if ($("#new-band-clip-pic")[0].files[0].type != 'image/png'){
-      alert('Please enter a valid .jpeg, or .png file for your audio sample picture');
+      alert('Please enter a valid .jpeg, or .png file for your audio sample picture.');
+      loaderBand.style.display = "none";
       return;
     }
   }
   if(!($("#new-band-clip")[0].files || $("#new-band-clip")[0].files[0])){
-    alert('Please enter a valid .wav, or .mp3 file for your soundbyte');
+    alert('Please enter a valid .wav, or .mp3 file for your soundbyte.');
+    loaderBand.style.display = "none";
     return;
   }
   else if($("#new-band-clip")[0].files[0].type != 'audio/wav'){
     if ($("#new-band-clip")[0].files[0].type != 'audio/mp3'){
-      alert('Please enter a valid .mp3, or .wav file for your soundbyte');
+      alert('Please enter a valid .mp3, or .wav file for your soundbyte.');
+      loaderBand.style.display = "none";
       return;
     }
   }
@@ -2796,7 +2821,9 @@ function sendBandToDB(lat, lng, myBand){
                         bandSamplePicPath=data;
                         var sample = {'audio':bandSoundPath, 'picture':bandSamplePicPath};
                         $.post('/band', {'name':name, 'zipcode':zipcode, 'maxDist':maxDist, 'price':price, 'picture':bandAvatarPath, 'sample':sample,'description':description, 'openDates':openDates, 'categories':qCategories, 'lat':lat, 'lng':lng}, result=>{
-                          alert("Congratulations, you added " + name + 'to Banda! You can now search for events as, ' + name+ ' to start accelerating your music career! Refresh this page to see your new act/edit it.');
+                          alert("Congratulations, you added " + name + ' to Banda! You can now search for events as, ' + name+ ' to start accelerating your music career! Refresh this page to see/edit your new act.');
+                          loaderBand.style.display = "none";
+                          document.getElementById("modal-wrapper-new-band").style.display = "none";
                         });
                       }
                   });
@@ -2862,7 +2889,7 @@ function cleanGigInput(){
   for (key in gig){
     if(gig[key]==null || gig[key]==" " || gig[key]==""){
       console.log(key);
-      alert("Sorry, you must fill out the enitre form with non-empty values");
+      alert("Sorry, you must fill out the enitre form with non-empty values.");
       return;
     }
   }
@@ -2873,6 +2900,8 @@ function cleanGigInput(){
 
 function sendGigToDB(lat,lng, myNewGig) {
   //must implment getting user name out of session
+  var loader = document.getElementById("loader-new-gig");
+  loader.style.display = "inline";
   var description =  myNewGig['description'];
   var categoriesFromStr = parseQueryString(description);
   var name = myNewGig['name'];
@@ -2907,7 +2936,7 @@ function sendGigToDB(lat,lng, myNewGig) {
     day = "Saturday";
     break;
     default:
-    alert("Please enter a valid date");
+    alert("Please enter a valid date.");
     return;
     break;
   }
@@ -2928,15 +2957,12 @@ function sendGigToDB(lat,lng, myNewGig) {
           picPath=data;
           $.post('/gig', {'name':name, 'address':address, 'date':startDate, 'zipcode': zipcode, 'price': price, 'startDate': startDate, 'startTime':startTime, 'day':day, 'endTime': endTime, 'applications': [], 'lat': lat, 'lng': lng, 'categories':categoriesFromStr, 'isFilled':false, 'bandFor':null, 'description':description, 'picture':picPath}, result => {
               console.log("got cb from post /gig");
-              alert('Congratulations, you have posted the event ' + name + ' to Banda! Band applications will be coming in soon. You can close the form abd refresh the page to see/edit your event. Check/refresh your home page regularly to see new applicants. You can also search for bands as this event now and use our "Ask user to apply..." allow an artist to apply directly to your gig.');
+              loader.style.display = "none";
+              alert('Congratulations, you have posted the event "' + name + '" to Banda! Band applications will be coming in soon. You can refresh the page to see/edit your event. Check/refresh your home page regularly to see new applicants. You can also search for bands as this event now and use our "Ask user to apply..." feature to allow an artist to apply directly to your event.');
               document.getElementById("modal-wrapper-new-gig").style.display = "none";
             });
       }
-
-
   });
-
-
 }
 
 //HELPER functions and messaging///
@@ -3401,7 +3427,7 @@ function createContacts(contacts, yourUsername){
 function convertZipGig(myGig){
   var zipcode = myGig['zipcode'];
   if (!(zipcode.length==5)){
-    alert('Please enter a valid zipcode');
+    alert('Please enter a valid zipcode.');
     return;
   }
   var success = false;
@@ -3410,7 +3436,7 @@ function convertZipGig(myGig){
     {
         // Handle error accordingly
         console.log("Got error with zipcode");
-        alert("Please enter a valid zipcode");
+        alert("Please enter a valid zipcode.");
         return;
     }
   }, 5000);
@@ -3425,7 +3451,7 @@ function convertZipGig(myGig){
 function convertZipBand(myBand){
   var zipcode = myBand['zipcode'];
   if (!(zipcode.length==5)){
-    alert('Please enter a valid zipcode');
+    alert('Please enter a valid zipcode.');
     return;
   }
   console.log(zipcode);
@@ -3434,8 +3460,8 @@ function convertZipBand(myBand){
     if (!success)
     {
         // Handle error accordingly
-        console.log("Got error with zipcode");
-        alert("Please enter a valid zipcode");
+        console.log("Got error with zipcode.");
+        alert("Please enter a valid zipcode.");
         return;
     }
   }, 5000);
@@ -3536,7 +3562,6 @@ let selectedGig = null
 
  // document.getElementById("link-applicaiton-button").addEventListener("click", function(){
  //   // console.log(selectedGig.data-objID);
- //   alert("fuck shit")
  // })
 }
 
@@ -3821,7 +3846,7 @@ function updateUser(id, query){
 
 
 function prepareCardElement(){
-  if (globalGigs.length>0){
+  if ((globalGigs.length>0) || isCustomer){
     document.getElementById("modal-wrapper-new-gig").style.display = 'block';
     return;
   }
@@ -3906,6 +3931,7 @@ function prepareCardElement(){
 }
 
 function attemptBankSubmission(){
+  document.getElementById('loader-new-bank').style.display = 'inline';
   var stripe = Stripe('pk_test_ZDSEcXSIaHCCNQQFwikWyDad0053mxeMlz');
   var firstName = document.getElementById("bank-form-first-name").value;
   var lastName = document.getElementById("bank-form-last-name").value;
@@ -3932,14 +3958,22 @@ function attemptBankSubmission(){
       console.log('Result from tokenazation of bank info: ' + JSON.stringify(result_bank));
         if (result_bank.error){
           console.log('There was an error converting bank info to a token. Stripe error: ' + result_bank.error.message);
-          alert('Sorry that bank account is invalid. Please try again.')
+          alert('Sorry, that bank account is invalid. Please try again.')
+          document.getElementById('loader-new-bank').style.display = 'none';
         }
         else{
           var accountToken = result_bank['token'];
           $.post('/newConnectedAccount', {'firstName':firstName, 'lastName':lastName, 'dateOfBrith':dob, external_account_token:accountToken['id'] }, res=>{
-            alert('Congratulations, you will recieve money in this account within 30 minutes from when your band completes its first gig! Note: when you earn more than $3,000 from your gigs, we may need addtional information to verify your identity.');
-            document.getElementById('modal-wrapper-bank').style.display='none';
-            document.getElementById('modal-wrapper-new-band').style.display='block';
+            if(res){
+              alert(res);
+              return;
+            }
+            else{
+                alert('Congratulations! You will recieve money in this account within one week from when your band completes its first gig! Note: when you earn more than $3,000 from your gigs, we may need addtional information to verify your identity.');
+                document.getElementById('modal-wrapper-bank').style.display='none';
+                document.getElementById('modal-wrapper-new-band').style.display='block';
+                document.getElementById('loader-new-bank').style.display = 'none';
+            }
           });
         }
       });
@@ -3947,14 +3981,28 @@ function attemptBankSubmission(){
 
 function attemptCreditSubmission(token_id){
   //var creditNum = document.getElementById("card-elem").value;
+  document.getElementById("loader-new-card").style.display = "inline";
   console.log();
   console.log('TOKEN ID for card is: ' + token_id);
+  // need to handle errors here too
   $.post('/createStripeCustomer', {card_token:token_id, email:user_email},res=>{
     alert('res');
+    document.getElementById("loader-new-card").style.display = "none";
     document.getElementById("modal-wrapper-credit").style.display = 'none';
     document.getElementById("modal-wrapper-new-gig").style.display = 'block';
   });
   //var card_number =
 
 //  console.log(creditNum);
+}
+
+function prepareBankElement(){
+  if (hasAccount){
+    document.getElementById('modal-wrapper-bank').style.display='none';
+    document.getElementById('modal-wrapper-new-band').style.display='block';
+    document.getElementById('loader-new-bank').style.display = 'none';
+  }
+  else{
+    document.getElementById('modal-wrapper-bank').style.display='block';
+  }
 }

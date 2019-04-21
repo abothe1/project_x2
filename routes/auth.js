@@ -78,6 +78,7 @@ router.post('/login', (req, res) => {
 	console.log("IN LOGIN On Router Page");
 	if (req.session.key) {
 		console.info(`User ${req.session.key} from ${req.ip} attempted to login whilst logged in`);
+		req.session.key = req.session.key;
 		return res.status(402).send('Already logged in').end();
 	}
 

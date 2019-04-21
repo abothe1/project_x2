@@ -67,6 +67,7 @@
         <span onclick="document.getElementById('modal-wrapper-cancel').style.display='none'" class="cancel-close" title="Close PopUp">&times;</span>
         <p id="cancel-text"></p>
         <input type="button" id="confirm-cancel" />
+        <div id="loader-cancel-booked-event" class="loader"></div>
       </div>
     </div>
     <div id="modal-wrapper-confirm-booking">
@@ -76,6 +77,7 @@
         <span onclick="document.getElementById('modal-wrapper-confirm-booking').style.display='none'" class="cancel-close" title="Close PopUp">&times;</span>
         <p id="confirm-booking-text" class="modal-p"></p>
         <input type="button" class="confirm-modal-btn" id="confirm-booking" value="confirm"/>
+        <div id="loader-book" class="loader"></div>
       </div>
     </div>
     <div id="modal-wrapper-report-absent-band">
@@ -128,7 +130,7 @@
           <h1 style="text-align:left; padding-left: 20px; font-size: 50pt;">new gig</h1>
         </div>
         <div class="container" id="new-gig-content">
-          <input id="new-gig-title" class="modal-input" type="text" placeholder="enter a title for your new event" required></input>
+          <input minlength="3" maxlength="65" id="new-gig-title" class="modal-input" type="text" placeholder="enter a title for your new event" required></input>
           <label for="new-gig-date">date</label>
           <input id="new-gig-date" class="modal-input" type="date" required></input>
           <label for="new-gig-start-time">from</label>
@@ -149,6 +151,7 @@
           <label id="new-gig-description-label" for="new-gig-description" required>description</label>
           <textarea id="new-gig-description" class="modal-textarea" required></textarea>
           <button type='button' class="popUpButtons" id="new-gig-post" onclick="postGig()">post</button>
+          <div id="loader-new-gig" class="loader"></div>
         </div>
       </form>
     </div>
@@ -159,7 +162,7 @@
           <h1 style="text-align:left; padding-left: 20px; font-size: 50pt;">new band</h1>
         </div>
         <div class="container" id="new-band-content">
-          <input id="new-band-title" class="modal-input" type="text" placeholder="enter a name for your new band/act" required ></input>
+          <input minlength="3" maxlength="50" id="new-band-title" class="modal-input" type="text" placeholder="enter a name for your new band/act" required ></input>
           <label for="new-band-zip">zip code</label>
           <input id="new-band-zip" class="modal-input" type="number" pattern='{5}' placeholder="" required></input>
           <label for="new-band-dist">max travel distance (mi.)</label>
@@ -217,6 +220,7 @@
           <label for"new-band-clip-pic">upload clip image</label>
           <input id="new-band-clip-pic" class="modal-input" name="soundbyte-img" type="file" required></input>
           <img id="new-band-clip-preview"/>
+          <div id="loader-new-band" class="loader"></div>
           <button type='button' class="popUpButtons" id="new-band-create" onclick="createBand()" >create</button>
         </div>
       </form>
@@ -237,9 +241,10 @@
           <!-- Used to display form errors. -->
           <div id="card-errors" role="alert"></div>
         </div>
-        <button class="stripe-button" style="display: block" >Submit Payment</button>
+        <button class="stripe-button" style="display: block" >Connect Payment Method</button>
         <p class="stripe-footer">We use the secure payment platform <a href="https://stripe.com/" class="stripe-link">Stripe</a>
           to guarantee swift and easy compensation of the artists that you book.</p>
+        <div id="loader-new-card" class="loader"></div>
       </form>
     </div>
     <div id="modal-wrapper-bank">
@@ -298,6 +303,7 @@
             focus on making art and expanding your music career.
           </p>
         </div>
+        <div id="loader-new-bank" class="loader"></div>
         <img alt="stripe"src="/assets/Control-Center/stripelogo.png" class="stripe-logo" />
       </div>
     </div>
@@ -351,13 +357,15 @@
         <a href='#' class='deg90' onclick="document.getElementById('modal-wrapper-support').style.display='block'"><p class="radialText">Support</p></a>
       </div>
 
+      <div id="loader-page" class="loader"></div>
+
       <div class="profile-header">
         <p class="profile-header-text" id='userNameHeader'></p>
       </div>
 
       <div class="profiles-list">
         <ul id='profiles-list'>
-          <li><a href="#" onclick="document.getElementById('modal-wrapper-bank').style.display='block'">+ Create a Band</a></li>
+          <li><a href="#" onclick="prepareBankElement()">+ Create a Band</a></li>
           <li><a href="#" onclick="prepareCardElement()">+ Post an Event</a></li>
         </ul>
       </div>

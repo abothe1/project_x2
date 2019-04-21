@@ -75,8 +75,13 @@ router.post('/band', (req, res) => {
 });
 
 function createGigConfirmCode(name){
-    //INSERT KWAN's Func here:
-  return name;
+    var x = Math.random();
+    var y = Math.random();
+    var code = Math.random(x).toString(36).replace('0.', '');
+    code += "XkB!s7l5"
+    code += Math.random(y).toString(36).replace('0.', '');
+    console.log('Random Code: ' + code);
+    return code;
 }
 
 } // end of module exports

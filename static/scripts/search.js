@@ -248,6 +248,8 @@ function performSearch(json){
 }
 
 function showResults(mode, bands, gigs){
+  var loaderPage = document.getElementById("loader-page");
+  loaderPage.style.display = "none";
   theGrid = document.getElementById("grid-container");
   /*
   AB
@@ -395,7 +397,7 @@ function searchForBands(){
   console.log('search as type : '+serachAsType);
 
   if (serachAsType=='band'){
-    alert("You can't search for bands as a band, please select one of your events or your username in the drop down menu.");
+    alert("You can't search for bands as a band. Please select one of your events or your username in the drop down menu.");
     return;
   }
   else if (serachAsType=='gig'){
@@ -460,7 +462,7 @@ function searchForGigs(){
   console.log('search as type : '+serachAsType);
 
   if (serachAsType=='gig'){
-    alert("You can't search for events as an event, please select one of your bands or your username in the drop down menu.");
+    alert("You can't search for events as an event. Please select one of your bands or your username in the drop down menu.");
     return;
   }
   else if (serachAsType=='band'){

@@ -3,6 +3,7 @@ module.exports = router => {
   stripe_private_key = 'sk_test_t6hlsKu6iehEdJhV9KzITmxm00flbTdrG5';
   var stripe = require('stripe')(stripe_private_key);
   const BANDA_CUT = 0.05;
+  const OUR_ADDRESS = 'xxxx@xxx';
   router.post('/apply', (req, res)=>{
     if (!req.body) {
   		 res.status(400).send('No body sent').end();
@@ -119,7 +120,7 @@ module.exports = router => {
                 });
               }
             });
-            var newCode = creatBandConfirmCode(gigID, bandID);
+            var newCode = createBandConfirmCode(gigID, bandID);
             var upGig = {'gigID':gigID, 'confirmationCode':newCode};
 
             db.db('bands').collection('bands').findOne({'_id':database.objectId(bandID)}, (err6, result6)=>{
@@ -331,7 +332,7 @@ module.exports = router => {
     }
     if (!req.session.key){
       res.status(401).send('No body sent').end();
-      console.log('user tried to apply without being logged in');
+      console.log('user tried to send confirm code without being logged in');
     }
     else{
       var {confirmCode, gigID, bandID} = req.body;
@@ -352,25 +353,17 @@ module.exports = router => {
               }
               else if (result2['isFilled']==false){
                 console.log('band sent a confirm code for a gig that has not been filled');
-                db.close();
                 res.status(400).end();
+                db.close();
               }
               else if (!(result2['confirmationCode']==confirmCode)){
                 console.log("Band sent an incorrect confirmation code");
+                res.status(200).send('Sorry, the code you sent did not match the code we have on record for that gig. Please try again.');
+                db.close();
               }
               else{
                 console.log("Band with id: " + bandID + "sent a correct confirmation code: " + confirmCode + "for gig: " + gigID);
-                var newValues = {$set:{'confirmed':true}};
-
-                db.db('gigs').collection('gigs').updateOne({'_id':database.objectId(gigID)}, newValues, (err3, result3)=>{
-                  if(err3){
-                    console.log('Got error trying to update gig: ' + err3);
-                    res.status(500).end();
-                    db.close();
-                  }
-                  else{
-
-                    console.log('Result for setting confirmed to true for gig was : ' + result3);
+                //var newValues = {$set:{'confirmed':true}}
                     db.db('bands').collection('bands').findOne({'_id':database.objectId(bandID)}, (err4, theBand)=>{
                       if (err4){
                         console.log('There was an error finding band with id: ' + bandID+" "+err4);
@@ -443,8 +436,6 @@ module.exports = router => {
                       }
                     });
                     //moved db bands moving arrays around func
-                  }
-                });
               }
             }
         });
@@ -461,7 +452,7 @@ module.exports = router => {
     }
     if (!req.session.key){
       res.status(401).send('No body sent').end();
-      console.log('user tried to apply without being logged in');
+      console.log('user tried to send confirm code without being logged in');
     }
     var {gigID, bandID, confirmGig} = req.body;
     database.connect(db=>{
@@ -493,41 +484,42 @@ module.exports = router => {
               else{
                 console.log("Got band out of db in gig send confrim code here is result: " + result3);
                 var gigMatches = false;
+                var allUpGigs = [];
+                var theUpGig=null;
                 for (var upGig in result3['upcomingGigs']){
-                  if (result3['upcomingGigs'][upGig]==gigID){
+                  if (result3['upcomingGigs'][upGig].gigID==gigID){
                     gigMatches=true;
+                    theUpGig=result3['upcomingGigs'][upGig];
+                  }
+                  else{
+                    allUpGigs.push(result3['upcomingGigs'][upGig]);
                   }
                 }
                 if(gigMatches){
-                  if(!(result3['upcomingGigs']['confirmationCode']==confirmCode)){
+                  if(!(theUpGig.confirmCode==confirmCode)){
                     console.log('Confirm code did not match the one we were looking for in gig send code');
+                    res.status(200).send("Sorry, the code your provided did not match the one we were looking for, please try again.");
                     db.close();
-                    res.status(200).send("Code did not match that band's gig");
                   }
                   else{
-                    var newValues2 =
-                    {
-                      $pull: 'upcomingGigs.$[element]',
-                      $push: {'finishedGigs':gigID}
-                    };
-                    var filters = {arrayFilters:[{element:gigID}]};
-
-                    db.db('bands').collection('bands').updateOne({'_id':database.objectId(bandID)}, newValues2, filters, (err4, result4)=>{
+                    var newValues2 = {$set:{'confirmed':true}};
+                    db.db('gigs').collection('gigs').updateOne({'_id':database.objectId(gigID)}, newValues2, (err4, result4)=>{
                       if (err4){
-                        console.log("There was an error trying to modify bands arrays for confirm, err: " + err4);
+                        console.log("There was an error trying to modify gig to be confirmed " + err4);
                         res.status(500).end();
+                        db.close();
                       }
                       else{
                         console.log("Update band in confirm code gig, result was: " + result4);
+                        res.status(200).send('Thank you for submitting the bands confrimation code. We will transfer the appropaite amount into their account when the band sends your confrim code.');
                         db.close();
-                        res.status(200).end();
                       }
                     });
                   }
                 }
                 else{
                   console.log('Gig id sent with confrim code in gig send confirm code does not match any upcoming gig in bandID sent');
-                  res.status(200).send('This gig is not in your upcoming.');
+                  res.status(200).send('Sorry, this band seems to not be matched with you.');
                   db.close();
                 }
               }
@@ -1066,7 +1058,6 @@ router.post('/flake', (req, res)=>{
                       res.status(200).send('The band: '+theBand.name+' sent the confirmation code we sent you. They could have only gotten this from you, so we will not be giving s refund. Sorry, do not send bands your confirmation code until they show up for the event.')
                       db.close();
                     }
-
                   }
                   else{
                     if(theGig.confirmed){
@@ -1197,8 +1188,14 @@ router.post('/flake', (req, res)=>{
     });
   }
 })
-function creatBandConfirmCode(gigID, bandID){
-  return gigID+bandID;
+function createBandConfirmCode(gigID, bandID){
+  var x = Math.random();
+  var y = Math.random();
+  var code = Math.random(x).toString(36).replace('0.', '');
+  code += "Zk!ks31l"
+  code += Math.random(y).toString(36).replace('0.', '');
+  console.log('Random Code: ' + code);
+  return code;
 }
 
 function diff_hours(dt1, dt2) {
@@ -1211,5 +1208,94 @@ function diff_hours(dt1, dt2) {
   console.log("diff is : " + diff);
   return Math.abs(Math.round(diff));
  }
+
+ function sendConfirmEmails(db, band, bandCodeToGig, gig, gigCodeToBand, req, cb){
+   console.log('In send confirm email vars: '+band+gig+req);
+   db.db('users').collection('users').findOne({'username':req.session.key}, (err_find, accept_user)=>{
+     if (err_find){
+       console.log('THere was an error finding accept user: ' + req.session.key);
+       cb(err_find)
+     }
+     else{
+       var band_creator = band.creator;
+       db.db('users').collection('users').findOne({'username':band_creator}, (err_find2, applier_user)=>{
+         if (err_find2){
+           console.log('There was an error finding band user: ' + band_creator);
+           cb(err_find2)
+         }
+         else{
+           var acceptor_email = accept_user.email;
+           var applier_email = applier_user.email;
+           sendAConfirmEmail(acceptor_email, true, sendind_error=>{
+             if (sendind_error){
+               console.log('Got callback error from send a confrim: ' + sending_error);
+               cb(sendind_error)
+             }
+             else{
+               console.log('A confirm email was sent to: ' + acceptor_email+ ' about to send second email to applier');
+               sendAConfirmEmail(applier_email, false, sendind_error2=>{
+                 if (sendind_error2){
+                   console.log('Got callback error from send a confrim (second call): ' + sending_error2);
+                   cb(sendind_error2)
+                 }
+                 else{
+                   console.log('A confirm email was sent to: ' + acceptor_email+ ' about to send second email to applier');
+                   cb();
+                 }
+               });
+             }
+           });
+         }
+       });
+     }
+   });
+ }
+  function sendAConfirmEmail(address, acceptor, cb){
+     console.log('In sendAConfirmEmail and address is:  ' +address);
+     let transporter = nodeMailer.createTransport({
+         host: 'smtpout.secureserver.net', // go daddy email host port
+         port: 465, // could be 993
+         secure: true,
+         auth: {
+             user: 'xxx@xx.com',
+             pass: 'xxxxx'
+         }
+     });
+     let mailOptions = {};
+     if (acceptor){
+        mailOptions = {
+           from: OUR_ADDRESS, // our address
+           to: address, // who we sending to
+           subject: req.body.subject, // Subject line
+           text: req.body.body, // plain text body
+           html: '<b>TEST TEST TEST</b>' // html body
+       };
+       transporter.sendMail(mailOptions, (error, info) => {
+           if (error) {
+              console.log('There was an error sending the email: ' + error);
+              cb(error);
+           }
+           console.log('Message %s sent: %s', info.messageId, info.response);
+              cb();
+         });
+     }
+     else{
+        mailOptions = {
+           from: OUR_ADDRESS, // our address
+           to: address, // who we sending to
+           subject: req.body.subject, // Subject line
+           text: req.body.body, // plain text body
+           html: '<b>TEST TEST TEST</b>' // html body
+       };
+       transporter.sendMail(mailOptions, (error, info) => {
+           if (error) {
+              console.log('There was an error sending the email: ' + error);
+              cb(error);
+           }
+           console.log('Message %s sent: %s', info.messageId, info.response);
+              cb();
+        });
+     }
+  }
 
 }

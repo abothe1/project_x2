@@ -22,13 +22,17 @@ module.exports = router =>{
       indie['last_name']=lastName;
       indie['dob']={};
       var birthDate = new Date(dateOfBrith);
-      indie['dob']['day']=birthDate.getDay();
-      indie['dob']['month']=birthDate.getMonth();
+      birthAr = dateOfBrith.split('-');
+      console.log('birthAr is: ' + JSON.stringify(birthAr));
+      var tempDay = birthDate.getDay()
+      console.log("tempDay is: " + tempDay);
+      indie['dob']['day']=birthAr[2];
+      indie['dob']['month']=birthAr[1];
       indie['dob']['year']=birthDate.getFullYear();
       var business_profile = {};
       business_profile['product_description']='A musical act on the Banda network.';
       var today = new Date();
-      var ip = req.session.ip;
+      var ip = req.ip;
       console.log('IP IS: ' + ip);
       console.log('Today is: ' + today.toString());
       tos_acceptance={};
@@ -55,16 +59,27 @@ module.exports = router =>{
             console.log('Requirments to verify account are: ' + JSON.stringify(requirements));
             database.connect(db=>{
                 db.db('users').collection('stripe_users').insertOne({'username':req.session.key, 'stripe_connected_account_id':stripe_id, 'payouts':[]}, (res4)=>{
-                    res.status(200).send('Good job!');
-                    db.close();
+                    db.db('users').collection('users').updateOne({'username':req.session.key}, {$set:{'hasAccount':true}}, (err4, res4)=>{
+                      if (err4){
+                        console.log('There was an error trying ti update a user to have hasAccount = true: ' + err4);
+                        res.status(500).end();
+                        db.close();
+                      }
+                      else{
+                        res.status(200).send();
+                        db.close();
+                      }
+                    });
                 });
               }, err3=>{
                   console.log('Couldnt connect to mongo. Error: ' + err3);
                   res.status(500).end();
+                  db.close();
                 });
                 //add id to db
               }).catch(err=>{
                 console.log('Error from stripe: ' + err);
+                res.status(200).send(err);
               });
     }
   });
