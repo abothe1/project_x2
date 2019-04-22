@@ -312,7 +312,7 @@ module.exports = router => {
                 else{
                   newContact=result4;
                   var newvalues = {$push:{'contacts':{'id':newContact['_id'], 'name':contactName}}};
-                  db.db('users').collection('users').updateOne({'username':req.session.key}, newValues, (err3, result3)=>{
+                  db.db('users').collection('users').updateOne({'username':req.session.key}, newvalues, (err3, result3)=>{
                     if (err3){
                       console.log('There was an error tryign to append contact, error was: ' + err3);
                       res.status(500).end();
@@ -320,7 +320,7 @@ module.exports = router => {
                     }
                     else{
                       console.log('got user set with the contact' + contactName);
-                      console.log(JSON.stringify(result));
+                    //  console.log(JSON.stringify(result));
                       res.status(200).end();
                       db.close();
                     }
