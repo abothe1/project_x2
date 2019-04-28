@@ -148,6 +148,15 @@ function populateDropDown(myUser, myBands, myGigs){
 // document.addEventListener('ready', init);
 
 function init(){
+
+  var textOut = document.getElementById("truncated-text");
+  var string = "1234567891";
+  if(string.length > 8){
+    string = string.substring(0,5) + "...";
+  }
+  textOut.innerHTML = string;
+
+
   var urlJSON = parseURL(window.location.href);
   var searchObject = urlJSON['searchObject'];
   console.log('Search obj is: ' + JSON.stringify(searchObject));
@@ -296,6 +305,15 @@ function createPageAsBand(){
   profileTitle.innerHTML = otherBand.name;
   var profileCreator = document.getElementById("profile-creator");
   profileCreator.innerHTML = "created by: "+otherBand.creator;
+  var hasReliability = null;
+  if(otherBand.showsUp != null){
+    hasReliability = true;
+    var reliability = document.getElementById("reliability");
+    reliability.style.display = "block";
+    reliability.innerHTML = "reliability: "+otherBand.showsUp;
+  }else{
+    hasReliability = false;
+  }
 
   // load the band rating into the stars
   var newStars = document.getElementById("user-stars");
@@ -332,9 +350,20 @@ function createPageAsBand(){
   var bandFrame = document.getElementById("profile-img-frame");
   bandFrame.src = "/assets/Home/purplebox.png";
   var bandPriceText = document.getElementById("profile-price-text");
-  bandPriceText.innerHTML = "The asking price for this band is";
-  var bandPrice = document.getElementById("profile-price");
-  bandPrice.innerHTML = "$"+otherBand.price+"/hr";
+  if(hasReliability){
+    bandPriceText.innerHTML = "The asking price for this band is";
+    bandPriceText.className = "profile-price-text";
+    var bandPrice = document.getElementById("profile-price");
+    bandPrice.innerHTML = "$"+otherBand.price+"/hr";
+    bandPrice.className ="profile-price";
+  }else{
+    bandPriceText.innerHTML = "This band has yet to perform at any gigs! The asking price for this band is";
+    bandPriceText.className = "profile-price-text-new";
+    var bandPrice = document.getElementById("profile-price");
+    bandPrice.innerHTML = "$"+otherBand.price+"/hr";
+    bandPrice.className = "profile-price-new";
+  }
+
 
   // add band clips section
   var bandSamplesWrapper = document.createElement("div");

@@ -37,23 +37,100 @@
   </head>
   <body onload="init();">
 
-    <div id="modal-wrapper-credit-card" class="modal-card">
-      <span onclick="document.getElementById('modal-wrapper-credit-card').style.display='none'" class="close-stripe" title="Close PopUp">&times;</span>
+    <div id="pay-modal" class="modal-card">
+      <script src="https://js.stripe.com/v3/"></script>
 
-      <form action="/charge" method="post" id="payment-form" class="animate">
+      <span onclick="document.getElementById('pay-modal').style.display='none'" class="close-stripe" title="Close PopUp">&times;</span>
+
+
+      <form action="/accept" method="post" id="payment-form">
+        <input type="hidden" name="gigID" id="payment-gigID"/>
+        <input type="hidden" name="bandID" id="payment-bandID"/>
         <div class="form-row">
-          <p class="stripe-header">Add credit or debit card through Stripe</p>
-          <div id="card-element">
-            <!-- A Stripe Element will be inserted here. -->
-          </div>
+         <label for="card-element">
+           Credit or debit card
+         </label>
+         <div id="card-element">
+           <!-- A Stripe Element will be inserted here. -->
+         </div>
 
-          <!-- Used to display form errors. -->
-          <div id="card-errors" role="alert"></div>
+         <!-- Used to display form errors. -->
+         <div id="card-errors" role="alert"></div>
         </div>
 
-        <button class="stripe-button">Submit Payment</button>
+       <button class="stripe-button" style="display: block">Submit Payment</button>
+       <p class="stripe-footer">
+         We use the secure payment platform <a href="https://stripe.com/" class="stripe-link">Stripe</a>
+         to guarantee swift and easy compensation of the artists that you book. 
+       </p>
       </form>
-      <p class="stripe-footer">Secure payment processing powered by Stripe. Banda, Inc. does not store your credit card information.</p>
+    </div>
+
+    <div id="modal-wrapper-bank">
+      <div id="bank-content">
+        <script src="https://js.stripe.com/v3/"></script>
+        <form action="/charge" method="post" id="payment-form">
+          <div class="form-row inline">
+            <div class="col">
+              <label for="name">
+                Name
+              </label>
+              <input id="name" name="name" placeholder="Jenny Rosen" required>
+            </div>
+            <div class="col">
+              <label for="email">
+                Email Address
+              </label>
+              <input id="email" name="email" type="email" placeholder="jenny.rosen@example.com" required>
+            </div>
+          </div>
+          <div class="form-row">
+            <div class="col">
+              <label for"social">
+                Last Four Digits of SSN
+              </label>
+              <input id="social" name="social" type="number" placeholder="4444" max="9999" min="0" required>
+            </div>
+          </div>
+
+          <div class="form-row">
+            <label for="iban-element">
+              IBAN
+            </label>
+            <div id="iban-element">
+              <!-- A Stripe Element will be inserted here. -->
+            </div>
+          </div>
+          <div id="bank-name"></div>
+
+          <button class="stripe-button">Connect Account</button>
+
+          <!-- Used to display form errors. -->
+          <div id="error-message" role="alert"></div>
+
+          <!-- Display mandate acceptance text. -->
+          <div id="mandate-acceptance">
+            <p>
+              We use <a href="https://stripe.com/" class="stripe-link">Stripe</a>, a
+              secure payment platform, to ensure that you always get what you earn.
+              Banda does not store your credit card or bank account
+              information. We use this information to make
+              deposits in your account on behalf of an event host.
+              Banda handles artist compensation so that you can
+              focus on making art and expanding your music career.
+            </p>
+          </div>
+          <img alt="stripe"src="../static/assets/Control-Center/stripelogo.png" class="stripe-logo" />
+        </form>
+      </div>
+    </div>
+
+    <div id="modal-wrapper-cancel">
+      <div  id="cancel-content" class="modal-content-cancel animate">
+        <span onclick="document.getElementById('modal-wrapper-cancel').style.display='none'" class="cancel-close" title="Close PopUp">&times;</span>
+        <p id="cancel-text"></p>
+        <input type="button" id="confirm-cancel" />
+      </div>
     </div>
 
     <div id="modal-wrapper-link-application" class="modal2">
@@ -190,7 +267,7 @@
           <label for"new-band-clip-pic">upload clip image</label>
           <input id="new-band-clip-pic" class="modal-input" name="soundbyte-img" type="file"></input>
           <img id="new-band-clip-preview"/>
-          <button class="popUpButtons" id="new-band-create">create</button>
+          <button class="popUpButtons" id="new-band-create">continue</button>
         </div>
       </form>
     </div>
@@ -247,7 +324,7 @@
         <a href='#' class='deg0' onclick="document.getElementById('modal-wrapper-login').style.display='block'" id="login_button"><p class="radialText">Login</p></a>
         <a href='#' class='deg30' id="sign_in_button" onclick="document.getElementById('modal-wrapper-register').style.display='block'"><p class="radialText">Register</p></a>
         <a href='./' class='deg60'><p class="radialText">Home</p></a>
-        <a href='#' class='deg90'><p class="radialText" id="about-btn">About</p></a>
+        <a href='#' class='deg90'><p class="radialText" id="about-btn" onclick="document.getElementById('pay-modal').style.display='block'">About</p></a>
       </div>
 
       <div class="profile-header">

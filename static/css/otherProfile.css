@@ -665,6 +665,13 @@ profile img elements
   margin-top: 50px;
 }
 
+.profile-price-text-new, .profile-price-new{
+  margin-top: 20px;
+  max-width: 70%;
+  margin-left: 15%;
+  text-align: left;
+}
+
 /*
  band samples stuff
 */
@@ -715,4 +722,34 @@ profile img elements
   border: none !important;
   width: 160px;
   height: 40px;
+}
+
+.band-reliability{
+  display: block;
+  color: white;
+  font-size: 14pt;
+  position: absolute;
+  margin-left: 87%;
+  margin-top: -54px;
+}
+
+.loader {
+  border: 8px solid #000;
+  border-radius: 50%;
+  border-top: 8px solid #56dff0;
+  width: 50px;
+  height: 50px;
+  -webkit-animation: spin 2s linear infinite; /* Safari */
+  animation: spin 1s linear infinite;
+}
+
+/* Safari */
+@-webkit-keyframes spin {
+  0% { -webkit-transform: rotate(0deg); }
+  100% { -webkit-transform: rotate(360deg); }
+}
+
+@keyframes spin {
+  0% { transform: rotate(0deg); }
+  100% { transform: rotate(360deg); }
 }
