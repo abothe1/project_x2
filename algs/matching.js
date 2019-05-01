@@ -194,6 +194,50 @@ module.exports = {
     });
   },
 
+  findStudiosForBand : function findStudiosForBand(myBandName, queryStr, db, errCb, cbOk){
+    console.log("on algs ppage searching for studios and band name is : " + myBandName);
+     db.db('bands').collection('bands').findOne({'_id':ObjectId(myBandName)}, function(err, result){
+      if (err){
+        console.log("there was an error getting " + myBandName + " out of the db " + err);
+        errCB(err);
+      }
+      else{
+        var myBand = result;
+        console.log("In algs page and the band for searching for gigs is: " + JSON.stringify(myBand));
+        console.log("The my band find one method in algs returned: " + myBand);
+
+
+         db.db('studios').collection('studios').toArray(function (err,result){
+          if (err){
+            console.log("There was error getting studios from db:" + err);
+            errCb(err);
+          }
+          else{
+            console.log("result in find studios for band connecting to db and geting the studios was: " + JSON.stringify(result));
+            var studios=result;
+
+            for (s in studios){
+              var queryStrScore = 0;
+              var theStudio = studios[s];
+              var numMatches = 0;
+
+              var distScore = scoreOnDist(myBand.maxDist, theStudio.lat, theStudio.lng, myBand.lat, myBand.lng);
+              console.log("dist score is : " + distScore);
+
+              var score = distScore+queryStrScore;
+              console.log(" ");
+              console.log("in studios for band and score of studio : " + JSON.stringify(theGig) + "is :" + score);
+            }
+            var sortedGigs = {"overallMatchers":sortDict(gigsToScore), "queryMatchers":sortDict(queryGigsToScore)};
+            console.log("sorted gigs on alg page is : " + JSON.stringify(sortedGigs));
+            db.close();
+            cbOk(sortedGigs);
+          }
+        });
+      }
+    });
+  },
+
   findBandsForGig : function findBandsForGig(myGigName, queryStr, db, errCb, okCb) {
    console.log("got in find bands fro gig on alg page");
    console.log("querystr is :" + queryStr);

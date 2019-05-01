@@ -26,7 +26,7 @@
 const EXPRESS_APP_PORT = 1600,
       PUBLIC_DIR = 'public',
       STATIC_DIR = 'static',
-      REDIS_HOST = 'localhost'
+      REDIS_HOST = 'localhost',
       REDIS_PORT = 6379;
 
 const express = require('express'),
@@ -42,8 +42,8 @@ var app = express();
 //for real time capabilities:
 var http = require('http').Server(app);
 var io = require('socket.io')(http);
- path = require('path'),
- nodeMailer = require('nodemailer');
+  path = require('path'),
+  nodeMailer = require('nodemailer');
 
 app.set('views', PUBLIC_DIR);
 app.set('view engine', 'html');

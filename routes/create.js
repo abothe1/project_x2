@@ -84,4 +84,34 @@ function createGigConfirmCode(name){
     return code;
 }
 
+router.post('/studios', (req, res)=>{
+  if (!req.session.key){
+    console.log('A non logged in user tried to create a studio');
+    res.status(404).end();
+  }
+  if (!req.body){
+    console.log('There was no body sent for creating studio.');
+    res.sttaus(401).end();
+  }
+  else{
+    var {name, description, categories} = req.body;
+    database.connect(db=>{
+      db.db('studios').collection('studios').insertOne({'name':name, 'description': description, 'categories': categories}, (err2, res2)=>{
+        if (err2){
+          console.log('There was an error creating studio with name: ' + name + 'error: '+err2);
+          res.status(500).end();
+          db.close();
+        }
+        else{
+          console.log('Created studio: ' + res2);
+          res.status(200).send('Congratulations, you have added ' + name + ' to Banda! You can now...');
+          db.close();
+        }
+      });
+    }, err=>{
+      console.log('There was an error connecting to mongo:' + err);
+      res.status(500).end();
+    });
+  }
+});
 } // end of module exports

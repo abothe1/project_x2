@@ -19,6 +19,8 @@ const database = require('../database.js'),
         dest: './public/tmp/'
       });
 
+      // ysvnxtgi
+
   router.post('/uploadGigPic', uploadingGigPics.single('image'), function(req, res) {
       if (!req.file){
         console.log('No file sent');

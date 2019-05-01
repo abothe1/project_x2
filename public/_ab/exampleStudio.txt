@@ -1,0 +1,59 @@
+{
+  "_id": "abx9998slkjshcoo"
+  "name": "The Green Haze Studio",
+  "creator":"xxx",
+  "description":"We are a hip studio!",
+  "lat":"38.6562899",
+  "lng":"-90.3015669",
+  "address":"6200 Enright Ave.",
+  "zip":"63130",
+  "engineers":["bob x","sally r", "rick s"],
+  "rooms":[
+    {
+      "name":"Small Room",
+      "description":"a smaller room, but we think it's cool",
+      "price":"80",
+      "equipment":["keyboard","mixing","speakers","headphones","microphones"],
+      "engineers":["bob x"]
+    },
+    {
+      "name":"Big Room",
+      "description":"a bigger room, and it comes with drums!",
+      "price":"80",
+      "equipment":["keyboard","mixing","speakers","headphones", "microphones","drums"],
+      "engineers":["sally r","rick s"]
+    }
+  ],
+  "slots":[
+    {
+      "date": "09-09-2019",
+      "start": "10:00",
+      "end": "14:00",
+      "roomName":"Big Room",
+      "isFilled":"false",
+      "bandFor":"",
+      "isConfirmed":"false",
+      "confirmationCode":"x8938108uklj"
+    },
+    {
+      "date": "09-09-2019",
+      "start": "10:00",
+      "end": "14:00",
+      "roomName":"Small Room",
+      "isFilled":"false",
+      "bandFor":"",
+      "isConfirmed":"false",
+      "confirmationCode":"lskdajflkdsjf9"
+    },
+    {
+      "date": "09-10-2019",
+      "start": "10:00",
+      "end": "14:00",
+      "roomName":"Big Room",
+      "isFilled":"false",
+      "bandFor":"",
+      "isConfirmed":"false",
+      "confirmationCode":"asdfjal1803"
+    }
+  ]
+}

@@ -1166,6 +1166,18 @@ class BandSection{
       bandSectionCallback(this);
       break;
 
+      case "band-samples":
+      new Carousel(band, band.audioSamples, "band-samples",carCallback =>{
+        this.title = document.createElement("p");
+        this.title.className = "title-text";
+        this.title.innerHTML = "Your Sounds";
+        this.container = document.createElement("div");
+        this.container.append(this.title);
+        this.carousel = carCallback;
+        this.container.append(this.carousel.wrapper);
+        bandSectionCallback(this);
+      });
+      break;
       case "upcoming":
       if(band.upcomingGigs.length > 0){
         new Carousel(band, band.upcomingGigs, "upcoming", carCallback =>{
@@ -1881,7 +1893,7 @@ class Carousel{
       }
       // add the default 'add clip' item
       var newItem = document.createElement("li");
-      newItem.className = "carousel-li";
+      newItem.className = "carousel-li carousel-clip";
       // icon
       var newIcon = document.createElement("h1");
       newIcon.className = "carousel-clip-plus";
@@ -1889,11 +1901,11 @@ class Carousel{
       // frame
       var newFrame = document.createElement("img");
       newFrame.className = "carousel-frame";
-      newFrame.src = "../static/assets/Control-Center/purplebox.png";
+      newFrame.src = "/assets/Control-Center/purplebox.png";
       newFrame.id = "add-sample-div";
 
-      newItem.append(newIcon);
       newItem.append(newFrame);
+      newItem.append(newIcon);
       this.list.append(newItem);
       this.AddSampleEventListener(newItem);
       this.carousel.append(this.list);
@@ -1921,7 +1933,6 @@ class Carousel{
         cb(res);
       }
     });
-
   }
 
   handleAppliedGigs(obj,cb){
@@ -2226,6 +2237,10 @@ function buildBands(bands, buildBandsCallback){
       bandContainer.append(bandSectionCallback.container);
       var starArr = [bandSectionCallback.star1.id,bandSectionCallback.star2.id,bandSectionCallback.star3.id,bandSectionCallback.star4.id,bandSectionCallback.star5.id];
       loadStars(band.rating,starArr);
+    });
+    new BandSection(band, "band-samples",bandSectionCallback=>{
+      bandContainer.append(bandSectionCallback.container);
+      setupAction();
     });
     new BandSection(band,"upcoming", bandSectionCallback=>{
       bandContainer.append(bandSectionCallback.container);
@@ -2887,6 +2902,7 @@ function cleanGigInput(){
   var price = $('#new-gig-pay').val();
   var description = $('#new-gig-description').val();
   var startDate = $('#new-gig-date').val();
+  console.log(startDate);
   var startTime = $('#new-gig-start-time').val();
   var endTime = $('#new-gig-end-time').val();
   var date = new Date(startDate);
@@ -2908,13 +2924,17 @@ function cleanGigInput(){
             'zipcode' : zipcode,
             'description': description,
             'picID': pic,
-            'day':day,
+            'day':day
           };
   for (key in gig){
     if(gig[key]==null || gig[key]==" " || gig[key]==""){
-      console.log(key);
-      alert("Sorry, you must fill out the enitre form with non-empty values.");
-      return;
+      if(key == "day"){
+        // do nothing, ignore the null day
+      }else{
+        console.log(key);
+        alert("Sorry, you must fill out the enitre form with non-empty values.");
+        return;
+      }
     }
   }
 
@@ -2937,27 +2957,28 @@ function sendGigToDB(lat,lng, myNewGig) {
   var description = myNewGig['description'];
   var startTime = myNewGig['startTime'];
   var day = myNewGig['day'];
+  console.log("PRE Switch day: " + day)
   switch (day){
     case 0:
-    day = "Sunday";
-    break;
-    case 1:
     day = "Monday";
     break;
-    case 2:
+    case 1:
     day = "Tuesday";
     break;
-    case 3:
+    case 2:
     day = "Wednesday";
     break;
-    case 4:
+    case 3:
     day = "Thursday";
     break;
-    case 5:
+    case 4:
     day = "Friday";
     break;
-    case 6:
+    case 5:
     day = "Saturday";
+    break;
+    case 6:
+    day = "Sunday";
     break;
     default:
     alert("Please enter a valid date.");
@@ -4029,4 +4050,12 @@ function prepareBankElement(){
   else{
     document.getElementById('modal-wrapper-bank').style.display='block';
   }
+}
+
+//studios
+
+function sendStudioToDB(studio){
+  $.post('/studios', {'name':"ffsdfd", 'description':"dfkdffdsfsf", 'categories':{} }, res=>{
+    alert(res);
+  })
 }

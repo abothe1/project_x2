@@ -198,9 +198,8 @@ Body elements
   position: relative;
   z-index: 4;
   top: 185%;
-  left: 90%;
+  left: 85%;
   margin-top: -55px;
-  margin-left: -300px;
   width: 600px;
   height: 20px;
   float: right;
@@ -213,6 +212,7 @@ Body elements
 }
 
 .options-buttons:hover{
+  cursor: pointer;
   color: rgba(86,223,240,1.0);
 }
 

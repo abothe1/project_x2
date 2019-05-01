@@ -389,6 +389,11 @@ function search_gigs() {
   window.location.href='search_page?query="'+query+'&mode=findGigs&bandName="null"';
 }
 
+function search_studios(){
+  var query = $("#search_input").val();
+  window.location.href = 'search_page?query="'+query+'&mode=findStudios&bandName="null"';
+}
+
 
 function getLocation() {
   if (navigator.geolocation) {

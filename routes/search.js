@@ -53,6 +53,22 @@ router.get('/search', (req, res) => {
         db.close();
 			});
 			break;
+    case 'findStudios':
+    console.log("got into searching for studios");
+      database.connect(db => {
+        matching.findStudiosForBand(bandName, query, db, err => {
+          console.error("error when finding studios for " + bandName + ": "+ err);
+          res.status(500).end();
+        }, data =>{
+          res.status(200).json({success: true, data: data});
+          db.close();
+        });
+      }, err =>{
+        console.error('[auth][database] Database connection whilst logging in failed');
+        res.status(500).end();
+        db.close();
+      });
+      break;
 		default:
 			res.status(400).send("Invalid mode: " + mode).end()
 	}
