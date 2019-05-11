@@ -219,8 +219,6 @@ function init(){
   var searchObject = urlJSON['searchObject'];
   console.log('Search obj is: ' + JSON.stringify(searchObject));
   getUserInfo(searchObject);
-
-
 }
 
 function buildWebPage(){

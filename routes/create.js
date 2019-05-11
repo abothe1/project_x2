@@ -94,9 +94,11 @@ router.post('/studios', (req, res)=>{
     res.sttaus(401).end();
   }
   else{
-    var {name, description, categories} = req.body;
+    var {name, description, lat, lng, address, zip, picture, categories} = req.body;
+    var engineers, rooms, slots = [];
+    var creator = req.session.key;
     database.connect(db=>{
-      db.db('studios').collection('studios').insertOne({'name':name, 'description': description, 'categories': categories}, (err2, res2)=>{
+      db.db('studios').collection('studios').insertOne({'creator':creator, 'name':name, 'description': description, 'lat':lat,'lng':lng,'address':address,'zipcode':zip,'picture':picture,'categories': categories, 'engineers':engineers,'rooms':rooms,'slots':slots}, (err2, res2)=>{
         if (err2){
           console.log('There was an error creating studio with name: ' + name + 'error: '+err2);
           res.status(500).end();

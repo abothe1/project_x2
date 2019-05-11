@@ -1,0 +1,136 @@
+@font-face { font-family: Industry; src: url('/assets/Industry.otf'); }
+
+body{
+    background-image: url('/assets/Home/background.png');
+    background-size: cover;
+    color: white;
+
+}
+.container{
+    width: 65%;
+}
+.studio-header h1{
+    font-size: 6em;
+    font-family: Industry, sans-serif;
+    color: white;
+}
+
+
+#calendar_wrapper{
+
+    display: none;
+    color: black;
+    position: relative;
+    top: 20px;
+    left: -20%;
+    width: 140%;
+
+
+}
+
+#calendar_days{
+    border-bottom: 1px solid;
+}
+
+#days{
+    text-align: center;
+
+}
+#calendar{
+
+}
+#calendar_item{
+    border: 1px solid;
+    height: 90px;
+}
+#MonthAndYear{
+    color: black;
+}
+#calendar_item{
+    width: 100px;
+    height: 120px;
+
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+h1{
+    color: white;
+}
+
+#calendar{
+    table-layout: fixed;
+}
+#cell_div {
+    overflow-x: hidden;
+    overflow-y: auto;
+    height: 80%;
+
+}
+.event_data{
+    margin-bottom: 3px;
+
+}
+.event_div{
+    display: flex;
+    padding: 0px;
+    margin: 0px;
+
+}
+.room_time_p{
+    margin: 0px;
+}
+.event_div:hover {
+    background-color: rgba(178, 210, 223);
+    cursor: pointer;
+}
+.event_div p {
+    padding-right: 5px;
+}
+.event_div button{
+    height: 25px;
+    margin: 0px;
+    padding: 0px;
+}
+::-webkit-scrollbar {
+    width: 12px;
+}
+
+::-webkit-scrollbar-track {
+    -webkit-box-shadow: inset 0 0 6px rgba(0,0,0,0.3);
+    border-radius: 10px;
+}
+
+::-webkit-scrollbar-thumb {
+    border-radius: 10px;
+    -webkit-box-shadow: inset 0 0 6px rgba(0,0,0,0.5);
+}
+
+.studio-details{
+    margin-top: 80px;
+    background: rgba(0,0,0,0.4);
+
+}
+#studio-detail-image{
+    width: 250px;
+    height: 250px;
+}
+#studio-detail-image img{
+
+    max-width: 250px;
+    max-height: 250px;
+}
+#viewScheduleButton{
+    margin-left: 50px;
+}
+#image-outline{
+    position: absolute;
+    width: inherit;
+
+}
+.studio-details{
+    display: flex;
+}
+#studio-description p {
+    font-size: 3em;
+    margin-left: 50px;
+}

@@ -30,9 +30,8 @@ var hasAccount = false;
 var isCustomer = false;
 
 globalGigs = [];
+
 //CHNAGE GIGS SECTION:?////////
-
-
 
 ///////////////
 class OpenGig{
@@ -1170,7 +1169,7 @@ class BandSection{
       new Carousel(band, band.audioSamples, "band-samples",carCallback =>{
         this.title = document.createElement("p");
         this.title.className = "title-text";
-        this.title.innerHTML = "Your Sounds";
+        this.title.innerHTML = "Your Sound";
         this.container = document.createElement("div");
         this.container.append(this.title);
         this.carousel = carCallback;
@@ -1858,6 +1857,9 @@ class Carousel{
         var name = obj[sample].name;
         var newItem = document.createElement("li");
         newItem.className = "carousel-li";
+        newItem.audio = new Audio();
+        newItem.audio.src = obj[sample].audio;
+        newItem.audio.type='audio/mp3';
         // img
         var newImg = document.createElement("img");
         newImg.className = "carousel-img";
@@ -1908,6 +1910,83 @@ class Carousel{
       newItem.append(newIcon);
       this.list.append(newItem);
       this.AddSampleEventListener(newItem);
+      this.carousel.append(this.list);
+      if(obj.length + 1 > 4){
+        // only add arrow controls if the carousel has enough data
+        this.prev = document.createElement("a");
+        this.prev.className = "jcarousel-control-prev";
+        this.prev.href = "#";
+        this.next = document.createElement("a");
+        this.next.className = "jcarousel-control-next";
+        this.next.href = "#";
+        this.carWrap.append(this.prev);
+        this.carWrap.append(this.next);
+      }
+      this.carWrap.append(this.carousel);
+      this.wrapper.append(this.carWrap);
+      carCallback(this);
+      break;
+      case "studios":
+      this.wrapper = document.createElement("div");
+      this.wrapper.className = "wrapper";
+      this.carWrap = document.createElement("div");
+      this.carWrap.className = "jcarousel-wrapper";
+      this.carousel = document.createElement("div");
+      this.carousel.className = "jcarousel";
+      this.list = document.createElement("ul");
+      console.log("before looP");
+      for(var studio in obj){
+        console.log('within loop');
+        var name = obj[studio].name;
+        var newItem = document.createElement("li");
+        newItem.className = "carousel-li";
+        newItem.studioID = obj[studio]._id;
+        // img
+        var newImg = document.createElement("img");
+        newImg.className = "carousel-img";
+        newImg.src = obj[studio].picture;
+        // frame
+        var newFrame = document.createElement("img");
+        newFrame.className = "carousel-frame";
+        newFrame.src = "/assets/Control-Center/orangebox.png";
+        // overlay
+        var newOverlay = document.createElement("div");
+        newOverlay.className = "result-overlay";
+        var overlayID = "result-overlay-"+studio;
+        newOverlay.setAttribute("id",overlayID);
+        // nameplate
+        var nameDiv = document.createElement("div");
+        nameDiv.className = "result-name-div";
+        var nameP = document.createElement("p");
+        nameP.className = "result-name-p";
+        nameP.innerHTML = obj[studio].name;
+        newItem.append(newImg);
+        newItem.appendChild(newOverlay);
+        newItem.append(newFrame);
+        nameDiv.append(nameP);
+        newItem.append(nameDiv);
+        this.list.append(newItem);
+        //event listener data preprocessing
+        newItem.newOverlay = newOverlay;
+        this.AddOverlayEventListeners(newItem); // studioID stuff
+      }
+      // add the default 'add clip' item
+      var newItem = document.createElement("li");
+      newItem.className = "carousel-li carousel-clip";
+      // icon
+      var newIcon = document.createElement("h1");
+      newIcon.className = "carousel-clip-plus";
+      newIcon.innerHTML = "+";
+      // frame
+      var newFrame = document.createElement("img");
+      newFrame.className = "carousel-frame";
+      newFrame.src = "/assets/Control-Center/purplebox.png";
+      newFrame.id = "add-sample-div";
+
+      newItem.append(newFrame);
+      newItem.append(newIcon);
+      this.list.append(newItem);
+      this.AddStudioEventListener(newItem);
       this.carousel.append(this.list);
       if(obj.length + 1 > 4){
         // only add arrow controls if the carousel has enough data
@@ -2084,13 +2163,40 @@ class Carousel{
           window.location.href='/otherProfile?id='+obj.viewButton.gigID+'&mode=gig&searchingAs'+obj.viewButton.bandID+'&searchingType=band';
       });
     }
+    if(obj.hasOwnProperty("audio")){
+      obj.addEventListener("mouseover",function(){
+        var playPromise = obj.audio.play();
+        if (playPromise !== undefined) {
+          playPromise.then(function () {
+          	 console.log('Playing....');
+          }).catch(function (error) {
+          	 console.log('Failed to play....' + error);
+          });
+   		  }
+      },false);
+      obj.addEventListener("mouseout",function(){
+        obj.audio.pause();
+      },false);
+    }
+    if(obj.hasOwnProperty("studioID")){
+      obj.addEventListener("click",function(){
+        console.log("studio id is ");
+        console.log(obj.studioID);
+        window.location.href='/studio?id='+obj.studioID+'&mode=owner';
+      });
+    }
   }
 
   AddSampleEventListener(obj){
     obj.addEventListener("click",function(){
       document.getElementById('modal-wrapper-new-sample').style.display='block';
     });
+  }
 
+  AddStudioEventListener(obj){
+    obj.addEventListener("click",function(){
+      document.getElementById('modal-wrapper-new-studio').style.display = 'block';
+    })
   }
 }
 
@@ -2209,8 +2315,13 @@ function getUserInfo(user){
       console.log("gigs from db are: " + JSON.stringify(result));
       globalGigs = JSON.parse(JSON.stringify(result));
       user['gigs']=globalGigs;
-      document.getElementById('userNameHeader').innerHTML=user['username'];
-      createWebPage(user);
+      $.get('/getStudios', {'creator':username}, result => {
+        console.log("studios from db are: " + JSON.stringify(result));
+        var studios = JSON.parse(JSON.stringify(result));
+        user['studios']=studios;
+        document.getElementById('userNameHeader').innerHTML=user['username'];
+        createWebPage(user);
+    	});
   	});
 	});
 
@@ -2278,9 +2389,22 @@ function createWebPage(user){
   console.log(JSON.stringify(user));
   var allBands = user['bands'];
   var allGigs = user['gigs'];
+  var allStudios = user['studios'];
   profileGigs = document.getElementById("profile-gigs");
   mainContent = document.getElementById("main-content-wrapper");
   profilesList = document.getElementById("profiles-list");
+
+  new Carousel(allStudios, allStudios, "studios",carCallback =>{
+    var title = document.createElement("p");
+    title.className = "title-text";
+    title.innerHTML = "Your Studios";
+    var container = document.createElement("div");
+    container.append(title);
+    carousel = carCallback;
+    container.append(carCallback.wrapper);
+    mainContent.append(container);
+  });
+
   buildBands(allBands,function(){
     var bottomSpacer = document.createElement("div");
     bottomSpacer.className = "bottom-spacer";
@@ -3741,9 +3865,25 @@ function readURL(input) {
     }
 }
 
+function readURLStudio(input){
+  if (input.files && input.files[0]) {
+    console.log(input.files[0]);
+    newStudioPic=input.files[0];
+      var reader = new FileReader();
+      reader.onload = function (e) {
+          $('#new-studio-pic-preview').attr('src', e.target.result);
+      }
+      reader.readAsDataURL(input.files[0]);
+  }
+}
+
 $("#new-gig-pic").change(function(){
     readURL(this);
 });
+
+$("#new-studio-pic").change(function(){
+  readURLStudio(this);
+})
 var newPicBand = null;
 function readURLForB(input) {
     if (input.files && input.files[0]) {
@@ -4053,9 +4193,100 @@ function prepareBankElement(){
 }
 
 //studios
+function createStudio(){
+  var loaderStudio = document.getElementById("loader-new-studio");
+  loaderStudio.style.display = "inline";
+  var myNewStudio = {
+    'name': $('#new-studio-title').val(),
+    'zipcode':$('#new-studio-zip').val(),
+    'address':$('#new-studio-address').val(),
+    'picture':$('#new-studio-pic').val(),
+    'description':$('#new-studio-description').val()
+  };
+  for (var key in myNewStudio){
+    console.log(myNewStudio[key]);
+    console.log(key);
+    if (myNewStudio[key]==null || myNewStudio[key]==" " || myNewStudio[key]==""){
+      alert("Sorry, you must fill out the enitre form with non-empty values");
+      loaderStudio.style.display = "none";
+      return;
+    }
+  }
+  convertZipStudio(myNewStudio);
+}
 
-function sendStudioToDB(studio){
-  $.post('/studios', {'name':"ffsdfd", 'description':"dfkdffdsfsf", 'categories':{} }, res=>{
-    alert(res);
-  })
+function convertZipStudio(myStudio){
+  var zipcode = myStudio['zipcode'];
+  if (!(zipcode.length==5)){
+    alert('Please enter a valid zipcode.');
+    return;
+  }
+  console.log(zipcode);
+  var success = false;
+  setTimeout(function() {
+    if (!success)
+    {
+        // Handle error accordingly
+        console.log("Got error with zipcode.");
+        alert("Please enter a valid zipcode.");
+        return;
+    }
+  }, 5000);
+  $.getJSON('http://api.openweathermap.org/data/2.5/weather?zip='+zipcode+',us&APPID=f89469b4b424d53ac982adacb8db19f6').done(function(data){
+    console.log("AB GOT ZIP");
+    console.log(JSON.stringify(data));
+    success=true;
+    var lat = data.coord.lat;
+    var lng = data.coord.lon;
+    sendStudioToDB(lat,lng, myStudio);
+  });
+}
+
+function sendStudioToDB(lat, lng, studio){
+  var name = studio['name'];
+  var zipcode = studio['zipcode'];
+  var address = studio['address'];
+  var picture = studio['picture'];
+  var description = studio['description'];
+  var loaderStudio = document.getElementById("loader-new-studio");
+  if(!($("#new-studio-pic")[0].files || $("#new-studio-pic")[0].files[0])){
+    alert('Please enter a valid .jpeg, or .png file for your profile picture.');
+    loaderStudio.style.display = "none";
+    return;
+  }
+  else if($("#new-studio-pic")[0].files[0].type != 'image/jpeg'){
+    if ($('#new-studio-pic')[0].files[0].type != 'image/png'){
+      alert('Please enter a valid .jpeg, or .png file for your avatar picture.');
+      loaderStudio.style.display = "none";
+      return;
+    }
+  }
+  var image = $("#new-studio-pic")[0].files[0];
+  var formdata = new FormData();
+  var studioAvatarPath = null;
+  formdata.append('image', image);
+  console.log("before AJAX for upload studio avatar");
+  $.ajax({
+      url: '/uploadStudioAvatar',
+      data: formdata,
+      contentType: false,
+      processData: false,
+      type: 'POST',
+      'success':function(data){
+          console.log("within AJAX success for upload studio avatar");
+          studioAvatarPath=data;
+          var sound = $("#new-band-clip")[0].files[0];
+          formdata = new FormData();
+          formdata.append('soundByte', sound);
+          $.post('/studios', {'name':name, 'description':description, 'lat':lat, 'lng':lng, 'address':address, 'zipcode':zipcode, 'picture':studioAvatarPath}, result=>{
+            alert("Congratulations, you added " + name + ' to Banda! You can now search for musicians as, ' + name+ ' to start accelerating your studio booking career! Refresh this page to see/edit your new studio.');
+            loaderStudio.style.display = "none";
+            document.getElementById("modal-wrapper-new-studio").style.display = "none";
+          });
+      }
+    });
+}
+
+function prepareStudioCreation(){
+  document.getElementById("modal-wrapper-new-studio").style.display = 'block';
 }

@@ -125,8 +125,6 @@ router.get('/getBands', (req, res)=>{
     console.warn("Couldn't connect to database: " + err);
 		res.status(500).end();
   });
-
-
 });
 
 router.get('/getGigs', (req, res)=>{
@@ -142,6 +140,33 @@ router.get('/getGigs', (req, res)=>{
     gigs.find(gigQuery).toArray(function(err, result) {
      if (err){
        console.log("Error in get Bands and Gigs For User: " + err);
+       req.status(500).end();
+       db.close();
+     }
+     else{
+       res.status(200).send(result);
+       db.close();
+     }
+    });
+  }, err =>{
+    console.warn("Couldn't connect to database: " + err);
+		res.status(500).end();
+  });
+});
+
+router.get('/getStudios',(req,res)=>{
+  var {creator} = req.query;
+  console.log('in get studios and creator is: ' + creator);
+  if (!req.body){
+    console.log("No req body sent, in get studios and studios for user");
+    res.status(400).send('No req body sent');
+  }
+  database.connect( db => {
+    let studios = db.db('studios').collection('studios');
+    var studioQuery = {'creator':creator};
+    studios.find(studioQuery).toArray(function(err, result) {
+     if (err){
+       console.log("Error in get studios for User: " + err);
        req.status(500).end();
        db.close();
      }
@@ -249,6 +274,36 @@ router.get('/aGig', (req, res)=>{
     console.log('There was an error connect to db: ' + err);
     res.status(500).end();
 
+  });
+});
+
+
+router.get('/aStudio', (req, res)=>{
+  if (!req.query) {
+     res.status(400).send('No body sent').end();
+  }
+  if (!req.session.key){
+    res.status(401).send('No body sent').end();
+  }
+
+  var {id}=req.query;
+  console.log('Id :' + id);
+  database.connect(db=>{
+    db.db('studios').collection('studios').findOne({_id:database.objectId(id)}, (err2, result2)=>{
+      if (err2){
+        console.log('There was an erro rtrying to get studio with id ' + id + " ERROR: " + err2);
+        res.status(500).end();
+       db.close();
+      }
+      else{
+        console.log("IN find a studio result is " + result2);
+        res.status(200).send(result2);
+        db.close();
+      }
+    });
+  }, err=>{
+    console.log('There was an error connect to db: ' + err);
+    res.status(500).end();
   });
 });
 

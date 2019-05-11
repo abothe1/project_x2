@@ -2106,3 +2106,137 @@ bank modal
 .carousel-clip:hover{
   cursor: pointer;
 }
+/*
+  new sample
+*/
+
+.modal-content-sample{
+  background-image: url("../assets/Home/modalbg.png");
+  background-color: transparent;
+  background-size: contain;
+  background-clip: border-box;
+  background-repeat: no-repeat;
+  margin: 4% auto 15% auto;
+  width: 40%;
+  height: 80%;
+  padding-bottom: 80px;
+  color: white;
+}
+
+#modal-wrapper-new-sample{
+  z-index: 110;
+}
+
+#new-sample-content input{
+  height: 50px;
+  text-indent: 20px;
+  font-family: Industry, sans-serif;
+  font-size: 16pt;
+}
+
+#new-sample-name, #new-sample-audio, #new-sample-pic{
+  width: 65%;
+  margin-top: 20px;
+}
+
+#new-sample-pic-preview, #new-sample-preview{
+  height: 124px;
+  width: 124px;
+  margin-top: 24px;
+  position: absolute;
+  border: none !important;
+  border-radius: 8px;
+  background-color: #333d44;
+}
+
+#new-sample-pic-preview{
+  margin-left: 200px;
+}
+
+#audio-label{
+  margin-top: 160px;
+}
+
+#new-sample-pic::-webkit-file-upload-button, #new-sample-audio::-webkit-file-upload-button {
+  visibility: hidden;
+}
+
+.close-sample{
+  position: absolute;
+  color: #fff;
+  font-size: 35px;
+  font-weight: bold;
+  display: inline-block;
+  margin-left: 230px;
+}
+
+.close-sample:hover,.close-sample:focus {
+  alpha: 0.6;
+  cursor: pointer;
+}
+
+#modal-wrapper-new-studio{
+  display: none;
+  z-index: 50;
+}
+
+#new-studio-content > input{
+  height: 50px;
+  text-indent: 20px;
+  font-family: Industry, sans-serif;
+  font-size: 16pt;
+}
+
+#new-studio-address{
+  width: 500px;
+  margin-right: 20px;
+}
+
+#new-studio-title{
+  width: 60%;
+  top: 45px;
+  position: absolute;
+  margin-left: 330px;
+}
+
+#new-studio-zip{
+  width: 150px;
+  margin-right: 20px;
+}
+
+#new-studio-description-label{
+  margin-top: 20px;
+}
+
+#new-studio-description{
+  height: 150px;
+}
+
+#new-studio-pic{
+  margin-top: 24px;
+  margin-right: 12px;
+  width: 400px;
+  line-height: 40px;
+  text-align: left;
+}
+
+#new-studio-pic::-webkit-file-upload-button{
+  visibility: hidden;
+}
+
+#new-studio-pic-preview{
+  object-fit: cover;
+  height: 124px;
+  width: 124px;
+  margin-top: 0px;
+  border: none !important;
+  border-radius: 8px;
+  background-color: #333d44;
+}
+
+#loader-new-studio{
+  margin-top: 140px;
+  margin-left: -10%;
+  display: none;
+  position: absolute;
+}

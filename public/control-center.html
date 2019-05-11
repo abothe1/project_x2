@@ -61,8 +61,9 @@
           <span onclick="document.getElementById('modal-wrapper-new-sample').style.display='none'" class="close-sample" title="Close PopUp">&times;</span>
           <h1 style="text-align:left; padding-left: 20px; font-size: 50pt;">new sample</h1>
         </div>
+        <p class="support-text">Sorry, but right now Banda can't store too many of your audio samples. Be sure to pick the best audio sample to describe your art. In the future you will be able to add as many samples as you like!</p>
 
-        <div class="container" id="new-sample-content">
+        <!-- <div class="container" id="new-sample-content">
           <img id="new-sample-preview"/>
           <img id="new-sample-pic-preview"/>
           <label for="new-sample-audio" id="audio-label">upload audio</input>
@@ -71,8 +72,8 @@
           <input id="new-sample-pic" class="modal-input"  name="pic" type="file"></input>
           <label for="new-sample-name">sample title</label>
           <input id="new-sample-name" class="modal-input" name="sample-name" type="text"></input>
-          <button class="popUpButtons" id="new-sample-upload">upload</button>
-        </div>
+          <button class="popUpButtons" id="new-sample-upload" onclick="addSample();">upload</button>
+        </div> -->
       </form>
     </div>
 
@@ -247,6 +248,31 @@
         </div>
       </form>
     </div>
+    <div id="modal-wrapper-new-studio" class="modal">
+      <form id="new-studio-form" class="modal-content animate" enctype="multipart/form-data">
+        <div class="imgcontainer">
+          <span onclick="document.getElementById('modal-wrapper-new-studio').style.display='none'" class="close" title="Close PopUp">&times;</span>
+          <h1 style="text-align:left; padding-left: 20px; font-size: 50pt;">new studio</h1>
+        </div>
+        <div class="container" id="new-studio-content">
+          <input minlength="3" maxlength="50" id="new-studio-title" class="modal-input" type="text" placeholder="enter a name for your new studio" required ></input>
+          <label for="new-studio-address">address</label>
+          <input id="new-studio-address" class="modal-input" type="text" placeholder="" required></input>
+          <label for="new-studio-zip">zip code</label>
+          <input id="new-studio-zip" class="modal-input" type="number" pattern='{5}' placeholder="" required></input>
+          <br>
+          <label id="new-studio-description-label" for="new-studio-description" >description</label>
+          <textarea id="new-studio-description" class="modal-textarea" placeholder='Enter a description of your studio. If you have any genre specialties or additional service offerings, let us know!'></textarea>
+          <h3>avatar</h3>
+          <label for"new-studio-pic">upload image</label>
+          <input id="new-studio-pic" class="modal-input" name="avatar" type="file"required ></input>
+          <img id="new-studio-pic-preview"/>
+          <br>
+          <div id="loader-new-studio" class="loader"></div>
+          <button type='button' class="popUpButtons" id="new-studio-create" onclick="createStudio()" >create</button>
+        </div>
+      </form>
+    </div>
     <div id="modal-wrapper-credit" class="modal-card">
       <span onclick="document.getElementById('modal-wrapper-credit').style.display='none'" class="close-stripe" title="Close PopUp">&times;</span>
       <form id="payment-form">
@@ -389,6 +415,7 @@
         <ul id='profiles-list'>
           <li><a href="#" onclick="prepareBankElement()">+ Create a Band</a></li>
           <li><a href="#" onclick="prepareCardElement()">+ Post an Event</a></li>
+          <li><a href="#" onclick="prepareStudioCreation()">+ Create Studio Page</a></li>
         </ul>
       </div>
 

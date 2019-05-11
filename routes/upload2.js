@@ -12,6 +12,10 @@ const database = require('../database.js'),
         dest: './public/tmp/'
       });
 
+      var uploadingStudioPic = multer({
+        dest: './public/tmp/'
+      });
+
       var uploadingAudioSample = multer({
         dest: './public/tmp/'
       });
@@ -76,6 +80,36 @@ const database = require('../database.js'),
         res.status(200).send(finalName);
       }
 
+    });
+  });
+
+  router.post('/uploadStudioAvatar', uploadingStudioPic.single('image'), function(req, res){
+    console.log('Got into upload studio pic');
+    if (!req.session.key){
+      console.log('User tried to upload studio pic while not logged in');
+      res.status(401).end();
+      }
+      if (!req.file){
+        console.log('No file sent');
+        res.status(400).end();
+      }
+      if (!(req.file.mimetype=='image/jpeg' || req.file.mimetype=='image/png')){
+        console.log('Wrong mimetype')
+        res.status(200).send("Wrong mimeType");
+        return;
+      }
+    console.log(req.file);
+    var fileName = 'static/uploads/StudioPics/'+req.file.filename;
+    console.log(req.file);      //res.send(req.file);
+    fs.rename(req.file.path, fileName, err2=>{
+      if(err2){
+        console.log('Could not rename file, error: ' + err2);
+        res.status(500).end();
+      }
+      else{
+        var finalName = fileName.replace('static', "");
+        res.status(200).send(finalName);
+      }
     });
   });
 
