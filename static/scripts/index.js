@@ -34,6 +34,9 @@ var isLoggedIn=false;
 //setInterval(getCurrentEvents, 60000);
 // AB document stuff//
 function init(){
+	var logged = checkSession();
+
+	console.log("checking session, session is: "+logged);
 
 	container = document.getElementById("container");
 	container.width = window.innerWidth;
@@ -529,6 +532,19 @@ function diff_minutes(dt2, dt1) {
         isLoggedIn=false;
       }
     });
+	}
+
+	function checkSession(){
+		console.log("checking if a session exists (checking if a user is logged in)");
+		$.get('/hasSession', res=>{
+			if(res.success){
+				console.log(res.success + " is returned value")
+				return true;
+			}else{
+				console.log(res.success + " is returned value")
+				return false;
+			}
+		});
 	}
 
 

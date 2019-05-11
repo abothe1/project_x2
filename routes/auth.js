@@ -17,6 +17,7 @@ router.get('/_logout', (_, res) => res.render('_logout.html'));
 /** login and validation stuff **/
 
 function validatePassword(password) {
+	console.log("validate password entered!!!!!!!!!!!")
 	var schema = new passwordValidator();
 	schema
 	.is().min(8)                                    // Minimum length 8
@@ -26,6 +27,7 @@ function validatePassword(password) {
 	.has().digits()                                 // Must have digits
 	.has().not().spaces()                           // Should not have spaces
 	.is().not().oneOf(['Passw0rd', 'Password123']); // Blacklist these values
+	console.log(schema.validate(password))
 	return schema.validate(password)
 }
 
@@ -57,8 +59,9 @@ router.post('/register', (req, res) => {
 		return res.status(400).send('No email supplied')
 	}
 
-	if (!validatePassword(password)) {
-		return res.status(200).json({ success: false, cause: 'Too weak of a password supplied'})
+	if (validatePassword(password) == false) {
+		console.log("password is not valid")
+		return res.status(400).send('Too weak of a password supplied')
 	}
 
 
@@ -152,8 +155,20 @@ router.get('/logout', (req, res) => {
 	if(req.session.key) {
 		req.session.destroy(() => res.status(200).json({ success: true }).end())
 	} else {
-		res.status(402).send('Not logged in').end()
+		return res.status(402).send('Not logged in').end()
     }
 });
+
+router.get('/hasSession', (req, res) =>{
+	console.log("checking session")
+	if(req.session.key){
+		console.log("is true")
+		res.status(200).json({ success: true }).end()
+	}
+	else{
+		console.log("is false")
+		res.status(200).json({ success: false }).end()
+	}
+})
 
 } /* end module.exports */
