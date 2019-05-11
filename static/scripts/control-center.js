@@ -14,6 +14,8 @@
 // 7. Can create new bands/events
 // 8. Can add media and edit any information about existing bands/gigs/media
 
+// edit.
+
 var profileGigs = null;
 var bookedGigs = null;
 var openGigs = null;
