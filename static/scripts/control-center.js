@@ -502,6 +502,7 @@ class BookedGig {
         console.log(obj.confirmInput.value);
         $.post('/confirmationCodeGig', {'gigID':obj.gigID, 'bandID':obj.bandID, 'confirmationCode':obj.confirmInput.value}, res=>{
           alert(res);
+          document.location.reload();
         });
       })
     }
@@ -553,6 +554,7 @@ function handleReportFormSubmission(){
   $.post('/flake', {'bandID':inputForBandID, 'gigID':inputForGigID}, res=>{
   //  console.log('Got callback back from flake.');
     alert(res);
+    document.location.reload();
   });
 }
 
@@ -572,6 +574,7 @@ function presentCancelModal(state, bandID, gigID){
           alert('This event has been successfully canceled.');
           document.getElementById("loader-cancel-booked-event").style.display = "none";
           modal.style.display = "none";
+          document.location.reload();
         })
 
       });
@@ -589,6 +592,7 @@ function presentCancelModal(state, bandID, gigID){
         $.post('/cancel', {'bandID':bandID, 'gigID':gigID, 'whoCanceled':'band'}, res=>{
           alert('You are no longer booked for this event.');
           modal.style.display = "none";
+          document.location.reload();
         })
       });
       modal.style.display = "block";
@@ -2051,6 +2055,7 @@ class Carousel{
             }
           }
           alert('Added your feedback! Thanks!');
+          document.location.reload();
         });
         //post rating
       });
@@ -2096,6 +2101,7 @@ function presentConfirmBookingModal(bandName, bandID, gigID, theGig){
       var modal = document.getElementById("modal-wrapper-confirm-booking");
       modal.style.display = "none";
       document.getElementById("loader-book").style.display = "none";
+      document.location.reload();
     });
   });
 }
@@ -2112,6 +2118,7 @@ function presentConfirmationCodeModal(gigID,bandID){
     $.post('/confirmationCodeBand', {'confirmationCode':codeVal,'gigID':gigID, 'bandID':bandID}, res=>{
       alert(res);
       document.getElementById("modal-wrapper-confirmation-code").style.display = "none";
+      document.location.reload();
     });
   });
 }
@@ -2122,12 +2129,14 @@ var callbackStepper = 0;
 function updateBand(id, query){
   $.post('/updateBand', {'id':id, 'query':query}, result =>{
     alert('Changes Saved');
+    document.location.reload();
   });
 }
 
 function updateGig(id, query){
   $.post('/updateGig', {'id':id, 'query':query}, result =>{
     alert('Changes Saved');
+    document.location.reload();
   });
 }
 function getUsername(){
@@ -2848,6 +2857,7 @@ function sendBandToDB(lat, lng, myBand){
                           alert("Congratulations, you added " + name + ' to Banda! You can now search for events as, ' + name+ ' to start accelerating your music career! Refresh this page to see/edit your new act.');
                           loaderBand.style.display = "none";
                           document.getElementById("modal-wrapper-new-band").style.display = "none";
+                          document.location.reload();
                         });
                       }
                   });
@@ -2897,7 +2907,7 @@ function cleanGigInput(){
   ////////
   var zipcode = $('#new-gig-zip').val();
   //var pic = newGigPic;
-  console.log(newGigPic);
+//  console.log(newGigPic);
   var pic = newGigPic;
   var gig = {'name':name,
             'address': address,
@@ -2907,7 +2917,6 @@ function cleanGigInput(){
             'endTime': endDate,
             'zipcode' : zipcode,
             'description': description,
-            'picID': pic,
             'day':day,
           };
   for (key in gig){
@@ -2984,6 +2993,7 @@ function sendGigToDB(lat,lng, myNewGig) {
               loader.style.display = "none";
               alert('Congratulations, you have posted the event "' + name + '" to Banda! Band applications will be coming in soon. You can refresh the page to see/edit your event. Check/refresh your home page regularly to see new applicants. You can also search for bands as this event now and use our "Ask user to apply..." feature to allow an artist to apply directly to your event.');
               document.getElementById("modal-wrapper-new-gig").style.display = "none";
+              document.location.reload();
             });
       }
   });
@@ -3620,6 +3630,7 @@ function submitBand(){
   //alert(gigID);
   $.post('/apply', {'bandID':bandID, 'gigID':gigID}, result=>{
     alert(result);
+    document.location.reload();
   });
   document.getElementById('modal-wrapper-choose-band-for-app').style.display='none'
 }
