@@ -35,6 +35,7 @@ var isLoggedIn=false;
 // AB document stuff//
 function init(){
 
+
 	container = document.getElementById("container");
 	container.width = window.innerWidth;
 	container.height = window.innerHeight;
