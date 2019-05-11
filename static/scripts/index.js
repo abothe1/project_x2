@@ -499,6 +499,20 @@ function diff_minutes(dt2, dt1) {
 
 //login and register stuff//
 
+
+	function logout(){
+		console.log("got into logout func");
+		$.get('/logout', res=>{
+			console.log("got res from logout and here it is: " + JSON.stringify(res));
+			if(res.success){
+				isLoggedIn = false;
+				document.location.reload();
+			}else{
+				isLoggedIn = true;
+			}
+		});
+	}
+
 	function login() {
     console.log("got into login function on frontend");
 		var content = {
@@ -523,7 +537,8 @@ function diff_minutes(dt2, dt1) {
     var content = {
     username: $("#reg_username").val(),
     email: $("#reg_email").val(),
-    password: $("#reg_password").val()
+    password: $("#reg_password").val(),
+    confirm_password: $("#reg_confirm").val()
     };
 
     $.post('/register', content, res=>{

@@ -1,3 +1,7 @@
+var passwordHash = require('password-hash')
+var passwordValidator = require('password-validator');
+
+
 module.exports = router => {
 database = require('../database.js');
 
@@ -13,12 +17,20 @@ router.get('/_logout', (_, res) => res.render('_logout.html'));
 /** login and validation stuff **/
 
 function validatePassword(password) {
-	console.log("TODO: validate password");
-	return true;
+	var schema = new passwordValidator();
+	schema
+	.is().min(8)                                    // Minimum length 8
+	.is().max(100)                                  // Maximum length 100
+	.has().uppercase()                              // Must have uppercase letters
+	.has().lowercase()                              // Must have lowercase letters
+	.has().digits()                                 // Must have digits
+	.has().not().spaces()                           // Should not have spaces
+	.is().not().oneOf(['Passw0rd', 'Password123']); // Blacklist these values
+	return schema.validate(password)
 }
 
 function hashPassword(password) {
-	console.log('TODO: hash password');
+	password = passwordHash.generate(password);
 	return password;
 }
 
@@ -29,8 +41,13 @@ router.post('/register', (req, res) => {
 		return res.status(403).send('Already logged in').end();
 	}
 
-	var {username, email, password} = req.body;
-	console.log("GOT user name, email and passowrd they are: " + username + " " + email + " " + password);
+	var {username, email, password, confirm_password} = req.body;
+	console.log("GOT user name, email and passowrd they are: " + username + " " + email + " " + password + " " + confirm_password);
+
+	
+	if(password != confirm_password){
+		return res.status(400).send('Passwords do not match')
+	}
 
 	if (!username) {
 		return res.status(400).send('No username supplied')
@@ -44,7 +61,11 @@ router.post('/register', (req, res) => {
 		return res.status(200).json({ success: false, cause: 'Too weak of a password supplied'})
 	}
 
+
 	password = hashPassword(password);
+
+	console.log("the password is " + password)
+
 
 	database.connect(db => {
 		var users = db.db('users').collection('users');
@@ -55,6 +76,7 @@ router.post('/register', (req, res) => {
 			} else if (obj) {
 				res.status(400).send('Username or email already exists').end()
 			} else {
+
 				users.insertOne({ email: email, username: username, password: password, contacts:[]}, (err, obj) => {
 					if (err) {
 						console.error(`Register request from ${req.ip} (for ${username}, ${email}, ${password}) returned error: ${err}`);
@@ -95,11 +117,11 @@ router.post('/login', (req, res) => {
 		return res.status(400).send('No password supplied')
 	}
 
-	password = hashPassword(password);
+	//password = hashPassword(password);
 
 	database.connect(db => {
 		console.log("Got in database connect");
-		db.db('users').collection('users').findOne({ 'username': username, 'password': password }, (err, obj) => {
+		db.db('users').collection('users').findOne({ 'username': username}, (err, obj) => {
 			console.log("Got in find one");
 			console.log(JSON.stringify(obj));
 			if (err) {
@@ -109,10 +131,15 @@ router.post('/login', (req, res) => {
 				res.status(400).send('Invalid Credentials').end()
 				console.log("INVALID CREDS SENT");
 			} else {
-				console.log("////////////////////////////////////////////////////////////////////////////////////");
-				req.session.key = username;
-				console.log('In the login, just made the session key from obj key and it is: ' + req.session.key);
-				res.status(200).json({ success: true }).end()
+				if(passwordHash.verify(password, obj.password)){
+					console.log("////////////////////////////////////////////////////////////////////////////////////");
+					req.session.key = username;
+					console.log('In the login, just made the session key from obj key and it is: ' + req.session.key);
+					res.status(200).json({ success: true }).end()
+				}
+				else{
+					return res.status(400).send('Not a valid login')
+				}
 			}
 		})
 	}, err => {
