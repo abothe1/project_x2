@@ -34,6 +34,9 @@ var isLoggedIn=false;
 //setInterval(getCurrentEvents, 60000);
 // AB document stuff//
 function init(){
+	var logged = checkSession();
+
+	console.log("checking session, session is: "+logged);
 
 	container = document.getElementById("container");
 	container.width = window.innerWidth;
@@ -499,6 +502,20 @@ function diff_minutes(dt2, dt1) {
 
 //login and register stuff//
 
+
+	function logout(){
+		console.log("got into logout func");
+		$.get('/logout', res=>{
+			console.log("got res from logout and here it is: " + JSON.stringify(res));
+			if(res.success){
+				isLoggedIn = false;
+				document.location.reload();
+			}else{
+				isLoggedIn = true;
+			}
+		});
+	}
+
 	function login() {
     console.log("got into login function on frontend");
 		var content = {
@@ -517,13 +534,27 @@ function diff_minutes(dt2, dt1) {
     });
 	}
 
+	function checkSession(){
+		console.log("checking if a session exists (checking if a user is logged in)");
+		$.get('/hasSession', res=>{
+			if(res.success){
+				console.log(res.success + " is returned value")
+				return true;
+			}else{
+				console.log(res.success + " is returned value")
+				return false;
+			}
+		});
+	}
+
 
   function register() {
     console.log("got into register func");
     var content = {
     username: $("#reg_username").val(),
     email: $("#reg_email").val(),
-    password: $("#reg_password").val()
+    password: $("#reg_password").val(),
+    confirm_password: $("#reg_confirm").val()
     };
 
     $.post('/register', content, res=>{
