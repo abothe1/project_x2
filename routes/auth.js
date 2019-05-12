@@ -26,6 +26,7 @@ router.post('/register', (req, res) => {
 	console.log("GOT INTO Register");
 	if (req.session.key) {
 		console.info(`User ${req.session.key} from ${req.ip} attempted to register whilst logged in`);
+		req.session.key=req.session.key
 		return res.status(403).send('Already logged in').end();
 	}
 
@@ -113,6 +114,7 @@ router.post('/login', (req, res) => {
 				req.session.key = username;
 				console.log('In the login, just made the session key from obj key and it is: ' + req.session.key);
 				res.status(200).json({ success: true }).end()
+				db.close();
 			}
 		})
 	}, err => {

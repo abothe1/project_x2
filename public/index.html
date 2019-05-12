@@ -536,6 +536,26 @@
 
 					</div>
 
+					<div id="modal-wrapper-logout" class="modal">
+
+						<form class="modal-content animate">
+
+							<div class="imgcontainer">
+								<span onclick="document.getElementById('modal-wrapper-logout').style.display='none'" class="close" title="Close PopUp">&times;</span>
+								<h1 style="text-align:left; padding-left: 20px; font-size: 50pt;">log out</h1>
+							</div>
+
+							<div class="container">
+								<h2 id="logout-text">Are you sure you want to log out of Banda?</h2>
+								<div id="logout-controls">
+									<input class="logout-btn" type="button" value="yes" id="logout-yes" onclick="logout()" />
+									<input class="logout-btn" type="button" value="no" id="logout-no" onclick="document.getElementById('modal-wrapper-logout').style.display='none'" />
+								</div>
+							</div>
+						</form>
+
+					</div>
+
 					<div id="modal-wrapper-register" class="modal">
 
 						<div id="reg_form" class="modal-content animate">
