@@ -36,7 +36,7 @@
   <body onload="javascript:init();">
     <div id="modal-wrapper-support" class="modal">
 
-      <form class="modal-content animate">
+      <div class="modal-content animate">
 
         <div class="imgcontainer">
           <span onclick="document.getElementById('modal-wrapper-support').style.display='none'" class="close" title="Close PopUp">&times;</span>
@@ -45,10 +45,10 @@
 
         <div class="container">
           <p class="support-text">Having any issues? Let us know!</p>
-          <textarea class="modal-textarea"></textarea>
-          <button class="popUpButtons" type="submit" onclick="login()">Make Request</button>
+          <textarea class="modal-textarea" id='support_text'></textarea>
+          <button id='send_report_button' class="popUpButtons">Make Request</button>
         </div>
-      </form>
+      </div>
 
     </div>
     <div id="modal-wrapper-link-application" class="modal2">
@@ -91,7 +91,7 @@
         <a href='control-center' class='deg0'><p class="radialText">Home</p></a>
         <a href='#' class='deg30'><p class="radialText">About</p></a>
         <a href='index' class='deg60'><p class="radialText">Landing</p></a>
-        <a href='#' class='deg90' onclick="document.getElementById('modal-wrapper-support').style.display='block'"><p class="radialText">Support</p></a>
+        <a class='deg90' onclick="document.getElementById('modal-wrapper-support').style.display='block'"><p class="radialText">Support</p></a>
       </div>
       <div class="profile-header" id="profile-header">
         <p class="profile-header-text" id="profile-title"></p>

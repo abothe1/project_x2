@@ -1440,3 +1440,20 @@ function loginToReg(){
 	register.style.display = "block";
 	login.style.display = "none";
 }
+
+// support
+
+document.getElementById('send_report_button').addEventListener('click', function(){
+  var text = document.getElementById('support_text').value;
+  console.log("User has requested support, text is: ");
+  console.log(text);
+  if (text == "" || text == " " || text == null){
+    alert('Please enter some text to send to us if you would like to receive help. Thank You!');
+    return;
+  }
+  $.post('/contact_support', {message: text}, res=>{
+    alert(res);
+    var modal = document.getElementById("modal-wrapper-support");
+    modal.style.display = "none";
+  });
+})
