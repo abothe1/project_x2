@@ -1,3 +1,4 @@
+//additional node modules in use
 var passwordHash = require('password-hash')
 var passwordValidator = require('password-validator');
 
@@ -16,6 +17,7 @@ router.get('/_logout', (_, res) => res.render('_logout.html'));
 */
 /** login and validation stuff **/
 
+//ensure the password is secure
 function validatePassword(password) {
 	console.log("validate password entered!!!!!!!!!!!")
 	var schema = new passwordValidator();
@@ -31,11 +33,13 @@ function validatePassword(password) {
 	return schema.validate(password)
 }
 
+//hashes the password
 function hashPassword(password) {
 	password = passwordHash.generate(password);
 	return password;
 }
 
+//post request to register a user
 router.post('/register', (req, res) => {
 	console.log("GOT INTO Register");
 	if (req.session.key) {
@@ -45,15 +49,17 @@ router.post('/register', (req, res) => {
 		return;
 	}
 
+	//store values from the request
 	var {username, email, password, confirm_password} = req.body;
 	console.log("GOT user name, email and passowrd they are: " + username + " " + email + " " + password + " " + confirm_password);
 
-
+//confirm password is the same
 	if(password != confirm_password){
 	  res.status(200).send('Passwords do not match')
 		return;
 	}
 
+	//check for null values
 	if (!username) {
 		return res.status(400).send('No username supplied')
 	} else if (!password) {
@@ -62,20 +68,20 @@ router.post('/register', (req, res) => {
 		return res.status(400).send('No email supplied')
 	}
 
+	//confirm the password is secure
 	if (validatePassword(password) == false) {
 		console.log("password is not valid")
 	  res.status(200).send('Too weak of a password supplied').end();
 		return;
 	}
 
-
+//hash the password
 	password = hashPassword(password);
 
-	console.log("the password is " + password)
-
-
 	database.connect(db => {
+		//store the user in the database
 		var users = db.db('users').collection('users');
+		//check to see if the user laready exists
 		users.findOne({ $or: [{email: email}, {username: username}]}, (err, obj) => {
 			if (err) {
 				console.error(`User find request from ${req.ip} (for ${username}) returned error: ${err}`)
@@ -85,7 +91,7 @@ router.post('/register', (req, res) => {
 				console.log('That username or email already exists sending that info back.')
 				res.status(200).send('Username or email already exists').end();
 			} else {
-
+				//if not, create a new user
 				users.insertOne({ email: email, username: username, password: password, contacts:[]}, (err, obj) => {
 					if (err) {
 						console.error(`Register request from ${req.ip} (for ${username}, ${email}, ${password}) returned error: ${err}`);
@@ -108,6 +114,7 @@ router.post('/register', (req, res) => {
 	});
 })
 
+//post request for logging in a user
 router.post('/login', (req, res) => {
 	console.log("IN LOGIN On Router Page");
 	if (req.session.key) {
@@ -116,6 +123,7 @@ router.post('/login', (req, res) => {
 	  res.status(402).send('Already logged in').end();
 	}
 
+	//store values from the request
 	var {username, password} = req.body;
 	console.log("////////////////////////////////////////////////////////////////////////////////////");
 	console.log("GOt username it is : " + username);
@@ -131,8 +139,10 @@ router.post('/login', (req, res) => {
 
 	//password = hashPassword(password);
 
+	//connect to the db
 	database.connect(db => {
 		console.log("Got in database connect");
+		//find the user in the db
 		db.db('users').collection('users').findOne({ 'username': username}, (err, obj) => {
 			console.log("Got in find one");
 			console.log(JSON.stringify(obj));
@@ -144,6 +154,7 @@ router.post('/login', (req, res) => {
 				res.status(200).send('Hmmm...It seems there is no user with that username on record, please try again.')
 
 			} else {
+				//if the user's password is correct
 				if(passwordHash.verify(password, obj.password)){
 					console.log("////////////////////////////////////////////////////////////////////////////////////");
 					req.session.key = username;
@@ -151,6 +162,7 @@ router.post('/login', (req, res) => {
 					res.status(200).send('Success');
 					db.close();
 				}
+				//else it is not correct
 				else{
 					console.log('got in else meaning passwordhas veirfy returned false for username: ' + username + 'passowrd: ' + password)
 					return res.status(200).send('Not a valid login')
@@ -164,21 +176,26 @@ router.post('/login', (req, res) => {
 	});
 });
 
+//get request to logout a user
 router.get('/logout', (req, res) => {
 	if(req.session.key) {
+		//end the users session
 		req.session.destroy(() => res.status(200).json({ success: true }).end())
 	} else {
 		return res.status(402).send('Not logged in').end()
     }
 });
 
+//check if a user is logged in
 router.get('/hasSession', (req, res) =>{
 	console.log("checking session")
 	if(req.session.key){
+		//if the user is logged in
 		console.log("is true")
 		res.status(200).json({ success: true }).end()
 	}
 	else{
+		//if the user has no session
 		console.log("is false")
 		res.status(200).json({ success: false }).end()
 	}
