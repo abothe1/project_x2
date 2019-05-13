@@ -347,6 +347,16 @@
       </form>
     </div>
     <div id="body-container">
+
+      <div class="mobile-menu">
+           <button id = "mobile-menu-button"><img src="/assets/Home/banda_b.png" /></button>
+           <ul id = "mobile-menu-ul" class="mobile-active">
+             <li><a href='about'><p class="radialText">About</p></a></li>
+             <li><a href='index'><p class="radialText">Landing</p></a></li>
+             <li><a href='#' onclick="document.getElementById('modal-wrapper-support').style.display='block'"><p class="radialText">Support</p></a></li>
+           </ul>
+       </div>
+
       <div id="container">
         <img id="menuBacking" src="/assets/Home/menu.png" />
         <div id="corner"><a href="#"><i id="mainbtn"><img src="/assets/Home/banda_b.png" /></i></a>
@@ -391,6 +401,16 @@
     </div>
     <div id="chat-div"></div>
   </body>
+  <!-- Minh Script -->
+
+  <script>
+   $(document).ready(function(){
+     $('#mobile-menu-button').click(function(){
+       $('#mobile-menu-ul').toggleClass('mobile-active')
+     })
+   })
+  </script>
+  <!-- //MINH -->
   <!-- External JS -->
   <script type="text/javascript" src="/scripts/control-center.js"></script>
 </html>

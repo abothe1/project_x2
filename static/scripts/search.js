@@ -462,10 +462,11 @@ function searchForGigs(){
   var m = document.getElementById("m");
   var mv = document.getElementById("mv");
   var v = document.getElementById("v");
-  /*m.src = "/assets/Search/m_filter.png";
+  /*
+  m.src = "/assets/Search/m_filter.png";
   mv.src = "/assets/Search/mv_filter.png";
   v.src = "/assets/Search/v_filter_selected.png";
-*/
+  */
 var noResP = document.getElementById("no-res-p");
   noResP.innerHTML = "Sorry, we could not find any results. Try searching again with different keywords, or searching as one of your bands or events. For example, 'band with guitar for a birthday party' as an event.";
   noResP.style.display = "none";

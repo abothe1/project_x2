@@ -77,6 +77,16 @@
 						<a href='#' class='deg90' id="sign_in_button" onclick="document.getElementById('modal-wrapper-tos').style.display='block'"><p class="radialText" id='register_text'>Register</p></a>
 					</div>
 
+					<div class="mobile-menu">
+	           <button id = "mobile-menu-button"><img src="/assets/Home/banda_b.png" /></button>
+	           <ul id = "mobile-menu-ul" class="mobile-active">
+	             <li><a href='control-center'><p class="radialText">Home</p></a></li>
+	             <li><a href='about'><p class="radialText">About</p></a></li>
+	             <li><a href='#' id="mobile_login_button"><p class="radialText" id='mobile_login_or_out'>Login</p></a></li>
+							 <li><a href='#' id="mobile_sign_in_button" onclick="document.getElementById('modal-wrapper-tos').style.display='block'"><p class="radialText" id='mobile_register_text'>Register</p></a></li>
+	           </ul>
+	       	</div>
+
 					<div class="search">
 						<img id="barImg" alt="searchbar" src="/assets/Home/searchbar.png" />
 						<form name="search_form">
@@ -625,4 +635,14 @@
 				</div>
 			</div>
 		</body>
+		<!-- Minh Script -->
+
+	  <script>
+	   $(document).ready(function(){
+	     $('#mobile-menu-button').click(function(){
+	       $('#mobile-menu-ul').toggleClass('mobile-active')
+	     })
+	   })
+	  </script>
+	  <!-- //MINH -->
 	</html>

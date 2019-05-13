@@ -2105,3 +2105,295 @@ bank modal
   0% { transform: rotate(0deg); }
   100% { transform: rotate(360deg); }
 }
+
+/*Minh additions for responsiveness*/
+
+.mobile-menu{
+
+  position: fixed;
+  top: 40px;
+  left: 40px;
+  transform: translate(-50%, -50%);
+  z-index: 100;
+  display: none;
+
+}
+.mobile-menu img{
+  height: 100%;
+}
+.mobile-menu button{
+  position: relative;
+  width: 100px;
+  height: 60px;
+  font-size: 20px;
+  border: none;
+  box-shadow: none;
+  cursor: pointer;
+  background: black;
+
+}
+.mobile-menu ul{
+  position: absolute;
+  margin: 0;
+  padding: 0;
+  width: 100%;
+  background: #ccc;
+  transform-origin: top;
+  transition: 0.5s;
+  transform: perspective(1000px) rotateX(-90deg);
+}
+.mobile-menu ul.mobile-active{
+  transform: perspective(1000px) rotateX(0deg);
+
+}
+.mobile-menu ul li{
+  list-style: none;
+  padding: 0px;
+}
+.mobile-menu ul li a{
+  color: white;
+  display:  block;
+  padding: 10px;
+  text-align: center;
+  text-decoration: none;
+  background: #262626;
+  border-bottom: 1px solid rgb(0, 0, 0, 0.2);
+}
+
+
+
+#create-button{
+  display: none;
+}
+#profile-button{
+  display: none;
+}
+#contact-button-mobile{
+  display: none;
+}
+
+
+/* Minh Media */
+
+/* .profile-header{
+  position: absolute;
+  margin-left: 200px;
+  margin-top: 0px;
+  width: 75%;
+  right: 0;
+} */
+.dropup-create-content{
+  display: none;
+}
+.dropup-profile-content{
+  display: none;
+}
+
+@media(max-width: 1200px){
+  .profile-header-text{
+    font-size: 70pt;
+
+  }
+  .profile-header{
+    width: 70%;
+    margin-left: 250px;
+
+  }
+}
+
+@media(max-width: 1000px){
+  .profile-header-text{
+    font-size: 55pt;
+  }
+  .profile-header{
+
+
+  }
+
+}
+@media(max-width: 900px){
+  #menuBacking{
+
+    height: 238px;
+    width: 238px;
+  }
+
+  .circle-container a {
+
+    width: 64px; height: 32px;
+
+  }
+  #mainbtn img{
+
+    width: 37px;
+    height: 97px;
+  }
+}
+@media(max-width: 800px){
+  .profile-header-text{
+    font-size: 40pt;
+  }
+  #menuBacking{
+
+    height: 218px;
+    width: 218px;
+  }
+  /* #mainbtn img{
+
+    width: 37px;
+    height: 77px;
+  }
+  .circle-container a {
+
+    width: 64px; height: 32px;
+    margin:0px;
+
+  } */
+}
+
+
+
+@media(max-width: 600px){
+  #container{
+    display: none;
+  }
+  #user-stars{
+      margin-left:0;
+  }
+  .profile-header-text{
+    font-size: 30pt;
+  }
+  .profile-header{
+
+
+  }
+  .mobile-menu{
+    display: block;
+  }
+  .circle-container a{
+    display: none;
+  }
+
+  #create-button{
+    display: block;
+    width: 100px;
+    height: 100%;
+    text-align: center;
+    background-color: transparent;
+    /* position: absolute;
+     left: 10px; */
+    color: white;
+    border: none;
+    font-size: 20pt;
+    z-index: 100;
+
+  }
+
+  .dropup-create-content{
+    display: none;
+    position: relative;
+    background: #262626;
+    width: 160px;
+    z-index: 100;
+    bottom: 80px;
+    height: 80px;
+  }
+  .dropup-create-content a{
+    display: block;
+    text-decoration: none;
+    color: white;
+    padding: 10px 10px;
+  }
+  .dropup-create:hover .dropup-create-content{
+    display:block;
+  }
+
+
+  #profile-button{
+    display: block;
+    width: 100px;
+    height: 100%;
+    text-align: center;
+    background-color: transparent;
+    /* position: absolute;
+    left: 150px; */
+    color: white;
+    border: none;
+    font-size: 20pt;
+    z-index: 100;
+  }
+.dropup-profile-content{
+  display: none;
+  position: relative;
+  /* position: absolute; */
+  background: #262626;
+  /* left: 150px; */
+  width: 160px;
+  z-index: 100;
+  bottom: 120px;
+  height: 120px;
+
+}
+.dropup-profile-content a{
+    display: block;
+    text-decoration: none;
+    color: white;
+    padding: 10px 10px;
+}
+.dropup-profile:hover .dropup-profile-content{
+  display: block;
+}
+
+#contact-button-mobile-wrapper{
+  position: absolute;
+  right: 0px;
+}
+
+  #contact-button-mobile{
+    display: block;
+    width: 100px;
+    height: 100%;
+    text-align: center;
+    background-color: transparent;
+    position: relative;
+    right: 0px;
+    color: white;
+    border: none;
+    font-size: 20pt;
+    z-index: 100;
+  }
+
+  #contacts-button{
+    opacity: 0;
+    width: 200px;
+  }
+  .profiles-list{
+    display:none;
+  }
+
+}
+
+@media(max-width: 550px){
+  .profile-header-text{
+    font-size: 25pt;
+  }
+  .profile-header{
+    margin-top: 0px;
+  }
+  #contacts-button{
+    width: 170px;
+  }
+}
+
+@media(max-width: 400px){
+  .profile-header-text{
+    font-size: 22pt;
+  }
+  .profile-header{
+
+    margin-top: 10px;
+  }
+  #contacts-button{
+    width: 120px;
+  }
+}
