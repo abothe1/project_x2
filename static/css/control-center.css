@@ -168,10 +168,20 @@ h1, h2, h3, h4, h5, h6, p, button, input, textarea, li{
     position: relative;
 }
 
+#request-support-btn{
+  margin-top: -20px;
+}
+
 .support-text{
   text-align: center;
   font-size: 18pt;
   margin-bottom: 20px;
+}
+
+.support-text-small{
+  margin-top: -15px;
+  text-align: center;
+  font-size: 12pt;
 }
 
 .modal-textarea{
