@@ -663,17 +663,10 @@ flip box containe;;;; got rid of it cuz im using flipp */
   height: 60px;
   width: 100%;
 }
-<<<<<<< HEAD
 /*log out modal*/
 #modal-wrapper-logout{
   z-index: 5;
   display: none;
-=======
-
-#modal-wrapper-logout{
-  z-index: 5;
-  display: block;
->>>>>>> 22248eaf7f90dfb5c3b9a54e8449e836829cc7dd
 }
 #logout-text{
   margin-top: 40px;
@@ -698,10 +691,7 @@ flip box containe;;;; got rid of it cuz im using flipp */
 .logout-btn:hover{
   cursor: pointer;
 }
-<<<<<<< HEAD
-=======
 
->>>>>>> 22248eaf7f90dfb5c3b9a54e8449e836829cc7dd
 /* Permalink - use to edit and share this gradient: http://colorzilla.com/gradient-editor/#5969ff+0,ff0061+100 */
 /* background: #5969ff; /* Old browsers */
 /* background: -moz-linear-gradient(left, #5969ff 0%, #ff0061 100%); /* FF3.6-15 */

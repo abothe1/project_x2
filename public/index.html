@@ -73,8 +73,8 @@
 					<div class='circle-container'>
 						<a href='control-center' class='deg0'><p class="radialText">Home</p></a>
 						<a href='about' class='deg30'><p class="radialText">About</p></a>
-						<a href='#' class='deg60' onclick="document.getElementById('modal-wrapper-login').style.display='block'" id="login_button"><p class="radialText">Login</p></a>
-						<a href='#' class='deg90' id="sign_in_button" onclick="document.getElementById('modal-wrapper-tos').style.display='block'"><p class="radialText">Register</p></a>
+						<a href='#' class='deg60' onclick="document.getElementById('modal-wrapper-login').style.display='block'" id="login_button"><p class="radialText" id='login_or_out'>Login</p></a>
+						<a href='#' class='deg90' id="sign_in_button" onclick="document.getElementById('modal-wrapper-tos').style.display='block'"><p class="radialText" id='register_text'>Register</p></a>
 					</div>
 
 					<div class="search">
@@ -536,7 +536,6 @@
 					</div>
 
 					<div id="modal-wrapper-logout" class="modal">
-<<<<<<< HEAD
 
 						<form class="modal-content animate">
 
@@ -555,22 +554,6 @@
 						</form>
 
 					</div>
-=======
-                        <form class="modal-content animate">
-                            <div class="imgcontainer">
-                                <span onclick="document.getElementById('modal-wrapper-logout').style.display='none'" class="close" title="Close PopUp">&times;</span>
-                                <h1 style="text-align:left; padding-left: 20px; font-size: 50pt;">log out</h1>
-                            </div>
-                            <div class="container">
-                                <h2 id="logout-text">Are you sure you want to log out of Banda?</h2>
-                                <div id="logout-controls">
-                                    <input class="logout-btn" type="button" value="yes" id="logout-yes" onclick="logout()" />
-                                    <input class="logout-btn" type="button" value="no" id="logout-no" onclick="document.getElementById('modal-wrapper-logout').style.display='none'" />
-                                </div>
-                            </div>
-                        </form>
-                    </div>
->>>>>>> 22248eaf7f90dfb5c3b9a54e8449e836829cc7dd
 
 					<div id="modal-wrapper-register" class="modal">
 

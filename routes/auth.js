@@ -47,7 +47,7 @@ router.post('/register', (req, res) => {
 	var {username, email, password, confirm_password} = req.body;
 	console.log("GOT user name, email and passowrd they are: " + username + " " + email + " " + password + " " + confirm_password);
 
-	
+
 	if(password != confirm_password){
 		return res.status(400).send('Passwords do not match')
 	}
@@ -77,7 +77,9 @@ router.post('/register', (req, res) => {
 			if (err) {
 				console.error(`User find request from ${req.ip} (for ${username}) returned error: ${err}`)
 				res.status(500).end()
+				db.close();
 			} else if (obj) {
+				console.log('That username or email already exists sending that info back.')
 				res.status(400).send('Username or email already exists').end()
 			} else {
 
@@ -85,11 +87,14 @@ router.post('/register', (req, res) => {
 					if (err) {
 						console.error(`Register request from ${req.ip} (for ${username}, ${email}, ${password}) returned error: ${err}`);
 						res.status(500).end();
+						db.close();
 					} else {
 						//booth code, testing how to store usernames in sessions//
 						req.session.key = username;
+						console.log('Req session key after inserting user for register is: ' + req.sessione.key);
 						///////
 						res.status(200).json({ success: true }).end();
+						db.close();
 					}
 				});
 			}
@@ -132,26 +137,21 @@ router.post('/login', (req, res) => {
 				console.error(`Login request from ${req.ip} (for ${username}) returned error: ${err}`)
 				res.status(500).end()
 			} else if (!obj) {
-				res.status(400).send('Invalid Credentials').end()
+				res.status(400).send('Invalid Credentials')
 				console.log("INVALID CREDS SENT");
 			} else {
-<<<<<<< HEAD
-				console.log("////////////////////////////////////////////////////////////////////////////////////");
-				req.session.key = username;
-				console.log('In the login, just made the session key from obj key and it is: ' + req.session.key);
-				res.status(200).json({ success: true }).end()
-				db.close();
-=======
 				if(passwordHash.verify(password, obj.password)){
 					console.log("////////////////////////////////////////////////////////////////////////////////////");
 					req.session.key = username;
 					console.log('In the login, just made the session key from obj key and it is: ' + req.session.key);
-					res.status(200).json({ success: true }).end()
+					res.status(200).send('Success');
+					db.close();
 				}
 				else{
+					console.log('got in else meaning passwordhas veirfy returned false for username: ' + username + 'passowrd: ' + password)
 					return res.status(400).send('Not a valid login')
+					db.close();
 				}
->>>>>>> 22248eaf7f90dfb5c3b9a54e8449e836829cc7dd
 			}
 		})
 	}, err => {

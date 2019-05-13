@@ -524,11 +524,15 @@ function diff_minutes(dt2, dt1) {
 		}
     $.post('/login', content, res=>{
       console.log("Got res from login herre it is: " + JSON.stringify(res));
-      if(res.success){
+      if(res == 'Success'){
         isLoggedIn=true;
 				document.getElementById("modal-wrapper-login").style.display = "none";
+				checkSession();
+				alert('You have logged in, '+content.username);
+
       }
       else{
+				alert(res);
         isLoggedIn=false;
       }
     });
@@ -536,13 +540,22 @@ function diff_minutes(dt2, dt1) {
 
 	function checkSession(){
 		console.log("checking if a session exists (checking if a user is logged in)");
-		$.get('/hasSession', res=>{
+		$.get('/hasSession', {}, res=>{
+			console.log('res for check log in is: ' + JSON.stringify(res))
 			if(res.success){
 				console.log(res.success + " is returned value")
+				document.getElementById('login_or_out').innerHTML = 'Log Out'
+				//document.getElementById('login_button').onclick='document.getElementById("modal-wrapper-logout").style.display="block"';
+				document.getElementById('login_or_out').addEventListener('click', function(){
+					document.getElementById("modal-wrapper-logout").style.display="block";
+				})
 				return true;
 			}else{
 				console.log(res.success + " is returned value")
-				return false;
+				document.getElementById('login_or_out').innerHTML = 'Login'
+			//	document.getElementById('login_button').onclick='document.getElementById("modal-wrapper-tos").style.display="block"';
+
+			//	return false;
 			}
 		});
 	}
@@ -559,6 +572,7 @@ function diff_minutes(dt2, dt1) {
 
     $.post('/register', content, res=>{
 			document.getElementById("modal-wrapper-register").style.display = "none";
+			alert(res);
     });
   }
   function stringToDate(str){
