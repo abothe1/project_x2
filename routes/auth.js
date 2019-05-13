@@ -94,7 +94,7 @@ router.post('/register', (req, res) => {
 					} else {
 						//booth code, testing how to store usernames in sessions//
 						req.session.key = username;
-						console.log('Req session key after inserting user for register is: ' + req.sessione.key);
+						console.log('Req session key after inserting user for register is: ' + req.session.key);
 						///////
 						res.status(200).send('Success');
 						db.close();
