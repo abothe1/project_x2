@@ -324,7 +324,7 @@ search filters
   left: 0px;
   position: absolute;
   z-index: 4;
-  text-align: center;
+  text-align: left;
 }
 
 #filters > ul{
