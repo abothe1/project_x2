@@ -388,12 +388,24 @@ function showResults(mode, bands, gigs){
 
 function searchForBands(){
   console.log('in serach for bands');
+<<<<<<< HEAD
   // var m = document.getElementById("m");
   // var mv = document.getElementById("mv");
   // var v = document.getElementById("v");
   // m.src = "/assets/Search/m_filter_selected.png";
   // mv.src = "/assets/Search/mv_filter.png";
   // v.src = "/assets/Search/v_filter.png";
+=======
+  var m = document.getElementById("m");
+  var mv = document.getElementById("mv");
+  var v = document.getElementById("v");
+  //m.src = "/assets/Search/m_filter_selected.png";
+  //mv.src = "/assets/Search/mv_filter.png";
+  //v.src = "/assets/Search/v_filter.png";
+  var noResP = document.getElementById("no-res-p");
+    noResP.innerHTML = "Sorry, we could not find any results. Try searching again with different keywords, or searching as one of your bands or events. For example, 'band with guitar for a birthday party' as an event.";
+    noResP.style.display = "none";
+>>>>>>> 94f85c04ec3d6b6443fa9152e433657fe9ecb8e6
 
   var searchAsName = $('#selectDrop option:selected').data();
   console.log(JSON.stringify(searchAsName));
@@ -456,6 +468,7 @@ function searchForBands(){
 }
 
 function searchForGigs(){
+<<<<<<< HEAD
   // var m = document.getElementById("m");
   // var mv = document.getElementById("mv");
   // var v = document.getElementById("v");
@@ -463,6 +476,18 @@ function searchForGigs(){
   // mv.src = "/assets/Search/mv_filter.png";
   // v.src = "/assets/Search/v_filter_selected.png";
 
+=======
+  var m = document.getElementById("m");
+  var mv = document.getElementById("mv");
+  var v = document.getElementById("v");
+  /*m.src = "/assets/Search/m_filter.png";
+  mv.src = "/assets/Search/mv_filter.png";
+  v.src = "/assets/Search/v_filter_selected.png";
+*/
+var noResP = document.getElementById("no-res-p");
+  noResP.innerHTML = "Sorry, we could not find any results. Try searching again with different keywords, or searching as one of your bands or events. For example, 'band with guitar for a birthday party' as an event.";
+  noResP.style.display = "none";
+>>>>>>> 94f85c04ec3d6b6443fa9152e433657fe9ecb8e6
   var searchAsName = $('#selectDrop option:selected').data()['objid'];
   var serachAsType = $('#selectDrop option:selected').val();
   var searchText = $('#search_input').val();

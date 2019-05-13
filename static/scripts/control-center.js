@@ -50,7 +50,7 @@ class OpenGig{
     this.gigImg = document.createElement("div");
     this.gigImg.className = "open-gig-image";
     this.title = document.createElement("h3");
-    this.title.innerHTML = "Gig Image";
+    this.title.innerHTML = "Event Image";
     this.title.className = "gig-title";
     this.gigPic = document.createElement("img");
     this.gigPic.className = "gig-pic";
@@ -4021,7 +4021,7 @@ function attemptCreditSubmission(token_id){
   console.log('TOKEN ID for card is: ' + token_id);
   // need to handle errors here too
   $.post('/createStripeCustomer', {card_token:token_id, email:user_email},res=>{
-    alert('res');
+    alert(res);
     document.getElementById("loader-new-card").style.display = "none";
     document.getElementById("modal-wrapper-credit").style.display = 'none';
     document.getElementById("modal-wrapper-new-gig").style.display = 'block';

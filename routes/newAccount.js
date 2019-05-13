@@ -1,10 +1,13 @@
 module.exports = router =>{
+  //stripe credentials
   stripe_private_key = 'sk_test_t6hlsKu6iehEdJhV9KzITmxm00flbTdrG5';
   stripe = require('stripe')(stripe_private_key);
   const database = require('../database.js');
 
+  //post request to connect an account
   router.post('/newConnectedAccount', (req, res)=>{
     var country = 'US';
+    //sanitize request
     if (!req.session.key){
       console.log('No logged in user tried to create an account');
       res.status(404).end();
@@ -15,7 +18,7 @@ module.exports = router =>{
     }
     else{
       console.log('At newCreateAccount req body is: ' + JSON.stringify(req.body));
-      //stripe variables from req
+      //stripe variables from req and credentials
       var {dateOfBrith, firstName, lastName, acct_number, routing_number, holder_name, external_account_token} = req.body;
       var indie = {};
       indie['first_name']=firstName;
@@ -42,6 +45,8 @@ module.exports = router =>{
       console.log("TOKEN " + JSON.stringify(external_account_token));
 
       console.log('Indie is: ' + JSON.stringify(indie));
+
+      //create the stripe ccount
       stripe.accounts.create({
         country: country,
         type: 'custom',
@@ -52,12 +57,17 @@ module.exports = router =>{
         external_account:external_account_token,
         individual:indie
 
+        //succcess case
         }).then(res2=>{
+
+            //store the new stripe account in the database
             console.log('got result froms tripe in create connected account. '+JSON.stringify(res2));
             var stripe_id = res2['id'];
             var requirements = res2['requirements'];
             console.log('Requirments to verify account are: ' + JSON.stringify(requirements));
+            //connect and store in the db
             database.connect(db=>{
+              //update users and stripe accounts
                 db.db('users').collection('stripe_users').insertOne({'username':req.session.key, 'stripe_connected_account_id':stripe_id, 'payouts':[]}, (res4)=>{
                     db.db('users').collection('users').updateOne({'username':req.session.key}, {$set:{'hasAccount':true}}, (err4, res4)=>{
                       if (err4){

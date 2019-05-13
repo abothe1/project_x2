@@ -4,6 +4,8 @@ const database = require('../database.js'),
       multer = require('multer'),
     //  logger = require('../logger.js'),
       fs = require('fs');
+
+      //create the paths with multer
       var uploadingGigPics = multer({
           dest: './public/tmp/'
       });
@@ -18,7 +20,8 @@ const database = require('../database.js'),
       var uploadingAudioPic = multer({
         dest: './public/tmp/'
       });
-
+  
+      //post request to upload a gig's pic
   router.post('/uploadGigPic', uploadingGigPics.single('image'), function(req, res) {
       if (!req.file){
         console.log('No file sent');
@@ -28,11 +31,14 @@ const database = require('../database.js'),
         console.log('User tried to upload gig pic while not logged in');
         res.status(401).end();
       }
+      //if invalid file
       if (!(req.file.mimetype=='image/jpeg' || req.file.mimetype=='image/png')){
         console.log('Wrong mimetype')
         res.status(200).send("Wrong mimeType");
         return;
       }
+
+      //get file name and store the file
       var fileName = 'static/uploads/GigPics/'+req.file.filename;
       console.log(req.file);      //res.send(req.file);
       fs.rename(req.file.path, fileName, err2=>{
@@ -47,6 +53,7 @@ const database = require('../database.js'),
       });
   });
 
+  //upload an image for a band avatar
   router.post('/uploadBandAvatar', uploadingBandPic.single('image'), function(req, res){
     if (!req.session.key){
       console.log('User tried to upload gig pic while not logged in');
@@ -56,6 +63,7 @@ const database = require('../database.js'),
         console.log('No file sent');
         res.status(400).end();
       }
+      //if not a valid image
       if (!(req.file.mimetype=='image/jpeg' || req.file.mimetype=='image/png')){
         console.log('Wrong mimetype')
         res.status(200).send("Wrong mimeType");
@@ -64,6 +72,8 @@ const database = require('../database.js'),
     console.log(req.file);
     var fileName = 'static/uploads/BandPics/'+req.file.filename;
     console.log(req.file);      //res.send(req.file);
+
+    //store the image
     fs.rename(req.file.path, fileName, err2=>{
       if(err2){
         console.log('Could not rename file, error: ' + err2);
@@ -77,7 +87,7 @@ const database = require('../database.js'),
     });
   });
 
-
+  //post request to upload a sound byte
   router.post('/uploadSoundByte', uploadingAudioSample.single('soundByte'), function(req, res){
     if (!req.session.key){
       console.log('User tried to upload gig pic while not logged in');
@@ -87,6 +97,7 @@ const database = require('../database.js'),
         console.log('No file sent');
         res.status(400).end();
       }
+      //if not a valid file type
       if (!(req.file.mimetype=='audio/mp3' || req.file.mimetype=='audio/wav')){
         console.log('Wrong mimetype')
         res.status(200).send("Wrong mimeType");
@@ -96,6 +107,7 @@ const database = require('../database.js'),
     console.log(req.file);
     var fileName = 'static/uploads/SoundBytes/'+req.file.filename;
     console.log(req.file);      //res.send(req.file);
+    //upload the file
     fs.rename(req.file.path, fileName, err2=>{
       if(err2){
         console.log('Could not rename file, error: ' + err2);
@@ -108,6 +120,7 @@ const database = require('../database.js'),
     });
   });
 
+  //post request to upload an audio picture
   router.post('/uploadAudioPic', uploadingAudioPic.single('audioPic'), function(req, res){
     if (!req.session.key){
       console.log('User tried to upload gig pic while not logged in');
@@ -117,6 +130,7 @@ const database = require('../database.js'),
       console.log('No file sent');
       res.status(400).end();
     }
+    //check file type
     if (!(req.file.mimetype=='image/jpeg' || req.file.mimetype=='image/png')){
       console.log('Wrong mimetype')
       res.status(200).send("Wrong mimeType");
@@ -126,6 +140,7 @@ const database = require('../database.js'),
     console.log(req.file);
     var fileName = 'static/uploads/AudioPics/'+req.file.filename;
     console.log(req.file);      //res.send(req.file);
+    //store the file
     fs.rename(req.file.path, fileName, err2=>{
       if(err2){
         console.log('Could not rename file, error: ' + err2);

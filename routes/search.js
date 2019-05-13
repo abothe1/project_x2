@@ -5,6 +5,7 @@ const database = require('../database.js'),
 console.log(matching);
 var ObjectId = require('mongodb').ObjectID;
 
+//get request for search functionality
 router.get('/search', (req, res) => {
   console.log("req is search is : " + req);
   console.log("req.query is search is : " + req.query);
@@ -19,10 +20,12 @@ router.get('/search', (req, res) => {
 	}
 
 	switch (mode) {
+    //searching for gigs
 		case 'findGigs':
     console.log("got in searchign for gigs on search rotues page");
     console.log("band namee searching for bands is: " + bandName);
 			database.connect(db => {
+        //apply mathcing alg for bands
 				matching.findGigsForBand(bandName, query, db, err => {
 					console.error("Error when finding gigs for " + bandName + ": " + err);
 					res.status(500).end();
@@ -35,11 +38,13 @@ router.get('/search', (req, res) => {
 				res.status(500).end()
         db.close();
 			})
-			break;
+      break;
+      //seraching for bands
 		case 'findBands':
     console.log("got in searchign for bands");
     console.log("gig namee searching for bands is: " + gigName);
 			database.connect(db => {
+        //apply mathcing alg for bands
 				matching.findBandsForGig(gigName, query, db, err => {
 					console.error("Error when finding bands for " + gigName + ": " + err);
 					res.status(500).end();
@@ -59,10 +64,11 @@ router.get('/search', (req, res) => {
 });
 
 
-
+//get the current events for a band
 router.get('/current_events', (req, res) => {
   database.connect(db => {
     let gigDB = db.db('gigs').collection('gigs');
+    //query the db for bands
     gigDB.find({'isFilled':{$eq: true}}).toArray(function(err2, result) {
       if (err2){
         console.warn("Couldnt get gigs: " + err2);
@@ -83,7 +89,7 @@ router.get('/current_events', (req, res) => {
 
 
 
-
+//get request for bands
 router.get('/getBands', (req, res)=>{
   if (! req.body){
     console.log("No req body sent, in get bands And Gigs for user");
@@ -91,9 +97,11 @@ router.get('/getBands', (req, res)=>{
   }
   var {creator} = req.query;
   console.log('in get bands and creator is: ' + creator);
+  //connect to db
   database.connect(db => {
     let bands = db.db('bands').collection('bands');
     var bandquery = {'creator':creator};
+    //find the bands in an array
     bands.find(bandquery).toArray(function(err, result) {
      if (err){
        console.log("Error in get Bands and Gigs For User: " + err);
@@ -109,10 +117,9 @@ router.get('/getBands', (req, res)=>{
     console.warn("Couldn't connect to database: " + err);
 		res.status(500).end();
   });
-
-
 });
 
+//get request for the gigs
 router.get('/getGigs', (req, res)=>{
   var {creator} = req.query;
   console.log('in get gigs and creator is: ' + creator);
@@ -120,6 +127,8 @@ router.get('/getGigs', (req, res)=>{
     console.log("No req body sent, in get bands And Gigs for user");
     res.status(400).send('No req body sent');
   }
+
+  //connect to and return the gigs in an array
   database.connect( db => {
     let gigs = db.db('gigs').collection('gigs');
     var gigQuery = {'creator':creator};
@@ -140,6 +149,7 @@ router.get('/getGigs', (req, res)=>{
   });
 });
 
+//get request if there is no search params
 router.get('/searchNoName', (req, res) => {
   console.log("req is search is : " + req);
   console.log("req.query is search is : " + req.query);
@@ -153,6 +163,7 @@ router.get('/searchNoName', (req, res) => {
 	}
 
 	switch (mode) {
+    //default search for gigs
 		case 'findGigs':
     console.log("got in searching no name for gigs on search rotues page");
     //console.log("band namee searching for bands is: " + bandName);
@@ -168,7 +179,8 @@ router.get('/searchNoName', (req, res) => {
 				console.error('[auth][database] Database connection whilst logging in failed');
 				res.status(500).end()
 			})
-			break;
+      break;
+      //default search for bands
 		case 'findBands':
     console.log("got in searching no name for bands");
   //  console.log("gig namee searching for bands is: " + gigName);
@@ -191,6 +203,7 @@ router.get('/searchNoName', (req, res) => {
 	}
 });
 
+//get the audio and pictures out of a band
 router.get('/bandsForDrops', (req, res)=>{
   db.db('bands').collection('bands').find({}, {projection : {'audioSamples':1, 'picture':1}}).toArray((err, result)=>{
     if (err){
@@ -205,6 +218,8 @@ router.get('/bandsForDrops', (req, res)=>{
     }
   });
 });
+
+//get request for a specific gig
 router.get('/aGig', (req, res)=>{
   if (!req.query) {
      res.status(400).send('No body sent').end();
@@ -217,6 +232,7 @@ router.get('/aGig', (req, res)=>{
   var {gigID} = req.query;
   console.log("Gig id is : " + gigID);
   database.connect(db=>{
+    //query the db for gigs
     db.db('gigs').collection('gigs').findOne({'_id':database.objectId(gigID)}, (err2, result2)=>{
       if (err2) {
         console.log('There was an erro rtrying to get gig with id ' + gigID + " ERROR: " + err2);
@@ -236,6 +252,7 @@ router.get('/aGig', (req, res)=>{
   });
 });
 
+//get request for a single band
 router.get('/aBand', (req, res)=>{
   if (!req.query) {
      res.status(400).send('No body sent').end();
@@ -247,6 +264,8 @@ router.get('/aBand', (req, res)=>{
 
   var {id}=req.query;
   console.log('Id :' + id);
+
+  //query the db for the single band
   database.connect(db=>{
     db.db('bands').collection('bands').findOne({_id:database.objectId(id)}, (err2, result2)=>{
       if (err2){
@@ -267,6 +286,7 @@ router.get('/aBand', (req, res)=>{
   });
 });
 
+//get request for a single user
 router.get('/aUser', (req, res)=>{
   if (!req.session.key){
     console.log('Non-logged in user tried to download');
@@ -279,6 +299,7 @@ router.get('/aUser', (req, res)=>{
   else{
     var {id} = req.query;
     database.connect(db=>{
+      //get teh single user from the database
       db.db('users').collection('users').findOne({'_id':database.objectId(id)},{'password':0, 'username':1}, (err2, result2)=>{
         if(err2){
           console.log('There was an error getting user: ' + id + 'out of mongo, error: ' + err2);

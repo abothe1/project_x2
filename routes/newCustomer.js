@@ -1,7 +1,10 @@
 module.exports = router =>{
+  //stripe auth
   stripe_private_key = 'sk_test_t6hlsKu6iehEdJhV9KzITmxm00flbTdrG5';
   var stripe = require('stripe')(stripe_private_key);
   const database = require('../database.js');
+
+  //post request for a new stripe user
   router.post('/createStripeCustomer', (req, res)=>{
     var country = 'US';
     if (!req.session.key){
@@ -13,12 +16,15 @@ module.exports = router =>{
       res.status(401).end();
     }
     else{
+      //store values from the request
       console.log('REQ body:' + JSON.stringify(req.body));
       var {card_token, email} = req.body;
       console.log('card token: ' + card_token);
       var username = req.session.key;
       var description = 'Event owner with username:  ' + username;
       console.log('CUSTOMER EMAIL: '+ email);
+
+      //create a new stripe customer
       stripe.customers.create({
         description: description,
         email:email,
@@ -34,6 +40,7 @@ module.exports = router =>{
           var cus_id = customer['id'];
           console.log('Default source is: ' + customer.default_source);
           database.connect(db=>{
+            //update the stripe and user collections with the new customer
             db.db('users').collection('stripe_customers').insertOne({'username':username, 'stripe_id':cus_id, 'charges':[], 'src_id':card_token}, (res4)=>{
               console.log('Added user ' + username+ 'to stripe_customers woth cus_id: ' + cus_id);
               db.db('users').collection('users').updateOne({'username':req.session.key}, {$set:{'isCustomer':true}}, (err4, res4)=>{

@@ -1,14 +1,19 @@
 module.exports = router => {
   const database = require('../database.js');
   var ObjectId = require('mongodb').ObjectID;
+
+  //post request to update the data of a gig
   router.post('/updateGig', (req, res) => {
     if (!req.body) {
   		 res.status(400).send('No body sent').end();
-  	}
+    }
+    
+    //query the database
     database.connect(db=>{
       var {id, query} = req.body;
       var newvalues = query;
       console.log(JSON.stringify(newvalues));
+      //update the gigs based on id
       db.db('gigs').collection("gigs").updateOne({'_id':ObjectId(id)}, newvalues, result =>{
         console.log("updated gig " + id);
         res.status(200).send(result);
@@ -26,6 +31,7 @@ module.exports = router => {
 
   });
 
+  //update a band based on id
   router.post('/updateBand', (req, res) =>{
     if (!req.body) {
   		 res.status(400).send('No body sent').end();
@@ -38,6 +44,7 @@ module.exports = router => {
     var newvalues =  query;
     console.log('query :' + JSON.stringify(query));
     database.connect(db=>{
+      //update the band in the db
       db.db('bands').collection("bands").updateOne({'_id':ObjectId(id)}, newvalues, result=>{
         console.log("updated band " + id);
         res.status(200).end();
@@ -53,6 +60,7 @@ module.exports = router => {
     });
   });
 
+  //update a bands rating
   router.post('/bandRating', (req, res) =>{
     if (!req.body) {
   		 res.status(400).send('No body sent').end();
@@ -62,6 +70,7 @@ module.exports = router => {
     console.log('new rating is : ' + newRating)
 
     database.connect(db=>{
+      //find the band with the id needed
       db.db('bands').collection('bands').findOne({'_id':ObjectId(id)}, function(err2, result){
         if (err2){
           console.log("Error while trying to find band with id: "+id+"Error: "+err2);
@@ -70,6 +79,7 @@ module.exports = router => {
         else{
           console.log("Result from find one band in rating post is: "+JSON.stringify(result));
           var myBand = result;
+          //sanitize data
           var noShows = parseInt(result['noShows']);
           if (noShows == null){
             if (!showedUp){
@@ -84,10 +94,12 @@ module.exports = router => {
               noShows += 1;
             }
           }
+          //store rating and num rating
           var rating = result['rating'];
           var numRatings = result['numRatings'];
           console.log('Num ratings: ' + numRatings);
           console.log('var rating =' + rating );
+          //udpate values
           if (numRatings==null || numRatings==0  ||numRatings=='0' || numRatings==""){
             numRatings=1;
             var timesShowed = 1;
@@ -101,10 +113,12 @@ module.exports = router => {
             var query = {'rating':newRating, 'numRatings':1, 'noShows':noShows, 'showsUp':percentShows};
             var newvalues = {$set: query};
             console.log('about to set rating with: ' + JSON.stringify(newvalues));
+            //update the database for bands
               db.db('bands').collection("bands").updateOne({'_id':ObjectId(id)}, newvalues, res4=>{
                 console.log("updated band " + id);
                 var newValues2 = {$set:{'recievedRating':true}};
               //  console.log('')
+              //update the gigs of the band
                 db.db('gigs').collection('gigs').updateOne({'_id':ObjectId(gigID)}, newValues2, {upsert:true}, res3=>{
                   console.log('set recivedRating to true for gig: ' + gigID);
                   res.status(200).end();
@@ -120,6 +134,7 @@ module.exports = router => {
               });
           }
           else{
+            //update values of the band for times and ratings
             var timesShown = parseInt(numRatings) - noShows;
             var perectShown = timesShown/parseInt(numRatings);
             var totalScore = parseInt(numRatings)*rating;
@@ -132,9 +147,12 @@ module.exports = router => {
             console.log('rating2: '+ rating2);
             var query = {'rating':rating2, 'numRatings':numRatings, 'noShows':noShows, 'showsUp':perectShown};
             var newvalues = {$set: query};
+            //update the bands collection
               db.db('bands').collection("bands").updateOne({'_id':ObjectId(id)}, newvalues, res2=>{
                 console.log("updated band " + id);
                 var newValues2 = {$set:{'recievedRating':true}};
+
+                //update the gigs collection
                 db.db('gigs').collection('gigs').updateOne({'_id':ObjectId(gigID)}, newValues2, {upsert:true}, res3=>{
                   console.log('set recivedRating to true for gig: ' + gigID);
                   res.status(200).end();
@@ -157,6 +175,7 @@ module.exports = router => {
     });
   });
 
+  //post request to update a user's data
   router.post('/updateAUser', (req, res)=>{
     if (!req.body){
       console.log('No body sent!');
@@ -169,6 +188,7 @@ module.exports = router => {
     else{
       var {id, query} = req.body;
       database.connect(db=>{
+        //udpate based on if
         db.db('users').collection('users').updateOne({'_id':ObjectId(id)}, query, (err2,result)=>{
           if(err2){
             console.log('Error updating user with:' +id +' :' + err2)
