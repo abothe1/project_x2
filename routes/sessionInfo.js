@@ -1,5 +1,7 @@
 module.exports = router => {
   database = require('../database.js');
+
+  //get request for the current user's data
   router.get('/user', (req, res)=>{
     console.log("GOT INTO GET USERNAMEE");
     console.log('session is: '+ JSON.stringify(req.session));
@@ -8,6 +10,7 @@ module.exports = router => {
 
     var userkey = req.session.key;
     console.log('userkey is :' + userkey);
+    //find the users data in the db
     database.connect(db=>{
       db.db('users').collection('users').findOne({'username': userkey}, function(err2, result){
         if (err2){
@@ -16,6 +19,7 @@ module.exports = router => {
           db.close();
         }
         else{
+          //success case
           res.status(200).send(result);
           db.close();
         }

@@ -1,6 +1,8 @@
 module.exports = router =>{
   const database = require('../database.js');
   const allowed_users = {"alexander_bothe":'N5gdakxq9!', "eli_levin":"akira2016", "max_schmitz":"Blue12#$", "miccah_round":"cheese12345", "AB_Brooks":"ABTheTeaBandit"}
+  
+  //get a count for the users in teh database
   router.get('/count', (req, res)=>{
     console.log('Got count request')
     if (!req.query){
@@ -16,8 +18,10 @@ module.exports = router =>{
         res.status(404).end();
       }
       else{
+        //success case, query database
         database.connect(db=>{
           switch(data_type){
+            //return count for gigs
             case "gigs":
             findGigCount(db, filter, filter_crit, (count_error, res3)=>{
               if(count_error){
@@ -30,6 +34,7 @@ module.exports = router =>{
               }
             });
             break
+            //return count for bands
             case "bands":
             findBandCount(db, filter, filter_crit, (count_error, res3)=>{
               if(count_error){
@@ -42,6 +47,7 @@ module.exports = router =>{
               }
             });
             break
+            //return count for transactions
             case "transactions":
             findTransCount(db, filter, filter_crit, (count_error, res3)=>{
               if(count_error){
@@ -54,6 +60,7 @@ module.exports = router =>{
               }
             });
             break
+            //return count for users
             case "users":
             findUserCount(db, filter, filter_crit, (count_error, res3)=>{
               if(count_error){
@@ -79,14 +86,17 @@ module.exports = router =>{
     }
   });
 
+  //helpoer function to count gigs
   function findGigCount(db, filter, filter_crit, cb){
     switch(filter){
       case "none":
+      //query for the count of gigs
       db.db('gigs').collection('gigs').count().then(count=>{
         console.log('Number of gigs is: ' + count);
         cb(null,count)
       });
       break;
+      //query for the price of gigs
       case "price":
       db.db('gigs').collection('gigs').find({'price':{$gt:filter_crit}}).toArray((err2, res2)=>{
         if (err2){
@@ -99,6 +109,7 @@ module.exports = router =>{
         }
       });
       break;
+      //query for the area codes for gigs
       case "zipcode":
       db.db('gigs').collection('gigs').find({'zipcode':filter_crit}).toArray((err2, res2)=>{
         if (err2){
@@ -112,6 +123,7 @@ module.exports = router =>{
       });
       break;
 
+      //query for the descirptions of the gigs
       case "description":
       db.db('gigs').collection('gigs').find().toArray((err2, res2)=>{
         if (err2){
@@ -137,14 +149,18 @@ module.exports = router =>{
       break;
     }
   }
+
+  //funciton to get stats for the bands
   function findBandCount(db, filter, filter_crit, cb){
     switch(filter){
+      //count all bands
       case "none":
       db.db('bands').collection('bands').count().then(count=>{
         console.log('Number of bands is: ' + count);
         cb(null,count)
       });
       break;
+      //query the prices
       case "price":
       db.db('bands').collection('bands').find({'price':{$gt:filter_crit}}).toArray((err2, res2)=>{
         if (err2){
@@ -157,6 +173,7 @@ module.exports = router =>{
         }
       });
       break;
+      //query the zipcodes/area codes of the bands
       case "zipcode":
       db.db('bands').collection('bands').find({'zipcode':filter_crit}).toArray((err2, res2)=>{
         if (err2){
@@ -169,6 +186,7 @@ module.exports = router =>{
         }
       });
       break;
+      //query by the max distance
       case "maxDist":
       db.db('bands').collection('bands').find({'maxDist':{$gt:filter_crit}}).toArray((err2, res2)=>{
         if (err2){
@@ -181,6 +199,7 @@ module.exports = router =>{
         }
       });
       break;
+      //query by the description
       case "description":
       db.db('bands').collection('bands').find().toArray((err2, res2)=>{
         if (err2){
@@ -205,8 +224,11 @@ module.exports = router =>{
       break;
     }
   }
+
+  //function to fget the transaction stats
   function findTransCount(db, filter, filter_crit, cb){
     if (filter=="none"){
+      //return the count for the gigs
       db.db('gigs').collection('gigs').find({'confirmed':{$eq:true}}).toArray(function(err2, res2){
         if(err2){
           console.log('There was an error finding filled gigs');
@@ -220,6 +242,7 @@ module.exports = router =>{
     }
     else{
       switch(filter){
+        //query the gigs by price
         case "price":
         db.db('gigs').collection('gigs').find({'confirmed':{$eq:true}, 'price':{$gt:filter_crit}}).toArray((err2, res2)=>{
           if (err2){
@@ -232,6 +255,7 @@ module.exports = router =>{
         });
         break;
 
+        //query the gigs by zipcode
         case "zipcode":
         db.db('gigs').collection('gigs').find({'confirmed':{$eq:true}, 'zipcode':filter_crit}).toArray((err2, res2)=>{
           if (err2){
@@ -244,6 +268,7 @@ module.exports = router =>{
         });
         break;
 
+        //query the gigs by description
         case "description":
         db.db('gigs').collection('gigs').find({'confirmed':{$eq:true}}).toArray((err2, res2)=>{
           if (err2){
@@ -262,7 +287,7 @@ module.exports = router =>{
           }
         });
         break;
-
+        //return error if not filter is specified
         default:
         console.log('User submitted a filter we dont recognize');
         cb("We do not recognize that fitler", null);
@@ -271,7 +296,7 @@ module.exports = router =>{
     }
   }
 
-
+  //functino to return the count of all users
   function findUserCount(db, filter, filter_crit, cb){
     if (filter=="none"){
       db.db('users').collection('users').count().then(count=>{
@@ -285,6 +310,7 @@ module.exports = router =>{
 
   }
 
+  //report the average statistics
   router.get('/average', (req, res)=>{
     if (!req.query){
       res.status(401).end();
@@ -294,12 +320,15 @@ module.exports = router =>{
       res.status(404).end();
     }
     else{
+      //if the user is not allowed
       if (allowed_users[username] != password){
         res.status(404).end();
       }
       else{
+        //query the database
         database.connect(db=>{
           switch(data_type){
+            //filter for users
             case "users":
               getAvgUsers(db, data_to_avg, filter, filter_crit, (avg_error, avg)=>{
                 if(avg_error){
@@ -312,6 +341,7 @@ module.exports = router =>{
                 }
               });
             break;
+            //filter for gigs
             case "gigs":
             getAvgGigs(db, data_to_avg, filter, filter_crit, (avg_error, avg)=>{
               if(avg_error){
@@ -324,6 +354,7 @@ module.exports = router =>{
               }
             });
             break;
+            //filter for bands
             case "bands":
             getAvgBands(db, data_to_avg, filter, filter_crit, (avg_error, avg)=>{
               if(avg_error){
@@ -336,6 +367,7 @@ module.exports = router =>{
               }
             });
             break;
+            //filter for transactions
             case "transactions":
             getAvgTransactions(db, data_to_avg, filter, filter_crit, (avg_error, avg)=>{
               if(avg_error){
@@ -348,6 +380,7 @@ module.exports = router =>{
               }
             });
             break;
+            //if not recognized
             default:
             console.log('Unrecongized data type: ' + data_type)
             res.status(401).end();
@@ -363,8 +396,10 @@ module.exports = router =>{
     }
   });
 
+  //helper function for average with user filter
   function getAvgUsers(db, data_to_avg, filter, filter_crit, cb){
     switch(data_to_avg){
+      //data for bands of a user
       case "bands":
         if(filter=="none"){
           db.db('users').collection('users').count(count=>{
@@ -378,6 +413,7 @@ module.exports = router =>{
           cb("Sorry we do not support filters for users yet.", null)
         }
       break;
+      //data for the gigs of a user
       case "gigs":
       if(filter=="none"){
         db.db('users').collection('users').count(count=>{
@@ -391,6 +427,7 @@ module.exports = router =>{
         cb("Sorry we do not support filters for users yet.", null)
       }
       break;
+      //data for the completed gigs of a user
       case "completed_gigs":
       if(filter=="none"){
         db.db('users').collection('users').count(count=>{
@@ -404,6 +441,7 @@ module.exports = router =>{
         cb("Sorry we do not support filters for users yet.", null)
       }
       break;
+      //data for the revenuse of users
       case "revenue":
       if(filter=="none"){
         db.db('users').collection('users').count(count=>{
@@ -428,13 +466,17 @@ module.exports = router =>{
       break;
     }
   }
+
+  //get the average tranaction
   function getAvgTransactions(db, data_to_avg, filter, filter_crit, cb){
+    //finf all transactions
     findTransCount(db, filter, filter_crit, (count_error, count)=>{
       if (count_error){
         cb(count_error, null)
       }
       else{
         switch(data_to_avg){
+          //get the prices for the gigs
           case "price":
           switch(filter){
             case "price":
@@ -453,6 +495,7 @@ module.exports = router =>{
               }
             });
             break;
+            //get the zipcodes for the gigs
             case "zipcode":
             db.db('gigs').collection('gigs').find({'confirmed':{$eq:true}, 'zipcode':filter_crit}).toArray((err4, res4)=>{
               if (err4){
@@ -469,6 +512,7 @@ module.exports = router =>{
               }
             });
             break;
+            //get the description for the gigs
             case "description":
             db.db('gigs').collection('gigs').find({'confirmed':{$eq:true}}).toArray((err4, res4)=>{
               if (err4){
@@ -487,6 +531,7 @@ module.exports = router =>{
               }
             });
             break;
+            //if not filer is applied, average the count of the gigs
             case "none":
             db.db('gigs').collection('gigs').find({'confirmed':{$eq:true}}).toArray((err6, res6)=>{
               if(err6){
@@ -515,6 +560,7 @@ module.exports = router =>{
       }
     });
   }
+  //helper funciton for the average gigs
   function getAvgGigs(db, data_to_avg, filter, filter_crit, cb){
     findGigCount(db, filter, filter_crit, (count_error, count)=>{
       if(count_error){
@@ -522,6 +568,7 @@ module.exports = router =>{
       }
       else{
         switch(data_to_avg){
+          //average by price
           case "price":
           switch(filter){
             case "price":
@@ -539,6 +586,7 @@ module.exports = router =>{
               }
             });
             break;
+            //average by zipcode
             case "zipcode":
             db.db('gigs').collection('gigs').find({'zipcode':filter_crit}).toArray((err5, res5)=>{
               if (err5){
@@ -554,6 +602,7 @@ module.exports = router =>{
               }
             });
             break;
+            //average by descirption
             case "description":
             db.db('gigs').collection('gigs').find().toArray((err5, res5)=>{
               if (err5){
@@ -571,6 +620,7 @@ module.exports = router =>{
               }
             });
             break;
+            //if no filter, average gig counts
             case "none":
             db.db('gigs').collection('gigs').find().toArray((err6, res6)=>{
               if(err6){
@@ -592,8 +642,10 @@ module.exports = router =>{
 
           }
           break;
+          //filter for applicants
           case "applicants":
           switch(filter){
+            //average by price of applicants
             case "price":
             db.db('gigs').collection('gigs').find({'price':{$gt:filter_crit}}).toArray((err5, res5)=>{
               if (err5){
@@ -609,6 +661,7 @@ module.exports = router =>{
               }
             });
             break;
+            //average the zipcodes of gigs
             case "zipcode":
             db.db('gigs').collection('gigs').find({'zipcode':filter_crit}).toArray((err5, res5)=>{
               if (err5){
@@ -624,6 +677,7 @@ module.exports = router =>{
               }
             });
             break;
+            //average the description of gigs
             case "description":
             db.db('gigs').collection('gigs').find().toArray((err5, res5)=>{
               if (err5){
@@ -641,6 +695,7 @@ module.exports = router =>{
               }
             });
             break;
+            //if no filter, average the count of gigs
             case "none":
             db.db('gigs').collection('gigs').find().toArray((err6, res6)=>{
               if(err6){
@@ -669,15 +724,21 @@ module.exports = router =>{
     })
 
   }
+
+  //helper function to averrage the band statistics
   function getAvgBands(db, data_to_avg, filter, filter_crit, cb){
+    //find the count for the band
     findBandCount(db, filter, filter_crit, (count_error, count)=>{
       if (count_error){
         cb(count_error, null)
       }
       else{
+        //switch case for the average
         switch(data_to_avg){
+          //averate the applied gigs
           case "appliedGigs":
           switch(filter){
+            //find the max distance
             case "maxDist":
             db.db('bands').collection('bands').find({'maxDist':{$gt:filter_crit}}).toArray((err6, res6)=>{
               if(err6){
@@ -693,6 +754,7 @@ module.exports = router =>{
               }
             });
             break;
+            //average based on zipcode
             case "zipcode":
             db.db('bands').collection('bands').find({'zipcode':filter_crit}).toArray((err6, res6)=>{
               if(err6){
@@ -709,6 +771,7 @@ module.exports = router =>{
             });
             break;
 
+            //average based on description
             case "description":
             db.db('bands').collection('bands').find().toArray((err6, res6)=>{
               if(err6){
@@ -726,6 +789,8 @@ module.exports = router =>{
               }
             });
             break;
+
+            //average based on price
             case "price":
             db.db('bands').collection('bands').find({'price':{$gt:filter_crit}}).toArray((err6, res6)=>{
               if(err6){
@@ -741,6 +806,8 @@ module.exports = router =>{
               }
             });
             break;
+
+            //else no filterm average the count of bands
             case "none":
             db.db('bands').collection('bands').find().toArray((err6, res6)=>{
               if(err6){
@@ -762,9 +829,11 @@ module.exports = router =>{
 
           }
           break;
+          //case for the finished gigs
           case "finishedGigs":
           switch(filter){
             case "maxDist":
+            //get the max distance of the bands
             db.db('bands').collection('bands').find({'maxDist':{$gt:filter_crit}}).toArray((err6, res6)=>{
               if(err6){
                 cb(err6, null);
@@ -779,6 +848,7 @@ module.exports = router =>{
               }
             });
             break;
+            //average by the zipcode for the bands
             case "zipcode":
             db.db('bands').collection('bands').find({'zipcode':filter_crit}).toArray((err6, res6)=>{
               if(err6){
@@ -794,7 +864,7 @@ module.exports = router =>{
               }
             });
             break;
-
+            //average by description
             case "description":
             db.db('bands').collection('bands').find().toArray((err6, res6)=>{
               if(err6){
@@ -812,6 +882,7 @@ module.exports = router =>{
               }
             });
             break;
+            //average the price of finished gigs
             case "price":
             db.db('bands').collection('bands').find({'price':{$gt:filter_crit}}).toArray((err6, res6)=>{
               if(err6){
@@ -827,6 +898,7 @@ module.exports = router =>{
               }
             });
             break;
+            //otherwise average the count of finished gigs
             case "none":
             db.db('bands').collection('bands').find().toArray((err6, res6)=>{
               if(err6){
@@ -848,8 +920,11 @@ module.exports = router =>{
 
           }
           break;
+
+          //upcoming gigs case
           case "upcomingGigs":
           switch(filter){
+            //average the maxi distance of upcoming gigs
             case "maxDist":
             db.db('bands').collection('bands').find({'maxDist':{$gt:filter_crit}}).toArray((err6, res6)=>{
               if(err6){
@@ -865,6 +940,7 @@ module.exports = router =>{
               }
             });
             break;
+            //average the zip code of the upcoming gigs
             case "zipcode":
             db.db('bands').collection('bands').find({'zipcode':filter_crit}).toArray((err6, res6)=>{
               if(err6){
@@ -881,6 +957,7 @@ module.exports = router =>{
             });
             break;
 
+            //filter for descirption of upcoming gigs
             case "description":
             db.db('bands').collection('bands').find().toArray((err6, res6)=>{
               if(err6){
@@ -898,6 +975,7 @@ module.exports = router =>{
               }
             });
             break;
+            //filter for price of upcoming gigs
             case "price":
             db.db('bands').collection('bands').find({'price':{$gt:filter_crit}}).toArray((err6, res6)=>{
               if(err6){
@@ -913,6 +991,7 @@ module.exports = router =>{
               }
             });
             break;
+            //no filter for upcoming gigs
             case "none":
             db.db('bands').collection('bands').find().toArray((err6, res6)=>{
               if(err6){
@@ -934,6 +1013,7 @@ module.exports = router =>{
 
           }
           break;
+          //max distance filter for upcoming gigs
           case "maxDist":
           switch(filter){
             case "maxDist":
@@ -951,6 +1031,7 @@ module.exports = router =>{
               }
             });
             break;
+            //filer for zipcode for upcoming gigs
             case "zipcode":
             db.db('bands').collection('bands').find({'zipcode':filter_crit}).toArray((err6, res6)=>{
               if(err6){
@@ -966,7 +1047,7 @@ module.exports = router =>{
               }
             });
             break;
-
+            //filter for desciption for upcoming gigs
             case "description":
             db.db('bands').collection('bands').find().toArray((err6, res6)=>{
               if(err6){
@@ -984,6 +1065,8 @@ module.exports = router =>{
               }
             });
             break;
+
+            //filter for price for upcoming gigs
             case "price":
             db.db('bands').collection('bands').find({'price':{$gt:filter_crit}}).toArray((err6, res6)=>{
               if(err6){
@@ -999,6 +1082,7 @@ module.exports = router =>{
               }
             });
             break;
+            //no filter for upcoming gigs
             case "none":
             db.db('bands').collection('bands').find().toArray((err6, res6)=>{
               if(err6){
@@ -1020,8 +1104,10 @@ module.exports = router =>{
 
           }
           break;
+          //filter for price
           case "price":
           switch(filter){
+            //max distance for price filter
             case "maxDist":
             db.db('bands').collection('bands').find({'maxDist':{$gt:filter_crit}}).toArray((err6, res6)=>{
               if(err6){
@@ -1037,6 +1123,7 @@ module.exports = router =>{
               }
             });
             break;
+            //zipcode and price filter
             case "zipcode":
             db.db('bands').collection('bands').find({'zipcode':filter_crit}).toArray((err6, res6)=>{
               if(err6){
@@ -1052,7 +1139,7 @@ module.exports = router =>{
               }
             });
             break;
-
+            //description filter for price
             case "description":
             db.db('bands').collection('bands').find().toArray((err6, res6)=>{
               if(err6){
@@ -1070,6 +1157,7 @@ module.exports = router =>{
               }
             });
             break;
+            //price filter for price
             case "price":
             db.db('bands').collection('bands').find({'price':{$gt:filter_crit}}).toArray((err6, res6)=>{
               if(err6){
@@ -1085,6 +1173,7 @@ module.exports = router =>{
               }
             });
             break;
+            //no filter for price case
             case "none":
             db.db('bands').collection('bands').find().toArray((err6, res6)=>{
               if(err6){
