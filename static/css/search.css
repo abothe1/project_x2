@@ -324,7 +324,7 @@ search filters
   left: 0px;
   position: absolute;
   z-index: 4;
-  text-align: center;
+  text-align: left;
 }
 
 #filters > ul{
@@ -500,4 +500,14 @@ body elements
 @keyframes spin {
   0% { transform: rotate(0deg); }
   100% { transform: rotate(360deg); }
+}
+
+.filter_text{
+  color: white;
+  font-family: Industry;
+  font-size: 20pt;
+}
+
+.filter_text:hover{
+  color: #56dff0;
 }

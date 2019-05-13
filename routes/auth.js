@@ -41,7 +41,8 @@ router.post('/register', (req, res) => {
 	if (req.session.key) {
 		console.info(`User ${req.session.key} from ${req.ip} attempted to register whilst logged in`);
 		req.session.key=req.session.key
-		return res.status(403).send('Already logged in').end();
+	  res.status(200).send('Already logged in');
+		return;
 	}
 
 	var {username, email, password, confirm_password} = req.body;
@@ -49,7 +50,8 @@ router.post('/register', (req, res) => {
 
 
 	if(password != confirm_password){
-		return res.status(400).send('Passwords do not match')
+	  res.status(200).send('Passwords do not match')
+		return;
 	}
 
 	if (!username) {
@@ -62,7 +64,8 @@ router.post('/register', (req, res) => {
 
 	if (validatePassword(password) == false) {
 		console.log("password is not valid")
-		return res.status(400).send('Too weak of a password supplied')
+	  res.status(200).send('Too weak of a password supplied').end();
+		return;
 	}
 
 
@@ -80,7 +83,7 @@ router.post('/register', (req, res) => {
 				db.close();
 			} else if (obj) {
 				console.log('That username or email already exists sending that info back.')
-				res.status(400).send('Username or email already exists').end()
+				res.status(200).send('Username or email already exists').end();
 			} else {
 
 				users.insertOne({ email: email, username: username, password: password, contacts:[]}, (err, obj) => {
@@ -91,9 +94,9 @@ router.post('/register', (req, res) => {
 					} else {
 						//booth code, testing how to store usernames in sessions//
 						req.session.key = username;
-						console.log('Req session key after inserting user for register is: ' + req.sessione.key);
+						console.log('Req session key after inserting user for register is: ' + req.session.key);
 						///////
-						res.status(200).json({ success: true }).end();
+						res.status(200).send('Success');
 						db.close();
 					}
 				});
@@ -110,7 +113,7 @@ router.post('/login', (req, res) => {
 	if (req.session.key) {
 		console.info(`User ${req.session.key} from ${req.ip} attempted to login whilst logged in`);
 		req.session.key = req.session.key;
-		return res.status(402).send('Already logged in').end();
+	  res.status(402).send('Already logged in').end();
 	}
 
 	var {username, password} = req.body;
@@ -121,9 +124,9 @@ router.post('/login', (req, res) => {
 	console.log("GOt password it is : " + password);
 	console.log(" ");
 	if (!username) {
-		return res.status(400).send('No username supplied')
+	  res.status(200).send('No username supplied')
 	} else if (!password) {
-		return res.status(400).send('No password supplied')
+	  res.status(200).send('No password supplied')
 	}
 
 	//password = hashPassword(password);
@@ -137,8 +140,9 @@ router.post('/login', (req, res) => {
 				console.error(`Login request from ${req.ip} (for ${username}) returned error: ${err}`)
 				res.status(500).end()
 			} else if (!obj) {
-				res.status(400).send('Invalid Credentials')
-				console.log("INVALID CREDS SENT");
+				console.log('No user with that username');
+				res.status(200).send('Hmmm...It seems there is no user with that username on record, please try again.')
+
 			} else {
 				if(passwordHash.verify(password, obj.password)){
 					console.log("////////////////////////////////////////////////////////////////////////////////////");
@@ -149,7 +153,7 @@ router.post('/login', (req, res) => {
 				}
 				else{
 					console.log('got in else meaning passwordhas veirfy returned false for username: ' + username + 'passowrd: ' + password)
-					return res.status(400).send('Not a valid login')
+					return res.status(200).send('Not a valid login')
 					db.close();
 				}
 			}

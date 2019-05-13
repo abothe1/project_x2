@@ -529,7 +529,6 @@ function diff_minutes(dt2, dt1) {
 				document.getElementById("modal-wrapper-login").style.display = "none";
 				checkSession();
 				alert('You have logged in, '+content.username);
-
       }
       else{
 				alert(res);
@@ -543,19 +542,19 @@ function diff_minutes(dt2, dt1) {
 		$.get('/hasSession', {}, res=>{
 			console.log('res for check log in is: ' + JSON.stringify(res))
 			if(res.success){
-				console.log(res.success + " is returned value")
-				document.getElementById('login_or_out').innerHTML = 'Log Out'
-				//document.getElementById('login_button').onclick='document.getElementById("modal-wrapper-logout").style.display="block"';
+				console.log(res.success + " is returned value");
+				document.getElementById('login_or_out').innerHTML = 'Log Out';
 				document.getElementById('login_or_out').addEventListener('click', function(){
 					document.getElementById("modal-wrapper-logout").style.display="block";
-				})
+				});
 				return true;
 			}else{
-				console.log(res.success + " is returned value")
-				document.getElementById('login_or_out').innerHTML = 'Login'
-			//	document.getElementById('login_button').onclick='document.getElementById("modal-wrapper-tos").style.display="block"';
-
-			//	return false;
+				console.log(res.success + " is returned value");
+				document.getElementById('login_or_out').innerHTML = 'Login';
+        document.getElementById('login_or_out').addEventListener('click', function(){
+					document.getElementById("modal-wrapper-login").style.display="block";
+				});
+				return false;
 			}
 		});
 	}
@@ -569,10 +568,19 @@ function diff_minutes(dt2, dt1) {
     password: $("#reg_password").val(),
     confirm_password: $("#reg_confirm").val()
     };
-
+		if (content.username == "" || content.email == "" || content.password == "" || content.confirm_password == ""){
+			alert('Sorry, you must fill out all the fields on this form to register');
+			return;
+		}
     $.post('/register', content, res=>{
-			document.getElementById("modal-wrapper-register").style.display = "none";
-			alert(res);
+			if (res == "Success"){
+				alert('Congratulations! You have signed up for Banda, ' + content.username);
+				document.getElementById("modal-wrapper-register").style.display = "none";
+			}
+			else{
+				alert(res);
+			}
+
     });
   }
   function stringToDate(str){

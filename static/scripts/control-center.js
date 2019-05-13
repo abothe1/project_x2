@@ -4041,3 +4041,12 @@ function prepareBankElement(){
     document.getElementById('modal-wrapper-bank').style.display='block';
   }
 }
+
+function requestSupport(){
+  // TODO send this to US somehow. (email, text, whatever)
+  var supportText = document.getElementById("request-support-textarea").value;
+  console.log("User has requested support, text is: ");
+  console.log(supportText);
+  var modal = document.getElementById("modal-wrapper-support");
+  modal.style.display = "none";
+}
