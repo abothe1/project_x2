@@ -264,14 +264,7 @@ function showResults(mode, bands, gigs){
   AB
   */
   // check for no results
-  var noResP = document.getElementById("no-res-p");
 
-  if(gigs['data']['queryMatchers'].length == 0 && gigs['data']['overallMatchers'].length == 0){
-    noResP.innerHTML = "Sorry, we could not find any results. Try searching again with different keywords, or searching as one of your bands or events. For example, 'band with guitar for a birthday party' as an event.";
-    noResP.style.display = "block";
-  }else{
-    noResP.style.display = "none";
-  }
 
   if(bands==null){
     var mixedGigArr=[];
@@ -316,7 +309,7 @@ function showResults(mode, bands, gigs){
       results[gig] = new GigCell(mixedGigArr[gig][0], gig);
     }
   }
-  else{
+  else if(bands != null){
     var mixedBandArr = [];
     var idsInMixBands = [];
     var results=[];
@@ -367,6 +360,12 @@ function showResults(mode, bands, gigs){
     newDiv.append(newBR);
     newDiv.append(newBR);
     bodyContainer.append(newDiv);
+  }
+  else{
+    var noResP = document.getElementById("no-res-p");
+      noResP.innerHTML = "Sorry, we could not find any results. Try searching again with different keywords, or searching as one of your bands or events. For example, 'band with guitar for a birthday party' as an event.";
+      noResP.style.display = "block";
+
   }
 
 }
