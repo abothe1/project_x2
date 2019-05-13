@@ -576,6 +576,7 @@ function diff_minutes(dt2, dt1) {
 			if (res == "Success"){
 				alert('Congratulations! You have signed up for Banda, ' + content.username);
 				document.getElementById("modal-wrapper-register").style.display = "none";
+				checkSession();
 			}
 			else{
 				alert(res);

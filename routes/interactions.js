@@ -14,7 +14,7 @@ module.exports = router => {
     if (!req.body) {
   		 res.status(400).send('No body sent').end();
     }
-    
+
     //if the request is not from a lodded in user
     if (!req.session.key){
       res.status(401).send('No body sent').end();
@@ -402,7 +402,7 @@ module.exports = router => {
                   db.close();
                 }
                 else{
-                  //query to update the contacts list 
+                  //query to update the contacts list
                   newContact=result4;
                   var newvalues = {$push:{'contacts':{'id':newContact['_id'], 'name':contactName}}};
                   db.db('users').collection('users').updateOne({'username':req.session.key}, newvalues, (err3, result3)=>{
@@ -922,7 +922,7 @@ module.exports = router => {
                           else{
                             newValues2 = {$set:{'upcomingGigs':myBand.upcomingGigs}};
                           }
-                          
+
                           //update the band that cancelled
                           db.db('bands').collection('bands').updateOne({'_id':database.objectId(bandID)}, newValues2, (err5, result5)=>{
                             if (err5){
@@ -1279,7 +1279,7 @@ router.post('/flake', (req, res)=>{
                       var percentShows = (numRatings-noShows)/numRatings;
 
                       var newValues = {$set:{'noShows':noShows, 'numRatings':numRatings, 'upcomingGigs': allUpGigs}, $push:{'finishedGigs':{'gigID':gigID, 'flaked':true, 'paid':false}}};
-                      
+
                       //update the band for flaking
                       db.db('bands').collection('bands').updateOne({'_id':database.objectId(bandID)},newValues, (err6, res6)=>{
                         if (err6){
@@ -1429,7 +1429,7 @@ function diff_hours(dt1, dt2) {
   return Math.abs(Math.round(diff));
  }
 
- //send emails fconfirming the event
+ //send emails confirming the event
  function sendConfirmEmails(db, band, bandCodeToGig, gig, gigCodeToBand, req, cb){
    console.log('In send confirm email vars: '+band+gig+req);
    //get the user from the database
@@ -1512,7 +1512,7 @@ function diff_hours(dt1, dt2) {
      }
      //if its the sender
      else{
-       //set options for the email 
+       //set options for the email
         mailOptions = {
            from: OUR_ADDRESS, // our address
            to: address, // who we sending to

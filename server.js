@@ -100,6 +100,8 @@ require('./routes/samples.js')(router, app); //for getting sampples
 require('./routes/newAccount.js')(router, app); //for creating stripe connected account (bands)
 require('./routes/newCustomer.js')(router, app); // for creating chareable customers  (gigs)
 require('./routes/meta-data.js')(router, app) //for exporting meta-data
+require('./routes/support.js')(router, app) //for letting customers email us with issues.
+
 
 //for routing messaing and emiting the message:
 

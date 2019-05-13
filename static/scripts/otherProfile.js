@@ -315,6 +315,7 @@ function hitMessage(){
   if (otherBand!=null){
     $.post('/addContact', {'contactName':otherBand['creator']}, result=>{
       alert('We have added the creator of this band to your contacts list (click the button in the bottom right corner). You can also send them a request to apply to your event via Banda messaging.')
+      document.location.reload();
     });
   }
   else{

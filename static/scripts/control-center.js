@@ -2134,6 +2134,7 @@ function updateBand(id, query){
 }
 
 function updateGig(id, query){
+  consoel.log('GIGID In update gig is: ' + id)
   $.post('/updateGig', {'id':id, 'query':query}, result =>{
     alert('Changes Saved');
     document.location.reload();
@@ -4043,10 +4044,17 @@ function prepareBankElement(){
 }
 
 function requestSupport(){
-  // TODO send this to US somehow. (email, text, whatever)
   var supportText = document.getElementById("request-support-textarea").value;
   console.log("User has requested support, text is: ");
   console.log(supportText);
-  var modal = document.getElementById("modal-wrapper-support");
-  modal.style.display = "none";
+  if (supportText == "" || supportText == " " || supportText == null){
+    alert('Please enter some text to send to us if you would like to receive help. Thank You!');
+    return;
+  }
+  $.post('/contact_support', {message: supportText}, res=>{
+    alert(res);
+    var modal = document.getElementById("modal-wrapper-support");
+    modal.style.display = "none";
+  });
+
 }
