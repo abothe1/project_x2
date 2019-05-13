@@ -529,7 +529,6 @@ function diff_minutes(dt2, dt1) {
 				document.getElementById("modal-wrapper-login").style.display = "none";
 				checkSession();
 				alert('You have logged in, '+content.username);
-
       }
       else{
 				alert(res);
@@ -569,10 +568,19 @@ function diff_minutes(dt2, dt1) {
     password: $("#reg_password").val(),
     confirm_password: $("#reg_confirm").val()
     };
-
+		if (content.username == "" || content.email == "" || content.password == "" || content.confirm_password == ""){
+			alert('Sorry, you must fill out all the fields on this form to register');
+			return;
+		}
     $.post('/register', content, res=>{
-			document.getElementById("modal-wrapper-register").style.display = "none";
-			alert(res);
+			if (res == "Success"){
+				alert('Congratulations! You have signed up for Banda, ' + content.username);
+				document.getElementById("modal-wrapper-register").style.display = "none";
+			}
+			else{
+				alert(res);
+			}
+
     });
   }
   function stringToDate(str){
