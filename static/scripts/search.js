@@ -264,8 +264,29 @@ function showResults(mode, bands, gigs){
   AB
   */
   // check for no results
-
-
+  console.log('bands: ' + JSON.stringify(bands) + 'gigs: ' + JSON.stringify(gigs));
+  if (bands == null && gigs == null ){
+    console.log('both gigs and bands were null')
+    var noResP = document.getElementById("no-res-p");
+      noResP.innerHTML = "Sorry, we could not find any results. Try searching again with different keywords, or searching as one of your bands or events. For example, 'band with guitar for a birthday party' as an event.";
+      noResP.style.display = "block";
+  }
+  else if (bands!=null){
+    if(bands.data.queryMatchers.length==0 && bands.data.overallMatchers.length==0){
+      var noResP = document.getElementById("no-res-p");
+        noResP.innerHTML = "Sorry, we could not find any results. Try searching again with different keywords, or searching as one of your bands or events. For example, 'band with guitar for a birthday party' as an event.";
+        noResP.style.display = "block";
+        return;
+    }
+  }
+  else if (gigs!=null){
+    if(gigs.data.queryMatchers.length==0 && gigs.data.overallMatchers.length==0){
+      var noResP = document.getElementById("no-res-p");
+        noResP.innerHTML = "Sorry, we could not find any results. Try searching again with different keywords, or searching as one of your bands or events. For example, 'band with guitar for a birthday party' as an event.";
+        noResP.style.display = "block";
+        return;
+    };
+  }
   if(bands==null){
     var mixedGigArr=[];
     var idsInMix = [];
@@ -361,13 +382,6 @@ function showResults(mode, bands, gigs){
     newDiv.append(newBR);
     bodyContainer.append(newDiv);
   }
-  else{
-    var noResP = document.getElementById("no-res-p");
-      noResP.innerHTML = "Sorry, we could not find any results. Try searching again with different keywords, or searching as one of your bands or events. For example, 'band with guitar for a birthday party' as an event.";
-      noResP.style.display = "block";
-
-  }
-
 }
 
 //NEW AB STUFF:
