@@ -1,6 +1,8 @@
 //additional node modules in use
 var passwordHash = require('password-hash')
 var passwordValidator = require('password-validator');
+var validator = require("email-validator");
+ 
 
 
 module.exports = router => {
@@ -67,6 +69,13 @@ router.post('/register', (req, res) => {
 	} else if (!email) {
 		return res.status(400).send('No email supplied')
 	}
+
+	//confirm email address is a valud email address
+	if(!validator.validate(email)){
+		console.log("password is not valid")
+	  res.status(200).send('Please enter a valid email').end();
+		return;
+	} // true
 
 	//confirm the password is secure
 	if (validatePassword(password) == false) {
