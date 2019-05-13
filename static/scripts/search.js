@@ -388,12 +388,12 @@ function showResults(mode, bands, gigs){
 
 function searchForBands(){
   console.log('in serach for bands');
-  var m = document.getElementById("m");
-  var mv = document.getElementById("mv");
-  var v = document.getElementById("v");
-  m.src = "/assets/Search/m_filter_selected.png";
-  mv.src = "/assets/Search/mv_filter.png";
-  v.src = "/assets/Search/v_filter.png";
+  // var m = document.getElementById("m");
+  // var mv = document.getElementById("mv");
+  // var v = document.getElementById("v");
+  // m.src = "/assets/Search/m_filter_selected.png";
+  // mv.src = "/assets/Search/mv_filter.png";
+  // v.src = "/assets/Search/v_filter.png";
 
   var searchAsName = $('#selectDrop option:selected').data();
   console.log(JSON.stringify(searchAsName));
@@ -456,12 +456,12 @@ function searchForBands(){
 }
 
 function searchForGigs(){
-  var m = document.getElementById("m");
-  var mv = document.getElementById("mv");
-  var v = document.getElementById("v");
-  m.src = "/assets/Search/m_filter.png";
-  mv.src = "/assets/Search/mv_filter.png";
-  v.src = "/assets/Search/v_filter_selected.png";
+  // var m = document.getElementById("m");
+  // var mv = document.getElementById("mv");
+  // var v = document.getElementById("v");
+  // m.src = "/assets/Search/m_filter.png";
+  // mv.src = "/assets/Search/mv_filter.png";
+  // v.src = "/assets/Search/v_filter_selected.png";
 
   var searchAsName = $('#selectDrop option:selected').data()['objid'];
   var serachAsType = $('#selectDrop option:selected').val();
