@@ -542,19 +542,19 @@ function diff_minutes(dt2, dt1) {
 		$.get('/hasSession', {}, res=>{
 			console.log('res for check log in is: ' + JSON.stringify(res))
 			if(res.success){
-				console.log(res.success + " is returned value")
-				document.getElementById('login_or_out').innerHTML = 'Log Out'
-				//document.getElementById('login_button').onclick='document.getElementById("modal-wrapper-logout").style.display="block"';
+				console.log(res.success + " is returned value");
+				document.getElementById('login_or_out').innerHTML = 'Log Out';
 				document.getElementById('login_or_out').addEventListener('click', function(){
 					document.getElementById("modal-wrapper-logout").style.display="block";
-				})
+				});
 				return true;
 			}else{
-				console.log(res.success + " is returned value")
-				document.getElementById('login_or_out').innerHTML = 'Login'
-			//	document.getElementById('login_button').onclick='document.getElementById("modal-wrapper-tos").style.display="block"';
-
-			//	return false;
+				console.log(res.success + " is returned value");
+				document.getElementById('login_or_out').innerHTML = 'Login';
+        document.getElementById('login_or_out').addEventListener('click', function(){
+					document.getElementById("modal-wrapper-login").style.display="block";
+				});
+				return false;
 			}
 		});
 	}
