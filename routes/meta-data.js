@@ -1,7 +1,7 @@
 module.exports = router =>{
   const database = require('../database.js');
-  const allowed_users = {"alexander_bothe":'N5gdakxq9!', "eli_levin":"akira2016", "max_schmitz":"Blue12#$", "miccah_round":"cheese12345", "AB_Brooks":"ABTheTeaBandit"}
-  
+  const allowed_users = {"alexander_bothe":'awesome_thing_12!', "eli_levin":"akira2016", "max_schmitz":"Blue12#$", "miccah_round":"cheese12345", "AB_Brooks":"ABTheTeaBandit"}
+
   //get a count for the users in teh database
   router.get('/count', (req, res)=>{
     console.log('Got count request')
