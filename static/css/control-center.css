@@ -1564,6 +1564,11 @@ chat boxes
   border-color: #56dff0;
   margin-top: 10px;
 }
+
+.edit-band-button:hover{
+  cursor: pointer;
+}
+
 .flake-p{
   margin: 0;
   color: white;
@@ -2104,6 +2109,132 @@ bank modal
 @keyframes spin {
   0% { transform: rotate(0deg); }
   100% { transform: rotate(360deg); }
+}
+
+
+/*Mobile list, an alternative to a carousel*/
+.mobile-list-wrapper{
+  color: white;
+  display: none;
+}
+
+.mobile-list-li{
+  margin-bottom: 10px;
+}
+
+.mobile-list-ul{
+  padding: 0;
+  list-style: none;
+}
+
+.mobile-list-title{
+  font-size: 18pt;
+}
+
+/* general list buttons*/
+
+.mobile-list-view-btn, .mobile-list-book-btn, .mobile-list-confirm-btn{
+  border: 1px solid #56dff0;
+  background-color: black;
+  color: #56dff0;
+  border-radius: 4px;
+}
+
+.mobile-list-decline-btn, .mobile-list-cancel-btn{
+  border: 1px solid #ba141a;
+  background-color: black;
+  color: #ba141a;
+  border-radius: 4px;
+}
+
+/*applicants list*/
+
+.applicant-list-grid{
+  display: grid;
+  width: 100%;
+  grid-template-columns: auto auto auto;
+}
+
+.applicant-list-name{
+  color: white;
+  text-decoration: overline;
+  margin-bottom: 5px;
+  margin-top: 10px;
+}
+
+.applicant-list-name:hover{
+  cursor: pointer;
+  color: white;
+}
+
+/*upcoming list*/
+.upcoming-list-grid{
+  display: grid;
+  width: 100%;
+  grid-template-columns: auto auto auto;
+}
+
+.upcoming-list-name{
+  color: white;
+  text-decoration: overline;
+  margin-bottom: 5px;
+  margin-top: 10px;
+}
+
+.upcoming-list-name:hover{
+  cursor: pointer;
+  color: white;
+}
+
+/*applied gigs list*/
+.applied-list-grid{
+  display: grid;
+  width: 100%;
+  grid-template-columns: auto auto;
+}
+
+.applied-list-name{
+  color: white;
+  text-decoration: overline;
+  margin-bottom: 5px;
+  margin-top: 10px;
+}
+
+.applied-list-name:hover{
+  cursor: pointer;
+  color: white;
+}
+
+.applied-list-price{
+  color: #56dff0;
+  padding-top: 15px;
+  padding-left: 4px;
+}
+
+/*past gigs list*/
+
+.past-list-grid{
+  display: grid;
+  width: 100%;
+  grid-template-columns: auto auto auto auto;
+}
+
+.past-list-name{
+  color: white;
+  text-decoration: overline;
+  margin-bottom: 5px;
+  margin-top: 10px;
+}
+
+.past-list-name:hover{
+  cursor: pointer;
+  color: white;
+}
+
+.past-list-p{
+  color: #56dff0;
+  padding-top: 15px;
+  padding-left: 4px;
 }
 
 /*Minh additions for responsiveness*/

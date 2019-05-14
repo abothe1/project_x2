@@ -848,14 +848,12 @@ flip box containe;;;; got rid of it cuz im using flipp */
   #container{
     display: none;
   }
-  .profile-header{
 
-
-  }
   .mobile-menu{
     display: block;
   }
-  .circle-container a{
+
+  .circle-container, .circle-container a{
     display: none;
   }
 

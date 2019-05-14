@@ -387,6 +387,36 @@
 
       <div class="bottom-bar">
         <img id="ticker-img" src="/assets/Control-Center/bottom-bar.png" alt="ticker" />
+        <!-- Minh's Edit -->
+         <div class="container">
+           <div class="row">
+             <div class="col-4">
+                 <div class="dropup-create">
+                     <div class="dropup-create-content">
+                         <a href="#" onclick="prepareBankElement()">Create Band</a>
+                         <a href="#" onclick="prepareCardElement()">Post Event</a>
+                       </div>
+                   <button id = "create-button"><i class="fas fa-plus"></i></button>
+
+                 </div>
+             </div>
+             <div class="col-4">
+
+               <div class="dropup-profile">
+                   <div id="mobile-profiles-list" class="dropup-profile-content">
+                       <a href="">example band</a>
+                   </div>
+                 <button id="profile-button"><i class="far fa-user"></i></button>
+
+               </div>
+             </div>
+             <div class="col-4" id ="contact-button-mobile-wrapper">
+               <button id="contact-button-mobile"><i class="fas fa-comments"></i></button>
+
+             </div>
+           </div>
+         </div>
+         <!-- Minh end -->
          <button href="#" id="select-gig-to-ad" onclick="document.getElementById('modal-wrapper-link-application').style.display='block'">Ask user to apply to event...</button>
         <button href="#" id="contacts-button">contacts</button>
       </div>
@@ -396,8 +426,9 @@
           <div id="contacts-content"></div>
       </div>
 
-      <div id="main-content-wrapper">
-      </div>
+      <div id="main-content-wrapper"></div>
+
+
     </div>
     <div id="chat-div"></div>
   </body>

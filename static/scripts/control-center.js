@@ -241,41 +241,45 @@ class OpenGig{
         this.gigPay.disabled = true;
         new Carousel(newObj,newObj,"hosted-applications",carCallback=>{
           this.applicantCarousel = carCallback;
-          this.carEl = this.applicantCarousel.wrapper;
-          // tier 3
-          this.gigImg.append(this.title);
-          this.gigImg.append(this.gigPic);
-          this.gigImg.append(this.gigPicFrame);
+          new MobileList(newObj,newObj,"applicants",mobileCb=>{
+            this.applicantList = mobileCb.wrapper;
+            this.carEl = this.applicantCarousel.wrapper;
+            // tier 3
+            this.gigImg.append(this.title);
+            this.gigImg.append(this.gigPic);
+            this.gigImg.append(this.gigPicFrame);
 
-          this.gigDesc.append(this.gigDescH);
-          this.gigDesc.append(this.gigDescT);
+            this.gigDesc.append(this.gigDescH);
+            this.gigDesc.append(this.gigDescT);
 
-          this.gigDT.append(this.gigDTH);
-          this.gigDT.append(this.gigDate);
-          this.gigDT.append(this.gigTimeL);
-          this.gigDT.append(this.gigSTL);
-          this.gigDT.append(this.gigST);
-          this.gigDT.append(this.gigETL);
-          this.gigDT.append(this.gigET);
+            this.gigDT.append(this.gigDTH);
+            this.gigDT.append(this.gigDate);
+            this.gigDT.append(this.gigTimeL);
+            this.gigDT.append(this.gigSTL);
+            this.gigDT.append(this.gigST);
+            this.gigDT.append(this.gigETL);
+            this.gigDT.append(this.gigET);
 
-          this.gigLP.append(this.gigLPH);
-          this.gigLP.append(this.gigLoc);
-          this.gigLP.append(this.gigPL);
-          this.gigLP.append(this.gigPay);
-          this.gigLP.append(this.gigConfirm);
-          // tier 2
-          this.info.append(this.gigImg);
-          this.info.append(this.gigDesc);
-          this.info.append(this.gigDT);
-          this.info.append(this.gigLP);
-          // tier 1
-          this.container.append(this.info);
-          this.container.append(this.gigAppH);
-          this.container.append(this.carEl);
-          this.titleDiv.append(this.container);
-          // tier 0
-          // openGigs.append(this.container);
-          openGigCallback(this);
+            this.gigLP.append(this.gigLPH);
+            this.gigLP.append(this.gigLoc);
+            this.gigLP.append(this.gigPL);
+            this.gigLP.append(this.gigPay);
+            this.gigLP.append(this.gigConfirm);
+            // tier 2
+            this.info.append(this.gigImg);
+            this.info.append(this.gigDesc);
+            this.info.append(this.gigDT);
+            this.info.append(this.gigLP);
+            // tier 1
+            this.container.append(this.info);
+            this.container.append(this.gigAppH);
+            this.container.append(this.carEl);
+            this.container.append(this.applicantList);
+            this.titleDiv.append(this.container);
+            // tier 0
+            // openGigs.append(this.container);
+            openGigCallback(this);
+          });
         });
       }
       else{
@@ -1173,42 +1177,56 @@ class BandSection{
       case "upcoming":
       if(band.upcomingGigs.length > 0){
         new Carousel(band, band.upcomingGigs, "upcoming", carCallback =>{
-          this.title = document.createElement("p");
-          this.title.className = "title-text";
-          this.title.innerHTML = "Upcoming Gigs";
-          this.container = document.createElement("div");
-          this.container.append(this.title);
           this.carousel = carCallback;
-          this.container.append(this.carousel.wrapper);
-          bandSectionCallback(this);
+          new MobileList(band, band.upcomingGigs,"upcoming",mobileCb=>{
+            this.mobileList = mobileCb.wrapper;
+            this.title = document.createElement("p");
+            this.title.className = "title-text";
+            this.title.innerHTML = "Upcoming Gigs";
+            this.container = document.createElement("div");
+            this.container.append(this.title);
+            this.container.append(this.carousel.wrapper);
+            this.container.append(this.mobileList);
+            bandSectionCallback(this);
+          });
         });
       }
       break;
       case "applications":
       if(band.appliedGigs.length > 0){
         new Carousel(band, band.appliedGigs,"applications", carCallback =>{
-          this.title = document.createElement("p");
-          this.title.className = "title-text";
-          this.title.innerHTML = "Applied Gigs";
-          this.container = document.createElement("div");
-          this.container.append(this.title);
           this.carousel = carCallback;
-          this.container.append(this.carousel.wrapper);
-          bandSectionCallback(this);
+          this.gigsArray = carCallback.appliedGigs;
+          new MobileList(band, this.gigsArray,"applied",mobileCb=>{
+            this.mobileList = mobileCb.wrapper;
+            this.title = document.createElement("p");
+            this.title.className = "title-text";
+            this.title.innerHTML = "Applied Gigs";
+            this.container = document.createElement("div");
+            this.container.append(this.title);
+            this.container.append(this.carousel.wrapper);
+            this.container.append(this.mobileList);
+            bandSectionCallback(this);
+          });
         });
       }
       break;
       case "past":
       if(band.finishedGigs.length > 0){
         new Carousel(band, band.finishedGigs,"past", carCallback =>{
-          this.title = document.createElement("p");
-          this.title.className = "title-text";
-          this.title.innerHTML = "Past Gigs";
-          this.container = document.createElement("div");
-          this.container.append(this.title);
           this.carousel = carCallback;
-          this.container.append(this.carousel.wrapper);
-          bandSectionCallback(this);
+          this.gigsArray = carCallback.pastGigs;
+          new MobileList(band, this.gigsArray,"past",mobileCb=>{
+            this.mobileList = mobileCb.wrapper;
+            this.title = document.createElement("p");
+            this.title.className = "title-text";
+            this.title.innerHTML = "Past Gigs";
+            this.container = document.createElement("div");
+            this.container.append(this.title);
+            this.container.append(this.carousel.wrapper);
+            bandSectionCallback(this);
+          });
+
         });
       }
       break;
@@ -1227,6 +1245,312 @@ class BandSection{
       }
       break;
     }
+  }
+}
+
+class MobileList{
+  constructor(forObj,obj,indicator,mobileCb){
+    switch(indicator){
+      case "applicants":
+      this.handleBands(obj.apps,result=>{
+        this.applicants = result;
+        this.gigID = obj.gigID;
+        // create generic list Elements
+        this.wrapper = document.createElement("div");
+        this.wrapper.className = "mobile-list-wrapper";
+        this.title = document.createElement("p");
+        this.title.className = "mobile-list-title";
+        this.title.innerHTML = "Applicants";
+        this.list = document.createElement("ul");
+        this.list.className = "mobile-list-ul";
+        for(var band in this.applicants){
+          var itemID = "applications-list-li-"+this.applicants[band]._id;
+          var newItem = document.createElement("li");
+          newItem.className = "mobile-list-li";
+          newItem.id = itemID;
+          var newName = document.createElement("p");
+          newName.className = "applicant-list-name";
+          newName.innerHTML = this.applicants[band].name;
+          var newGrid = document.createElement("div");
+          newGrid.className = "applicant-list-grid";
+          var viewBtn = document.createElement("input");
+          viewBtn.className = "mobile-list-view-btn";
+          viewBtn.value = "view";
+          viewBtn.type = "button";
+          var bookBtn = document.createElement("input");
+          bookBtn.className = "mobile-list-book-btn";
+          bookBtn.value = "book";
+          bookBtn.type = "button";
+          var declineBtn = document.createElement("input");
+          declineBtn.className = "mobile-list-decline-btn";
+          declineBtn.value = "decline";
+          declineBtn.type = "button";
+          newGrid.append(viewBtn);
+          newGrid.append(bookBtn);
+          newGrid.append(declineBtn);
+          newItem.append(newName);
+          newItem.append(newGrid);
+          this.list.append(newItem);
+          newItem.viewBandBtn = viewBtn;
+          newItem.bookBtn = bookBtn;
+          newItem.declineBtn = declineBtn;
+          newItem.bandID = this.applicants[band]._id;
+          newItem.gigID = this.gigID;
+          newItem.bandName = this.applicants[band].name;
+          newItem.theGig = obj.theGig;
+          this.AddActions(newItem);
+        }
+        this.wrapper.append(this.title);
+        this.wrapper.append(this.list);
+        mobileCb(this);
+      });
+      break;
+      case "upcoming":
+      var idArr = [];
+      for (var g in obj){
+        idArr.push(obj[g]['gigID']);
+      }
+      this.bandID = forObj._id;
+      this.handleGigs(idArr, result=>{
+        this.upcomingGigs = result;
+        this.wrapper = document.createElement("div");
+        this.wrapper.className = "mobile-list-wrapper";
+        this.title = document.createElement("p");
+        this.title.innerHTML = "Upcoming Gigs";
+        this.title.className = "mobile-list-title";
+        this.list = document.createElement("ul");
+        this.list.className = "mobile-list-ul";
+        for(var gig in this.upcomingGigs){
+          if(obj[gig].canceled){
+            // skip
+          }else{
+            var id = this.upcomingGigs[gig]._id;
+            var name = this.upcomingGigs[gig].name;
+            var bandID = this.upcomingGigs[gig].bandFor;
+            var newItem = document.createElement("li");
+            newItem.className = "mobile-list-li";
+            var newName = document.createElement("p");
+            newName.className = "upcoming-list-name";
+            newName.innerHTML = name;
+            var newGrid = document.createElement("div");
+            newGrid.className = "upcoming-list-grid";
+            var viewBtn = document.createElement("input");
+            viewBtn.className = "mobile-list-view-btn";
+            viewBtn.value = "view";
+            viewBtn.type = "button";
+            var confirmBtn = document.createElement("input");
+            confirmBtn.className = "mobile-list-confirm-btn";
+            confirmBtn.value = "confirm";
+            confirmBtn.type = "button";
+            var cancelBtn = document.createElement("input");
+            cancelBtn.className = "mobile-list-cancel-btn";
+            cancelBtn.value = "cancel";
+            cancelBtn.type = "button";
+            newItem.gigID = id;
+            newItem.bandID = bandID;
+            newItem.viewGigBtn = viewBtn;
+            newItem.confirmBtn = confirmBtn;
+            newItem.cancelBtn = cancelBtn;
+            newItem.append(newName);
+            newGrid.append(viewBtn);
+            newGrid.append(confirmBtn);
+            newGrid.append(cancelBtn);
+            newItem.append(newGrid);
+            this.list.append(newItem);
+            this.AddActions(newItem);
+          }
+        }
+        this.wrapper.append(this.title);
+        this.wrapper.append(this.list);
+        mobileCb(this);
+      });
+      break;
+      case "applied":
+      this.appliedGigs = obj;
+      this.wrapper = document.createElement("div");
+      this.wrapper.className = "mobile-list-wrapper";
+      this.title = document.createElement("p");
+      this.title.className = "mobile-list-title";
+      this.title.innerHTML = "Applied Gigs";
+      this.list = document.createElement("ul");
+      this.list.className = "mobile-list-ul";
+      for(var gig in this.appliedGigs){
+        if(this.appliedGigs[gig][1] || this.appliedGigs[gig][1]=='true'){
+          // skip
+        }
+        else{
+          var id = this.appliedGigs[gig][0]._id;
+          var name = this.appliedGigs[gig][0].name;
+          var newItem = document.createElement("li");
+          newItem.className = "mobile-list-li";
+          var newName = document.createElement("p");
+          newName.className = "applied-list-name";
+          newName.innerHTML = name;
+          var newGrid = document.createElement("div");
+          newGrid.className = "applied-list-grid";
+          var viewBtn = document.createElement("input");
+          viewBtn.type = "button";
+          viewBtn.className = "mobile-list-view-btn";
+          viewBtn.value = "view";
+          var priceP = document.createElement("p");
+          priceP.className = "applied-list-price";
+          priceP.innerHTML = "Gig Price: "+this.appliedGigs[gig][0].price;
+          newItem.viewGigBtn = viewBtn;
+          newItem.gigID = id;
+          newItem.bandID = forObj._id;
+          newItem.append(newName);
+          newGrid.append(viewBtn);
+          newGrid.append(priceP);
+          newItem.append(newGrid);
+          this.list.append(newItem);
+          this.AddActions(newItem);
+        }
+      }
+      this.wrapper.append(this.title);
+      this.wrapper.append(this.list);
+      mobileCb(this);
+
+      break;
+      case "past":
+      this.pastGigs = obj;
+      this.wrapper = document.createElement("div");
+      this.wrapper.className = "mobile-list-wrapper";
+      this.title = document.createElement("p");
+      this.title.innerHTML = "Past Gigs";
+      this.title.className = "mobile-list-title";
+      this.list = document.createElement("ul");
+      this.list.className = "mobile-list-ul";
+      var index = 0;
+      this.pastGigs.forEach(function(gig){
+        var id = gig._id;
+        var name = gig.name;
+        var newItem = document.createElement("li");
+        newItem.className = "mobile-list-li";
+        var newName = document.createElement("p");
+        newName.className = "past-list-name";
+        newName.innerHTML = name;
+        var newGrid = document.createElement("div");
+        newGrid.className = "past-list-grid";
+        var priceP = document.createElement("p");
+        priceP.className = "past-list-p";
+        priceP.innerHTML = "You earned: $"+gig.price;
+        var dateP = document.createElement("p");
+        dateP.className = "past-list-p";
+        dateP.innerHTML = gig.date;
+        var startP = document.createElement("p");
+        startP.innerHTML = "from "+gig.startTime;
+        startP.className = "past-list-p";
+        var endP = document.createElement("p");
+        endP.innerHTML = "to "+gig.endTime;
+        endP.className = "past-list-p";
+        newItem.append(newName);
+        newGrid.append(priceP);
+        newGrid.append(dateP);
+        newGrid.append(startP);
+        newGrid.append(endP);
+        newItem.append(newGrid);
+        this.list.append(newItem);
+      });
+      this.wrapper.append(this.title);
+      this.wrapper.append(this.list);
+      mobileCB(this);
+      break;
+    }
+  }
+
+  AddActions(obj){
+    if(obj.hasOwnProperty("viewBandBtn")){
+      obj.viewBandBtn.addEventListener("click",function(){
+        window.location.href='/otherProfile?id='+obj.bandID+'&mode=band&searchingAs'+obj.gigID+'&searchingType=gig';
+      });
+    }
+    if(obj.hasOwnProperty("viewGigBtn")){
+      obj.viewGigBtn.addEventListener("click",function(){
+        window.location.href='/otherProfile?id='+obj.gigID+'&mode=gig&searchingAs'+obj.bandID+'&searchingType=band';
+      });
+    }
+    if(obj.hasOwnProperty("bookBtn")){
+      obj.bookBtn.addEventListener("click",function(){
+        presentConfirmBookingModal(obj.bandName,obj.bandID,obj.gigID,obj.theGig);
+      });
+    }
+    if(obj.hasOwnProperty("declineBtn")){
+      obj.declineBtn.addEventListener("click",function(){
+        $.post('/decline',{'gigID':obj.gigID,'bandID':obj.bandID}, res=>{
+          alert('You have declined this artist. We will notify them for you. Refresh the page to reflect this change.');
+        });
+      });
+    }
+    if(obj.hasOwnProperty("confirmBtn")){
+      obj.confirmBtn.addEventListener("click",function(){
+        presentConfirmationCodeModal(obj.gigID,obj.bandID);
+      });
+    }
+    if(obj.hasOwnProperty("cancelBtn")){
+      obj.cancelBtn.addEventListener("click",function(){
+        presentCancelModal("UpcomingGig",obj.bandID,obj.gigID);
+      });
+    }
+
+  }
+
+  handleBands(idArr, cb){
+    this.handleBandsHelper(idArr, res=>{
+      if (res.length==idArr.length){
+        cb(res);
+      }
+    });
+  }
+  handleAppliedGigs(obj,cb){
+    var idArr = [];
+    for(var gig in obj){
+      idArr.push(obj[gig][0]);
+    }
+    this.handleGigsHelper(idArr, res=>{
+      if (res.length==idArr.length){
+        for(var gig in res){
+          obj[gig][0] = res[gig];
+        }
+        cb(obj);
+      }
+    });
+  }
+  handleGigs(idArr, cb){
+  //  var gigProxy=[];
+    console.log("within handleGigs, idArr is: "+idArr);
+    this.handleGigsHelper(idArr, res=>{
+      if (res.length==idArr.length){
+        cb(res);
+      }
+    });
+  }
+  handleGigsHelper(idArr, cb){
+    var gigProxy = [];
+    idArr.forEach(function(id, i){
+      console.log('ID in handle gigs is : ');
+      console.log(idArr[i])
+      getGigInfo(id, res=>{
+        console.log('in get gig info and res is:' + JSON.stringify(res));
+        gigProxy.push(res);
+        if (gigProxy.lenth==idArr.lenth){
+          cb(gigProxy);
+        }
+      });
+    });
+  }
+  handleBandsHelper(idArr, cb){
+    var bands = [];
+    idArr.forEach(function(id, i){
+      console.log('ID in handle gigs is : ');
+      console.log(idArr[i])
+      getBandInfo(id, res=>{
+        console.log('in get gig info and res is:' + JSON.stringify(res));
+        bands.push(res);
+        if (bands.lenth==idArr.lenth){
+          cb(bands);
+        }
+      });
+    });
   }
 }
 
@@ -1998,7 +2322,7 @@ class Carousel{
       obj.viewBtn.addEventListener("click",function(){
         console.log("band id: "+obj.viewBtn.bandID);
         console.log("gig id: "+obj.viewBtn.gigID);
-          window.location.href='/otherProfile?id='+obj.viewBtn.bandID+'&mode=band&searchingAs'+obj.viewBtn.gigID+'&searchingType=gig';
+        window.location.href='/otherProfile?id='+obj.viewBtn.bandID+'&mode=band&searchingAs'+obj.viewBtn.gigID+'&searchingType=gig';
       });
     }
     if(obj.hasOwnProperty("bookBtn")){
