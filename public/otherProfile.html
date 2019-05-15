@@ -82,6 +82,16 @@
       </form>
     </div>
     <div id="body-container">
+
+      <div class="mobile-menu">
+           <button id = "mobile-menu-button"><img src="/assets/Home/banda_b.png" /></button>
+           <ul id = "mobile-menu-ul" class="mobile-active">
+             <li><a href='control-center'><p class="radialText">Home</p></a></li>
+             <li><a href='about'><p class="radialText">About</p></a></li>
+             <li><a href='index'><p class="radialText">Landing</p></a></li>
+             <li><a href='#' onclick="document.getElementById('modal-wrapper-support').style.display='block'"><p class="radialText">Support</p></a></li>
+           </ul>
+       </div>
       <div id="container">
         <img id="menuBacking" src="/assets/Home/menu.png" />
         <div id="corner"><a href="#"><i id="mainbtn"><img src="/assets/Home/banda_b.png" /></i></a>
@@ -118,6 +128,28 @@
         <button href="#" id="select-gig-to-ad" onclick="document.getElementById('modal-wrapper-link-application').style.display='block'">Ask user to apply to event...</button>
         <button href="#" id="contacts-button">contacts</button>
       </div>
+
+
+      <div class = "container-fluid" id = "bottom-bar-mobile">
+        <div class="row">
+          <div class="col">
+            <button type="submit" name="button"><i class="fas fa-user"></i></button>
+          </div>
+          <div class="col">
+            <button type="submit" name="button"><i class="fas fa-file-invoice-dollar"></i></button>
+          </div>
+          <div class="col">
+            <button type="submit" name="button"><i class="far fa-address-book"></i></button>
+          </div>
+          <div class="col">
+            <button type="submit" name="button"><i class="fas fa-comments"></i></button>
+          </div>
+        </div>
+
+      </div>
+      <!-- bottom bar mobile end  -->
+
+
       <div id="contacts-sidebar">
         <img id="contacts-bg" src="/assets/Control-Center/contacts-bg.png" alt="contacts" />
         <div id="contacts-content"></div>
@@ -138,5 +170,12 @@
     <div id="chat-div">
     </div>
   </body>
+  <script>
+   $(document).ready(function(){
+     $('#mobile-menu-button').click(function(){
+       $('#mobile-menu-ul').toggleClass('mobile-active')
+     })
+   })
+  </script>
   <script type="text/javascript" src="/scripts/otherProfile.js"></script>
 </html>

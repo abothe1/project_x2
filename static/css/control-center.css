@@ -2249,6 +2249,7 @@ bank modal
 
 /*Minh additions for responsiveness*/
 /* Minh's Code */
+
 .mobile-menu{
 
   position: fixed;
@@ -2376,7 +2377,6 @@ bank modal
     font-size: 40pt;
   }
   #menuBacking{
-
     height: 218px;
     width: 218px;
   }
@@ -2393,10 +2393,6 @@ bank modal
   }
   .profile-header-text{
     font-size: 30pt;
-  }
-  .profile-header{
-
-
   }
   .mobile-menu{
     display: block;
@@ -2607,7 +2603,6 @@ bank modal
     margin-left: 100px;
   }
   #contacts-button{
-
     width: 170px;
   }
   .open-gig-end-time{

@@ -589,7 +589,7 @@ function createPageAsGig(){
   // num apps
   var div2 = document.createElement("div");
   var appsH = document.createElement("h2");
-  appsH.innerHTML = "number of applicants";
+  appsH.innerHTML = "# of apps";
   div2.append(appsH);
   var appsP = document.createElement("p");
   appsP.className = "num-applicants";
