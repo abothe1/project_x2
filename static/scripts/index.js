@@ -552,6 +552,8 @@ function diff_minutes(dt2, dt1) {
 			if(res.success){
 				console.log(res.success + " is returned value");
 				document.getElementById('login_or_out').innerHTML = 'Log Out';
+        document.getElementById("sign_in_button").outerHTML = "";
+        document.getElementById("mobile_sign_in_button").outerHTML = "";
 				document.getElementById('login_or_out').addEventListener('click', function(){
 					document.getElementById("modal-wrapper-logout").style.display="block";
 				});

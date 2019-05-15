@@ -267,9 +267,9 @@ user gigs
 */
 .profile-gigs{
   color: white;
-  margin-top: 150px;
+  margin-top: 250px;
   width: 80%;
-  margin-left: 20%;
+  margin-left: 250px;
 }
 
 /*
@@ -971,6 +971,7 @@ pre {
     margin: 0px auto;
     position: relative;
     border: none;
+    display: block;
     /* -webkit-border-radius: 5px;
     -moz-border-radius: 5px;
     border-radius: 5px;
@@ -1564,6 +1565,11 @@ chat boxes
   border-color: #56dff0;
   margin-top: 10px;
 }
+
+.edit-band-button:hover{
+  cursor: pointer;
+}
+
 .flake-p{
   margin: 0;
   color: white;
@@ -2106,12 +2112,138 @@ bank modal
   100% { transform: rotate(360deg); }
 }
 
-/*Minh additions for responsiveness*/
 
+/*Mobile list, an alternative to a carousel*/
+.mobile-list-wrapper{
+  color: white;
+  display: none;
+}
+
+.mobile-list-li{
+  margin-bottom: 10px;
+}
+
+.mobile-list-ul{
+  padding: 0;
+  list-style: none;
+}
+
+.mobile-list-title{
+  font-size: 18pt;
+}
+
+/* general list buttons*/
+
+.mobile-list-view-btn, .mobile-list-book-btn, .mobile-list-confirm-btn{
+  border: 1px solid #56dff0;
+  background-color: black;
+  color: #56dff0;
+  border-radius: 4px;
+}
+
+.mobile-list-decline-btn, .mobile-list-cancel-btn{
+  border: 1px solid #ba141a;
+  background-color: black;
+  color: #ba141a;
+  border-radius: 4px;
+}
+
+/*applicants list*/
+
+.applicant-list-grid{
+  display: grid;
+  width: 100%;
+  grid-template-columns: auto auto auto;
+}
+
+.applicant-list-name{
+  color: white;
+  text-decoration: overline;
+  margin-bottom: 5px;
+  margin-top: 10px;
+}
+
+.applicant-list-name:hover{
+  cursor: pointer;
+  color: white;
+}
+
+/*upcoming list*/
+.upcoming-list-grid{
+  display: grid;
+  width: 100%;
+  grid-template-columns: auto auto auto;
+}
+
+.upcoming-list-name{
+  color: white;
+  text-decoration: overline;
+  margin-bottom: 5px;
+  margin-top: 10px;
+}
+
+.upcoming-list-name:hover{
+  cursor: pointer;
+  color: white;
+}
+
+/*applied gigs list*/
+.applied-list-grid{
+  display: grid;
+  width: 100%;
+  grid-template-columns: auto auto;
+}
+
+.applied-list-name{
+  color: white;
+  text-decoration: overline;
+  margin-bottom: 5px;
+  margin-top: 10px;
+}
+
+.applied-list-name:hover{
+  cursor: pointer;
+  color: white;
+}
+
+.applied-list-price{
+  color: #56dff0;
+  padding-top: 15px;
+  padding-left: 4px;
+}
+
+/*past gigs list*/
+
+.past-list-grid{
+  display: grid;
+  width: 100%;
+  grid-template-columns: auto auto auto auto;
+}
+
+.past-list-name{
+  color: white;
+  text-decoration: overline;
+  margin-bottom: 5px;
+  margin-top: 10px;
+}
+
+.past-list-name:hover{
+  cursor: pointer;
+  color: white;
+}
+
+.past-list-p{
+  color: #56dff0;
+  padding-top: 15px;
+  padding-left: 4px;
+}
+
+/*Minh additions for responsiveness*/
+/* Minh's Code */
 .mobile-menu{
 
   position: fixed;
-  top: 40px;
+  top:30px;
   left: 40px;
   transform: translate(-50%, -50%);
   z-index: 100;
@@ -2130,7 +2262,6 @@ bank modal
   box-shadow: none;
   cursor: pointer;
   background: black;
-
 }
 .mobile-menu ul{
   position: absolute;
@@ -2159,9 +2290,6 @@ bank modal
   background: #262626;
   border-bottom: 1px solid rgb(0, 0, 0, 0.2);
 }
-
-
-
 #create-button{
   display: none;
 }
@@ -2171,10 +2299,7 @@ bank modal
 #contact-button-mobile{
   display: none;
 }
-
-
 /* Minh Media */
-
 /* .profile-header{
   position: absolute;
   margin-left: 200px;
@@ -2188,11 +2313,9 @@ bank modal
 .dropup-profile-content{
   display: none;
 }
-
 @media(max-width: 1200px){
   .profile-header-text{
     font-size: 70pt;
-
   }
   .profile-header{
     width: 70%;
@@ -2200,7 +2323,6 @@ bank modal
 
   }
 }
-
 @media(max-width: 1000px){
   .profile-header-text{
     font-size: 55pt;
@@ -2209,7 +2331,6 @@ bank modal
 
 
   }
-
 }
 @media(max-width: 900px){
   #menuBacking{
@@ -2217,7 +2338,6 @@ bank modal
     height: 238px;
     width: 238px;
   }
-
   .circle-container a {
 
     width: 64px; height: 32px;
@@ -2250,9 +2370,6 @@ bank modal
 
   } */
 }
-
-
-
 @media(max-width: 600px){
   #container{
     display: none;
@@ -2286,7 +2403,6 @@ bank modal
     border: none;
     font-size: 20pt;
     z-index: 100;
-
   }
 
   .dropup-create-content{
@@ -2307,8 +2423,6 @@ bank modal
   .dropup-create:hover .dropup-create-content{
     display:block;
   }
-
-
   #profile-button{
     display: block;
     width: 100px;
@@ -2343,12 +2457,10 @@ bank modal
 .dropup-profile:hover .dropup-profile-content{
   display: block;
 }
-
 #contact-button-mobile-wrapper{
   position: absolute;
   right: 0px;
 }
-
   #contact-button-mobile{
     display: block;
     width: 100px;
@@ -2362,7 +2474,6 @@ bank modal
     font-size: 20pt;
     z-index: 100;
   }
-
   #contacts-button{
     opacity: 0;
     width: 200px;
@@ -2370,21 +2481,147 @@ bank modal
   .profiles-list{
     display:none;
   }
+  /* shift profile-gig to the left and make description smaller */
+  .profile-gigs{
+    margin-left: 100px;
+  }
+  .gig-image{
+    width: 150px;
+    height: 150px;
+  }
+  .gig-image img{
+    width: 150px;
+    height: 150px;
 
+  }
+  .gig-pic-frame{
+    margin-top: -178px;
+
+  }
+  .gig-description{
+    width: 150px;
+    height: 150px;
+  }
+  .gig-description-p{
+    width: 150px;
+    height: 150px;
+
+  }
+  .gig-act{
+    margin-top: 15px;
+    width: 150px;
+    height: 150px;
+  }
+  .gig-act img{
+    width: 150px;
+    height: 150px;
+  }
+  .act-pic-frame{
+    margin-top: -178px;
+  }
+  .act-nameplate{
+    width: 150px;
+  }
+  .gig-confirm{
+    width: 150px;
+    height: 150px;
+  }
+  /* Open-gig styling <600 */
+  .booked-gigs{
+    margin-bottom: 80px;
+  }
+  .open-gig-info{
+
+    margin-bottom: 200px;
+
+
+  }
+
+  .open-gig-image{
+    width: 150px;
+    height: 150px;
+  }
+  .open-gig-image h3{
+    color: red;
+  }
+  .open-gig-image img{
+    width: 150px;
+    height: 150px;
+  }
+  .open-gig-description{
+    width: 150px;
+    height: 150px;
+  }
+  .open-gig-description h3{
+    color: red;
+  }
+  .open-gig-description textarea{
+    width: 150px;
+    height: 150px;
+  }
+  .open-gig-date-time{
+    margin-top: 75px;
+    width: 150px;
+    height: 150px;
+
+  }
+  .open-gig-loc-pay{
+    width: 150px;
+    height: 150px;
+  }
+    .open-gig-date{
+      width: 150px !important;
+    }
+  .open-gig-loc-pay{
+    margin-top: 75px;
+  }
+  .app-wrapper{
+    margin-top: 50px;
+  }
+  .open-gig-end-time{
+    margin-left: 0px;
+  }
+  /* open-gig styling <600 END */
 }
-
 @media(max-width: 550px){
   .profile-header-text{
     font-size: 25pt;
   }
   .profile-header{
+
     margin-top: 0px;
   }
   #contacts-button{
+
     width: 170px;
   }
+  .open-gig-end-time{
+    margin-left: 0px;
+  }
 }
+@media(max-width: 500px){
+  .open-gig-info{
 
+  }
+  .profile-gigs{
+    margin-left: 40px;
+    margin-right: 0px;
+    width: 90%;
+
+  }
+  .booked-gigs h2{
+    font-size: 25px;
+  }
+  .gig-title{
+    font-size: 25px;
+  }
+  .gig-confirm-a{
+    font-size: 20px;
+  }
+  .open-gig-end-time{
+    margin-left: 0px;
+  }
+}
 @media(max-width: 400px){
   .profile-header-text{
     font-size: 22pt;
@@ -2394,6 +2631,113 @@ bank modal
     margin-top: 10px;
   }
   #contacts-button{
+
     width: 120px;
+  }
+  .profile-gigs{
+    margin-left: 15px;
+    margin-right: 0px;
+    width: 110%;
+
+  }
+  .open-gig-end-time{
+    margin-left: 0px;
+  }
+
+  .act-name{
+    font-size: 17px;
+  }
+}
+@media(max-width: 350px){
+  .open-gig-info{
+    width: 400px;
+    margin-bottom: 250px;
+  }
+  .gig-image{
+    width: 120px;
+    height: 120px;
+  }
+  .gig-address{
+    font-size: 20px;
+  }
+  .gig-image img{
+    width: 120px;
+    height: 120px;
+
+  }
+  .gig-pic-frame{
+    margin-top: -146px;
+
+  }
+  .gig-description{
+    width: 120px;
+    height: 120px;
+  }
+  .gig-description-p{
+    width: 120px;
+    height: 120px;
+    font-size: 14px;
+
+  }
+  .gig-act{
+    margin-top: 15px;
+    width: 120px;
+    height: 120px;
+  }
+  .gig-act img{
+    width: 120px;
+    height: 120px;
+  }
+  .act-pic-frame{
+    margin-top: -148px;
+  }
+  .act-nameplate{
+    width: 120px;
+  }
+  .gig-confirm{
+    width: 120px;
+    height: 120px;
+  }
+  .gig-confirm-input{
+    width: 120px;
+  }
+
+  .open-gig-image{
+    width: 120px;
+    height: 120px;
+  }
+
+  .open-gig-image img{
+    width: 120px;
+    height: 120px;
+  }
+  .open-gig-description{
+    width: 120px;
+    height: 120px;
+  }
+
+  .open-gig-description textarea{
+    width: 120px;
+    height: 120px;
+  }
+  .open-gig-date-time{
+    margin-top: 75px;
+    width: 120px;
+    height: 120px;
+
+  }
+  .open-gig-loc-pay{
+    width: 120px;
+    height: 120px;
+  }
+  .open-gig-date{
+    width: 120px !important;
+  }
+  .booked-gigs{
+    margin-bottom: 150px;
+  }
+  .open-gig-confirm{
+    font-size: 20px;
+    margin-top: 25px;
   }
 }
