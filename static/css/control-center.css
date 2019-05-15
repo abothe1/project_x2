@@ -202,7 +202,10 @@ h1, h2, h3, h4, h5, h6, p, button, input, textarea, li{
   position: absolute;
   background: black;
   background-image: url('/assets/Home/background.png');
-  background-size: 100%;
+  background-size: cover;
+  -webkit-background-size: cover;
+  -moz-background-size: cover;
+  -o-background-size: cover;
   background-attachment: fixed;
   overflow-y: scroll;
   overflow-x: hidden;
@@ -226,6 +229,12 @@ h1, h2, h3, h4, h5, h6, p, button, input, textarea, li{
 
 .title-text{
   font-size: 72pt;
+  width: 100%;
+  color: white;
+}
+
+.band-title-text{
+  font-size: 80pt;
   width: 100%;
   color: white;
 }
@@ -2152,7 +2161,7 @@ bank modal
 
 .applicant-list-grid{
   display: grid;
-  width: 100%;
+  width: 80%;
   grid-template-columns: auto auto auto;
 }
 
@@ -2322,14 +2331,27 @@ bank modal
     margin-left: 250px;
 
   }
+
+  /*Mute all carousels*/
+  .jcarousel-wrapper{
+    display: none;
+  }
+
+  .mobile-list-wrapper{
+    display: block;
+  }
+
+  .title-text{
+    display: none;
+  }
+
+  .band-title-text{
+    font-size: 28pt;
+  }
 }
 @media(max-width: 1000px){
   .profile-header-text{
     font-size: 55pt;
-  }
-  .profile-header{
-
-
   }
 }
 @media(max-width: 900px){
@@ -2358,17 +2380,9 @@ bank modal
     height: 218px;
     width: 218px;
   }
-  /* #mainbtn img{
-
-    width: 37px;
-    height: 77px;
+  #main-content-wrapper{
+    margin-left: 200px;
   }
-  .circle-container a {
-
-    width: 64px; height: 32px;
-    margin:0px;
-
-  } */
 }
 @media(max-width: 600px){
   #container{
@@ -2436,31 +2450,31 @@ bank modal
     font-size: 20pt;
     z-index: 100;
   }
-.dropup-profile-content{
-  display: none;
-  position: relative;
-  /* position: absolute; */
-  background: #262626;
-  /* left: 150px; */
-  width: 160px;
-  z-index: 100;
-  bottom: 120px;
-  height: 120px;
+  .dropup-profile-content{
+    display: none;
+    position: relative;
+    /* position: absolute; */
+    background: #262626;
+    /* left: 150px; */
+    width: 160px;
+    z-index: 100;
+    bottom: 120px;
+    height: 120px;
 
-}
-.dropup-profile-content a{
+  }
+  .dropup-profile-content a{
+      display: block;
+      text-decoration: none;
+      color: white;
+      padding: 10px 10px;
+  }
+  .dropup-profile:hover .dropup-profile-content{
     display: block;
-    text-decoration: none;
-    color: white;
-    padding: 10px 10px;
-}
-.dropup-profile:hover .dropup-profile-content{
-  display: block;
-}
-#contact-button-mobile-wrapper{
-  position: absolute;
-  right: 0px;
-}
+  }
+  #contact-button-mobile-wrapper{
+    position: absolute;
+    right: 0px;
+  }
   #contact-button-mobile{
     display: block;
     width: 100px;
@@ -2531,10 +2545,7 @@ bank modal
     margin-bottom: 80px;
   }
   .open-gig-info{
-
     margin-bottom: 200px;
-
-
   }
 
   .open-gig-image{
@@ -2581,15 +2592,19 @@ bank modal
   .open-gig-end-time{
     margin-left: 0px;
   }
+
+  #main-content-wrapper{
+    margin-left: 100px;
+  }
   /* open-gig styling <600 END */
 }
 @media(max-width: 550px){
   .profile-header-text{
-    font-size: 25pt;
+    font-size: 50pt;
   }
   .profile-header{
-
     margin-top: 0px;
+    margin-left: 100px;
   }
   #contacts-button{
 
@@ -2600,8 +2615,8 @@ bank modal
   }
 }
 @media(max-width: 500px){
-  .open-gig-info{
-
+  #main-content-wrapper{
+    margin-left: 50px;
   }
   .profile-gigs{
     margin-left: 40px;
@@ -2627,7 +2642,6 @@ bank modal
     font-size: 22pt;
   }
   .profile-header{
-
     margin-top: 10px;
   }
   #contacts-button{

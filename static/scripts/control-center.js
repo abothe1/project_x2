@@ -2545,7 +2545,7 @@ function getUserInfo(user){
 function buildBands(bands, buildBandsCallback){
   bands.forEach(function(band){
     var bandTitle = document.createElement("p");
-    bandTitle.className = "title-text";
+    bandTitle.className = "band-title-text";
     bandTitle.innerHTML = band.name;
     bandTitle.id = band.name+"-section";
     var bandContainer = document.createElement("div");
