@@ -2357,17 +2357,13 @@ bank modal
 }
 @media(max-width: 900px){
   #menuBacking{
-
     height: 238px;
     width: 238px;
   }
   .circle-container a {
-
     width: 64px; height: 32px;
-
   }
   #mainbtn img{
-
     width: 37px;
     height: 97px;
   }
@@ -2387,9 +2383,6 @@ bank modal
 @media(max-width: 600px){
   #container{
     display: none;
-  }
-  #user-stars{
-      margin-left:0;
   }
   .profile-header-text{
     font-size: 30pt;
