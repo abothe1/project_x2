@@ -70,7 +70,7 @@ router.post('/register', (req, res) => {
 		return res.status(400).send('No email supplied')
 	}
 
-	//confirm email address is a valud email address
+	//confirm email address is a valid email address
 	if(!validator.validate(email)){
 		console.log("password is not valid")
 	  res.status(200).send('Please enter a valid email').end();
@@ -84,7 +84,7 @@ router.post('/register', (req, res) => {
 		return;
 	}
 
-//hash the password
+	//hash the password
 	password = hashPassword(password);
 
 	database.connect(db => {

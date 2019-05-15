@@ -603,7 +603,7 @@ open gig Elements
 .modal-content {
   background-image: url("/assets/Control-Center/new-gig-bg.png");
   background-color: transparent;
-  background-size: contain;
+  background-size: cover;
   background-clip: border-box;
   background-repeat: no-repeat;
   overflow: scroll;
@@ -1667,7 +1667,7 @@ text-align:center;
 .modal-content2 {
 /*  background-image: url("../assets/Control-Center/new-gig-bg.png");
 */  background-color: transparent;
-  background-size: contain;
+  background-size: contains;
   background-clip: border-box;
   background-repeat: no-repeat;
   text-align: center;
