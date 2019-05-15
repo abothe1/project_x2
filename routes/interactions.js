@@ -668,7 +668,7 @@ module.exports = router => {
                       db.close();
                     }
                     else{
-                      res.status(200).send('Great we will now move this event into your past events.');
+                      res.status(200).send('Thank you for submitting the confirmation code! We will now move this event into your past events.');
                       db.close();
                     }
                   });
@@ -818,8 +818,9 @@ module.exports = router => {
             //if the gig does not exist, exit
             if (!gigExists){
               console.log('in cancel, band with id: '+bandID+' does not have the gig with id : '+gigID+' in its upcomingGigs');
-              res.status(403).send();
+              res.status(200).send('Sorry that band has already sent your confirmation code. So you can not cancel.');
               db.close();
+              return;
             }
             else{
               //find the gig the exists

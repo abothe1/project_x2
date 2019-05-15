@@ -563,7 +563,7 @@ function presentCancelModal(state, bandID, gigID){
     case "BookedGig":
       var modal = document.getElementById("modal-wrapper-cancel");
       var text = document.getElementById("cancel-text");
-      text.innerHTML = "Are you sure you want to cancel this event? If you cancel within two days of the event, the card associated with this event will be charged a cancellation fee of $5.00.";
+      text.innerHTML = "Are you sure you want to cancel this event? If you cancel within two days of the event you will not be given a refund. However, you will not be charged the full price of this event.";
       var confirmInput = document.getElementById("confirm-cancel");
       confirmInput.value = "Yes, I want to cancel this event."
       confirmInput.addEventListener("click",function(){
@@ -571,7 +571,12 @@ function presentCancelModal(state, bandID, gigID){
         console.log("bandID is "+bandID);
         console.log("gigID is"+gigID);
         $.post('/cancel', {'bandID':bandID, 'gigID':gigID, 'whoCanceled':'gig'}, res=>{
-          alert('This event has been successfully canceled.');
+          if(res == "" || res == " " || res == null){
+            alert('This event has been successfully canceled.');
+          }
+          else{
+            alert(res);
+          }
           document.getElementById("loader-cancel-booked-event").style.display = "none";
           modal.style.display = "none";
           document.location.reload();
@@ -1146,7 +1151,6 @@ class BandSection{
                     processData: false,
                     type: 'POST',
                     'success': function(data){
-                      alert('callback from post pic: ' + data);
                       console.log('band id is: ' + band._id);
                       updateBand(band._id, {$set:{'picture':data}});
                     }
@@ -2113,11 +2117,11 @@ function presentConfirmationCodeModal(gigID,bandID){
   var obj = document.getElementById("submit-confirmation-code");
   obj.codeInput = codeInput;
   obj.addEventListener("click",function(){
+    document.getElementById("modal-wrapper-confirmation-code").style.display = "none";
     var codeVal = obj.codeInput.value
     console.log('Code is: ' + codeVal);
     $.post('/confirmationCodeBand', {'confirmationCode':codeVal,'gigID':gigID, 'bandID':bandID}, res=>{
       alert(res);
-      document.getElementById("modal-wrapper-confirmation-code").style.display = "none";
       document.location.reload();
     });
   });
@@ -2134,7 +2138,7 @@ function updateBand(id, query){
 }
 
 function updateGig(id, query){
-  consoel.log('GIGID In update gig is: ' + id)
+  console.log('GIGID In update gig is: ' + id)
   $.post('/updateGig', {'id':id, 'query':query}, result =>{
     alert('Changes Saved');
     document.location.reload();

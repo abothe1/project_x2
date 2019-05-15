@@ -384,11 +384,19 @@ function signInHit(){
 
 function search_musicians() {
   var query = $("#search_input").val();
+	if (query == "" || query == " " || query == null){
+		alert('Sorry. Please enter some text if you would like to perform a serach.')
+		return;
+	}
   window.location.href='search_page?query='+query+'&mode=findBands&gigName="null"';
 }
 
 function search_gigs() {
   var query = $("#search_input").val();
+	if (query == "" || query == " " || query == null){
+		alert('Sorry. Please enter some text if you would like to perform a serach.')
+		return;
+	}
   window.location.href='search_page?query="'+query+'&mode=findGigs&bandName="null"';
 }
 
