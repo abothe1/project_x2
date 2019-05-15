@@ -254,8 +254,8 @@ Login Popup Elements
 */
 
 #login-modal-header{
-  text-align:left; 
-  padding-left: 20px; 
+  text-align:left;
+  padding-left: 20px;
   font-size: 50pt;
 }
 
@@ -472,7 +472,7 @@ input[type=text], input[type=password], input[type=number], input[type=datetime-
 }
 
 #register-modal-header{
-  text-align:left; 
+  text-align:left;
   padding-left: 20px;
   font-size: 50pt;
 }
@@ -813,11 +813,6 @@ flip box containe;;;; got rid of it cuz im using flipp */
   .profile-header-text{
     font-size: 55pt;
   }
-  .profile-header{
-
-
-  }
-
 }
 @media(max-width: 900px){
   #menuBacking{
@@ -837,12 +832,18 @@ flip box containe;;;; got rid of it cuz im using flipp */
     height: 97px;
   }
 }
+
+@media(max-width: 850px){
+  .search{
+    margin-left: -350px;
+  }
+}
+
 @media(max-width: 800px){
   .profile-header-text{
     font-size: 40pt;
   }
   #menuBacking{
-
     height: 218px;
     width: 218px;
   }
@@ -859,9 +860,36 @@ flip box containe;;;; got rid of it cuz im using flipp */
   } */
 }
 
+@media(max-width: 775px){
+  #barImg{
+    width: 370px;
+    height: 67px;
+  }
+  #search_input{
+    width: 280px;
+    height: 60px;
+    font-size: 24px;
+  }
+  .search{
+    margin-left: -200px;
+  }
+  .options{
+    width: 300px;
+    margin: 0;
+    top: 75%;
+    left: -10%;
+  }
+}
+
+@media(max-width: 700px){
+  .rainDrop{
+    display: none;
+  }
+}
 
 
 @media(max-width: 600px){
+
   #container{
     display: none;
   }
@@ -1049,6 +1077,19 @@ flip box containe;;;; got rid of it cuz im using flipp */
   display: hidden;
   }
 }
+#forgot-password-text{
+  text-decoration:none;
+  float:left;
+  margin-left:25px;
+  margin-top:102px;
+}
+
+#login-register-text{
+  text-decoration:none;
+  float:right;
+  margin-right:34px;
+  margin-top:102px;
+}
 
 /*register model mobile scaling */
 @media(max-width: 550px){
@@ -1090,25 +1131,12 @@ flip box containe;;;; got rid of it cuz im using flipp */
     margin-top:20px;
   }
 }
-#forgot-password-text{
-  text-decoration:none;
-  float:left;
-  margin-left:25px;
-  margin-top:102px;
-}
-
-#login-register-text{
-  text-decoration:none; 
-  float:right; 
-  margin-right:34px; 
-  margin-top:102px;
-}
 
 /*resizing login modal for mobile*/
 @media(max-width: 550px){
   #login-modal-header{
-    text-align:center; 
-    padding-top: 30px; 
+    text-align:center;
+    padding-top: 30px;
     font-size: 20pt;
   }
   #forgot-password-text{
@@ -1117,11 +1145,11 @@ flip box containe;;;; got rid of it cuz im using flipp */
     margin-left:25px;
     margin-top:0px;
   }
-  
+
   #login-register-text{
-    text-decoration:none; 
-    float:right; 
-    margin-right:0px; 
+    text-decoration:none;
+    float:right;
+    margin-right:0px;
     margin-top:10px;
   }
 }
