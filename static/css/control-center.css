@@ -1692,6 +1692,12 @@ text-align:center;
   overflow: hidden;
 }
 
+#share-event-header{
+  text-align:center; 
+  font-size: 50pt; 
+  color:white
+}
+
 #select-gig-to-ad{
   width: 300px;
   height: 100%;
@@ -2750,3 +2756,372 @@ bank modal
     margin-top: 25px;
   }
 }
+
+@media(max-width:550px){
+  #modal-wrapper-report-absent-band{
+    display: none;
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 200%;
+    height: 150%;
+    z-index: 110;
+    background-color: rgba(0,0,0,0.4);
+  }
+  #report-band-text{
+    font-size: 10pt;
+    margin-top: -50px;
+    text-align: center;
+    width: 80%;
+    margin-left: 10%;
+  }
+  #report-band{
+    margin-top: 15px;
+    width: 50%;
+    length: 150%;
+  }
+  .modal-content-cancel {
+    background-image: url(/assets/Home/modalbg.png);
+    background-color: transparent;
+    background-size: contain;
+    background-clip: border-box;
+    background-repeat: no-repeat;
+    margin: 2%;
+    width: 40%;
+    height: 80%;
+    padding-bottom: 80px;
+    color: white;
+  }
+}
+
+/*mobile rescaling for confirm modal*/
+@media(max-width:550px){
+  #modal-wrapper-confirm-booking {
+    display: none;
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 200%;
+    height: 100%;
+    z-index: 110;
+    background-color: rgba(0,0,0,0.4);
+  }
+  #confirm-booking-text{
+    margin-top: -55px;
+    text-align: center;
+    font-size: 18pt;
+    width: 80%;
+    margin-left: 10%;
+  }
+  #confirm-booking{
+    height: 50px;
+    margin-left: 10%;
+    border: 2px solid #56dff0;
+    border-radius: 10px;
+    text-align: center;
+    color: #56dff0;
+    background-color: rgba(0,0,0,0.8);
+    margin-top: -9px;
+  }
+}
+
+@media(max-width:550px){
+  #confirmation-code-input{
+    width: 80%;
+    height: 35px;
+    padding: 4px;
+    text-align: center;
+    margin-left: 3%;
+    border: none;
+    background-color: rgba(0,0,0,0.8);
+    border-radius: 10px;
+    color: white;
+  }
+
+  .confirm-modal-btn {
+    margin-top: 2px;
+    width: 80%;
+    height: 60px;
+    margin-left: 3%;
+    border: 2px solid #56dff0;
+    border-radius: 10px;
+    text-align: center;
+    color: #56dff0;
+    background-color: rgba(0,0,0,0.8);
+  }
+
+  #modal-wrapper-confirmation-code{
+    display: none;
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 250%;
+    height: 250%;
+    z-index: 110;
+    background-color: rgba(0,0,0,0.4);
+  }
+
+  #confirmation-code-p{
+    font-size: 12pt;
+    margin-top: 0px;
+    text-align: center;
+    width: 75%;
+    margin-left: 3%;
+  }
+
+  #modal-wrapper-support {
+    z-index: 5;
+    width: 100%;
+    overflow: hidden;
+  }
+
+  #submit-confirmation-code{
+    height: 30px;
+  }
+
+.modal-content-cancel {
+    background-image: url(/assets/Home/modalbg.png);
+    background-color: transparent;
+    background-size: contain;
+    background-clip: border-box;
+    background-repeat: no-repeat;
+    margin: 1%;
+    width: 40%;
+    height: 80%;
+    padding-bottom: 0px;
+    color: white;
+}
+
+  #close-cancel{
+    width: 25%;
+  }
+}
+
+/*mobile rescaling credit card info*/
+@media(max-width:550px){
+  #modal-wrapper-credit{
+    display:none;
+    position: fixed;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    width: 100%;
+    height: 250px;
+    overflow: hidden;
+    background-color: rgba(240,240,240,1.0);
+    border-radius: 10px;
+    z-index: 110;
+    text-align: center;
+    padding: 20px;
+  }
+}
+
+@media(max-width:550px){
+  #modal-wrapper-bank{
+    display: none;
+    z-index: 11;
+    margin:0;
+    margin-top: 20;
+    position: fixed;
+    width: 250%;
+    height: 120%;
+    background-color: rgba(0,0,0,0.8);
+  }
+  #bank-content {
+    background-color: rgba(240,240,240,1.0);
+    border-radius: 10px;
+    width: 40%;
+    height: 55%;
+    color: white;
+    padding: 20px;
+    color: black;
+    margin:0;
+    margin-left: 0;
+  }
+  .bank-account-button {
+    border: none;
+    border-radius: 4px;
+    outline: none;
+    text-decoration: none;
+    color: #fff;
+    background: #32325d;
+    white-space: nowrap;
+    display: inline-block;
+    width: 90%;
+    height: 40px;
+    line-height: 40px;
+    padding: 0 14px;
+    box-shadow: 0 4px 6px rgba(50, 50, 93, .11), 0 1px 3px rgba(0, 0, 0, .08);
+    border-radius: 4px;
+    font-size: 15px;
+    font-weight: 600;
+    letter-spacing: 0.025em;
+    text-decoration: none;
+    -webkit-transition: all 150ms ease;
+    transition: all 150ms ease;
+    float: left;
+    margin-left: 12.5%;
+    margin-top: 8px;
+}
+  .close-bank{
+      position: absolute;
+      margin-left: 285px;
+      margin-top: -20px;
+      color: #000;
+      opacity: 0.6;
+      font-size: 35px;
+      font-weight: bold;
+      z-index: 99;
+  }
+}
+
+#account-support-header{
+  text-align:left; 
+  padding-left: 20px;
+  font-size: 50pt;
+}
+
+#searching-as-link-app{
+  text-align:center;
+  font-size: 12pt;
+}
+
+/*support modal mobile scaling*/
+@media(max-width:550px){
+  #modal-wrapper-support{
+    z-index: 5;
+    width: 150%;
+    overflow: hidden;
+  }
+
+  #account-support-header{
+    text-align:left; 
+    padding-left: 0;
+    font-size: 16pt;
+  }
+  
+  /* The Modal (background) */
+  .modal-support {
+    display:none;
+    position: fixed;
+    z-index: 1;
+    left: 0;
+    top: 0;
+    width: 150%;
+    height: 100%;
+    overflow: auto;
+    background-color: rgba(0,0,0,0.4);
+    font-size: 12pt;
+  }
+  
+  /* Modal Content Box */
+  .modal-content-support {
+    background-image: url("/assets/Home/modalbg.png");
+    background-color: transparent;
+    background-size: contain;
+    background-clip: border-box;
+    background-repeat: no-repeat;
+    margin: 4% auto 15% auto;
+    width: 90%;
+    height: 400%;
+    padding-bottom: 80px;
+    color: white;
+  }
+  .support-text{
+    font-size: 12pt;
+  }
+  #modal-wrapper-support {
+    z-index: 5;
+    width: 100%;
+    overflow: hidden;
+  }
+
+  #request-support-btn{
+    height:30%;
+  }
+
+  #request-support-textarea{
+    height: 40%;
+  }
+  
+}
+
+/*link modal mobile scaling*/
+@media(max-width:550px){
+  #modal-wrapper-link-application{
+    display:none;
+    position: fixed;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    width: 50%;
+    height: 240px;
+    overflow: auto;
+    background-color: rgba(0,0,0,0.8);
+    border-radius: 10px;
+    text-align: center;
+    z-index: 110;
+    overflow: hidden;
+  }
+  
+  #share-event-header{
+    text-align:center; 
+    font-size: 16pt; 
+    color:white
+  }
+
+  #cancel-link{
+    right: 10%;
+    top: -100%;
+  }
+}
+
+#confirm-app-header{
+  text-align:center;
+  font-size: 50pt;
+  color:white;
+}
+
+#select-a-band-text{
+  text-align:center;
+  font-size: 30pt;
+}
+
+/*mobile scaling for choose band for app */
+@media(max-width:550px){
+  #modal-wrapper-choose-band-for-app{
+    display:none;
+    position: fixed;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    width: 50%;
+    height: 500px;
+    overflow: auto;
+    background-color: rgba(0,0,0,0.8);
+    border-radius: 10px;
+    text-align: center;
+    z-index: 110;
+    overflow: hidden;
+  }
+
+  #confirm-app-header{
+    text-align:center;
+    font-size: 14pt;
+    color:white;
+  }
+
+  #selectDropBand {
+    margin-top: 5px;
+  }
+
+  #select-a-band-text{
+    text-align:center;
+    font-size: 12pt;
+  }
+
+  #modal-wrapper-choose-band-for-app{
+    width: 110%;
+  }
+}
+
