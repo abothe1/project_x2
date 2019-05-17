@@ -2550,7 +2550,7 @@ function buildBands(bands, buildBandsCallback){
     bandTitle.id = band.name+"-section";
     var bandContainer = document.createElement("div");
     bandContainer.append(bandTitle);
-
+    // desktop profiles list
     var newNav = document.createElement("li");
     var newNavA = document.createElement("a");
     newNavA.href = "#"+bandTitle.id;
@@ -2558,6 +2558,12 @@ function buildBands(bands, buildBandsCallback){
     newNav.append(newNavA);
     var profilesListDiv = document.getElementById("profiles-list");
     profilesListDiv.append(newNav);
+    // mobile profiles list
+    var newMobileNavA = document.createElement("a");
+    newMobileNavA.href = "#"+bandTitle.id;
+    newMobileNavA.innerHTML = band.name;
+    var profilesMobileListDiv = document.getElementById("mobile-profiles-list");
+    profilesMobileListDiv.append(newMobileNavA);
 
     mainContent.append(bandContainer);
     new BandSection(band,"info",bandSectionCallback=>{
