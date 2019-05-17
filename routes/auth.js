@@ -30,7 +30,6 @@ function validatePassword(password) {
 	.has().lowercase()                              // Must have lowercase letters
 	.has().digits()                                 // Must have digits
 	.has().not().spaces()                           // Should not have spaces
-	.is().not().oneOf(['Passw0rd', 'Password123']); // Blacklist these values
 	console.log(schema.validate(password))
 	return schema.validate(password)
 }
@@ -80,7 +79,7 @@ router.post('/register', (req, res) => {
 	//confirm the password is secure
 	if (validatePassword(password) == false) {
 		console.log("password is not valid")
-	  res.status(200).send('Too weak of a password supplied').end();
+	  res.status(200).send('Your password must contain atleast 8 characters, a number, a lower case character, an upper case character, and no spaces').end();
 		return;
 	}
 
