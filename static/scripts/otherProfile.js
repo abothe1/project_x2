@@ -406,8 +406,6 @@ function hitMessage(){
   else{
     alert('Sorry, before adding the owner of this event to your contacts list, the owner must message you first. We do this to avoid overwhelming the event manager with messages from artists. Feel free to apply as one of your bands for now.')
   }
-
-
 }
 // AB SECTION
 
@@ -462,6 +460,10 @@ function createPageAsBand(){
   newAOne.innerHTML = "Message";
   newAOne.href = "#";
   newAOne.addEventListener("click",function(){
+    hitMessage();
+  });
+  var mobileMessageBand = document.getElementById("mobile_message_band_button");
+  mobileMessageBand.addEventListener("click",function(){
     hitMessage();
   });
   newLiOne.append(newAOne);
@@ -638,7 +640,7 @@ function createPageAsGig(){
   var mobileMessage = document.getElementById("mobile_message_button");
   mobileMessage.addEventListener("click",function(){
     hitMessage();
-  })
+  });
   newLiTwo.append(newATwo);
   controls.append(newLiTwo);
 
