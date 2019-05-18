@@ -1083,6 +1083,11 @@ margin-top: 100px;
 
   }
 }
+@media(max-width: 1150px){
+  #confirm-app-header{
+    font-size: 30pt;
+  }
+}
 @media(max-width: 1075px){
   .profile-price-text-new, .profile-price-new{
     font-size: 22pt;
@@ -1128,6 +1133,16 @@ margin-top: 100px;
     margin-left: 25%;
   }
 }
+@media(max-width: 850px){
+  #confirm-app-header{
+    padding-top: 40px;
+  }
+
+  #choose-band-button{
+    margin-top: 60px;
+  }
+}
+
 @media(max-width: 800px){
 
   #select-gig-to-ad{
@@ -1178,6 +1193,9 @@ margin-top: 100px;
 
 }
 @media(max-width: 650px){
+  #select-drop-band{
+    width: 200px !important;
+  }
   .img-price-grid{
     margin-left: -70%;
   }
@@ -1367,6 +1385,9 @@ margin-top: 100px;
   }
 }
 @media(max-width: 550px){
+  #modal-wrapper-choose-band-for-app{
+    width: inherit !important;
+  }
   .img-price-grid{
     margin-left: -45%;
   }

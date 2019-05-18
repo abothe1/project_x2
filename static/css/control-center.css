@@ -2647,6 +2647,9 @@ bank modal
   /* open-gig styling <600 END */
 }
 @media(max-width: 550px){
+  #modal-wrapper-choose-band-for-app{
+    width: inherit !important;
+  }
   .profile-header-text{
     font-size: 50pt;
   }
@@ -2670,7 +2673,7 @@ bank modal
   .share-event-subtitle{
     font-size: 14pt;
   }
-  
+
   #select-gig-to-ad{
     width: 100%;
     left: 0;
@@ -3226,6 +3229,13 @@ bank modal
     width: 900px;
   }
 }
+
+@media(max-width: 1150px){
+  #confirm-app-header{
+    font-size: 30pt;
+  }
+}
+
 @media(max-width: 1000px){
   #current-band-form{
     width: 700px;
@@ -3237,6 +3247,17 @@ bank modal
     width: 300px;
   }
 }
+
+@media(max-width: 850px){
+  #confirm-app-header{
+    padding-top: 40px;
+  }
+
+  #choose-band-button{
+    margin-top: 60px;
+  }
+}
+
 @media(max-width: 800px ){
   #current-band-form{
     width: 600px;
@@ -3255,6 +3276,10 @@ bank modal
  }
 }
 @media(max-width: 650px){
+
+  #select-drop-band{
+    width: 200px !important;
+  }
   #current-band-form{
     width: 500px;
   }
