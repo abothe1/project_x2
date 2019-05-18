@@ -2986,6 +2986,17 @@ contactsButton.addEventListener("click",function(){
   }
   open = !open;
 });
+var mobileContactsButton = document.getElementById("contact-button-mobile");
+var openMobile = false;
+mobileContactsButton.addEventListener("click",function(){
+  console.log("clicked, "+openMobile);
+  if(openMobile){
+    document.getElementById('contacts-sidebar').style.display = 'none';
+  }else{
+    document.getElementById('contacts-sidebar').style.display = 'block';
+  }
+  openMobile = !openMobile;
+});
 //Schedule stuff//
 var timesRowAdded=0;
 var timesRowDeleted=0;

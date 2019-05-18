@@ -7,7 +7,7 @@ var myBand=null;
 var myGig = null;
 var userContacts = {};
 var userMessages={};
-var selectedMobileProfile;
+var selectedMobileProfile = {};
 class SampleCarousel{
   constructor(sampleCarCallback){
     this.carWrap = document.createElement("div");
@@ -126,21 +126,35 @@ function populateDropDown(myUser, myBands, myGigs){
   userDropTitle.setAttribute('id', 'userDropTitle');
   selectMenu.appendChild(userDropTitle);
 
+  var profilesMobileListDiv = document.getElementById("mobile-profiles-list");
+  var profilesMobileListDivBands = document.getElementById("mobile-profiles-list-bands");
   var newMobileNavA = document.createElement("a");
   newMobileNavA.innerHTML = myUser.username;
   newMobileNavA.href = "#";
   newMobileNavA.className = "mobile-profiles-list-a-active";
-  var profilesMobileListDiv = document.getElementById("mobile-profiles-list");
-  var profilesMobileListDivBands = document.getElementById("mobile-profiles-list-bands");
   newMobileNavA.setAttribute('value','user');
   newMobileNavA.dataID = myUser._id;
   newMobileNavA.dataType = "user";
+  newMobileNavA.dataName = myUser.username;
   profilesMobileListDiv.append(newMobileNavA);
-  profilesMobileListDivBands.append(newMobileNavA);
   newMobileNavA.addEventListener("click",function(){
     selectProfileOnMobile(newMobileNavA);
   });
-  selectedMobileProfile = newMobileNavA;
+  var newMobileNavA2 = document.createElement("a");
+  newMobileNavA2.innerHTML = myUser.username;
+  newMobileNavA2.href = "#";
+  newMobileNavA2.className = "mobile-profiles-list-a-active";
+  newMobileNavA2.setAttribute('value','user');
+  newMobileNavA2.dataID = myUser._id;
+  newMobileNavA2.dataType = "user";
+  newMobileNavA2.dataName = myUser.username;
+  profilesMobileListDivBands.append(newMobileNavA2);
+  newMobileNavA2.addEventListener("click",function(){
+    selectProfileOnMobile(newMobileNavA2);
+  });
+  selectedMobileProfile.dataName = myUser.username;
+  selectedMobileProfile.dataID = myUser._id;
+  selectedMobileProfile.dataType = "user";
   console.log("AB NOTE");
 
   for (band in myBands){
@@ -160,9 +174,20 @@ function populateDropDown(myUser, myBands, myGigs){
     newBandMobile.dataType = "band";
     newBandMobile.setAttribute('id', 'band'+band+'MobileDropTitle');
     profilesMobileListDiv.append(newBandMobile);
-    profilesMobileListDivBands.append(newBandMobile);
     newBandMobile.addEventListener("click",function(){
       selectProfileOnMobile(newBandMobile);
+    });
+    var newBandMobile2 = document.createElement("a");
+    newBandMobile2.innerHTML = myBands[band].name;
+    newBandMobile2.href = "#";
+    newBandMobile2.className = "mobile-profiles-list-a";
+    newBandMobile2.setAttribute('value','band');
+    newBandMobile2.dataID = myBands[band]._id;
+    newBandMobile2.dataType = "band";
+    newBandMobile2.setAttribute('id', 'band'+band+'MobileDropTitle');
+    profilesMobileListDivBands.append(newBandMobile2);
+    newBandMobile2.addEventListener("click",function(){
+      selectProfileOnMobile(newBandMobile2);
     });
   }
   for (gig in myGigs){
@@ -182,9 +207,20 @@ function populateDropDown(myUser, myBands, myGigs){
     newGigMobile.dataType = "gig";
     newGigMobile.setAttribute('id', 'gig'+gig+'MobileDropTitle');
     profilesMobileListDiv.append(newGigMobile);
-    profilesMobileListDivBands.append(newGigMobile);
     newGigMobile.addEventListener("click",function(){
       selectProfileOnMobile(newGigMobile);
+    });
+    var newGigMobile2 = document.createElement("a");
+    newGigMobile2.innerHTML = myGigs[gig].name;
+    newGigMobile2.href = "#";
+    newGigMobile2.className = "mobile-profiles-list-a";
+    newGigMobile2.setAttribute('value','gig');
+    newGigMobile2.dataID, myGigs[gig]._id;
+    newGigMobile2.dataType = "gig";
+    newGigMobile2.setAttribute('id', 'gig'+gig+'MobileDropTitle');
+    profilesMobileListDivBands.append(newGigMobile2);
+    newGigMobile2.addEventListener("click",function(){
+      selectProfileOnMobile(newGigMobile2);
     });
   }
 }
@@ -349,7 +385,7 @@ function hitApply(state){
     case "mobile":
     var objID = selectedMobileProfile.dataID;
     var kind = selectedMobileProfile.dataType;
-    var bandName = selectedMobileProfile.innerHTML;
+    var bandName = selectedMobileProfile.dataName;
     if(kind != 'band'){
       alert('You can only "Apply" to events as a band. Please select one from the drop down menu and hit apply again. If you have no bands, you can create one on your home page.');
       return;
@@ -1524,6 +1560,17 @@ contactsButton.addEventListener("click",function(){
     document.getElementById('contacts-sidebar').style.display = 'block';
   }
   open = !open;
+});
+var mobileContactsButton = document.getElementById("contact-button-mobile");
+var openMobile = false;
+mobileContactsButton.addEventListener("click",function(){
+  console.log("clicked, "+openMobile);
+  if(openMobile){
+    document.getElementById('contacts-sidebar').style.display = 'none';
+  }else{
+    document.getElementById('contacts-sidebar').style.display = 'block';
+  }
+  openMobile = !openMobile;
 });
 
 function regToLogin(){

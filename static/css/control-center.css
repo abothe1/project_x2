@@ -1276,6 +1276,10 @@ chat boxes
     background-color: rgba(0,0,0,0.3);
 }
 
+#chat-div{
+  overflow: scroll;
+}
+
 .ui-chatbox-titlebar {
     padding: 3px;
     height: 20px;
@@ -2387,6 +2391,25 @@ bank modal
   }
 }
 @media(max-width: 600px){
+
+  #contacts-sidebar{
+    width: 200px;
+  }
+
+  .contacts-link{
+    font-size: 14pt;
+  }
+  .contacts-line{
+    width: 100px;
+  }
+
+  .ui-widget{
+    margin-bottom: 40px;
+    right: 200px !important;
+  }
+  .ui-chatbox-input{
+    background-color: rgba(0,0,0,0.8);
+  }
   #container{
     display: none;
   }
@@ -2613,6 +2636,34 @@ bank modal
   }
 }
 @media(max-width: 500px){
+
+  #contacts-sidebar{
+    top: 60px;
+    left: 0;
+    height: 35%;
+    width: 100%;
+    border-bottom: 1px solid #56dff0;
+  }
+
+  .ui-widget{
+    width: 100%;
+    right: 0 !important;
+  }
+
+  .ui-widget-header{
+    margin: 0 !important;
+    width: 100% !important;
+  }
+
+  .ui-widget-content{
+    width: 100% !important;
+  }
+
+  #chat-div{
+    width: 100% !important;
+  }
+
+
   #main-content-wrapper{
     margin-left: 50px;
   }
