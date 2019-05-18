@@ -1702,6 +1702,18 @@ text-align:center;
   color:white
 }
 
+#link-application-button{
+  color: #56dff0;
+}
+
+.share-event-title{
+  text-align:center; font-size: 50pt; color:white;
+}
+
+.share-event-subtitle{
+  text-align:center; font-size: 30pt;
+}
+
 #select-gig-to-ad{
   width: 300px;
   height: 100%;
@@ -2650,6 +2662,15 @@ bank modal
   }
 }
 @media(max-width: 500px){
+  .share-event-title{
+    padding-top: 100px;
+    font-size: 25pt;
+  }
+
+  .share-event-subtitle{
+    font-size: 14pt;
+  }
+  
   #select-gig-to-ad{
     width: 100%;
     left: 0;
@@ -3122,7 +3143,7 @@ bank modal
     left: 50%;
     transform: translate(-50%, -50%);
     width: 50%;
-    height: 240px;
+    height: 500px;
     overflow: auto;
     background-color: rgba(0,0,0,0.8);
     border-radius: 10px;
