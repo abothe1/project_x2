@@ -1264,11 +1264,24 @@ margin-top: 100px;
     background: #262626;
     /* left: 150px; */
     width: 160px;
-    z-index: 100;
+    z-index: 30;
     bottom: 120px;
     height: 120px;
-
+    overflow: scroll;
   }
+
+  .dropup-profile-content::-webkit-scrollbar{
+    width: 4px;
+  }
+
+  .mobile-profiles-list-a{
+    background-color: transparent;
+  }
+
+  .mobile-profiles-list-a-active{
+    background-color: #56dff0;
+  }
+
   .dropup-profile-content a{
       display: block;
       text-decoration: none;

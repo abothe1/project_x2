@@ -11,7 +11,7 @@
         <!-- jQuery library -->
         <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
     <!-- <script type="text/javascript" src="http://code.jquery.com/jquery-1.4.2.min.js"></script> -->
-    <script type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/jqueryui/1.8.2/jquery-ui.min.js"></script>
+        <script type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/jqueryui/1.8.2/jquery-ui.min.js"></script>
         <!-- Popper JS -->
         <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.3/umd/popper.min.js"></script>
         <!-- Latest compiled JavaScript -->
@@ -132,14 +132,17 @@
 
       <div class = "container-fluid" id = "bottom-bar-mobile">
         <div class="row">
-          <div class="col">
+          <div class="col dropup-profile">
+            <div id="mobile-profiles-list" class="dropup-profile-content">
+              
+            </div>
             <button type="submit" name="button"><i class="fas fa-user"></i></button>
           </div>
           <div class="col">
-            <button type="submit" name="button"><i class="fas fa-file-invoice-dollar"></i></button>
+            <button id="mobile_apply_button" type="submit" name="button"><i class="fas fa-file-invoice-dollar"></i></button>
           </div>
           <div class="col">
-            <button type="submit" name="button"><i class="far fa-address-book"></i></button>
+            <button id="mobile_message_button" type="submit" name="button"><i class="far fa-address-book"></i></button>
           </div>
           <div class="col">
             <button type="submit" name="button"><i class="fas fa-comments"></i></button>

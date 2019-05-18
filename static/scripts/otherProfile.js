@@ -7,6 +7,7 @@ var myBand=null;
 var myGig = null;
 var userContacts = {};
 var userMessages={};
+var selectedMobileProfile;
 class SampleCarousel{
   constructor(sampleCarCallback){
     this.carWrap = document.createElement("div");
@@ -103,6 +104,15 @@ function populateDropDown(myUser, myBands, myGigs){
     userDropTitle.setAttribute('value','user');
     userDropTitle.setAttribute('id', 'userDropTitle');
     selectMenu.appendChild(userDropTitle);
+
+    var newMobileNavA = document.createElement("a");
+    newMobileNavA.innerHTML = myUser.username;
+    newMobileNavA.href = "#";
+    var profilesMobileListDiv = document.getElementById("mobile-profiles-list");
+    newMobileNavA.setAttribute('value','user');
+    newMobileNavA.setAttribute('id', 'userDropTitleMobile');
+    profilesMobileListDiv.append(newMobileNavA);
+    console.log("AB NOTE");
     return;
   }
   var selectMenu = document.getElementById('selectDrop');
@@ -112,6 +122,22 @@ function populateDropDown(myUser, myBands, myGigs){
   userDropTitle.setAttribute('value','user');
   userDropTitle.setAttribute('id', 'userDropTitle');
   selectMenu.appendChild(userDropTitle);
+
+  var newMobileNavA = document.createElement("a");
+  newMobileNavA.innerHTML = myUser.username;
+  newMobileNavA.href = "#";
+  newMobileNavA.className = "mobile-profiles-list-a-active";
+  var profilesMobileListDiv = document.getElementById("mobile-profiles-list");
+  newMobileNavA.setAttribute('value','user');
+  newMobileNavA.dataID = myUser._id;
+  newMobileNavA.dataType = "user";
+  profilesMobileListDiv.append(newMobileNavA);
+  newMobileNavA.addEventListener("click",function(){
+    selectProfileOnMobile(newMobileNavA);
+  });
+  selectedMobileProfile = newMobileNavA;
+  console.log("AB NOTE");
+
   for (band in myBands){
     var bandTitle=document.createElement('option');
     bandTitle.innerHTML=myBands[band].name;
@@ -119,6 +145,19 @@ function populateDropDown(myUser, myBands, myGigs){
     bandTitle.setAttribute('data-objID', myBands[band]._id);
     bandTitle.setAttribute('id', 'band'+band+'DropTitle');
     selectMenu.appendChild(bandTitle);
+
+    var newBandMobile = document.createElement("a");
+    newBandMobile.innerHTML = myBands[band].name;
+    newBandMobile.href = "#";
+    newBandMobile.className = "mobile-profiles-list-a";
+    newBandMobile.setAttribute('value','band');
+    newBandMobile.dataID = myBands[band]._id;
+    newBandMobile.dataType = "band";
+    newBandMobile.setAttribute('id', 'band'+band+'MobileDropTitle');
+    profilesMobileListDiv.append(newBandMobile);
+    newBandMobile.addEventListener("click",function(){
+      selectProfileOnMobile(newBandMobile);
+    });
   }
   for (gig in myGigs){
     var gigTitle=document.createElement('option');
@@ -127,6 +166,19 @@ function populateDropDown(myUser, myBands, myGigs){
     gigTitle.setAttribute('data-objID', myGigs[gig]._id);
     gigTitle.setAttribute('id', 'gig'+gig+'DropTitle');
     selectMenu.appendChild(gigTitle);
+
+    var newGigMobile = document.createElement("a");
+    newGigMobile.innerHTML = myGigs[gig].name;
+    newGigMobile.href = "#";
+    newGigMobile.className = "mobile-profiles-list-a";
+    newGigMobile.setAttribute('value','gig');
+    newGigMobile.dataID, myGigs[gig]._id;
+    newGigMobile.dataType = "gig";
+    newGigMobile.setAttribute('id', 'gig'+gig+'MobileDropTitle');
+    profilesMobileListDiv.append(newGigMobile);
+    newGigMobile.addEventListener("click",function(){
+      selectProfileOnMobile(newGigMobile);
+    });
   }
 }
 
@@ -260,29 +312,55 @@ function buildWebPage(){
 }
 
 
-function hitApply(){
+function hitApply(state){
   console.log('Hit apply');
-  if ($('#selectDrop option:selected')){
-    var dataFromDrop = $('#selectDrop option:selected').data();
-    var myBand = dataFromDrop['objid']
-    var kind = $('#selectDrop option:selected').val();
+  switch(state){
+    case "desktop":
+    if ($('#selectDrop option:selected')){
+      var dataFromDrop = $('#selectDrop option:selected').data();
+      var myBand = dataFromDrop['objid']
+      var kind = $('#selectDrop option:selected').val();
+      if(kind != 'band'){
+        alert('You can only "Apply" to events as a band. Please select one from the drop down menu and hit apply again. If you have no bands, you can create one on your home page.');
+        return;
+      }
+    }
+    if (otherGig==null){
+      alert('You can only "Apply" to events. Please go to the search page and search for gigs.');
+      return;
+    }
+    if (myBand==null){
+      alert('You can only "Apply" to events as a band. Please select one from your drop down menu and hit apply again. If you have no bands, you can create one on your home page.');
+      return;
+    }
+    else{
+      $.post('/apply', {'gigID':otherGig['_id'], 'bandID':myBand}, result=>{
+        alert('Congratulations! You have applied to the gig ' +otherGig['name'] + ' as ' +myBand['name'] + '! Hit "home" on the Banda "b" to go to your home page. Check/refresh your home page regularly to see if the event has moved to your upcoming gigs section. If they accept, be sure to check your email associated with this account before the start of the event for the confirmation code. You should give this code to the event manager at the time of the event. You should also recieve a code from him/her at the event, which you should then enter in your upcoming gigs confirmation code field. Make sure you follow our instructions with confirmation codes so that you can get paid. Do NOT share this code with ANYONE before you arrive at the event.');
+      });
+    }
+    break;
+    case "mobile":
+    var objID = selectedMobileProfile.dataID;
+    var kind = selectedMobileProfile.dataType;
+    var bandName = selectedMobileProfile.innerHTML;
     if(kind != 'band'){
       alert('You can only "Apply" to events as a band. Please select one from the drop down menu and hit apply again. If you have no bands, you can create one on your home page.');
       return;
     }
-  }
-  if (otherGig==null){
-    alert('You can only "Apply" to events. Please go to the search page and search for gigs.');
-    return;
-  }
-  if (myBand==null){
-    alert('You can only "Apply" to events as a band. Please select one from your drop down menu and hit apply again. If you have no bands, you can create one on your home page.');
-    return;
-  }
-  else{
-    $.post('/apply', {'gigID':otherGig['_id'], 'bandID':myBand}, result=>{
-      alert('Congratulations! You have applied to the gig ' +otherGig['name'] + ' as ' +myBand['name'] + '! Hit "home" on the Banda "b" to go to your home page. Check/refresh your home page regularly to see if the event has moved to your upcoming gigs section. If they accept, be sure to check your email associated with this account before the start of the event for the confirmation code. You should give this code to the event manager at the time of the event. You should also recieve a code from him/her at the event, which you should then enter in your upcoming gigs confirmation code field. Make sure you follow our instructions with confirmation codes so that you can get paid. Do NOT share this code with ANYONE before you arrive at the event.');
-    });
+    if (otherGig==null){
+      alert('You can only "Apply" to events. Please go to the search page and search for gigs.');
+      return;
+    }
+    if (objID==null){
+      alert('You can only "Apply" to events as a band. Please select one from your drop down menu and hit apply again. If you have no bands, you can create one on your home page.');
+      return;
+    }
+    else{
+      $.post('/apply', {'gigID':otherGig['_id'], 'bandID':objID}, result=>{
+        alert('Congratulations! You have applied to the gig ' +otherGig['name'] + ' as ' +bandName + '! Hit "home" on the Banda "b" to go to your home page. Check/refresh your home page regularly to see if the event has moved to your upcoming gigs section. If they accept, be sure to check your email associated with this account before the start of the event for the confirmation code. You should give this code to the event manager at the time of the event. You should also recieve a code from him/her at the event, which you should then enter in your upcoming gigs confirmation code field. Make sure you follow our instructions with confirmation codes so that you can get paid. Do NOT share this code with ANYONE before you arrive at the event.');
+      });
+    }
+    break;
   }
 }
 function hitBook(){
@@ -319,7 +397,7 @@ function hitMessage(){
     });
   }
   else{
-    alert('Sorry, the owner of this event must message you first. We do this to avoid overwhelming the event manager with messages from artists. Feel free to apply as one of your bands for now.')
+    alert('Sorry, before adding the owner of this event to your contacts list, the owner must message you first. We do this to avoid overwhelming the event manager with messages from artists. Feel free to apply as one of your bands for now.')
   }
 
 
@@ -531,8 +609,12 @@ function createPageAsGig(){
   newAOne.innerHTML = "Apply";
   newAOne.href = "#";
   newAOne.addEventListener("click",function(){
-    hitApply();
+    hitApply("desktop");
   });
+  var mobileApply = document.getElementById("mobile_apply_button");
+  mobileApply.addEventListener("click",function(){
+    hitApply("mobile");
+  })
   newLiOne.append(newAOne);
   controls.append(newLiOne);
   var newLiTwo = document.createElement("li");
@@ -542,6 +624,10 @@ function createPageAsGig(){
   newATwo.addEventListener("click",function(){
     hitMessage();
   });
+  var mobileMessage = document.getElementById("mobile_message_button");
+  mobileMessage.addEventListener("click",function(){
+    hitMessage();
+  })
   newLiTwo.append(newATwo);
   controls.append(newLiTwo);
 
@@ -1456,4 +1542,13 @@ document.getElementById('send_report_button').addEventListener('click', function
     var modal = document.getElementById("modal-wrapper-support");
     modal.style.display = "none";
   });
-})
+});
+
+function selectProfileOnMobile(selectA){
+  var oldSelected = document.getElementsByClassName("mobile-profiles-list-a-active");
+  for (var x in oldSelected){
+    oldSelected[x].className = "mobile-profiles-list-a";
+  }
+  selectA.className = "mobile-profiles-list-a-active";
+  selectedMobileProfile = selectA;
+}
