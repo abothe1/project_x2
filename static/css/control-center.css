@@ -2379,6 +2379,13 @@ bank modal
   }
 }
 @media(max-width: 800px){
+
+  #select-gig-to-ad{
+    top: -340px;
+    right: 300px;
+    background-color: rgba(0,0,0,0.8);
+    border-radius: 4px;
+  }
   .profile-header-text{
     font-size: 40pt;
   }
@@ -2391,6 +2398,13 @@ bank modal
   }
 }
 @media(max-width: 600px){
+
+  #select-gig-to-ad{
+    top: -380px;
+    right: 200px;
+    background-color: rgba(0,0,0,0.8);
+    border-radius: 4px;
+  }
 
   #contacts-sidebar{
     width: 200px;
@@ -2636,6 +2650,11 @@ bank modal
   }
 }
 @media(max-width: 500px){
+  #select-gig-to-ad{
+    width: 100%;
+    left: 0;
+    right: 0;
+  }
 
   #contacts-sidebar{
     top: 60px;
