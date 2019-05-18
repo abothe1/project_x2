@@ -112,7 +112,10 @@ function populateDropDown(myUser, myBands, myGigs){
     newMobileNavA.setAttribute('value','user');
     newMobileNavA.setAttribute('id', 'userDropTitleMobile');
     profilesMobileListDiv.append(newMobileNavA);
-    console.log("AB NOTE");
+    var profilesMobileListDivBands = document.getElementById("mobile-profiles-list-bands");
+    profilesMobileListDivBands.append(newMobileNavA2);
+
+
     return;
   }
   var selectMenu = document.getElementById('selectDrop');
@@ -128,10 +131,12 @@ function populateDropDown(myUser, myBands, myGigs){
   newMobileNavA.href = "#";
   newMobileNavA.className = "mobile-profiles-list-a-active";
   var profilesMobileListDiv = document.getElementById("mobile-profiles-list");
+  var profilesMobileListDivBands = document.getElementById("mobile-profiles-list-bands");
   newMobileNavA.setAttribute('value','user');
   newMobileNavA.dataID = myUser._id;
   newMobileNavA.dataType = "user";
   profilesMobileListDiv.append(newMobileNavA);
+  profilesMobileListDivBands.append(newMobileNavA);
   newMobileNavA.addEventListener("click",function(){
     selectProfileOnMobile(newMobileNavA);
   });
@@ -155,6 +160,7 @@ function populateDropDown(myUser, myBands, myGigs){
     newBandMobile.dataType = "band";
     newBandMobile.setAttribute('id', 'band'+band+'MobileDropTitle');
     profilesMobileListDiv.append(newBandMobile);
+    profilesMobileListDivBands.append(newBandMobile);
     newBandMobile.addEventListener("click",function(){
       selectProfileOnMobile(newBandMobile);
     });
@@ -176,6 +182,7 @@ function populateDropDown(myUser, myBands, myGigs){
     newGigMobile.dataType = "gig";
     newGigMobile.setAttribute('id', 'gig'+gig+'MobileDropTitle');
     profilesMobileListDiv.append(newGigMobile);
+    profilesMobileListDivBands.append(newGigMobile);
     newGigMobile.addEventListener("click",function(){
       selectProfileOnMobile(newGigMobile);
     });
@@ -419,6 +426,8 @@ function getTitleFontSize(name){
 }
 
 function createPageAsBand(){
+  var wrongBottomBar = document.getElementById("bottom-bar-mobile");
+  wrongBottomBar.parentNode.removeChild(wrongBottomBar);
   var mainContent = document.getElementById("main-content-wrapper");
   // load the band name
   var profileTitle = document.getElementById("profile-title");
@@ -593,6 +602,8 @@ function createPageAsBand(){
 }
 
 function createPageAsGig(){
+  var wrongBottomBar = document.getElementById("bottom-bar-mobile-bands");
+  wrongBottomBar.parentNode.removeChild(wrongBottomBar);
   var mainContent = document.getElementById("main-content-wrapper");
 
   // load the gig name

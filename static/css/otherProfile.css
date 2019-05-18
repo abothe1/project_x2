@@ -1132,7 +1132,7 @@ margin-top: 100px;
     margin-left: -28%;
   }
 }
-#bottom-bar-mobile{
+#bottom-bar-mobile, #bottom-bar-mobile-bands{
   display: none;
 }
 
@@ -1155,7 +1155,7 @@ margin-top: 100px;
   #contacts-button{
     display: none;
   }
-  #bottom-bar-mobile{
+  #bottom-bar-mobile, #bottom-bar-mobile-bands{
     display: block;
     position: fixed;
     bottom: 0;
@@ -1165,10 +1165,10 @@ margin-top: 100px;
     text-align: center;
     height: 40px;
   }
-  #bottom-bar-mobile button{
+  #bottom-bar-mobile button, #bottom-bar-mobile-bands button{
     text-align: center;
   }
-  #bottom-bar-mobile i {
+  #bottom-bar-mobile i, #bottom-bar-mobile-bands i {
     font-size: 30px;
     color: white;
   }
