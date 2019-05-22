@@ -56,25 +56,33 @@
   </head>
   <body onload="init();">
 
-    <div id="modal-wrapper-support" class="modal">
+    <div id="modal-wrapper-support" class="modal-support">
 
-      <form class="modal-content animate">
-
-        <div class="imgcontainer">
-          <span onclick="document.getElementById('modal-wrapper-support').style.display='none'" class="close" title="Close PopUp">&times;</span>
-          <h1 style="text-align:left; padding-left: 20px; font-size: 50pt;">account support</h1>
-        </div>
-
+      <form class="modal-content-support animate">
+        <span onclick="document.getElementById('modal-wrapper-support').style.display='none'" class="close-support" title="Close PopUp">&times;</span>
         <div class="container">
-          <p class="support-text">Having any issues? Let us know!</p>
-          <textarea class="modal-textarea"></textarea>
-          <button class="popUpButtons" type="submit" onclick="login()">Make Request</button>
+          <h1 id="account-support-header">account support</h1>
+          <p class="support-text">Having any issues or want to grow your following? Talk to our customer support team now!</p>
+          <textarea id="request-support-textarea" class="modal-textarea" placeholder='If you are having issues let us know when and where they are occuring and how we can help. If you are seeking promotion or an increase in followers let us know your goals so we can assist you..'></textarea>
+          <button id="request-support-btn" class="popUpButtons" type="submit" onclick="requestSupport()">Make Request</button>
+          <p class="support-text-small">Alternatively, reach out to the team directly:</p>
+          <p class="support-text-small">Max Schmitz (301-580-5601) Kousha Massoumi (414-331-3047)</p>
         </div>
       </form>
 
     </div>
 
     <div id="body-container">
+
+      <div class="mobile-menu">
+         <button id = "mobile-menu-button"><img src="/assets/Home/banda_b.png" /></button>
+         <ul id = "mobile-menu-ul" class="mobile-active">
+           <li><a href='control-center'><p class="radialText">Home</p></a></li>
+           <li><a href='about'><p class="radialText">About</p></a></li>
+           <li><a href='index'><p class="radialText">Landing</p></a></li>
+           <li><a href='#' onclick="document.getElementById('modal-wrapper-support').style.display='block'"><p class="radialText">Support</p></a></li>
+         </ul>
+     </div>
 
       <div id="container">
         <img id="menuBacking" src="/assets/Home/menu.png" />
@@ -84,7 +92,7 @@
 
       <div class='circle-container'>
         <a href='control-center' class='deg0'><p class="radialText">Home</p></a>
-        <a href='#' class='deg30'><p class="radialText">About</p></a>
+        <a href='about' class='deg30'><p class="radialText">About</p></a>
         <a href='index' class='deg60'><p class="radialText">Landing</p></a>
         <a href='#' class='deg90' onclick="document.getElementById('modal-wrapper-support').style.display='block'"><p class="radialText">Support</p></a>
       </div>
@@ -120,6 +128,12 @@
 
       <div class="grid-container" id="grid-container"></div>
     </div>
-
   </body>
+  <script>
+   $(document).ready(function(){
+     $('#mobile-menu-button').click(function(){
+       $('#mobile-menu-ul').toggleClass('mobile-active')
+     })
+   })
+  </script>
 </html>

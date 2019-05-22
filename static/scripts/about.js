@@ -1,7 +1,7 @@
 getLocation();
 
 function init(){
-  // TODO
+  screen.orientation.lock();
 }
 
 function flipTicker(){

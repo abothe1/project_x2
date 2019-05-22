@@ -152,7 +152,7 @@ h1, h2, h3, h4, h5, h6, p, button, input, textarea, li{
 .modal-content-support {
   background-image: url("/assets/Home/modalbg.png");
   background-color: transparent;
-  background-size: contain;
+  background-size: cover;
   background-clip: border-box;
   background-repeat: no-repeat;
   margin: 4% auto 15% auto;
@@ -659,6 +659,17 @@ open gig Elements
     alpha: 0.6;
     cursor: pointer;
 }
+.close-support{
+  z-index: 100;
+  float: right;
+  font-size: 35pt;
+  margin-right: 10px;
+  display: inline;
+}
+.close-support:hover,.close-support:focus {
+    alpha: 0.6;
+    cursor: pointer;
+}
 
 /* Add Zoom Animation */
 .animate {
@@ -798,10 +809,7 @@ label{
 }
 
 #loader-new-bank{
-  margin-top: -20px;
-  margin-left: 17%;
   display: none;
-  position: absolute;
 }
 
 #loader-new-card{
@@ -1890,7 +1898,7 @@ bank modal
   border-radius: 10px;
   margin: 10% auto 15% auto;
   width: 40%;
-  height: 55%;
+  height: 60%;
   color: white;
   padding: 20px;
   color: black;
@@ -1923,8 +1931,7 @@ bank modal
 .stripe-logo{
   width: 60px;
   height: auto;
-  margin-left: 440px;
-  margin-top: -40px;
+  float: right;
 }
 
 .stripe-link{
@@ -2052,9 +2059,8 @@ bank modal
     cursor: pointer;
 }
 .close-bank {
-    position: absolute;
-    margin-left: 500px;
-    margin-top: -20px;
+    float: right;
+    margin-top: -15px;
     color: #000;
     opacity: 0.6;
     font-size: 35px;
@@ -2647,6 +2653,35 @@ bank modal
   /* open-gig styling <600 END */
 }
 @media(max-width: 550px){
+  #request-support-textarea{
+    height: 200px;
+  }
+  #bank-content{
+    margin-top: 20%;
+    margin-left: 5%;
+    width: 90% !important;
+  }
+
+  #modal-wrapper-credit{
+    display:none;
+    position: fixed;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    width: 100%;
+    height: 250px;
+    overflow: hidden;
+    background-color: rgba(240,240,240,1.0);
+    border-radius: 10px;
+    z-index: 110;
+    text-align: center;
+    padding: 20px;
+  }
+
+#mobile-menu-button{
+  background-color: transparent;
+}
+
   #modal-wrapper-choose-band-for-app{
     width: inherit !important;
   }
@@ -2664,6 +2699,7 @@ bank modal
     margin-left: 0px;
   }
 }
+
 @media(max-width: 500px){
   .share-event-title{
     padding-top: 100px;
@@ -2729,31 +2765,7 @@ bank modal
     margin-left: 0px;
   }
 }
-@media(max-width: 400px){
-  .profile-header-text{
-    font-size: 22pt;
-  }
-  .profile-header{
-    margin-top: 10px;
-  }
-  #contacts-button{
 
-    width: 120px;
-  }
-  .profile-gigs{
-    margin-left: 15px;
-    margin-right: 0px;
-    width: 110%;
-
-  }
-  .open-gig-end-time{
-    margin-left: 0px;
-  }
-
-  .act-name{
-    font-size: 17px;
-  }
-}
 @media(max-width: 350px){
   .open-gig-info{
     width: 400px;
@@ -2960,12 +2972,6 @@ bank modal
     margin-left: 3%;
   }
 
-  #modal-wrapper-support {
-    z-index: 5;
-    width: 100%;
-    overflow: hidden;
-  }
-
   #submit-confirmation-code{
     height: 30px;
   }
@@ -2989,82 +2995,7 @@ bank modal
 }
 
 /*mobile rescaling credit card info*/
-@media(max-width:550px){
-  #modal-wrapper-credit{
-    display:none;
-    position: fixed;
-    top: 50%;
-    left: 50%;
-    transform: translate(-50%, -50%);
-    width: 100%;
-    height: 250px;
-    overflow: hidden;
-    background-color: rgba(240,240,240,1.0);
-    border-radius: 10px;
-    z-index: 110;
-    text-align: center;
-    padding: 20px;
-  }
-}
 
-@media(max-width:550px){
-  #modal-wrapper-bank{
-    display: none;
-    z-index: 11;
-    margin:0;
-    margin-top: 20;
-    position: fixed;
-    width: 250%;
-    height: 120%;
-    background-color: rgba(0,0,0,0.8);
-  }
-  #bank-content {
-    background-color: rgba(240,240,240,1.0);
-    border-radius: 10px;
-    width: 40%;
-    height: 55%;
-    color: white;
-    padding: 20px;
-    color: black;
-    margin:0;
-    margin-left: 0;
-  }
-  .bank-account-button {
-    border: none;
-    border-radius: 4px;
-    outline: none;
-    text-decoration: none;
-    color: #fff;
-    background: #32325d;
-    white-space: nowrap;
-    display: inline-block;
-    width: 90%;
-    height: 40px;
-    line-height: 40px;
-    padding: 0 14px;
-    box-shadow: 0 4px 6px rgba(50, 50, 93, .11), 0 1px 3px rgba(0, 0, 0, .08);
-    border-radius: 4px;
-    font-size: 15px;
-    font-weight: 600;
-    letter-spacing: 0.025em;
-    text-decoration: none;
-    -webkit-transition: all 150ms ease;
-    transition: all 150ms ease;
-    float: left;
-    margin-left: 12.5%;
-    margin-top: 8px;
-}
-  .close-bank{
-      position: absolute;
-      margin-left: 285px;
-      margin-top: -20px;
-      color: #000;
-      opacity: 0.6;
-      font-size: 35px;
-      font-weight: bold;
-      z-index: 99;
-  }
-}
 
 #account-support-header{
   text-align:left;
@@ -3077,65 +3008,8 @@ bank modal
   font-size: 12pt;
 }
 
-/*support modal mobile scaling*/
-@media(max-width:550px){
-  #modal-wrapper-support{
-    z-index: 5;
-    width: 150%;
-    overflow: hidden;
-  }
 
-  #account-support-header{
-    text-align:left;
-    padding-left: 0;
-    font-size: 16pt;
-  }
 
-  /* The Modal (background) */
-  .modal-support {
-    display:none;
-    position: fixed;
-    z-index: 1;
-    left: 0;
-    top: 0;
-    width: 150%;
-    height: 100%;
-    overflow: auto;
-    background-color: rgba(0,0,0,0.4);
-    font-size: 12pt;
-  }
-
-  /* Modal Content Box */
-  .modal-content-support {
-    background-image: url("/assets/Home/modalbg.png");
-    background-color: transparent;
-    background-size: contain;
-    background-clip: border-box;
-    background-repeat: no-repeat;
-    margin: 4% auto 15% auto;
-    width: 90%;
-    height: 400%;
-    padding-bottom: 80px;
-    color: white;
-  }
-  .support-text{
-    font-size: 12pt;
-  }
-  #modal-wrapper-support {
-    z-index: 5;
-    width: 100%;
-    overflow: hidden;
-  }
-
-  #request-support-btn{
-    height:30%;
-  }
-
-  #request-support-textarea{
-    height: 40%;
-  }
-
-}
 
 /*link modal mobile scaling*/
 @media(max-width:550px){
@@ -3180,6 +3054,7 @@ bank modal
 
 /*mobile scaling for choose band for app */
 @media(max-width:550px){
+
   #modal-wrapper-choose-band-for-app{
     display:none;
     position: fixed;
@@ -3228,11 +3103,25 @@ bank modal
     margin: 0 auto;
     width: 900px;
   }
+  .modal-content-support{
+    width: 70%;
+  }
 }
 
 @media(max-width: 1150px){
   #confirm-app-header{
     font-size: 30pt;
+  }
+  #bank-grid{
+    grid-template-columns: 100%;
+  }
+  #bank-content{
+    overflow: scroll;
+    width: 60%;
+    height: 80%;
+  }
+  #bank-content::-webkit-scrollbar{
+    width: 6px;
   }
 }
 
@@ -3259,6 +3148,12 @@ bank modal
 }
 
 @media(max-width: 800px ){
+  #account-support-header{
+    font-size: 28pt;
+  }
+  .support-text{
+    font-size: 16pt;
+  }
   #current-band-form{
     width: 600px;
     top: 55px;
@@ -3301,6 +3196,15 @@ bank modal
   }
 }
 @media(max-width: 500px){
+  .modal-content-support{
+    overflow: scroll;
+    margin-top: 80px;
+    width: 90%;
+    margin-left: 5%;
+  }
+  .modal-content-support::-webkit-scrollbar{
+    width: 4px;
+  }
   #current-band-form{
     width: 360px;
   }
@@ -3501,6 +3405,38 @@ bank modal
   }
 }
 @media(max-width: 400px){
+  #account-support-header{
+    font-size: 20pt;
+  }
+  .support-text{
+    font-size: 12pt;
+  }
+  .bank-footer-p{
+    font-size: 8pt;
+  }
+  .profile-header-text{
+    font-size: 22pt;
+  }
+  .profile-header{
+    margin-top: 10px;
+  }
+  #contacts-button{
+
+    width: 120px;
+  }
+  .profile-gigs{
+    margin-left: 15px;
+    margin-right: 0px;
+    width: 110%;
+
+  }
+  .open-gig-end-time{
+    margin-left: 0px;
+  }
+
+  .act-name{
+    font-size: 17px;
+  }
   #new-gig-form{
     width: 250px;
   }#new-gig-content{

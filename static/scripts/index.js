@@ -36,10 +36,12 @@ var isLoggedIn=false;
 function init(){
 	var logged = checkSession();
 
+
 	console.log("checking session, session is: "+logged);
 
 	container = document.getElementById("container");
 	container.width = window.innerWidth;
+  console.log("CONTAINER WIDTH: "+container.width);
 	container.height = window.innerHeight;
 
 	rain = document.getElementById("rain");
@@ -60,8 +62,10 @@ function init(){
         var aSample = bandSamples[0];
         samples.push(aSample);
       }
-      rainTimer = setInterval(addDrop, 1600);
-    	setInterval(animate, 40);
+      if(container.width >= 600){
+        rainTimer = setInterval(addDrop, 1600);
+      	setInterval(animate, 40);
+      }
     });
   }
 }
@@ -434,7 +438,7 @@ function handleEventsWithTicker(result){
   }*/
   console.log("Events in handle events wth ticker are " + events);
   var events = JSON.parse(JSON.stringify(result));
-  $("#frontText").html("Live Booking Feed");
+  $("#frontText").html("Welcome To Banda! Click a picture to hear some music from our community.");
   $("#backText").html("");
   var sortedEventsAndDates = sortEventsByDate(events);
   var sortedEvents=[];
@@ -558,11 +562,18 @@ function diff_minutes(dt2, dt1) {
 				document.getElementById('login_or_out').addEventListener('click', function(){
 					document.getElementById("modal-wrapper-logout").style.display="block";
 				});
+        document.getElementById('mobile_login_or_out').addEventListener('click', function(){
+					document.getElementById("modal-wrapper-logout").style.display="block";
+				});
 				return true;
 			}else{
 				console.log(res.success + " is returned value");
 				document.getElementById('login_or_out').innerHTML = 'Login';
         document.getElementById('login_or_out').addEventListener('click', function(){
+					document.getElementById("modal-wrapper-login").style.display="block";
+				});
+        document.getElementById('mobile_login_or_out').innerHTML = 'Login';
+        document.getElementById('mobile_login_or_out').addEventListener('click', function(){
 					document.getElementById("modal-wrapper-login").style.display="block";
 				});
 				return false;

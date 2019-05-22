@@ -41,15 +41,11 @@
     <div id="modal-wrapper-support" class="modal-support">
 
       <form class="modal-content-support animate">
-
-        <div class="imgcontainer">
-          <span onclick="document.getElementById('modal-wrapper-support').style.display='none'" class="close" title="Close Pop Up">&times;</span>
-          <h1 id="account-support-header">account support</h1>
-        </div>
-
+        <span onclick="document.getElementById('modal-wrapper-support').style.display='none'" class="close-support" title="Close Pop Up">&times;</span>
         <div class="container">
-          <p class="support-text">Having any issues? Let us know!</p>
-          <textarea id="request-support-textarea" class="modal-textarea"></textarea>
+          <h1 id="account-support-header">account support</h1>
+          <p class="support-text">Having any issues or want to grow your following? Talk to our customer support team now!</p>
+          <textarea id="request-support-textarea" class="modal-textarea" placeholder='If you are having issues let us know when and where they are occuring and how we can help. If you are seeking promotion or an increase in followers let us know your goals so we can assist you..'></textarea>
           <button id="request-support-btn" class="popUpButtons" type="submit" onclick="requestSupport()">Make Request</button>
           <p class="support-text-small">Alternatively, reach out to the team directly:</p>
           <p class="support-text-small">Max Schmitz (301-580-5601) Kousha Massoumi (414-331-3047)</p>
@@ -81,7 +77,7 @@
         <input type="hidden" name="bandID" />
         <input type="hidden" name="gigID" />
         <span onclick="document.getElementById('modal-wrapper-confirm-booking').style.display='none'" class="cancel-close" title="Close PopUp">&times;</span>
-        <p id="confirm-booking-text" class="modal-p">"Are you sure you want to book This Band With a Name for this event? You will be charged "</p>
+        <p id="confirm-booking-text" class="modal-p">"Are you sure you want to book This Band With a Name for this event? You will be charged 5% of the price you set for this event right now. However, you choose to cancel this event you will be issued a full refund."</p>
         <input type="button" class="confirm-modal-btn" id="confirm-booking" value="confirm"/>
         <div id="loader-book" class="loader"></div>
       </div>
@@ -306,7 +302,7 @@
         <div id="error-message" role="alert"></div>
         <!-- Display mandate acceptance text. -->
         <div id="mandate-acceptance">
-          <p>
+          <p class="bank-footer-p">
             We use <a href="https://stripe.com/" class="stripe-link">Stripe</a>, a
             secure payment platform, to ensure that you always get what you earn.
             Banda does not store your credit card or bank account

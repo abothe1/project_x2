@@ -83,6 +83,11 @@ function parseURL(url){
    parser.href = url;
    // Convert query string to object
    queries = parser.search.replace(/^\?/, '').split('&');
+   // Collect search entry and add to search input
+   var textForSearchInput = queries[0];
+   textForSearchInput = decodeURI(textForSearchInput);
+   textForSearchInput = textForSearchInput.replace("query=","");
+   document.getElementById("search_input").value = textForSearchInput;
    for( i = 0; i < queries.length; i++ ) {
        split = queries[i].split('=');
        searchObject[split[0]] = split[1];
